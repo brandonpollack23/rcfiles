@@ -1,7 +1,11 @@
 # Initialize system prefs
 
 ## What do
+```sh
+git clone --recursive https://github.com/brandonpollack23/rcfiles
 ./install
+```
+
 
 ## What does it do
 * dependencies
