@@ -30,7 +30,7 @@ ${package_manager} ${package} || true
 
 
 # TODO vim 
-# easymotion, zsh highlighting, nerdtree, airline?, ctrlp, vim surround, matchit
+# zsh highlighting, nerdtree, airline?, ctrlp, vim surround, matchit
 
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
