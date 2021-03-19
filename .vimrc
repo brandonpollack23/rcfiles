@@ -18,6 +18,7 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set backspace=indent,eol,start "be able to backspace indents, lines, and start
+filetype indent on
 set smartindent
 
 " Utils
