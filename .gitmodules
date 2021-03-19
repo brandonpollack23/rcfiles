@@ -10,3 +10,6 @@
 [submodule ".vim/pack/brpol/start/nerdtree"]
 	path = .vim/pack/brpol/start/nerdtree
 	url = https://github.com/preservim/nerdtree.git
+[submodule ".vim/pack/brpol/start/ctrlp.vim"]
+	path = .vim/pack/brpol/start/ctrlp.vim
+	url = https://github.com/kien/ctrlp.vim.git
