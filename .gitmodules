@@ -4,3 +4,6 @@
 [submodule ".vim/pack/brpol/start/vim-easymotion"]
 	path = .vim/pack/brpol/start/vim-easymotion
 	url = https://github.com/easymotion/vim-easymotion.git
+[submodule "zsh-plugins/zsh-syntax-highlighting"]
+	path = zsh-plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git

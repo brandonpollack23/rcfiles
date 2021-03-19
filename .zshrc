@@ -118,3 +118,7 @@ alias :q="exit"
 
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
+
+# Syntax highlighting
+source /home/brpol/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+

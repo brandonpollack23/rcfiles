@@ -39,6 +39,7 @@ mkdir -p $HOME/.vim/swapdir
 RCFILESDIR=$PWD
 
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
+ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
 ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
 ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
 ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
