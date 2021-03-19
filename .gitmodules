@@ -28,3 +28,6 @@
 [submodule ".vim/pack/brpol/start/nerdcommenter"]
 	path = .vim/pack/brpol/start/nerdcommenter
 	url = https://github.com/preservim/nerdcommenter.git
+[submodule "zsh-plugins/zsh-completions"]
+	path = zsh-plugins/zsh-completions
+	url = git://github.com/zsh-users/zsh-completions.git
