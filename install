@@ -20,7 +20,7 @@ do
     fi
 done
 
-packages="git tmux zsh vim curl tree"
+packages="git tmux zsh vim curl tree nodejs npm"
 
 ${package_manager} ${package} || true
 

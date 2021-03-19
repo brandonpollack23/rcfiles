@@ -35,6 +35,9 @@ map <Leader>f :NERDTreeToggle<CR>
 
 
 " Notes
+" Completion, turn on CoC
+" :packadd coc.nvim
+" read their docs:  https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim 
 
 " CTRLP
 " Press <F5> to purge the cache for the current directory to get new files, remove deleted files and apply new ignore options.
