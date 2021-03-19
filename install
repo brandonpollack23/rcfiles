@@ -28,9 +28,8 @@ ${package_manager} ${package} || true
 
 # TODO chsh to zsh
 
-
 # TODO vim 
-# nerdtree, airline?, ctrlp, vim surround, matchit
+# airline?, ctrlp, vim surround, matchit
 
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
