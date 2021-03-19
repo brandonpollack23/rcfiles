@@ -30,10 +30,17 @@ ${package_manager} ${package} || true
 
 
 # TODO vim 
-# easymotion, zsh highlighting
-# monokai theme
+# easymotion, zsh highlighting, nerdtree, airline?, ctrlp, vim surround, matchit
 
-ln -sfn $HOME/src/rcfiles/.zshrc $HOME/.zshrc
-ln -sfn $HOME/src/rcfiles/.oh-my-zsh $HOME/.oh-my-zsh
-ln -sfn $HOME/src/rcfiles/.vimrc $HOME/.vimrc
-ln -sfn $HOME/src/rcfiles/.tmux.conf $HOME/.tmux.conf
+mkdir -p $HOME/.vim/pack/colors
+mkdir -p $HOME/.vim/backupdir
+mkdir -p $HOME/.vim/swapdir
+
+RCFILESDIR=$PWD
+
+ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
+ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
+ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
+ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
+ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
+ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
