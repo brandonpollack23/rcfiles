@@ -8,7 +8,17 @@ fi
 
 echo "$(whoami)"
 
-[ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" "$@"
+[ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
+
+getopts ":u:" u
+case $u in
+    u)
+        CALLING_USER=$OPTARG
+        ;;
+    *)
+        echo "dont run as root, just run and let me do it"
+        exit 1
+esac
 
 echo "Installing to home directory: $HOME"
 
@@ -29,13 +39,15 @@ packages="git tmux zsh vim curl tree nodejs npm"
 
 ${package_manager} ${package} || true
 
-# TODO chsh to zsh
-
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
 
 RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+mkdir -p $HOME/.vim/swapdir
+mkdir -p $HOME/.vim/backupdir
+mkdir -p $HOME/.config/coc
 
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
@@ -47,4 +59,4 @@ ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
 ln -sfn $RCFILESDIR/.vim/coc
 ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
 
-chsh -s `which zsh` $USER
+chsh -s `which zsh` $CALLING_USER
