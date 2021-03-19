@@ -11,15 +11,6 @@ export ZSH="$HOME/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="candy"
 
-# This is my modified candy theme
-JST_DATE=$(TZ=Japan date "+%X (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~]%{$reset_color%} $(git_prompt_info)\
-%{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
-ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}*%{$fg[green]%}"
-ZSH_THEME_GIT_PROMPT_CLEAN=""
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -89,7 +80,16 @@ MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+#################### User configuration ###############################
+
+# This is my modified candy theme
+JST_DATE=$(TZ=Japan date "+%X (%Z)")
+PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~]%{$reset_color%} $(git_prompt_info)\
+%{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
+ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}*%{$fg[green]%}"
+ZSH_THEME_GIT_PROMPT_CLEAN=""
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
