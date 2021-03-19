@@ -113,7 +113,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias fuck="sudo !!"
+alias pls='sudo $(fc -ln -1)'
 alias :q="exit"
 
 # Key bindings (like normal to insert mode in vi mode)
