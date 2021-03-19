@@ -71,12 +71,15 @@ HIST_STAMPS="mm/dd/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode)
+plugins=(git vi-mode cargo catimg colorize command-not-found common-aliases docker docker-compose emoji)
 
 # Vi Mode Setup
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
+
+# Colorize setup, use ccat
+ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
 
 source $ZSH/oh-my-zsh.sh
 
