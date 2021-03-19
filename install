@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e
+set -x
+
+if [[ -z $HOME ]];then
+    echo "must have a home directory!"
+fi
 
 echo "$(whoami)"
 
@@ -24,18 +29,13 @@ packages="git tmux zsh vim curl tree nodejs npm"
 
 ${package_manager} ${package} || true
 
-# TODO check $HOME is set, if not error out
-
 # TODO chsh to zsh
-
-# TODO vim 
-# airline?, ctrlp, vim surround, matchit
 
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
 
-RCFILESDIR=$PWD
+RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
@@ -46,3 +46,5 @@ ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
 ln -sfn $RCFILESDIR/.vim/coc
 ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
+
+chsh -s `which zsh` $USER
