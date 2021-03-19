@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e
+
+echo "$(whoami)"
+
+[ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" "$@"
+
+echo "Installing to home directory: $HOME"
+
+declare -A osInfo;
+osInfo[/etc/debian_version]="apt-get install -y"
+osInfo[/etc/alpine-release]="apk --update add"
+osInfo[/etc/centos-release]="yum install -y"
+osInfo[/etc/fedora-release]="dnf install -y"
+
+for f in ${!osInfo[@]}
+do
+    if [[ -f $f ]];then
+        package_manager=${osInfo[$f]}
+    fi
+done
+
+packages="git zsh vim curl"
+
+${package_manager} ${package} || true
+
+# TODO check $HOME is set, if not error out
+
+# TODO chsh to zsh
+
+
+# TODO vim 
+# easymotion, zsh highlighting
+# monokai theme
+
+ln -sfn $HOME/src/rcfiles/.zshrc $HOME/.zshrc
+ln -sfn $HOME/src/rcfiles/.oh-my-zsh $HOME/.oh-my-zsh
+ln -sfn $HOME/src/rcfiles/.vimrc $HOME/.vimrc
+ln -sfn $HOME/src/rcfiles/.tmux.conf $HOME/.tmux.conf
