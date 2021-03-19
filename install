@@ -44,3 +44,5 @@ ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
 ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
 ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
+ln -sfn $RCFILESDIR/.vim/coc
+ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
