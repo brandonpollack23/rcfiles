@@ -20,7 +20,7 @@ do
     fi
 done
 
-packages="git zsh vim curl"
+packages="git tmux zsh vim curl tree"
 
 ${package_manager} ${package} || true
 
@@ -30,7 +30,7 @@ ${package_manager} ${package} || true
 
 
 # TODO vim 
-# zsh highlighting, nerdtree, airline?, ctrlp, vim surround, matchit
+# nerdtree, airline?, ctrlp, vim surround, matchit
 
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
