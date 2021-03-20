@@ -35,9 +35,12 @@ do
     fi
 done
 
-packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf"
+packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html info2www"
 
 ${package_manager} ${package} || true
+
+# Enable apache cgi (for man2html)
+a2enmod cgid
 
 mkdir -p $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
