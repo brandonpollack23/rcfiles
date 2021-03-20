@@ -175,5 +175,9 @@ fi
 
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
+if [[ -f /etc/debian_version ]]; then
+    PLATFORM_LOGIN_FORTUNES="debian-hints"
+fi
+
 echo "Welcome to $HOST!" | figlet | lolcat
-fortune $LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
+fortune $PLATFORM_LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
