@@ -1,0 +1,80 @@
+# Doomguy (DOOM)
+# by RetroPixelWorld - https://www.teepublic.com/t-shirt/1944232-pixel-praetor
+# Generated with Charc0al's coway file creator http://charc0al.github.io/cowsay-files/converter
+
+$x = "\e[49m  ";          #reset color
+$t = "$thoughts ";
+$a = "\e[48;5;234m  ";
+$b = "\e[48;5;108m  ";
+$c = "\e[48;5;194m  ";
+$d = "\e[48;5;151m  ";
+$e = "\e[48;5;24m  ";
+$f = "\e[48;5;246m  ";
+$g = "\e[48;5;240m  ";
+$h = "\e[48;5;195m  ";
+$i = "\e[48;5;116m  ";
+$j = "\e[48;5;31m  ";
+$k = "\e[48;5;22m  ";
+$l = "\e[48;5;202m  ";
+$m = "\e[48;5;124m  ";
+$n = "\e[48;5;231m  ";
+$o = "\e[48;5;71m  ";
+$p = "\e[48;5;196m  ";
+$q = "\e[48;5;157m  ";
+$r = "\e[48;5;114m  ";
+$s = "\e[48;5;94m  ";
+$u = "\e[48;5;130m  ";
+$v = "\e[48;5;101m  ";
+$w = "\e[48;5;95m  ";
+$y = "\e[48;5;235m  ";
+
+$the_cow = <<EOC
+          $t
+            $t                  $a          $x
+              $t              $a$b$c$b      $a$x
+                $t        $a  $c$b$c$b      $c$a  $x
+                  $t    $a  $b$c$d$a      $d$c$b$a  $x
+                      $a  $b$d  $a$b      $a$d  $b$a  $x
+                      $a$b$d$c      $b  $c      $b  $a$x
+                    $a$c$b$a  $c              $a  $b$c$a$x
+                    $a$c$a$e$a  $d$f$g  $f$d$a  $e$a$c$a$x
+                    $a$c$a$e  $h$a$c$f  $c$a$e$h$e$a$c$a$x
+                    $a$c$a  $e$i$e$a      $h$e$i$a  $c$a$x
+                    $a$b$c$a$e$j$e    $h  $e  $j$a$c$b$a$x
+                $a      $c$a  $j$e    $i  $e  $a  $c$a      $x
+              $a$k$a    $c  $a  $e    $j  $e$a  $c  $a    $k$a$x
+            $a$k$a  $l$a  $c  $a              $c  $a  $g$a  $k$a$x
+          $a$k  $a  $l$m$a  $f$a  $n$g  $f$a  $f$a  $f$g$a  $k  $a$x
+          $a$k  $o$a$m$l  $a  $f  $n$g  $f    $a  $g  $f$a$o$k  $a$x
+        $a$k  $o    $a$l  $m$a  $f$n$g$f    $a  $f$g  $a$o    $k  $a$x
+        $a$k$o$p$o$q$c$a$m$l  $a              $g  $f$a$c$q$o    $k$a$x
+        $a$k$o$a$q  $c$o$a$l$m$a              $f$g$a$o$c$q$o    $k$a$x
+        $a$k$o  $q  $o  $a$m$a                  $f$a$o  $q  $o  $k$a$x
+        $a  $k$o$q$a        $k    $a      $k    $a        $q$o$k$a  $x
+        $a        $l$m$a  $c$k$o    $k  $o      $c$a  $m$l$a        $x
+        $a$k  $o  $a      $o  $k$c  $r  $c  $p$c$o$a      $o  $k  $a$x
+        $a  $k$c  $o$k$a$o$k$o  $k$c$r  $c  $a$c  $o$a$k$o$q  $k$a  $x
+      $a$k$a  $o$c$o$a  $k$o$k  $c  $k  $c      $o$k$a  $o$c$o$a  $k$a$x
+      $a$k  $a            $k$o      $a  $o      $k$a            $k  $a$x
+    $a$k$o$c$a$l$a$x  $a      $o  $a      $o  $a      $x  $a$l$a$c$o$k$a$x
+    $a$k$o$a$f$a  $x    $a                          $x    $a  $f$a$o$k$a$x
+    $a      $g$a$x      $a        $g$f  $g$a        $x      $a$g$a      $x
+    $a$k$o$a    $x    $a  $o  $n$a          $n$o  $a  $x    $a    $o$k$a$x
+    $a$k$a$l$m$a  $x  $a  $k$o$n$a$g$f  $g$a$n$o$k$a  $x  $a  $m$l$a$k$a$x
+    $a$k$a$l$m$a$c$a$x$a  $k$a                  $k$a  $x$a$c$a$m$l$a$k$a$x
+    $a$k$o$a  $o$a$x    $a    $f$a          $f$a    $x    $a$o$a  $o$k$a$x
+    $a$o$c    $k$a$x    $a  $q$k$g$a      $g$k$q$a  $x    $a$k$c    $o$a$x
+    $a  $o    $k$a$x    $a$q  $o$g  $a  $g  $o$q  $a$x    $a$k$o    $a  $x
+      $a        $x      $a    $o$s$a$x  $a$s$o$a    $x      $a        $x
+        $a      $x      $a$s  $a$u$a$x  $a$u$a$s  $a$x      $a      $x
+                        $a$u    $a  $x  $a  $u    $a  $x
+                        $a      $u$a$x  $a$u$a        $x
+                      $a$c$v    $a  $x  $a  $v    $c$a$x
+                      $a      $v$a  $x  $a  $v$a      $x
+                      $a$c$v    $s$a$x  $a$s$v    $c$a$x
+                    $a      $v  $s$a$x  $a$s$v  $a      $x
+                    $a$c$v  $a  $s$a$x  $a$s$a  $v  $c$a$x
+                  $a$w      $v  $a  $x  $a  $v  $w      $a$x
+                  $a$y          $a  $x  $a  $y          $a$x
+                  $a                $x  $a                $x
+EOC

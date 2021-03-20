@@ -136,3 +136,11 @@ source /home/brpol/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
 source /home/brpol/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 # better cd
 source /home/brpol/zsh-plugins/enhancd/enhancd.plugin.zsh
+
+# Environmental Variables
+export COWPATH=$HOME/cowfiles
+
+# Finally, show a welcome message and fortune!
+# add more cowsays! https://charc0al.github.io/cowsay-files/converter/
+echo "Welcome to $HOST!" | figlet
+fortune | cowsay | lolcat

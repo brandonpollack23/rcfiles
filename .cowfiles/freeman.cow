@@ -1,0 +1,77 @@
+# Gordon Freeman (Half-life series)
+# by Michael B. Myers - https://drawsgood.com/assorted-pixel-characters
+# Generated with Charc0al's cowsay file converter http://charc0al.github.io/cowsay-files/converter
+
+$x = "\e[49m  ";          #reset color
+$t = "$thoughts ";
+$a = "\e[48;5;94m  ";
+$b = "\e[48;5;173m  ";
+$c = "\e[48;5;216m  ";
+$d = "\e[48;5;223m  ";
+$e = "\e[48;5;234m  ";
+$f = "\e[48;5;250m  ";
+$g = "\e[48;5;238m  ";
+$h = "\e[48;5;242m  ";
+$i = "\e[48;5;244m  ";
+$j = "\e[48;5;236m  ";
+$k = "\e[48;5;145m  ";
+$l = "\e[48;5;240m  ";
+$m = "\e[48;5;166m  ";
+$n = "\e[48;5;208m  ";
+$o = "\e[48;5;215m  ";
+$p = "\e[48;5;102m  ";
+$q = "\e[48;5;124m  ";
+$r = "\e[48;5;251m  ";
+
+$the_cow = <<EOC
+          $t
+            $t          $a        $x
+              $t      $a            $x
+                $t    $a  $b$a$c$a$c$a$x
+                      $a  $b$c$d    $x
+                      $e                $x
+                    $c  $a$e$f$e$c$e$f$e$x
+                    $c$b$a$e    $d$e    $x
+                      $g$b$c$d  $b$d$x
+                    $g  $b$c$a      $x
+                  $h$i$j  $a  $b$d  $x
+                $g$h$i$j  $g$a      $k$x
+            $g$h$g$h$k$j  $g      $j$k$i$x
+          $l$g$h$g$h  $k$j$g$h  $g$i$h$i  $x
+        $l  $g$h  $g$h  $i$m$n    $h  $i$h$i$x
+        $l$h$l$g$h$g$h  $g$m$n$o$n$h$i$h  $i$x
+        $e$h$l$g$h$g$h$g$m$n$o$n$o$n$h  $i$j$x
+        $e$j  $g$h$g$h$g$m$n  $o$n  $h  $l$j$x
+        $e$j  $g$l  $g  $m$n        $h$l$e$j$x
+        $e$j  $g    $l$g$m          $l$g$e$j$x
+      $e  $j  $g        $n          $g  $e  $j$x
+      $e  $j  $l$g    $n  $p      $n  $g$e  $j$x
+      $l$e$j$l$g  $m  $n  $k$g  $k$n    $e  $h$x
+      $l    $x$m        $n$k$h  $k$n    $l  $h$x
+      $e$h  $x$m        $n$h      $n    $l  $e$x
+      $e$j  $x  $m    $g$h      $i  $g$n$e  $j$x
+    $e  $j  $x  $m$g$l  $g$h    $i$g$l  $x$e  $j$x
+    $e  $j$x    $g  $l$h$l$g      $l$h$l$x$e  $j$x
+    $e  $j$x    $g  $l$h  $l      $i$h$l$x$e  $j$x
+    $e  $j$x    $g  $l$h        $i  $h$l$x$e  $j$x
+    $e  $j$x    $g      $h      $i  $g  $x$e  $j$x
+    $e  $j$x    $g                    $l$x$e  $j$x
+    $e  $j$x    $g    $l                $x$e  $j$x
+    $e  $j$x    $m  $g$l$h      $i  $h$n$x$e  $j$x
+    $e  $j$x    $m  $n  $g          $m$n$x$e  $j$x
+      $e$j$x    $m    $n$l          $m$n$x$e$j$x
+      $e$j$x    $g      $l$h            $x$e$j$x
+  $q$x$e$j$x    $g        $l      $g$h  $x$e$j$x
+    $q$j  $h$x  $m  $g$h$x      $g  $h$n$j  $h$x
+      $j  $h  $x$m  $n$h$x      $g  $n  $x$j$h$x
+      $j      $h$m  $n$h$x      $m  $n  $x$j$h$x
+        $j  $q$x$m  $n  $x      $m  $n  $x$j$x
+          $j  $q$m  $n  $x      $m  $n  $j$x
+                $q$m$n  $x      $m  $n  $x
+                $m$q$n  $x      $m  $n  $x
+                $m  $q$n$x      $m  $n  $x
+                $m  $n$q$x      $m  $n  $x
+                $m  $n  $q$x    $m  $n  $x
+                $m  $n  $x$q$x  $m  $n  $x
+                $m  $n  $x  $r$x$m  $n  $x
+EOC
