@@ -45,9 +45,11 @@ fi
 
 optional_stupid_packages="figlet lolcat"
 packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html \
-info2www fortune $platform_packages $optional_stupid_packages"
+ruby info2www fortune $platform_packages $optional_stupid_packages"
 
 ${package_manager} ${package} || true
+
+gem install mdless
 
 # Enable apache cgi (for man2html)
 a2enmod cgid
