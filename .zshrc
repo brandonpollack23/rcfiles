@@ -71,7 +71,7 @@ HIST_STAMPS="mm/dd/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode cargo catimg colorize command-not-found common-aliases docker docker-compose emoji)
+plugins=(git git-extras vi-mode cargo catimg colorize command-not-found common-aliases docker docker-compose emoji fzf mix tmux)
 
 # Vi Mode Setup
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
@@ -80,6 +80,9 @@ MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
 
 # Colorize setup, use ccat
 ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
+
+# fzf setup
+export FZF_BASE=$(which fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -123,6 +126,11 @@ alias :q="exit"
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
 
+################### Extra self managed plugins ###############################
+
 # Syntax highlighting
 source /home/brpol/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+# ZFS
+source /home/brpol/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
+# Alias reminding
+source /home/brpol/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh

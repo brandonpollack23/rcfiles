@@ -31,3 +31,9 @@
 [submodule "zsh-plugins/zsh-completions"]
 	path = zsh-plugins/zsh-completions
 	url = git://github.com/zsh-users/zsh-completions.git
+[submodule "zsh-plugins/zfs-completion"]
+	path = zsh-plugins/zfs-completion
+	url = https://github.com/luoxu34/zfs-completion.git
+[submodule "zsh-plugins/zsh-you-should-use"]
+	path = zsh-plugins/zsh-you-should-use
+	url = https://github.com/MichaelAquilina/zsh-you-should-use.git

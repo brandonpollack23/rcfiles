@@ -35,7 +35,7 @@ do
     fi
 done
 
-packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma"
+packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf"
 
 ${package_manager} ${package} || true
 
