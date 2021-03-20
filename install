@@ -38,12 +38,17 @@ do
     fi
 done
 
-if [ $package_manager = $apt ]; then
+if [[ -f "/etc/debian_version" ]]; then
     # Enable non free sources in Debian based os's that use it's packages.
+    echo "Debian System Detected!"
+    set +e
     CONFIGURED_SOURCES=$(grep -E -e "\<contrib\>" -e "\<non-free\>" /etc/apt/sources.list)
+    set -e
     if [ -z $CONFIGURED_SOURCES ]; then
+        echo "Configuring sources to include contrib and nonfree"
         sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
     fi
+    apt update
 
     platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree"
     export LOGIN_FORTUNES="debian-hints"
