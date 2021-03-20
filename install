@@ -23,7 +23,7 @@ esac
 echo "Installing to home directory: $HOME"
 
 declare -A osInfo;
-apt="apt-get install -y"
+apt="apt-get install -my"
 osInfo[/etc/debian_version]=$apt
 apk="apk --update add"
 osInfo[/etc/alpine-release]=$apk
@@ -45,7 +45,7 @@ fi
 
 optional_stupid_packages="figlet lolcat"
 packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html \
-ruby info2www fortune $platform_packages $optional_stupid_packages"
+ruby info2www fortune-mod $platform_packages $optional_stupid_packages"
 
 ${package_manager} ${packages} || true
 
