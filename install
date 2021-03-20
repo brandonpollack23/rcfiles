@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 
 if [[ -z $HOME ]];then
     echo "must have a home directory!"
@@ -77,3 +76,5 @@ ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
 
 chsh -s `which zsh` $CALLING_USER
+
+echo "Setup complete, please logout and log back in to access the new shell enviornment"
