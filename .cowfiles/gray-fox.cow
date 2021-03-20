@@ -1,0 +1,77 @@
+# Gray Fox (Metal Gear)
+# by Rocklee - https://www.deviantart.com/the-king-of-spriters/art/Gray-Classic-119582931
+# Generated with Charc0al's cowsay file converter http://charc0al.github.io/cowsay-files/converter
+
+$x = "\e[49m  ";          #reset color
+$t = "$thoughts ";
+$a = "\e[48;5;243m  ";
+$b = "\e[48;5;251m  ";
+$c = "\e[48;5;239m  ";
+$d = "\e[48;5;231m  ";
+$e = "\e[48;5;234m  ";
+$f = "\e[48;5;247m  ";
+$g = "\e[48;5;88m  ";
+$h = "\e[48;5;196m  ";
+$i = "\e[48;5;25m  ";
+$j = "\e[48;5;130m  ";
+$k = "\e[48;5;32m  ";
+$l = "\e[48;5;173m  ";
+$m = "\e[48;5;75m  ";
+$n = "\e[48;5;18m  ";
+$o = "\e[48;5;215m  ";
+$p = "\e[48;5;52m  ";
+$q = "\e[48;5;17m  ";
+$r = "\e[48;5;244m  ";
+
+$the_cow = <<EOC
+                    $t                          $a          $x
+                      $t                      $a  $b          $x
+                        $t                  $c$a  $b  $d        $x
+                          $t              $c    $e$a$b  $d        $x
+                            $t            $c      $a  $b$d          $x
+                              $t          $c        $a  $b$d        $x
+                                $t        $c          $a$b$d      $b$x
+                                          $c          $a$b$d$a$b$d$b$x
+                                          $e$c        $a  $d$b$d$b  $x
+                                          $e$c    $b$a$e$a$b$d  $f$c$x
+                                          $e$c    $f$d  $e$a$g$f$e$x
+                                          $g$e$c  $a  $d    $h$e$a$x
+                                        $g  $e$c  $f$b$a$d  $a$b$x
+                                      $g    $i$e$c$f$b    $a$b$a$x
+                                  $g  $j$g  $k$i$e$a$b  $a$b$a$x
+                                $g$j    $l$g$m$k$n$e$a  $b$a$x
+                              $j$l$k$m$l  $i$g$k$n  $e$a  $x
+                        $g$j$g$l$m    $k  $i        $n$g$l    $x
+                    $g$j  $g$j$o  $m$k      $i  $k$i$n$j$l$m$o$l$x
+                $j$l    $j$l$j      $i$k  $i      $n  $k  $m$o  $l$j$x
+              $j$l  $o$j$l$o  $k  $i$k$m      $k  $i      $k    $j$l$j$l  $x
+            $g$j$l  $j$o$j    $l  $k  $m            $i$k$m      $k$l    $o$l$x
+            $g$j$l$j$o$j$o  $l$j  $o$m$k        $i        $k    $m$i$l$o$l$o$x
+          $p$g$j  $g$j$o$l  $j$i  $m            $k    $i$k  $m      $j$l$o$l  $x
+          $p$g  $j$g$l  $j  $g  $k                  $i    $k        $n$j  $l$j$x
+          $p$g  $p$j      $g  $j  $i  $k    $i        $n$i  $k    $i$n$g$j    $x
+          $p  $g$p$j    $g$q    $g  $i        $n      $q$n$i        $q$g  $j  $x
+        $p        $g$j  $l$j$q$n$q                    $i$q  $n      $q$l$o$j$x
+        $p  $g  $p$g$o  $l$j$q$i$k  $q          $k    $i$k  $q      $g$l$o  $x
+        $q$n  $q$i$k$g$o$j  $n$i$k    $n  $i$k$m      $k$m  $k$q    $j$l$o  $g$x
+      $q  $n  $q$k$m    $g$j$n$i  $k  $n$i  $q$k$m          $k$q$k$n$j$g$k  $i$x
+      $q  $n$i$n$k$m  $k$i$q$n$i          $q  $k  $i      $k  $q$k$n$i  $k  $i$x
+      $q  $n$i$n$k$m$k$i  $q  $n$i  $n$k$i                      $n  $i        $x
+        $q$n$i$n$k  $i  $n$q    $n$q$n$k  $n$i    $m  $n$m$i  $n$q$n  $i    $n$x
+        $q$n  $q$i    $n$x  $q      $n$i$k$q$n$i$k  $m$n$m  $i$q  $n          $x
+        $q$n$q$n$q$i$n$q$x    $q    $n$i    $n$i$k  $n$k    $n$q    $n      $q$x
+      $q$n  $q$n$q$n$q$x        $q  $n  $i  $n  $k  $n$k  $n  $q    $n    $q$x
+      $n  $i$q  $n$q$x            $q  $n  $i$q$n  $i      $n$i$q      $n  $q$x
+    $q$n$k$n  $q  $n$x            $q    $n$i  $q$k$m  $n$m$n$k$q          $i  $x
+    $n$q$n$k$i  $k$i$x              $q$n$i$k$i  $k  $m$n$m$n$k$x$q  $i      $m$k$x
+  $c$q$i$m  $k      $x              $q$n$i$k  $i$k    $n$k  $i$x$q$n$k  $i  $k$m$k$x
+  $r$n$i$m  $k  $m$k$x              $n    $i$k$i$n$k  $n$k  $i$n$q$n$k  $m$k  $m  $i$x
+  $r$n$i$k$m$k$i$m$k$x                $n    $i  $k$n$i    $n$i$n$x$n$i$k$m$i$k$m  $k$x
+  $r$c$n$k    $i$k$i$x            $n    $i$k$n$i  $k$m$n$k$m$i$n$x$n  $k  $i  $k$m$k$x
+  $c$r$n$k$m$k$i  $x            $p$n    $k    $n$i$k$m$n$k$m$n$k$n$q$n$i$k$i  $k    $x
+    $r$n$i$m$k$i  $x            $p$g$n$i$k$m  $k$n$k  $n$k$n$k$m$n$q$n  $i  $n$i$m$k$x
+    $r$n$i$m  $i  $x            $p$g  $n$k$m    $i        $k$m  $n$q  $n  $i$n$i$m$k$i$x
+    $r$c$i$k$m$i$x              $p$g$p$j$i$k$m$n$i$k    $i$n$m$k$i$q$x$q$n      $k$m$i$x
+    $c$r$n    $q$x            $p$g  $p$j  $i$n$i$k        $i$n$i$n$g$x  $q$n          $x
+      $n$i$k  $i$x            $p$g  $p$g  $n$i  $k        $i  $n$g  $x    $q$n  $i$k  $x
+EOC

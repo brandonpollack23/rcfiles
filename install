@@ -23,10 +23,14 @@ esac
 echo "Installing to home directory: $HOME"
 
 declare -A osInfo;
-osInfo[/etc/debian_version]="apt-get install -y"
-osInfo[/etc/alpine-release]="apk --update add"
-osInfo[/etc/centos-release]="yum install -y"
-osInfo[/etc/fedora-release]="dnf install -y"
+apt="apt-get install -y"
+osInfo[/etc/debian_version]=$apt
+apk="apk --update add"
+osInfo[/etc/alpine-release]=$apk
+yum="yum install -y"
+osInfo[/etc/centos-release]=$yum
+dnf="dnf install -y"
+osInfo[/etc/fedora-release]=$dnf
 
 for f in ${!osInfo[@]}
 do
@@ -35,7 +39,13 @@ do
     fi
 done
 
-packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html info2www"
+if [ $package_manager = $apt ]; then
+    platform_packages="fortunes-debian-hints"
+fi
+
+optional_stupid_packages="figlet lolcat"
+packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html \
+info2www fortune $platform_packages $optional_stupid_packages"
 
 ${package_manager} ${package} || true
 
@@ -61,5 +71,7 @@ ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
 ln -sfn $RCFILESDIR/.vim/coc
 ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
+ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
+ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
 
 chsh -s `which zsh` $CALLING_USER
