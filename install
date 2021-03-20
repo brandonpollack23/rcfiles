@@ -68,16 +68,16 @@ RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 mkdir -p $HOME/.vim/swapdir
 mkdir -p $HOME/.vim/backupdir
-mkdir -p $HOME/.config/coc
+mkdir -p $HOME/.config
 
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
 ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
 ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
 ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
+ln -sfn $RCFILESDIR/coc $HOME/.config/coc
 ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
-ln -sfn $RCFILESDIR/.vim/coc
 ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
 ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
