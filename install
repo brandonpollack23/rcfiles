@@ -44,7 +44,7 @@ if [[ -f "/etc/debian_version" ]]; then
     set +e
     CONFIGURED_SOURCES=$(grep -E -e "\<contrib\>" -e "\<non-free\>" /etc/apt/sources.list)
     set -e
-    if [ -z $CONFIGURED_SOURCES ]; then
+    if [[ -z $CONFIGURED_SOURCES ]]; then
         echo "Configuring sources to include contrib and nonfree"
         sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
     fi
@@ -60,13 +60,11 @@ ruby info2www cowsay fortune-mod info pinfo $platform_packages $optional_stupid_
 
 ${package_manager} ${packages} || true
 
-gem install mdless
+gem install mdless || true
 
 # Enable apache cgi (for man2html)
 a2enmod cgid
 
-mkdir -p $HOME/.vim/pack/colors
-chown $CALLING_USER $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
 chown $CALLING_USER $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
