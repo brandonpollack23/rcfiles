@@ -47,7 +47,7 @@ optional_stupid_packages="figlet lolcat"
 packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html \
 ruby info2www fortune $platform_packages $optional_stupid_packages"
 
-${package_manager} ${package} || true
+${package_manager} ${packages} || true
 
 gem install mdless
 
