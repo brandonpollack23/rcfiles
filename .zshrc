@@ -132,6 +132,16 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 alias pls='sudo $(fc -ln -1)'
 alias :q="exit"
 
+if [[ -f /etc/debian_version ]]; then
+    # Apt
+    alias sau="sudo apt update"
+    alias saup="sudo apt upgrade"
+    alias sai="sudo apt install"
+    alias sar="sudo apt remove"
+    alias as="apt search"
+    alias asho="apt show"
+fi
+
 # Application default arguments
 alias mdless="mdless -I"
 
