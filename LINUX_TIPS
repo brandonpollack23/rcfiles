@@ -5,6 +5,7 @@
 * /usr/share/doc/*package*/examples/
 * dpkg -s *package* -- look through the package metadata for a site
 * dpkg -L *package* -- look through the package contents to see what docs included
+* Debian handbook /usr/share/doc/debian-handbook
 
 # Program logs
 
