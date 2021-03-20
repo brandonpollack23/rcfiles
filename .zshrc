@@ -88,9 +88,18 @@ source $ZSH/oh-my-zsh.sh
 
 #################### User configuration ###############################
 
+
 # This is my modified candy theme
-JST_DATE=$(TZ=Japan date "+%X (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~]%{$reset_color%} $(git_prompt_info)\
+function emoji_status_prompt() {
+    local LAST_EXIT_CODE=$?
+    if [[ $LAST_EXIT_CODE -eq 0 ]]; then
+        echo ""
+    else
+        echo 😡
+    fi
+}
+local JST_DATE=$(TZ=Japan date "+%X (%Z)")
+PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
