@@ -44,7 +44,7 @@ if [ $package_manager = $apt ]; then
 fi
 
 optional_stupid_packages="figlet lolcat"
-packages="git tmux zsh vim curl tree nodejs npm imagemagic chroma fzf man2html \
+packages="git tmux zsh vim curl tree nodejs npm imagemagick chroma fzf man2html \
 ruby info2www fortune-mod $platform_packages $optional_stupid_packages"
 
 ${package_manager} ${packages} || true
