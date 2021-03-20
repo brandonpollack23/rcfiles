@@ -151,8 +151,14 @@ source /home/brpol/zsh-plugins/enhancd/enhancd.plugin.zsh
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
+# WSL specific configuration
+if echo $(uname -a) | grep -q WSL; then
+    echo "WSL Environment Detected..."
+    chrome="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+fi
 
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
 echo "Welcome to $HOST!" | figlet | lolcat
 fortune | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
+
