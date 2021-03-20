@@ -61,27 +61,47 @@ gem install mdless
 a2enmod cgid
 
 mkdir -p $HOME/.vim/pack/colors
+chown $CALLING_USER $HOME/.vim/pack/colors
 mkdir -p $HOME/.vim/backupdir
+chown $CALLING_USER $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
+chown $CALLING_USER $HOME/.vim/swapdir
 
 RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+# Make directories
 mkdir -p $HOME/.vim/swapdir
+chown $CALLING_USER $HOME/.vim/swapdir
 mkdir -p $HOME/.vim/backupdir
+chown $CALLING_USER $HOME/.vim/backupdir
 mkdir -p $HOME/.config
+chown $CALLING_USER $HOME/.config
 
+# Make symbolic links into this dir
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
+chown $CALLING_USER $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
+chown $CALLING_USER $HOME/zsh-plugins
 ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
+chown $CALLING_USER $HOME/.oh-my-zsh
 ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
+chown $CALLING_USER $HOME/.vimrc
 ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
+chown $CALLING_USER $HOME/.tmux.conf
 ln -sfn $RCFILESDIR/coc $HOME/.config/coc
+chown $CALLING_USER $HOME/.config/coc
 ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
+chown $CALLING_USER $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
+chown $CALLING_USER $HOME/.vim/colors
 ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
+chown $CALLING_USER $HOME/.config/coc
 ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
+chown $CALLING_USER $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
+chown $CALLING_USER $HOME/.cowfiles
 
+# Change to zsh
 chsh -s `which zsh` $CALLING_USER
 
 echo "Setup complete, please logout and log back in to access the new shell enviornment"
