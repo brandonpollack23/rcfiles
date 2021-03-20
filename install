@@ -39,7 +39,13 @@ do
 done
 
 if [ $package_manager = $apt ]; then
-    platform_packages="fortunes-debian-hints debian-handbook"
+    # Enable non free sources in Debian based os's that use it's packages.
+    CONFIGURED_SOURCES=$(grep -E -e "\<contrib\>" -e "\<non-free\>" /etc/apt/sources.list)
+    if [ -z $CONFIGURED_SOURCES ]; then
+        sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
+    fi
+
+    platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree"
     export LOGIN_FORTUNES="debian-hints"
 fi
 
