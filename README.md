@@ -6,6 +6,12 @@ git clone --recursive https://github.com/brandonpollack23/rcfiles
 ./install
 ```
 
+## Anything else?
+It turns on modcgi in apache so you can go to:
+[man2html](http://localhost/cgi-bin/man/man2html)
+[info2www](http://localhost/cgi-bin/info2www) 
+for pretty docs
+
 
 ## What does it do
 * dependencies
