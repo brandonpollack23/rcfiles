@@ -134,7 +134,6 @@ alias :q="exit"
 
 # Application default arguments
 alias mdless="mdless -I"
-alias pinfo="pinfo --vi-keys"
 
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
