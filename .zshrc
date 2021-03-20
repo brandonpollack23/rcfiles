@@ -134,3 +134,5 @@ source /home/brpol/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.z
 source /home/brpol/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
 # Alias reminding
 source /home/brpol/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
+# better cd
+source /home/brpol/zsh-plugins/enhancd/enhancd.plugin.zsh

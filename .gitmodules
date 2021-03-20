@@ -37,3 +37,6 @@
 [submodule "zsh-plugins/zsh-you-should-use"]
 	path = zsh-plugins/zsh-you-should-use
 	url = https://github.com/MichaelAquilina/zsh-you-should-use.git
+[submodule "zsh-plugins/enhancd"]
+	path = zsh-plugins/enhancd
+	url = https://github.com/b4b4r07/enhancd.git
