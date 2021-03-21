@@ -42,3 +42,17 @@ cd zsh-plugins
 git submodule add $PLUGIN
 echo "source $PWD/$PLUGIN_PATH_TO_DOT_ZSH_FILE" > ${ZDOTDIR:-$HOME}/.zshrc
 ```
+
+## Bonus Utilities You May Want
+
+### Printing
+man cups (localhost:631)
+
+### Applications
+* pandoc -- convert markdown to pdf/html and a bunch of other formats
+    * texlive -- pdflatex comes with this and is required for the above
+    * texlive-plain-generic -- more of the above
+    * Fonts of interest: tug.org/FontCatalogue/
+        * Inconsolata mono
+        * Arev
+    * Example command: `pandoc markdown_test.md -t latex -V mainfont=arev -V monofont=inconsolata -o markdown_test.pdf`
