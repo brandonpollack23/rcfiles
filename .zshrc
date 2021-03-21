@@ -1,4 +1,4 @@
-fpath=(./zsh-plugins/zsh-completions/src $fpath)
+fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -151,13 +151,13 @@ bindkey -M viins 'jj' vi-cmd-mode
 ################### Extra self managed plugins ###############################
 
 # Syntax highlighting
-source /home/brpol/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # ZFS
-source /home/brpol/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
+source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
 # Alias reminding
-source /home/brpol/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
+source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 # better cd
-source /home/brpol/zsh-plugins/enhancd/enhancd.plugin.zsh
+source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
