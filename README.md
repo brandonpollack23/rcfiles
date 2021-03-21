@@ -6,6 +6,14 @@ git clone --recursive https://github.com/brandonpollack23/rcfiles
 ./install
 ```
 
+### Bonus for administrators
+If you want every user account created to default use these settings/configs/etc
+you can run
+```
+install_skel
+```
+which copies the configs as is to skel
+
 ## Anything else?
 It turns on modcgi in apache so you can go to:
 [man2html](http://localhost/cgi-bin/man/man2html)
