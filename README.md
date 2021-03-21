@@ -49,6 +49,10 @@ echo "source $PWD/$PLUGIN_PATH_TO_DOT_ZSH_FILE" > ${ZDOTDIR:-$HOME}/.zshrc
 man cups (localhost:631)
 
 ### Applications
+* Some kind of namespace utils:
+    * Debian: nsutils -- dig/nslookup
+    * Redhat: bind-utils -- dig/nslookup
+    * traceroute -- find traceroute lol
 * pandoc -- convert markdown to pdf/html and a bunch of other formats
     * texlive -- pdflatex comes with this and is required for the above
     * texlive-plain-generic -- more of the above
