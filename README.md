@@ -13,6 +13,11 @@ you can run
 install_skel
 ```
 which copies the configs as is to skel
+and
+```
+update_root_prefs
+```
+which copies the current user's prefs over
 
 ## Anything else?
 It turns on modcgi in apache so you can go to:

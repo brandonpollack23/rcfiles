@@ -1,0 +1,15 @@
+#!/bin/bash
+[ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
+
+cp -RL $HOME/.zshrc /root/
+cp -RL $HOME/.oh-my-zsh /root/
+cp -RL $HOME/zsh-plugins /root/
+cp -RL $HOME/.tmux.conf /root/
+cp -RL $HOME/.vimrc /root/
+cp -RL $HOME/.vim /root/
+cp -RL $HOME/.cowfiles /root/
+cp -RL $HOME/.cowrc /root/
+
+chown -R root /root
+
+chsh -s `which zsh` root
