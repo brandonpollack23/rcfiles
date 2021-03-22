@@ -161,6 +161,7 @@ source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
+export EDITOR=vim
 # WSL specific configuration
 if echo $(uname -a) | grep -q WSL; then
     echo "WSL Environment Detected..."
