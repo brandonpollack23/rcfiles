@@ -40,3 +40,6 @@
 [submodule "zsh-plugins/enhancd"]
 	path = zsh-plugins/enhancd
 	url = https://github.com/b4b4r07/enhancd.git
+[submodule "zsh-plugins/zsh-history-substring-search"]
+	path = zsh-plugins/zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search

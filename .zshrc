@@ -164,6 +164,8 @@ source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
 source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 # better cd
 source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
+# better history search
+source $HOME/zsh-plugins/zsh-history-substring-search
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
