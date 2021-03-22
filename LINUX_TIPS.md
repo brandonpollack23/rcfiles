@@ -5,6 +5,8 @@
 * /usr/share/doc/*package*/examples/
 * dpkg -s *package* -- look through the package metadata for a site
 * dpkg -L *package* -- look through the package contents to see what docs included
+* apt source *package* -- Lots of times you can get more handbooks with the source (bash or emacs for example)
+* dpkg-src also exists similar to dpkg
 * Debian handbook /usr/share/doc/debian-handbook
 
 # Program logs
