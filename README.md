@@ -55,7 +55,7 @@ man cups (localhost:631)
 
 ### Applications
 * Network/DNS/Internet utils
-    * Debian: nsutils -- dig/nslookup
+    * Debian: dnsutils -- dig/nslookup
     * Redhat: bind-utils -- dig/nslookup
     * traceroute -- find traceroute lol
     * nmap -- good enough for trinity!
