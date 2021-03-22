@@ -104,6 +104,9 @@ chown $CALLING_USER $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
 chown $CALLING_USER $HOME/.cowfiles
 
+# Load rebuild documents in vim
+vim +"helptags ALL"
+
 # Change to zsh
 chsh -s `which zsh` $CALLING_USER
 
