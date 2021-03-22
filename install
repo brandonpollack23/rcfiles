@@ -93,8 +93,6 @@ ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
 chown $CALLING_USER $HOME/.tmux.conf
 ln -sfn $RCFILESDIR/.gitconfig $HOME/.gitconfig
 chown $CALLING_USER $HOME/.gitconfig
-ln -sfn $RCFILESDIR/coc $HOME/.config/coc
-chown $CALLING_USER $HOME/.config/coc
 ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
 chown $CALLING_USER $HOME/.vim/pack
 ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
