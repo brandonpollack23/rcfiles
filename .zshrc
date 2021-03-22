@@ -149,10 +149,6 @@ alias mdless="mdless -I"
 
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
-bindkey '^p' history-substring-search-up
-bindkey '^n' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
 
 ################### Extra self managed plugins ###############################
 
@@ -166,6 +162,10 @@ source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 # better history search
 source $HOME/zsh-plugins/zsh-history-substring-search
+bindkey '^p' history-substring-search-up
+bindkey '^n' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
