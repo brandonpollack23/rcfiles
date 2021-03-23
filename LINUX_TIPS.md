@@ -13,6 +13,7 @@
 On Debian the rcfiles installer will get devscripts which includes a lot of useful tools like
 * whodepends
 * mk-build-deps
+    - use it by going into the extracted package and calling `sudo mk-build-deps -i`
 
 # Program logs
 
