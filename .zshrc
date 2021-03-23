@@ -71,7 +71,23 @@ HIST_STAMPS="mm/dd/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-extras vi-mode sudo cargo catimg colorize command-not-found common-aliases docker docker-compose emoji fzf mix tmux)
+plugins=(
+    cargo
+    catimg
+    colorize
+    command-not-found
+    common-aliases
+    docker
+    docker-compose
+    emoji
+    fzf
+    git
+    git-extras
+    mix
+    sudo
+    tmux
+    vi-mode
+)
 
 # Vi Mode Setup
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
@@ -133,6 +149,7 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
+alias vzsh="vim ~/.zshrc"
 
 if [[ -f /etc/debian_version ]]; then
     # Apt
