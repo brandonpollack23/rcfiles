@@ -55,7 +55,10 @@ if [[ -f "/etc/debian_version" ]]; then
     # Enable apache cgi (for man2html)
     # a2enmod is a debian-ism, it'll have to be done manually on other distros.
     # TODO do it on other distros
-    platform_commands="a2enmod cgid"
+    if [ ! -d /google ]; then
+        # work laptop is debian but not really up to date so there are some exceptions.
+        platform_commands="a2enmod cgid"
+    fi
 
     export LOGIN_FORTUNES="debian-hints"
 fi
@@ -69,7 +72,7 @@ ${package_manager} ${packages} || true
 gem install mdless || true
 
 # Run any platform specific commands that
-# $platform_commands
+$platform_commands
 
 mkdir -p $HOME/.vim/backupdir
 chown $CALLING_USER $HOME/.vim/backupdir

@@ -5,6 +5,8 @@ fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+export PATH="/usr/games/:$PATH"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -201,7 +203,7 @@ fi
 
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
-if [[ -f /etc/debian_version ]]; then
+if [ -f /etc/debian_version ] && [ ! -d /google ]; then
     PLATFORM_LOGIN_FORTUNES="debian-hints"
 fi
 
