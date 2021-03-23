@@ -153,6 +153,7 @@ alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
 alias vzsh="vim ~/.zshrc"
+alias vimrc="vim ~/.vimrc"
 
 if [[ -f /etc/debian_version ]]; then
     # Apt

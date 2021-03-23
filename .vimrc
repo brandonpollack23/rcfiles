@@ -19,6 +19,7 @@ set shiftwidth=4
 set softtabstop=4
 set backspace=indent,eol,start "be able to backspace indents, lines, and start
 filetype indent on
+filetype plugin on
 set smartindent
 
 " Utils
