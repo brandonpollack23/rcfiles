@@ -9,6 +9,11 @@
 * dpkg-src also exists similar to dpkg
 * Debian handbook /usr/share/doc/debian-handbook
 
+# Getting Package Dependencies
+On Debian the rcfiles installer will get devscripts which includes a lot of useful tools like
+* whodepends
+* mk-build-deps
+
 # Program logs
 
 ## How it is done
