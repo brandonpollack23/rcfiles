@@ -178,7 +178,7 @@ source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 # better cd
 source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 # better history search
-source $HOME/zsh-plugins/zsh-history-substring-search
+source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 bindkey '^p' history-substring-search-up
 bindkey '^n' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
