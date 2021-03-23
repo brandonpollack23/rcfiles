@@ -1,3 +1,4 @@
+#!/bin/zsh
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -168,6 +169,14 @@ alias mdless="mdless -I"
 
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
+
+# Override date to print both EST and JST
+function dates() {
+    echo "CTZ: $(date)\n"
+    echo "JST: $(TZ=Asia/Tokyo date)\n"
+    echo "PST: $(TZ=America/Los_Angeles date)\n"
+    echo "EST: $(TZ=America/New_York date)"
+}
 
 ################### Extra self managed plugins ###############################
 
