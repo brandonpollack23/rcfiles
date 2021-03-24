@@ -68,3 +68,4 @@ man cups (localhost:631)
         * Inconsolata mono
         * Arev
     * Example command: `pandoc markdown_test.md -t latex -V mainfont=arev -V monofont=inconsolata -o markdown_test.pdf`
+* netselect-apt -- find out the "best" mirror and auto switch!
