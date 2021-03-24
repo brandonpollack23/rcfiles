@@ -50,6 +50,7 @@ controls services/units and can query info about them.
 `systemctl status UNIT.NAME` -- even more info, docs info, unit directory, etc, even some logs
 `systemctl start/stop SERVICE.NAME` -- start or stop a service (duh)
 `systemctl enable/disable SERVICE.NAME` -- enable/disable a service (at boot)
+`systemd-delta` -- see overridden configurations in `/run` (ephermeral) or by user/maintainers in `/etc/systemd/system` or `/usr/lib/system`
 
 ### jourrnalctl
 communicates with journald
