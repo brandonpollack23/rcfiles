@@ -1,5 +1,6 @@
 # Finding Help (Debian biased)
 * man pages
+    * If you wanna see these in a browser, install man2html, turn on cgi, and start apache
 * `(p)info`
 * `/usr/share/doc/*package*/README`
 * `/usr/share/doc/*package*/examples/`
