@@ -75,6 +75,13 @@ communicates with journald
 `journalctl -u SERVICE.NAME` -- vomits out all logs for a specific service
 `journalctl -f` -- keeps following new messages, can be combined with others (like `tail -f FILE`)
 
+### Timers
+Yeah systemd has timers like cron, but it can do some cool stuff like:
+* be seperated
+* respond to system events or other services in systemd
+    * do stuff at boot after a certain time 
+    * read the `man systemd.timer`
+
 # ssh
 `ssh-keygen -t rsa`
 ``ssh-copy-id SERVER`
