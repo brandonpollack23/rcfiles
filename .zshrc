@@ -88,6 +88,7 @@ plugins=(
     git-extras
     mix
     sudo
+    systemd
     tmux
     vi-mode
 )
