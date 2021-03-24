@@ -97,11 +97,12 @@ VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
 
-# Colorize setup, use ccat
-ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
-
 # fzf setup
 export FZF_BASE=$(which fzf)
+
+# ccat setup
+export ZSH_COLORIZE_STYLE=monokai
+alias cat=ccat
 
 source $ZSH/oh-my-zsh.sh
 
@@ -192,6 +193,9 @@ source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 # better history search
 source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+################### Extra self managed Plugin configurations ###############################
+# History search
 bindkey '^p' history-substring-search-up
 bindkey '^n' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
