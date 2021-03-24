@@ -57,3 +57,17 @@ communicates with journald
 `journalctl` -- vomits out all logs since boot
 `journalctl -u SERVICE.NAME` -- vomits out all logs for a specific service
 `journalctl -f` -- keeps following new messages, can be combined with others (like `tail -f FILE`)
+
+# ssh
+`ssh-keygen -t rsa`
+``ssh-copy-id SERVER`
+
+When using it on a client, make sure you activate ssh-agent
+`eval $(ssh-agent)`
+
+## X11 forwarding
+turn it on by editing the ssh config
+`/etc/ssh/sshd_config`
+and adding
+`X11Forwarding`
+and connecting with the `-X` flag
