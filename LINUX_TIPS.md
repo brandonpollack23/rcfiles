@@ -1,6 +1,6 @@
 # Finding Help (Debian biased)
 * man pages
-    * If you wanna see these in a browser, install man2html, turn on cgi, and start apache
+    * If you wanna see these in a browser, install man2html, turn on cgi, and start apache.  This works by calling into cgi by default in `/lib/` (with the explicit subpath `cgi-bin/man/man2html`)
 * `(p)info`
 * `/usr/share/doc/*package*/README`
 * `/usr/share/doc/*package*/examples/`
