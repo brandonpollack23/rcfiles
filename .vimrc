@@ -36,6 +36,27 @@ set splitbelow
 imap jj <Esc>
 map <Leader>f :NERDTreeToggle<CR>
 
+"Plugin configurations
+"markdown
+"start with :MarkdownPreviewToggle
+map <Leader>m :MarkdownPreviewToggle<CR>
+let g:mkdp_auto_close = 1
+let g:mkdp_echo_preview_url = 1
+let g:mkdp_open_to_the_world = 1
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0
+    \ }
+let g:mkdp_filetypes = ['md', 'markdown']
 
 " Notes
 " Completion, turn on CoC
