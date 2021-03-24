@@ -95,4 +95,5 @@ Debian Manual 9.2.1.3, TLDR: you can forward a port via ssh
 # GUIS for administration
 * webmin -- first in the debian manual and mentioned all throughout reddit.com/r/homelab, must be good.  I'd bet Trinity uses it, too
     * Unfortunately you have to get this one manually from their website.
+* RHEL/systemd reccomend cockpit and people say its better.
 * debconf -- configuring packages.  `dpkg-reconfigure`
