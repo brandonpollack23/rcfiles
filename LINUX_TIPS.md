@@ -71,3 +71,6 @@ turn it on by editing the ssh config
 and adding
 `X11Forwarding`
 and connecting with the `-X` flag
+
+## Port forwarding
+Debian Manual 9.2.1.3, TLDR: you can forward a port via ssh
