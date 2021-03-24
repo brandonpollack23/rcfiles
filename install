@@ -115,6 +115,7 @@ chown $CALLING_USER $HOME/.cowfiles
 
 # Load rebuild documents in vim
 vim +"helptags ALL" +":exit"
+vim +"call mkdp#util#install()" +":exit"
 
 # Change to zsh
 chsh -s `which zsh` $CALLING_USER
