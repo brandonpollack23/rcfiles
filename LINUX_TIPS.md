@@ -45,13 +45,28 @@ analog, awstats, webalizer, etc
 ### systemctl
 controls services/units and can query info about them.
 
+>Note, you can glob {}, etc in systemd and do multiple commands at once like:
+>```
+>systemctl {start,enable} apache2.service
+>```
+>HOW COOL IS THAT??
+
 `systemctl` -- controls active services, alone it just lists them
 `systemctl status` -- nice cgrouped view of all services, try to spot the pager this is listed in!
 `systemctl status UNIT.NAME` -- even more info, docs info, unit directory, etc, even some logs
 `systemctl start/stop SERVICE.NAME` -- start or stop a service (duh)
 `systemctl enable/disable SERVICE.NAME` -- enable/disable a service (at boot)
-`systemctl -t (service|...)` -- list relevant info pertaining to query (eg list all running services)
+`systemctl -t (service|...)` -- list RUNNING relevant units pertaining to query (eg list all running services)
+`systemctl --failed` -- list FAILED units
+`systemctl list-unit-files -t (service|...)` -- list all INSTALLED units pertaining to query
 `systemd-delta` -- see overridden configurations in `/run` (ephermeral) or by user/maintainers in `/etc/systemd/system` or `/usr/lib/system`
+
+### Run Targets
+Essentially a barrier, like leves in init
+you can
+* `systemctl set-default TARGETNAME`
+* `systemctl get-default`
+* `systemctl isolate` -- This one changes between them (eg if your default is to go to everything before graphical, you can step up to graphical target with this command
 
 ### jourrnalctl
 communicates with journald
