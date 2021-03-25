@@ -157,6 +157,9 @@ alias fuck=pls
 alias :q="exit"
 alias vzsh="vim ~/.zshrc"
 alias vimrc="vim ~/.vimrc"
+# git (commit) amend  no edit
+alias gane="gca --amend --no-edit"
+alias gpf="gp -f"
 
 if [[ -f /etc/debian_version ]]; then
     # Apt
