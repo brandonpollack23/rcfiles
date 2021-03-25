@@ -117,6 +117,11 @@ chown $CALLING_USER $HOME/.cowfiles
 vim +"helptags ALL" +":exit"
 vim +"call mkdp#util#install()" +":exit"
 
+# Add cronjobs I like
+CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
+NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
+echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
+
 # Change to zsh
 chsh -s `which zsh` $CALLING_USER
 
