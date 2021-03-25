@@ -103,6 +103,7 @@ export FZF_BASE=$(which fzf)
 
 # ccat setup
 export ZSH_COLORIZE_STYLE=monokai
+alias catraw=/bin/cat
 alias cat=ccat
 
 source $ZSH/oh-my-zsh.sh
