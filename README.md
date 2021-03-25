@@ -32,7 +32,12 @@ for pretty docs
 * vim
 * tmux
 * zsh
-* tree
+* systemd user stuff (like timers)
+
+## About systemd directory
+Sorry if you dont have systemd, manually disable that part of the script I guess, but I like systemd so i doubt it'll be an issue for me
+the files are templated to be replaced with $USER by sed in the install script.  delims are !~USER~!
+There is a way to make this more generic with awk, but its greek to me, see [here](https://stackoverflow.com/questions/39044603/sed-use-1-to-get-value-of-environment-variable)
 
 ## How to add vim plugins
 ```sh

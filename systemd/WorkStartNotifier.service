@@ -1,0 +1,12 @@
+[Unit]
+Description=Displays a wall notification when triggered.
+Wants=WorkStartNotifier.timer
+
+[Service]
+Type=oneshot
+Environment="TZ=Asia/Tokyo"
+# Notify all terminals of the time.
+ExecStart= /bin/bash -c "echo \"\n\n~~~ANNOUNCMENT~~~\n\nIt's $(date +'%%A %%I:%%M %%Z'), people will start trickling in...\" | tee $(find /dev/pts -type c -user !~USER~! | grep -E \"[0-9]+\" | tr '\n' ' ')"
+
+[Install]
+WantedBy=multi-user.target

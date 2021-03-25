@@ -7,6 +7,23 @@ fi
 
 echo "$(whoami)"
 
+RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# First do this user tasks
+if [ "$UID" -ne 0 ]; then
+    # Add cronjobs I like
+    # legacy cron style, uncomment for cron instead
+    #CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
+    #NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
+    #echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
+    mkdir -p $HOME/.config/systemd/user
+    for systemd_file in $RCFILESDIR/systemd/* ; do
+        sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
+        # Run systemctl --user enable as the user
+        systemctl --user enable --now $(basename $systemd_file)
+    done
+fi
+
 [ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
 
 getopts ":u:" u
@@ -79,8 +96,6 @@ chown $CALLING_USER $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
 chown $CALLING_USER $HOME/.vim/swapdir
 
-RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
 # Make directories
 mkdir -p $HOME/.vim/swapdir
 chown $CALLING_USER $HOME/.vim/swapdir
@@ -90,6 +105,7 @@ mkdir -p $HOME/.config
 chown $CALLING_USER $HOME/.config
 
 # Make symbolic links into this dir
+# TODO move this to non priveleged part top of file
 ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
 chown $CALLING_USER $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
@@ -117,12 +133,8 @@ chown $CALLING_USER $HOME/.cowfiles
 vim +"helptags ALL" +":exit"
 vim +"call mkdp#util#install()" +":exit"
 
-# Add cronjobs I like
-CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
-NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
-echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
-
 # Change to zsh
 chsh -s `which zsh` $CALLING_USER
 
 echo "Setup complete, please logout and log back in to access the new shell enviornment"
+echo "Consider running ./update_root_prefs as well if you are the system administrator"
