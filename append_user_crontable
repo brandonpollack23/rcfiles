@@ -1,0 +1,6 @@
+# 9AM weekdays in JST let me know people are coming to work.
+# This is an example of how to do cross timezone crons, you can use date to 
+# match the date in whatever timezone you set for bash here.
+SHELL=/bin/bash
+TZ="Asia/Tokyo"
+0 9 * * 1-5 [ "$(date +\%H" == "09" ] && wall "It's 9:00 AM JST, people will start trickling in..."
