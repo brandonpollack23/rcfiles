@@ -6,7 +6,7 @@ fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="/usr/games/:$PATH"
+export PATH="$HOME/bin:/usr/games/:$PATH"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
