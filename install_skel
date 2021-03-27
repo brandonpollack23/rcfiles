@@ -9,6 +9,5 @@ cp -rL .oh-my-zsh /etc/skel
 cp -rL .tmux.conf /etc/skel
 cp -rL .vimrc /etc/skel
 cp -rL .vim /etc/skel
-cp -rL coc /etc/skel/.config
 cp -rL .cowrc /etc/skel/
 cp -rL .cowfiles /etc/skel/
