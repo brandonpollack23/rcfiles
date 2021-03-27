@@ -221,6 +221,12 @@ if echo $(uname -a) | grep -q WSL; then
     }
 fi
 
+# source any machine specific stuff
+if [[ -f $HOME/.zshrc_extras ]]; then
+    echo "Sourcing zshrc extras..."
+    source $HOME/.zshrc_extras
+fi
+
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
 if [ -f /etc/debian_version ] && [ ! -d /google ]; then
