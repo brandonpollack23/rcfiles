@@ -75,7 +75,8 @@ if [[ -f "/etc/debian_version" ]]; then
     fi
     apt update
 
-    platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree devscripts"
+    platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree devscripts etherwake wakeonlan apt-file"
+    # future yum stuff: net-tools
 
     # Enable apache cgi (for man2html)
     # a2enmod is a debian-ism, it'll have to be done manually on other distros.
