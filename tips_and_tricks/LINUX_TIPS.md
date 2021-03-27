@@ -105,3 +105,10 @@ Debian Manual 9.2.1.3, TLDR: you can forward a port via ssh
     * Unfortunately you have to get this one manually from their website.
 * RHEL/systemd reccomend cockpit and people say its better.
 * debconf -- configuring packages.  `dpkg-reconfigure`
+
+# Wake On Lan
+
+1) install the right tools to do it (wakeonlan).
+2) gotta know the mac address
+3) `wakeonlan -i IP MAC`
+[accross the webz](https://wiki.archlinux.org/index.php/Wake-on-LAN#Across_the_internet)
