@@ -77,7 +77,8 @@ if [[ -f "/etc/debian_version" ]]; then
         echo "Configuring sources to include contrib and nonfree"
         sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
     fi
-    if [[ ! -f /etc/apt/sources.list.d/buster-backports.list ]]; then
+    if [[ ! -f /etc/apt/sources.list.d/buster-backports.list ]] && [[ "$(cat /etc/apt/sources.list | grep buster)" != "" ]]; then
+        echo "~~~Installing buster backports~~~"
         echo 'deb http://deb.debian.org/debian buster-backports main contrib non-free' > /etc/apt/sources.list.d/buster-backports.list
     fi
     apt update
