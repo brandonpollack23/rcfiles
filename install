@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if $(uname -a | grep -q WSL); then
+    echo "WSL system detected"
+    IS_WSL="true"
+fi
+
 if [[ -z $HOME ]];then
     echo "must have a home directory!"
 fi
@@ -16,12 +21,15 @@ if [ "$UID" -ne 0 ]; then
     #CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
     #NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
     #echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
-    mkdir -p $HOME/.config/systemd/user
-    for systemd_file in $RCFILESDIR/systemd/* ; do
-        sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
-        # Run systemctl --user enable as the user
-        systemctl --user enable --now $(basename $systemd_file)
-    done
+    if [[ -z $IS_WSL ]]; then
+        echo "Setting up systemd timers"
+        mkdir -p $HOME/.config/systemd/user
+        for systemd_file in $RCFILESDIR/systemd/* ; do
+            sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
+            # Run systemctl --user enable as the user
+            systemctl --user enable --now $(basename $systemd_file)
+        done
+    fi
 fi
 
 [ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
