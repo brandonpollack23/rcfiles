@@ -99,7 +99,7 @@ fi
 
 optional_stupid_packages="figlet lolcat"
 packages="git tmux zsh vim curl tree nodejs npm imagemagick chroma fzf man2html \
-ruby info2www cowsay fortune-mod info pinfo apache2 nfs-common $platform_packages $optional_stupid_packages"
+ruby info2www cowsay fortune-mod info pinfo apache2 nfs-common markdown $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
 
