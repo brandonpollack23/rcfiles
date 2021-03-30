@@ -112,3 +112,17 @@ Debian Manual 9.2.1.3, TLDR: you can forward a port via ssh
 2) gotta know the mac address
 3) `wakeonlan -i IP MAC`
 [accross the webz](https://wiki.archlinux.org/index.php/Wake-on-LAN#Across_the_internet)
+
+# update-alternatives
+to see available alternatives for a binary
+`update-alternatives --query`
+
+to add one
+`update-alternatives --install ALTERNATIVE_LINK_PATH ALTERNATIVE_NAME NEW_EXECUTABLE_PATH PRIORITY`
+
+the alternative is usually linked to by the `/usr/bin` directory or some built in. That never changes, the alternatives does.
+
+ALTERNATIVE_LINK_PATH in debian starts as `/etc/alternatives/*`
+
+you can change which alternative dynamically
+`update-alternatives --config ALTERNATIVE_NAME`
