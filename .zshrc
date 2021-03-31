@@ -160,6 +160,8 @@ alias vimrc="vim ~/.vimrc"
 # git (commit) amend  no edit
 alias gane="gca --amend --no-edit"
 alias gpf="gp -f"
+# wireguard aliases
+alias wgup="sudo wg-quick up wg0"
 
 if [[ -f /etc/debian_version ]]; then
     # Apt
