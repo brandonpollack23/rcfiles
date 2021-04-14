@@ -22,9 +22,6 @@
 [submodule ".vim/pack/brpol/start/vim-matchit"]
 	path = .vim/pack/brpol/start/vim-matchit
 	url = https://github.com/adelarsq/vim-matchit.git
-[submodule ".vim/pack/brpol/opt/coc.nvim"]
-	path = .vim/pack/brpol/opt/coc.nvim
-	url = https://github.com/neoclide/coc.nvim
 [submodule ".vim/pack/brpol/start/nerdcommenter"]
 	path = .vim/pack/brpol/start/nerdcommenter
 	url = https://github.com/preservim/nerdcommenter.git
@@ -46,3 +43,6 @@
 [submodule ".vim/pack/brpol/start/markdown-preview.nvim"]
 	path = .vim/pack/brpol/start/markdown-preview.nvim
 	url = https://github.com/iamcco/markdown-preview.nvim.git
+[submodule ".vim/pack/brpol/start/coc.nvim"]
+	path = .vim/pack/brpol/start/coc.nvim
+	url = https://github.com/neoclide/coc.nvim.git
