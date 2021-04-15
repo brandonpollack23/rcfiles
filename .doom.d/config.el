@@ -55,6 +55,9 @@
 
 ;; Begin Custom Config
 
+;; Always confirm (even on splash and other not "real" buffers)
+(setq confirm-kill-emacs 'y-or-n-p)
+
 ;; imap mappings
 (use-package! evil-escape
   :init
