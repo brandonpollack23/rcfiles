@@ -115,10 +115,12 @@ if [ -d $HOME/.emacs.d ]; then
     echo "Emacs.d already exists, skipping DOOM setup"
 else
     echo "No Emacs configuration, Ripping and Tearing your config...(Installing Doom Emacs)"
-    runuser -u $CALLING_USER git clone https://github.com/hlissner/doom-emacs $HOME/.emacs.d
-    yes | runuser -u $CALLING_USER $HOME/.emacs.d/bin/doom install
+    runuser -u $CALLING_USER -- git clone https://github.com/hlissner/doom-emacs $HOME/.emacs.d
+    yes | runuser -u $CALLING_USER -- $HOME/.emacs.d/bin/doom install
 fi
-runuser -u -sfn $RCFILESDIR/.doom.d $HOME/.doom.d
+echo "Linking DOOMDIR"
+rm -rf $HOME/.doom.d
+runuser -u $CALLING_USER -- ln -sfn $RCFILESDIR/.doom.d $HOME/.doom.d
 
 mkdir -p $HOME/.vim/backupdir
 chown $CALLING_USER $HOME/.vim/backupdir
