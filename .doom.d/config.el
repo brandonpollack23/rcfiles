@@ -56,9 +56,11 @@
 ;; Begin Custom Config
 ;; Bindings reference: https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
 
-;; TODO turn off horizontal scroll
 ;; TODO turn on wrap
 ;; TODO backup dir stuff
+;; TODO Column highlight
+(setq-default truncate-lines nil)
+(setq-default word-wrap t)
 
 ;; Always confirm (even on splash and other not "real" buffers)
 (setq confirm-kill-emacs 'y-or-n-p)
