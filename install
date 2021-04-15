@@ -98,7 +98,7 @@ if [[ -f "/etc/debian_version" ]]; then
 fi
 
 optional_stupid_packages="figlet lolcat"
-packages="runuser git tmux zsh emacs fd-find ripgrep core-utils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
+packages="runuser git tmux zsh emacs fd-find ripgrep cmigemo core-utils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
 ruby info2www cowsay fortune-mod info pinfo apache2 nfs-common $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
