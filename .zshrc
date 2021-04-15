@@ -121,7 +121,7 @@ function emoji_status_prompt() {
         echo 😡
     fi
 }
-local JST_DATE=$(TZ=Japan date "+%X (%Z)")
+local JST_DATE=$(TZ=Asia/Tokyo date "+%X (%Z)")
 PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
