@@ -54,14 +54,30 @@
 ;; they are implemented.
 
 ;; Begin Custom Config
+;; Bindings reference: https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%2Bevil-bindings.el
 
 ;; Always confirm (even on splash and other not "real" buffers)
 (setq confirm-kill-emacs 'y-or-n-p)
 
 ;; imap mappings
+;; TODO make it so it can be slower
 (use-package! evil-escape
   :init
+  (setq evil-escape-delay 0.5)
   (setq evil-escape-key-sequence "jj"))
+
+;; tab bar remaps
+(tab-bar-mode t)
+(map! :leader
+      (:prefix ("r" . "TabMode")
+       :desc "New Tab" :n "n" #'tab-bar-new-tab
+       :desc "Close Tab" :n "d" #'tab-bar-close-tab
+       :desc "Go to Tag by Name" :n "r" #'tab-bar-switch-to-tab
+       :desc "Next Tab" :n "t" #'tab-bar-switch-to-next-tab
+       :desc "Previous Tab" :n "T" #'tab-bar-switch-to-prev-tab
+       :desc "Rename Tab" :n "," #'tab-bar-rename-tab
+       ;; TODO tab-bar-move-tab-to with prompt
+       ))
 
 ;; WSL Crap
 ;; Determine the specific system type.
