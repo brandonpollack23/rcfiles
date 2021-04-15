@@ -59,6 +59,9 @@
 ;; Always confirm (even on splash and other not "real" buffers)
 (setq confirm-kill-emacs 'y-or-n-p)
 
+;; Evil emacs mode cursor tells me it isn't evil
+(setq evil-emacs-state-cursor '("purple" box))
+
 ;; imap mappings
 ;; TODO make it so it can be slower
 (use-package! evil-escape
