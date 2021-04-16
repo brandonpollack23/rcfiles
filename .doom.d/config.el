@@ -69,13 +69,18 @@
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 
-
 (setq
  ;; Evil emacs mode cursor tells me it isn't evil
  evil-emacs-state-cursor '("purple" box)
  ;; Always confirm (even on splash and other not "real" buffers)
  confirm-kill-emacs 'y-or-n-p
  projectile-project-search-path '("$HOME/src"))
+
+;; Ace Window config
+(custom-set-faces!
+  '(aw-leading-char-face
+    :foreground "white" :background "red"
+    :weight bold :height 2.5 :box (:line-width 7 :color "red")))
 
 ;; imap mappings
 (use-package! evil-escape
