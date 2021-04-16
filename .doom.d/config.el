@@ -62,11 +62,13 @@
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 
-;; Always confirm (even on splash and other not "real" buffers)
-(setq confirm-kill-emacs 'y-or-n-p)
 
-;; Evil emacs mode cursor tells me it isn't evil
-(setq evil-emacs-state-cursor '("purple" box))
+(setq
+ ;; Evil emacs mode cursor tells me it isn't evil
+ evil-emacs-state-cursor '("purple" box)
+ ;; Always confirm (even on splash and other not "real" buffers)
+ confirm-kill-emacs 'y-or-n-p
+ projectile-project-search-path '("$HOME/src"))
 
 ;; imap mappings
 (use-package! evil-escape
@@ -75,7 +77,7 @@
   (setq evil-escape-key-sequence "jj"))
 
 ;; Use emacs navigation in info mode
-(evil-set-initial-state 'info-mode 'emacs)
+(evil-set-initial-state 'Info-mode 'emacs)
 
 ;; WSL Crap
 ;; Determine the specific system type.
