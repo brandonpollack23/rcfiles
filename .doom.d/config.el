@@ -53,7 +53,14 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; Begin Custom Config
+;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Custom Config ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+;; Japanese input
+;; 日本語！
+(use-package! mozc
+  :defer t
+  :custom (mozc-candidate-style 'echo-area))
+
 ;; Bindings reference:
 ;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
 
