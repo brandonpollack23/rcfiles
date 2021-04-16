@@ -84,7 +84,8 @@
   (setq evil-escape-key-sequence "jj"))
 
 ;; Use emacs navigation in info mode
-(evil-set-initial-state 'Info-mode 'emacs)
+;; NOTE this sucked, it's easer to just C-z when I need it.
+;; (evil-set-initial-state 'Info-mode 'emacs)
 
 ;; WSL Crap
 ;; Determine the specific system type.
