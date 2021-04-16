@@ -74,6 +74,9 @@
   (setq evil-escape-delay 0.5)
   (setq evil-escape-key-sequence "jj"))
 
+;; Use emacs navigation in info mode
+(evil-set-initial-state 'info-mode 'emacs)
+
 ;; WSL Crap
 ;; Determine the specific system type.
  ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
