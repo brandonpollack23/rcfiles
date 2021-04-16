@@ -54,11 +54,11 @@
 ;; they are implemented.
 
 ;; Begin Custom Config
-;; Bindings reference: https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
+;; Bindings reference:
+;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
 
-;; TODO turn on wrap
-;; TODO backup dir stuff
-;; TODO Column highlight
+;; Enable word wrapping and don't scroll horizontally
+(auto-fill-mode 1)
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 
