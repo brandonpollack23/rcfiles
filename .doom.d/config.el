@@ -69,6 +69,11 @@
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 
+;; Help window embiggening (default in DOOM is .35)
+(set-popup-rules!
+  '(("^\\*\\([Hh]elp\\|Apropos\\)"
+       :slot 2 :vslot -8 :size 0.45 :select t)))
+
 (setq
  ;; Evil emacs mode cursor tells me it isn't evil
  evil-emacs-state-cursor '("purple" box)
@@ -81,6 +86,14 @@
   '(aw-leading-char-face
     :foreground "white" :background "red"
     :weight bold :height 2.5 :box (:line-width 7 :color "red")))
+
+;; Info Mode better font
+ (defun my-buffer-face-mode-variable ()
+   "Set font to a variable width (proportional) fonts in current buffer"
+   (interactive)
+   (setq buffer-face-mode-face '(:family "DejaVuSans" :height 150 :width semi-condensed))
+   (buffer-face-mode))
+(add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
 
 ;; imap mappings
 (use-package! evil-escape
