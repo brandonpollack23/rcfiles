@@ -12,6 +12,9 @@
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+;; Custom logo!
+(setq fancy-splash-image "~/.doom.d/logo.png")
+
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
