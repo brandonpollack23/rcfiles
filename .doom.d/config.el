@@ -61,6 +61,19 @@
   :defer t
   :custom (mozc-candidate-style 'echo-area))
 
+;; mu4e email setup
+(setq +mu4e-backend 'offlineimap)
+(setq mu4e-update-interval (* 60 2))
+(set-email-account! "Gmail"
+ '((mu4e-sent-folder       . "/Gmail/Sent Mail")
+    (mu4e-drafts-folder     . "/Gmail/Drafts")
+    (mu4e-trash-folder      . "/Gmail/Trash")
+    (mu4e-refile-folder     . "/Gmail/All Mail")
+    (smtpmail-smtp-user     . "brandonpollack23@gmail.com")
+    (user-mail-address      . "brandonpollack23@gmail.com")    ;; only needed for mu < 1.4
+    (mu4e-compose-signature . "---\nBrandon Pollack\nブランドンポラック"))
+  t)
+
 ;; Bindings reference:
 ;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
 
