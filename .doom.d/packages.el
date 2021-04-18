@@ -51,3 +51,5 @@
 
 (package! mozc
   :recipe (:files ("src/unix/emacs/*.el")))
+
+(package! aggressive-indent)

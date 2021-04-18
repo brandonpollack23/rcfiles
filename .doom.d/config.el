@@ -120,6 +120,13 @@
                        (mu4e-action-retag-message msg "-\\Starred")))))
     ))
 
+;; Aggressive indent mode setup
+(use-package! aggressive-indent
+  :ensure
+  :config
+  (global-aggressive-indent-mode 1)
+  (setq aggressive-indent-comments-too 1))
+
 ;; Bindings reference:
 ;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
 
