@@ -12,7 +12,7 @@
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; Custom logo!
+;; Custom Dashboard and Logo!
 (setq fancy-splash-image "~/.doom.d/logo.png")
 ;; TODO if fancy splash displayed then emit Emacs in ascii
 (defun doom-dashboard-print-under-fancy-splash ()
@@ -35,11 +35,11 @@
                  "\n"))
        'face 'doom-dashboard-banner))))
 (setq +doom-dashboard-functions
-  '(doom-dashboard-widget-banner
-    doom-dashboard-print-under-fancy-splash
-    doom-dashboard-widget-shortmenu
-    doom-dashboard-widget-loaded
-    doom-dashboard-widget-footer))
+      '(doom-dashboard-widget-banner
+        doom-dashboard-print-under-fancy-splash
+        doom-dashboard-widget-shortmenu
+        doom-dashboard-widget-loaded
+        doom-dashboard-widget-footer))
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -109,7 +109,6 @@
                         (mu4e-compose-signature
                          . "---\nBrandon Pollack\nブランドンポラック"))
                       t)
-  ;; TODO add bookmarks for various labels
   (add-hook 'mu4e-mark-execute-pre-hook
             (lambda (mark msg)
               (cond ((member mark '(refile trash))
@@ -131,7 +130,7 @@
 ;; Help window embiggening (default in DOOM is .35)
 (set-popup-rules!
   '(("^\\*\\([Hh]elp\\|Apropos\\)"
-       :slot 2 :vslot -8 :size 0.45 :select t)))
+     :slot 2 :vslot -8 :size 0.45 :select t)))
 
 (setq
  ;; Evil emacs mode cursor tells me it isn't evil
@@ -147,11 +146,11 @@
     :weight bold :height 2.5 :box (:line-width 7 :color "red")))
 
 ;; Info Mode better font
- (defun my-buffer-face-mode-variable ()
-   "Set font to a variable width (proportional) fonts in current buffer"
-   (interactive)
-   (setq buffer-face-mode-face '(:family "DejaVuSans" :height 150 :width semi-condensed))
-   (buffer-face-mode))
+(defun my-buffer-face-mode-variable ()
+  "Set font to a variable width (proportional) fonts in current buffer"
+  (interactive)
+  (setq buffer-face-mode-face '(:family "DejaVuSans" :height 150 :width semi-condensed))
+  (buffer-face-mode))
 (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
 
 ;; imap mappings
@@ -166,24 +165,24 @@
 
 ;; WSL Crap
 ;; Determine the specific system type.
- ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
- ;; so I'm front-ending system-type with my variable: sysTypeSpecific.
- ;; I'm no elisp hacker, so I'm diverging from the elisp naming convention
- ;; to ensure that I'm not stepping on any pre-existing variable.
- (setq-default sysTypeSpecific  system-type) ;; get the system-type value
+;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
+;; so I'm front-ending system-type with my variable: sysTypeSpecific.
+;; I'm no elisp hacker, so I'm diverging from the elisp naming convention
+;; to ensure that I'm not stepping on any pre-existing variable.
+(setq-default sysTypeSpecific  system-type) ;; get the system-type value
 
- (cond
-  ;; If type is "gnu/linux", override to "wsl/linux" if it's WSL.
-  ((eq sysTypeSpecific 'gnu/linux)
-   (when (string-match "Linux.*Microsoft.*Linux"
-                       (shell-command-to-string "uname -a"))
+(cond
+ ;; If type is "gnu/linux", override to "wsl/linux" if it's WSL.
+ ((eq sysTypeSpecific 'gnu/linux)
+  (when (string-match "Linux.*Microsoft.*Linux"
+                      (shell-command-to-string "uname -a"))
 
-     (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
-     (setq
-      cmdExeBin"/mnt/c/Windows/System32/cmd.exe"
-      cmdExeArgs '("/c" "start" "") )
-     (setq
-      browse-url-generic-program  cmdExeBin
-      browse-url-generic-args     cmdExeArgs
-      browse-url-browser-function 'browse-url-generic)
-     )))
+    (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
+    (setq
+     cmdExeBin"/mnt/c/Windows/System32/cmd.exe"
+     cmdExeArgs '("/c" "start" "") )
+    (setq
+     browse-url-generic-program  cmdExeBin
+     browse-url-generic-args     cmdExeArgs
+     browse-url-browser-function 'browse-url-generic)
+    )))
