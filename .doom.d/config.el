@@ -9,8 +9,45 @@
 (setq user-full-name "Brandon Pollack"
       user-mail-address "brandonpollack23@gmail.com")
 
+;; General Doom Setup Functions
+(setq
+ ;; Evil emacs mode cursor tells me it isn't evil
+ evil-emacs-state-cursor '("purple" box)
+ ;; Always confirm (even on splash and other not "real" buffers)
+ confirm-kill-emacs 'y-or-n-p
+ projectile-project-search-path '("$HOME/src"))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'doom-tomorrow-night)
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
+
+;; Help window embiggening (default in DOOM is .35)
+(set-popup-rules!
+  '(("^\\*\\([Hh]elp\\|Apropos\\)"
+     :slot 2 :vslot -8 :size 0.45 :select t)))
 
 ;; Custom Dashboard and Logo!
 (setq fancy-splash-image "~/.doom.d/logo.png")
@@ -41,33 +78,6 @@
         doom-dashboard-widget-loaded
         doom-dashboard-widget-footer))
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-tomorrow-night)
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
@@ -86,6 +96,25 @@
 ;; they are implemented.
 
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin Custom Config ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;; General Custom Bindings
+;; Bindings reference:
+;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
+
+;; Expand/contract selections
+(map! :leader
+      :prefix "v"
+      :v "v" #'er/expand-region
+      :v "SPC" #'er/contract-region)
+
+;; imap mappings
+(use-package! evil-escape
+  :init
+  (setq evil-escape-delay 0.3)
+  (setq evil-escape-key-sequence "jj"))
+
+;; Use emacs navigation in info mode
+;; NOTE this sucked, it's easer to just C-z when I need it.
+;; (evil-set-initial-state 'Info-mode 'emacs)
 
 ;; Japanese input
 ;; 日本語！
@@ -127,31 +156,10 @@
   (global-aggressive-indent-mode 1)
   (setq aggressive-indent-comments-too 1))
 
-;; Bindings reference:
-;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
-
-;; Expand/contract selections
-(map! :leader
-      :prefix "v"
-      :v "v" #'er/expand-region
-      :v "SPC" #'er/contract-region)
-
 ;; Enable word wrapping and don't scroll horizontally
 (auto-fill-mode 1)
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
-
-;; Help window embiggening (default in DOOM is .35)
-(set-popup-rules!
-  '(("^\\*\\([Hh]elp\\|Apropos\\)"
-     :slot 2 :vslot -8 :size 0.45 :select t)))
-
-(setq
- ;; Evil emacs mode cursor tells me it isn't evil
- evil-emacs-state-cursor '("purple" box)
- ;; Always confirm (even on splash and other not "real" buffers)
- confirm-kill-emacs 'y-or-n-p
- projectile-project-search-path '("$HOME/src"))
 
 ;; Ace Window config
 (custom-set-faces!
@@ -166,16 +174,6 @@
   (setq buffer-face-mode-face '(:family "DejaVuSans" :height 150 :width semi-condensed))
   (buffer-face-mode))
 (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
-
-;; imap mappings
-(use-package! evil-escape
-  :init
-  (setq evil-escape-delay 0.3)
-  (setq evil-escape-key-sequence "jj"))
-
-;; Use emacs navigation in info mode
-;; NOTE this sucked, it's easer to just C-z when I need it.
-;; (evil-set-initial-state 'Info-mode 'emacs)
 
 ;; WSL Crap
 ;; Determine the specific system type.
