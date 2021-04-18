@@ -106,6 +106,21 @@
       :v "v" #'er/expand-region
       :v "SPC" #'er/contract-region)
 
+;; evil-easymotion
+;; evil-easymotion (built on avy) jump keys
+(setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?k ?l ?\; ?t ?u ?v ?b ?n ?m ?i ?,))
+;; evil-easymotion use first column
+(evilem-make-motion
+ evilem-motion-next-line #'next-line
+ :pre-hook (setq evil-this-type 'line)
+ :bind ((temporary-goal-column 0)
+        (line-move-visual nil)))
+(evilem-make-motion
+ evilem-motion-previous-line #'previous-line
+ :pre-hook (setq evil-this-type 'line)
+ :bind ((temporary-goal-column 0)
+        (line-move-visual nil)))
+
 ;; imap mappings
 (use-package! evil-escape
   :init
