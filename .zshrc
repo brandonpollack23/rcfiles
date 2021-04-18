@@ -215,6 +215,7 @@ export EDITOR=vim
 if echo $(uname -a) | grep -q WSL; then
     echo "WSL Environment Detected..."
     function chrome { "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" $@ }
+    export BROWSER="chrome"
 
     function debian-handbook-chrome() {
         pushd /usr/share/doc/debian-handbook/html/en-US

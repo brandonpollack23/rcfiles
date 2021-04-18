@@ -42,7 +42,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 ;; Help window embiggening (default in DOOM is .35)
 (set-popup-rules!
@@ -192,7 +192,7 @@
     (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
     (setq
      cmdExeBin"/mnt/c/Windows/System32/cmd.exe"
-     cmdExeArgs '("/c" "start" "") )
+     cmdExeArgs '("/c" "start"))
     (setq
      browse-url-generic-program  cmdExeBin
      browse-url-generic-args     cmdExeArgs
