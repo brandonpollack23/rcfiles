@@ -95,29 +95,30 @@
 
 ;; mu4e email setup
 ;; Inspired by: https://groups.google.com/g/mu-discuss/c/BpGtwVHMd2E
-(use-package! mu4e
-  :config
-  (setq +mu4e-backend 'offlineimap)
-  (setq mu4e-update-interval (* 60 2))
-  (set-email-account! "Gmail"
-                      '((mu4e-sent-folder       . "/Gmail/All Mail")
-                        (mu4e-drafts-folder     . "/Gmail/Drafts")
-                        (mu4e-trash-folder      . "/Gmail/Trash")
-                        (mu4e-refile-folder     . "/Gmail/All Mail")
-                        (smtpmail-smtp-user     . "brandonpollack23@gmail.com")
-                        (user-mail-address      . "brandonpollack23@gmail.com")
-                        (mu4e-compose-signature
-                         . "---\nBrandon Pollack\nブランドンポラック"))
-                      t)
-  (add-hook 'mu4e-mark-execute-pre-hook
-            (lambda (mark msg)
-              (cond ((member mark '(refile trash))
-                     (mu4e-action-retag-message msg "-\\Inbox"))
-                    ((equal mark 'flag)
-                     (mu4e-action-retag-message msg "\\Starred"))
-                    ((equal mark 'unflag)
-                     (mu4e-action-retag-message msg "-\\Starred")))))
-  )
+(unless (eq system-type 'windows-nt)
+  (use-package! mu4e
+    :config
+    (setq +mu4e-backend 'offlineimap)
+    (setq mu4e-update-interval (* 60 2))
+    (set-email-account! "Gmail"
+                        '((mu4e-sent-folder       . "/Gmail/All Mail")
+                          (mu4e-drafts-folder     . "/Gmail/Drafts")
+                          (mu4e-trash-folder      . "/Gmail/Trash")
+                          (mu4e-refile-folder     . "/Gmail/All Mail")
+                          (smtpmail-smtp-user     . "brandonpollack23@gmail.com")
+                          (user-mail-address      . "brandonpollack23@gmail.com")
+                          (mu4e-compose-signature
+                           . "---\nBrandon Pollack\nブランドンポラック"))
+                        t)
+    (add-hook 'mu4e-mark-execute-pre-hook
+              (lambda (mark msg)
+                (cond ((member mark '(refile trash))
+                       (mu4e-action-retag-message msg "-\\Inbox"))
+                      ((equal mark 'flag)
+                       (mu4e-action-retag-message msg "\\Starred"))
+                      ((equal mark 'unflag)
+                       (mu4e-action-retag-message msg "-\\Starred")))))
+    ))
 
 ;; Bindings reference:
 ;; https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el
