@@ -157,7 +157,7 @@
 ;; imap mappings
 (use-package! evil-escape
   :init
-  (setq evil-escape-delay 0.5)
+  (setq evil-escape-delay 0.3)
   (setq evil-escape-key-sequence "jj"))
 
 ;; Use emacs navigation in info mode
