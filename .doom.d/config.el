@@ -122,6 +122,14 @@
    :bind ((temporary-goal-column 0)
           (line-move-visual nil))))
 
+(map!
+ :nvi "C-M-,"    'sp-backward-slurp-sexp
+ :nvi "C-M-."    'sp-forward-slurp-sexp
+ :nvi "C-M-j"    'sp-beginning-of-next-sexp
+ :nvi "C-M-k"    'sp-beginning-of-previous-sexp
+ :nvi "C-M-u"    'backward-up-list
+ :nvi "C-M-h"    'down-list)
+
 ;; imap mappings
 (use-package! evil-escape
   :init
