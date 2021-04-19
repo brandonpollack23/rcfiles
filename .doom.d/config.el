@@ -146,6 +146,8 @@
     :config
     (setq +mu4e-backend 'offlineimap)
     (setq mu4e-get-mail-command "offlineimap -o -q")
+    (setq mu4e-index-update-error-continue t)
+    (setq mu4e-index-update-error-warning t)
     (setq mu4e-update-interval (* 60 5))
     (set-email-account! "Gmail"
                         '((mu4e-sent-folder       . "/Gmail/All Mail")
@@ -158,7 +160,8 @@
                            . "---\nBrandon Pollack\nブランドンポラック"))
                         t)
     ;; TODO more for my tags
-    (setq mu4e-bookmarks `(("\\\\Inbox" "Inbox" ?i)
+    (setq mu4e-bookmarks `(("x:\\\\Inbox" "Inbox" ?i)
+                           ("x:\\\\Inbox AND flag:unread" "Inbox Unread" ?n)
                            ("flag:flagged" "Flagged messages" ?f)
                            (,(concat "flag:unread AND "
                                      "NOT flag:trashed AND "
