@@ -110,8 +110,8 @@
 ;; evil-easymotion (built on avy) jump keys
 (setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?k ?l ?\; ?t ?u ?v ?b ?n ?m ?i ?,))
 ;; evil-easymotion use first column
-(use-package! evil-easymotion
-  :config
+(after! evil-easymotion
+  (setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?k ?l ?\; ?t ?u ?v ?b ?n ?m ?i ?,))
   (evilem-make-motion
    evilem-motion-next-line #'next-line
    :pre-hook (setq evil-this-type 'line)
@@ -134,21 +134,20 @@
 ;; (evil-set-initial-state 'Info-mode 'emacs)
 
 ;; Japanese input
-;; 日本語！
-(use-package! mozc
-  :defer t
-  :custom (mozc-candidate-style 'echo-area))
+;; 日本語！ テスト
+(after! mozc
+  (setq-default mozc-candidate-style 'echo-area))
 
 ;; mu4e email setup
 ;; Inspired by: https://groups.google.com/g/mu-discuss/c/BpGtwVHMd2E
 (unless (eq system-type 'windows-nt)
-  (use-package! mu4e
+  (after! mu4e
     :config
     (setq +mu4e-backend 'offlineimap)
     (setq mu4e-get-mail-command "offlineimap -o -q")
     (setq mu4e-index-update-error-continue t)
     (setq mu4e-index-update-error-warning t)
-    (setq mu4e-maildir "~/mail")
+    (setq mu4e-root-maildir "~/mail")
     (setq mu4e-update-interval (* 60 5))
     (set-email-account! "Gmail"
                         '((mu4e-sent-folder       . "/Gmail/All Mail")
