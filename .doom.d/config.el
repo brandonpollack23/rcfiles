@@ -110,16 +110,18 @@
 ;; evil-easymotion (built on avy) jump keys
 (setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?k ?l ?\; ?t ?u ?v ?b ?n ?m ?i ?,))
 ;; evil-easymotion use first column
-(evilem-make-motion
- evilem-motion-next-line #'next-line
- :pre-hook (setq evil-this-type 'line)
- :bind ((temporary-goal-column 0)
-        (line-move-visual nil)))
-(evilem-make-motion
- evilem-motion-previous-line #'previous-line
- :pre-hook (setq evil-this-type 'line)
- :bind ((temporary-goal-column 0)
-        (line-move-visual nil)))
+(use-package! evil-easymotion
+  :config
+  (evilem-make-motion
+   evilem-motion-next-line #'next-line
+   :pre-hook (setq evil-this-type 'line)
+   :bind ((temporary-goal-column 0)
+          (line-move-visual nil)))
+  (evilem-make-motion
+   evilem-motion-previous-line #'previous-line
+   :pre-hook (setq evil-this-type 'line)
+   :bind ((temporary-goal-column 0)
+          (line-move-visual nil))))
 
 ;; imap mappings
 (use-package! evil-escape
@@ -143,7 +145,7 @@
   (use-package! mu4e
     :config
     (setq +mu4e-backend 'offlineimap)
-    (setq mu4e-update-interval (* 60 2))
+    (setq mu4e-update-interval (* 60 5))
     (set-email-account! "Gmail"
                         '((mu4e-sent-folder       . "/Gmail/All Mail")
                           (mu4e-drafts-folder     . "/Gmail/Drafts")
@@ -154,6 +156,14 @@
                           (mu4e-compose-signature
                            . "---\nBrandon Pollack\nブランドンポラック"))
                         t)
+    ; TODO more for my tags
+    (setq mu4e-bookmarks `(("\\\\Inbox" "Inbox" ?i)
+                           ("flag:flagged" "Flagged messages" ?f)
+                           (,(concat "flag:unread AND "
+                                     "NOT flag:trashed AND "
+                                     "NOT maildir:/[Gmail].Spam AND "
+                                     "NOT maildir:/[Gmail].Bin")
+                            "Unread messages" ?u)))
     (add-hook 'mu4e-mark-execute-pre-hook
               (lambda (mark msg)
                 (cond ((member mark '(refile trash))
@@ -166,7 +176,6 @@
 
 ;; Aggressive indent mode setup
 (use-package! aggressive-indent
-  :ensure
   :config
   (global-aggressive-indent-mode 1)
   (setq aggressive-indent-comments-too 1))
