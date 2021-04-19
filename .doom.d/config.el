@@ -148,6 +148,7 @@
     (setq mu4e-get-mail-command "offlineimap -o -q")
     (setq mu4e-index-update-error-continue t)
     (setq mu4e-index-update-error-warning t)
+    (setq mu4e-maildir "~/mail")
     (setq mu4e-update-interval (* 60 5))
     (set-email-account! "Gmail"
                         '((mu4e-sent-folder       . "/Gmail/All Mail")
