@@ -31,7 +31,7 @@
  evil-emacs-state-cursor '("purple" box)
  ;; Always confirm (even on splash and other not "real" buffers)
  confirm-kill-emacs 'y-or-n-p
- projectile-project-search-path '("$HOME/src"))
+ projectile-project-search-path '("$HOME/src", "$HOME/org"))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
