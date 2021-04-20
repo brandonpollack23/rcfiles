@@ -209,6 +209,11 @@
   (buffer-face-mode))
 (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
 
+;; Org mode disable smartparens so I can autocomplete buffers
+(after! (:and smartparens-mode org-mode)
+  :init
+  (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
+
 ;; WSL Crap
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
