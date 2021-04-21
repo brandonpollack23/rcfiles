@@ -125,7 +125,7 @@ This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el
         doom-dashboard-widget-footer))
 #+end_src
 
-* Custom Bindings
+* Custom (non mode specific) Bindings
 Papa Henrik has a great [[https://github.com/hlissner/doom-emacs/blob/2d140a7a80996cd5d5abc084db995a8c4ab6d7f4/modules/config/default/%TBevil-bindings.el][DOOM Bindings Reference]]
 ** Global Bindings
 Expand/contract visual mode selection
