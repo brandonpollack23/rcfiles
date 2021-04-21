@@ -65,8 +65,16 @@
                                  ("WAITING" :foreground "yellow" :weight normal :underline nil)
                                  ("CANCELLED" :foreground "red" :weight bold :underline t)
                                  )
-        org-log-done 'time))
-
+        org-log-done 'time
+        ;; org-capture-templates '(("t" "Todo [inbox]" entry
+        ;;                          (file+headline "~/org/inbox.org" "Tasks")
+        ;;                          "* TODO %i%?")
+        ;;                         ("T" "Tickler" entry
+        ;;                          (file+headline "~/org/tickler.org" "Tickler")
+        ;;                          "* %i%? \n %U"))
+        org-refile-targets '((nil :maxlevel . 4)
+                             (org-agenda-files :maxlevel . 4))
+        ))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
