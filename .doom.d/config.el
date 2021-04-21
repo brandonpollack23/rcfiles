@@ -52,9 +52,20 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tomorrow-night)
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+;; org mode
+(after! org
+  ;; If you use `org' and don't want your org files in the default location below,
+  ;; change `org-directory'. It must be set before org loads!
+  (setq org-directory "~/org/"
+        org-todo-keywords '((sequence "TODO(t)" "INPROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")
+                            (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+                            (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))
+        org-todo-keyword-faces '(("TODO" :foreground "forestgreen" :weight bold :underline t)
+                                 ("INPROGRESS" :foreground "darkorange" :weight bold :underline t)
+                                 ("WAITING" :foreground "yellow" :weight normal :underline nil)
+                                 ("CANCELLED" :foreground "red" :weight bold :underline t)
+                                 )))
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
