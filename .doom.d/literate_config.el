@@ -129,6 +129,9 @@
         ;;                          "* %i%? \n %U"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
+
+        ;; Show that whitespace
+        org-cycle-separator-lines -1
         ))
 
 (after! (:and smartparens-mode org-mode)
