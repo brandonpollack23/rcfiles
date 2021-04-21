@@ -64,7 +64,8 @@
                                  ("INPROGRESS" :foreground "darkorange" :weight bold :underline t)
                                  ("WAITING" :foreground "yellow" :weight normal :underline nil)
                                  ("CANCELLED" :foreground "red" :weight bold :underline t)
-                                 )))
+                                 )
+        org-log-done 'time))
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
