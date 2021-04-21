@@ -1,12 +1,11 @@
 #+TITLE: Doom Emacs Literate Configuration
 #+DESCRIPTION: I though this might be easier to read and find things,
 #+DESCRIPTION+: especially if I'm lazy and dont make seperate files in the future
-#+STARTUP: overview
+#+STARTUP: content
 
 * Notes And Tips
 Place your private configuration here! Remember, you do not need to run 'doom
 sync' after modifying this file!
-
 ** Useful Macros
 Here are some additional functions/macros that could help you configure Doom:
 
