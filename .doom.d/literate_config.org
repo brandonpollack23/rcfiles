@@ -3,29 +3,6 @@
 #+DESCRIPTION+: especially if I'm lazy and dont make seperate files in the future
 #+STARTUP: content
 
-* Notes And Tips
-Place your private configuration here! Remember, you do not need to run 'doom
-sync' after modifying this file!
-** Useful Macros
-Here are some additional functions/macros that could help you configure Doom:
-
-+ `load!' for loading external *.el files relative to this one
-+ `use-package!' for configuring packages
-+ `after!' for running code after a package has loaded
-+ `add-load-path!' for adding directories to the `load-path', relative to
-  this file. Emacs searches the `load-path' when you load packages with
-  `require' or `use-package'.
-+ `map!' for binding new keys
-
-:GETTING_INFO:
-To get information about any of these functions/macros, move the cursor over
-the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-This will open documentation for it, including demos of how they are used.
-
-You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-they are implemented.
-:END:
-
 * General Doom/Emacs Setup
 ** Personal Information
 User information, used for git, email, templates, etc.
@@ -36,6 +13,8 @@ User information, used for git, email, templates, etc.
       user-mail-address "brandonpollack23@gmail.com")
 #+end_src
 
+this file. Emacs searches the `load-path' when you load packages with
+`require' or `use-package'.
 ** Global Options
 #+begin_src elisp
 (setq
@@ -84,12 +63,28 @@ numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 #+end_src
 
-** Popup window styling
+** Window System
+*** Popup window styling
 Default is way too small, bigger is better
 #+begin_src elisp
 (set-popup-rules!
   '(("^\\*\\([Hh]elp\\|Apropos\\)"
      :slot 2 :vslot -8 :size 0.45 :select t)))
+#+end_src
+*** Break window out into workspace
+#+begin_src elisp
+(defun break-window-into-workspace ()
+  "Takes current window and moves it to its own workspace/perspective"
+  (interactive)
+  (let ((buff (current-buffer)))
+    (+workspace/close-window-or-workspace)
+    (+workspace/new)
+    (switch-to-buffer buff)
+    (when (+popup-buffer-p)
+      (+popup/raise (selected-window)))))
+(map! :leader
+      :prefix "TAB"
+      :nv "b" 'break-window-into-workspace) ; b for break
 #+end_src
 
 ** Spell Checking
@@ -110,9 +105,6 @@ I'm currently using spell-fu bundled with doom.
         markdown-html-tag-name-face))
 #+end_src
 
-** FUN STUFF!
-*** Doom Dash
-This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el::defun doom-dashboard-draw-ascii-banner-fn (][Doom Dashboard]] itself.
 #+begin_src elisp
 (setq fancy-splash-image "~/.doom.d/logo.png")
 ;; TODO if fancy splash displayed then emit Emacs in ascii
@@ -268,7 +260,7 @@ Inspired by: [[https://groups.google.com/g/mu-discuss/c/BpGtwVHMd2E][This Google
                           (smtpmail-smtp-user     . "brandonpollack23@gmail.com")
                           (user-mail-address      . "brandonpollack23@gmail.com")
                           (mu4e-compose-signature
-                           . "---\nBrandon Pollack\nブランドンポラック"))
+                           . "---\nBrandon Pollack\n ブランドンポラック"))
                         t)
     (setq mu4e-bookmarks `(("x:\\\\Inbox" "Inbox" ?i)
                            ("x:\\\\Inbox AND flag:unread" "Inbox Unread" ?n)
