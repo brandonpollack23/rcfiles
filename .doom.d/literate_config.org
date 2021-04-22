@@ -92,6 +92,23 @@ Default is way too small, bigger is better
      :slot 2 :vslot -8 :size 0.45 :select t)))
 #+end_src
 
+** Spell Checking
+I'm currently using spell-fu bundled with doom.
++ Set dictionary to english
++ Ignore certain faces.
+#+begin_src elisp
+(setq-default ispell-dictionary "english")
+(setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
+      '(markdown-code-face
+        markdown-reference-face
+        markdown-link-face
+        markdown-url-face
+        markdown-markup-face
+        markdown-html-attr-value-face
+        markdown-html-attr-name-face
+        markdown-html-tag-name-face))
+#+end_src
+
 ** FUN STUFF!
 *** Doom Dash
 This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el::defun doom-dashboard-draw-ascii-banner-fn (][Doom Dashboard]] itself.
@@ -186,10 +203,10 @@ Make it so even rob can see window jumps
 #+end_src
 
 ** Org Mode
-+ I set up my default org directoy to be in home
-+ I set up my TODOs to be more slim
++ I set up my default org directory to be in home
++ I set up my TODOs to be more slick
 + Set up refiling to go deeeeeep
-+ Turn of smartparens for org they make it hard to autcomplete links
++ Turn of smartparens for org they make it hard to autocomplete links
 #+begin_src elisp
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,

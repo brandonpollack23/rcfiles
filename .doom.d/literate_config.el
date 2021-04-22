@@ -42,6 +42,18 @@
   '(("^\\*\\([Hh]elp\\|Apropos\\)"
      :slot 2 :vslot -8 :size 0.45 :select t)))
 
+(setq ispell-dictionary "english")
+(setq ispell-local-dictionary "english")
+(setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
+      '(markdown-code-face
+        markdown-reference-face
+        markdown-link-face
+        markdown-url-face
+        markdown-markup-face
+        markdown-html-attr-value-face
+        markdown-html-attr-name-face
+        markdown-html-tag-name-face))
+
 (setq fancy-splash-image "~/.doom.d/logo.png")
 ;; TODO if fancy splash displayed then emit Emacs in ascii
 (defun doom-dashboard-print-under-fancy-splash ()
