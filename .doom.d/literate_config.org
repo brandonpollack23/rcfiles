@@ -105,9 +105,13 @@ I'm currently using spell-fu bundled with doom.
         markdown-html-tag-name-face))
 #+end_src
 
+** FUN STUFF!
+*** Doom Dash
+**** TODO if fancy splash displayed then emit Emacs in ascii
+**** Code
+This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el::defun doom-dashboard-draw-ascii-banner-fn (][Doom Dashboard]] itself.
 #+begin_src elisp
 (setq fancy-splash-image "~/.doom.d/logo.png")
-;; TODO if fancy splash displayed then emit Emacs in ascii
 (defun doom-dashboard-print-under-fancy-splash ()
   (when (display-graphic-p)
     (let* ((banner
