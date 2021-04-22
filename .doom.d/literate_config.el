@@ -55,17 +55,18 @@
       :prefix "TAB"
       :nv "b" 'break-window-into-workspace) ; b for break
 
-(setq-default ispell-dictionary "en")
-(setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
-(setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
-      '(markdown-code-face
-        markdown-reference-face
-        markdown-link-face
-        markdown-url-face
-        markdown-markup-face
-        markdown-html-attr-value-face
-        markdown-html-attr-name-face
-        markdown-html-tag-name-face))
+(after! spell-fu
+  (setq-default ispell-dictionary "en")
+  (setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
+  (setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
+        '(markdown-code-face
+          markdown-reference-face
+          markdown-link-face
+          markdown-url-face
+          markdown-markup-face
+          markdown-html-attr-value-face
+          markdown-html-attr-name-face
+          markdown-html-tag-name-face)))
 
 (setq fancy-splash-image "~/.doom.d/logo.png")
 (defun doom-dashboard-print-under-fancy-splash ()
@@ -160,12 +161,18 @@
                              (org-agenda-files :maxlevel . 4))
 
         ;; Show that whitespace
-        org-cycle-separator-lines -1
-        ))
+        org-cycle-separator-lines -1))
 
-(after! (:and smartparens-mode org-mode)
+(after! (:and evil-smartparens org-mode)
   :init
   (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
+
+(after! org-id
+  ;; This function allows id link completion
+  (defun org-id-complete-link (&optional arg)
+    "Create an id: link using completion using ARG."
+    (concat "id:" (org-id-get-with-outline-path-completion)))
+  (org-link-set-parameters "id" :complete #'org-id-complete-link))
 
 ;; TODO this doesnt work yet.
 ;; TODO when it does at it to save hook for org files with a check if it within org directory.
@@ -227,7 +234,7 @@ descriptions as subtext into an org file with directories indicating subheadings
     (setq mu4e-get-mail-command "offlineimap -o -q")
     (setq mu4e-index-update-error-continue t)
     (setq mu4e-index-update-error-warning t)
-    (setq mu4e-root-maildir "~/mail")
+    (setq mu4e-maildir "~/mail")
     (setq mu4e-update-interval (* 60 5))
     (set-email-account! "Gmail"
                         '((mu4e-sent-folder       . "/Gmail/All Mail")

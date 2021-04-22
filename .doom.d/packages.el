@@ -53,3 +53,5 @@
   :recipe (:files ("src/unix/emacs/*.el")))
 
 (package! aggressive-indent)
+
+(package! command-log-mode)
