@@ -48,11 +48,22 @@ this file. Emacs searches the `load-path' when you load packages with
 (setq-default word-wrap t)
 #+end_src
 ** Insertion methods :mozc:
-Japanese input
-日本語！ テスト
++ Japanese input
++ 日本語！ テスト
++ Fix evil-org from doom overriding with electric indent, now mozc tries to
+  handle the event first using the cmds! macro
 #+begin_src elisp
 (after! mozc
   (setq-default mozc-candidate-style 'echo-area))
+
+(use-package! evil-org
+  :when (featurep! :editor evil +everywhere)
+  :config
+  (map! :map evil-org-mode-map
+        :i "RET" (cmds! mozc-mode (cmd! (mozc-handle-event last-command-event))
+                        (cmd! (org-return electric-indent-mode)))
+        :i [return] (cmds! mozc-mode (cmd! (mozc-handle-event last-command-event))
+                           (cmd! (org-return electric-indent-mode)))))
 #+end_src
 
 ** Line number styling

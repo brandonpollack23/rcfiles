@@ -36,6 +36,15 @@
 (after! mozc
   (setq-default mozc-candidate-style 'echo-area))
 
+(use-package! evil-org
+  :when (featurep! :editor evil +everywhere)
+  :config
+  (map! :map evil-org-mode-map
+        :i "RET" (cmds! mozc-mode (cmd! (mozc-handle-event last-command-event))
+                        (cmd! (org-return electric-indent-mode)))
+        :i [return] (cmds! mozc-mode (cmd! (mozc-handle-event last-command-event))
+                           (cmd! (org-return electric-indent-mode)))))
+
 (setq display-line-numbers-type 'relative)
 
 (set-popup-rules!
