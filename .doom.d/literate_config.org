@@ -221,12 +221,17 @@ Make it so even rob can see window jumps
                                  ("CANCELLED" :foreground "red" :weight bold :underline t)
                                  )
         org-log-done 'time
-        ;; org-capture-templates '(("t" "Todo [inbox]" entry
-        ;;                          (file+headline "~/org/inbox.org" "Tasks")
-        ;;                          "* TODO %i%?")
-        ;;                         ("T" "Tickler" entry
-        ;;                          (file+headline "~/org/tickler.org" "Tickler")
-        ;;                          "* %i%? \n %U"))
+
+        ;; Quick captures
+        org-capture-templates '(("x" "[inbox]" entry
+                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 "* %i%?")
+                                ("t" "Todo [inbox]" entry
+                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline "~/org/tickler.org" "Tickler")
+                                 "* %i%? \n %U"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
 
