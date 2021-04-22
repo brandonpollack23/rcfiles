@@ -42,8 +42,21 @@
   '(("^\\*\\([Hh]elp\\|Apropos\\)"
      :slot 2 :vslot -8 :size 0.45 :select t)))
 
-(setq ispell-dictionary "english")
-(setq ispell-local-dictionary "english")
+(defun break-window-into-workspace ()
+  "Takes current window and moves it to its own workspace/perspective"
+  (interactive)
+  (let ((buff (current-buffer)))
+    (+workspace/close-window-or-workspace)
+    (+workspace/new)
+    (switch-to-buffer buff)
+    (when (+popup-buffer-p)
+      (+popup/raise (selected-window)))))
+(map! :leader
+      :prefix "TAB"
+      :nv "b" 'break-window-into-workspace) ; b for break
+
+(setq-default ispell-dictionary "en")
+(setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
 (setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
       '(markdown-code-face
         markdown-reference-face
@@ -55,7 +68,6 @@
         markdown-html-tag-name-face))
 
 (setq fancy-splash-image "~/.doom.d/logo.png")
-;; TODO if fancy splash displayed then emit Emacs in ascii
 (defun doom-dashboard-print-under-fancy-splash ()
   (when (display-graphic-p)
     (let* ((banner
@@ -133,12 +145,17 @@
                                  ("CANCELLED" :foreground "red" :weight bold :underline t)
                                  )
         org-log-done 'time
-        ;; org-capture-templates '(("t" "Todo [inbox]" entry
-        ;;                          (file+headline "~/org/inbox.org" "Tasks")
-        ;;                          "* TODO %i%?")
-        ;;                         ("T" "Tickler" entry
-        ;;                          (file+headline "~/org/tickler.org" "Tickler")
-        ;;                          "* %i%? \n %U"))
+
+        ;; Quick captures
+        org-capture-templates '(("x" "[inbox]" entry
+                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 "* %i%?")
+                                ("t" "Todo [inbox]" entry
+                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline "~/org/tickler.org" "Tickler")
+                                 "* %i%? \n %U"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
 
@@ -167,7 +184,7 @@
                           (smtpmail-smtp-user     . "brandonpollack23@gmail.com")
                           (user-mail-address      . "brandonpollack23@gmail.com")
                           (mu4e-compose-signature
-                           . "---\nBrandon Pollack\nブランドンポラック"))
+                           . "---\nBrandon Pollack\n ブランドンポラック"))
                         t)
     (setq mu4e-bookmarks `(("x:\\\\Inbox" "Inbox" ?i)
                            ("x:\\\\Inbox AND flag:unread" "Inbox Unread" ?n)
