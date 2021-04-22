@@ -52,7 +52,7 @@ Japanese input
 日本語！ テスト
 #+begin_src elisp
 (after! mozc
-  (setq-default mozc-candidate-style 'echo-area)
+  (setq-default mozc-candidate-style 'echo-area))
 #+end_src
 
 ** Line number styling
