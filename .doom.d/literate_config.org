@@ -98,6 +98,7 @@ I'm currently using spell-fu bundled with doom.
 + Ignore certain faces.
 #+begin_src elisp
 (setq-default ispell-dictionary "en")
+(setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
 (setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
       '(markdown-code-face
         markdown-reference-face
