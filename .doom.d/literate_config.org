@@ -47,12 +47,12 @@ this file. Emacs searches the `load-path' when you load packages with
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 #+end_src
-** Insertion methods
+** Insertion methods :mozc:
 Japanese input
 日本語！ テスト
 #+begin_src elisp
 (after! mozc
-  (setq-default mozc-candidate-style 'echo-area))
+  (setq-default mozc-candidate-style 'echo-area)
 #+end_src
 
 ** Line number styling
@@ -92,17 +92,18 @@ I'm currently using spell-fu bundled with doom.
 + Set dictionary to english
 + Ignore certain faces.
 #+begin_src elisp
-(setq-default ispell-dictionary "en")
-(setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
-(setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
-      '(markdown-code-face
-        markdown-reference-face
-        markdown-link-face
-        markdown-url-face
-        markdown-markup-face
-        markdown-html-attr-value-face
-        markdown-html-attr-name-face
-        markdown-html-tag-name-face))
+(after! spell-fu
+  (setq-default ispell-dictionary "en")
+  (setq ispell-personal-dictionary "/home/brpol/.doom.d/etc/english.pws")
+  (setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
+        '(markdown-code-face
+          markdown-reference-face
+          markdown-link-face
+          markdown-url-face
+          markdown-markup-face
+          markdown-html-attr-value-face
+          markdown-html-attr-name-face
+          markdown-html-tag-name-face)))
 #+end_src
 
 ** FUN STUFF!
@@ -205,6 +206,7 @@ Make it so even rob can see window jumps
 + I set up my TODOs to be more slick
 + Set up refiling to go deeeeeep
 + Turn of smartparens for org they make it hard to autocomplete links
++ internal id link completion
 #+begin_src elisp
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,
@@ -234,12 +236,18 @@ Make it so even rob can see window jumps
                              (org-agenda-files :maxlevel . 4))
 
         ;; Show that whitespace
-        org-cycle-separator-lines -1
-        ))
+        org-cycle-separator-lines -1))
 
-(after! (:and smartparens-mode org-mode)
+(after! (:and evil-smartparens org-mode)
   :init
   (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
+
+(after! org-id
+  ;; This function allows id link completion
+  (defun org-id-complete-link (&optional arg)
+    "Create an id: link using completion using ARG."
+    (concat "id:" (org-id-get-with-outline-path-completion)))
+  (org-link-set-parameters "id" :complete #'org-id-complete-link))
 #+end_src
 *** Scripts
 Create master Index file of all org files
