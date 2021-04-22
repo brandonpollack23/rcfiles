@@ -97,7 +97,7 @@ I'm currently using spell-fu bundled with doom.
 + Set dictionary to english
 + Ignore certain faces.
 #+begin_src elisp
-(setq-default ispell-dictionary "english")
+(setq-default ispell-dictionary "en")
 (setf (alist-get 'markdown-mode +spell-excluded-faces-alist)
       '(markdown-code-face
         markdown-reference-face
