@@ -263,9 +263,6 @@ Make it so even rob can see window jumps
     "Create an id: link using completion using ARG."
     (concat "id:" (org-id-get-with-outline-path-completion)))
   (org-link-set-parameters "id" :complete #'org-id-complete-link))
-
-(after! org-fancy-priorities
-  (org-fancy-priorities-mode -1))
 #+end_src
 *** Scripts
 Create master Index file of all org files
