@@ -186,6 +186,8 @@
     (concat "id:" (org-id-get-with-outline-path-completion)))
   (org-link-set-parameters "id" :complete #'org-id-complete-link))
 
+(use-package! org-depend :after org)
+
 ;; TODO this doesnt work yet.
 ;; TODO when it does at it to save hook for org files with a check if it within org directory.
 
@@ -296,6 +298,13 @@ descriptions as subtext into an org file with directories indicating subheadings
   (setq command-log-mode-window-size 80)
   (setq command-log-mode-open-log-turns-on-mode t))
 
+(use-package! org-alert
+  :custom (alert-default-style 'libnotify)
+  :config
+  (setq org-alert-interval 300
+        org-alert-notification-title "Reminder Alert!")
+  (org-alert-enable))
+
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
 ;; so I'm front-ending system-type with my variable: sysTypeSpecific.
@@ -311,10 +320,25 @@ descriptions as subtext into an org file with directories indicating subheadings
 
     (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
     (setq
-     cmdExeBin"/mnt/c/Windows/System32/cmd.exe"
+     cmdExeBin "/mnt/c/Windows/System32/cmd.exe"
      cmdExeArgs '("/c" "start"))
     (setq
      browse-url-generic-program  cmdExeBin
      browse-url-generic-args     cmdExeArgs
      browse-url-browser-function 'browse-url-generic)
+
+    ;; Create custom alert style that uses BurntToast
+    (alert-define-style 'burnttoastwsl :title "WSL Burnt Toast"
+                        :notifier
+                        (lambda (info)
+                          (let
+                              ;; The message text is :message
+                              ((msg (plist-get info :message))
+                               ;; The :title of the alert
+                               (title (plist-get info :title))
+                               ;; The :category of the alert
+                               (cat (plist-get info :category)))
+                            (shell-command (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title ?\n cat ?\n msg "\\\"\"")))))
+    (after! org-alert
+      (setq alert-default-style 'burnttoastwsl))
     )))

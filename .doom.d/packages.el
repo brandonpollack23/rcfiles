@@ -57,3 +57,5 @@
 (package! command-log-mode)
 
 (package! org-fancy-priorities :disable t)
+
+(package! org-alert)
