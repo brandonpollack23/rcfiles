@@ -219,6 +219,7 @@ Make it so even rob can see window jumps
 + Turn of smartparens for org they make it hard to autocomplete links
 + internal id link completion
 + Disable fancy priorities, idk what they mean.
++ Org depend for cooler TODOs
 #+begin_src elisp
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,
@@ -263,6 +264,8 @@ Make it so even rob can see window jumps
     "Create an id: link using completion using ARG."
     (concat "id:" (org-id-get-with-outline-path-completion)))
   (org-link-set-parameters "id" :complete #'org-id-complete-link))
+
+(use-package! org-depend :after org)
 #+end_src
 *** Scripts
 Create master Index file of all org files
