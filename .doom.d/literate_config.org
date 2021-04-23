@@ -268,11 +268,18 @@ Make it so even rob can see window jumps
 (use-package! org-depend :after org)
 #+end_src
 *** Scripts
-Create master Index file of all org files
++ Archive all completed TODO files
++ Create master Index file of all org files
 #+begin_src elisp :lexical t
+(defun myorg-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'tree))
+(map! :leader
+      :prefix "m"
+      :n "m" #'myorg-archive-done-tasks)
+
 ;; TODO this doesnt work yet.
 ;; TODO when it does at it to save hook for org files with a check if it within org directory.
-
 (defun myorg-get-title (dirfile-buffer)
   "org helper to extract the #+TITLE string"
   "DUMMY TITLE"
