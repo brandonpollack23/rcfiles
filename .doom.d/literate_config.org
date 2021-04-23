@@ -402,9 +402,20 @@ doing.
   (setq command-log-mode-open-log-turns-on-mode t))
 #+end_src
 
+** Org Alert
+#+begin_src elisp
+(use-package! org-alert
+  :custom (alert-default-style 'libnotify)
+  :config
+  (setq org-alert-interval 300
+        org-alert-notification-title "Reminder Alert!")
+  (org-alert-enable))
+#+end_src
+
 * Platform Specific
 ** WSL
-Web browser opening doesnt work without this
++ Web browser opening doesn't work without this
++ Add custom alerting that requires BurtToast on windows
 #+begin_src elisp
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
@@ -421,11 +432,27 @@ Web browser opening doesnt work without this
 
     (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
     (setq
-     cmdExeBin"/mnt/c/Windows/System32/cmd.exe"
+     cmdExeBin "/mnt/c/Windows/System32/cmd.exe"
      cmdExeArgs '("/c" "start"))
     (setq
      browse-url-generic-program  cmdExeBin
      browse-url-generic-args     cmdExeArgs
      browse-url-browser-function 'browse-url-generic)
+
+    ;; Create custom alert style that uses BurntToast
+    (alert-define-style 'burnttoastwsl :title "WSL Burnt Toast"
+                        :notifier
+                        (lambda (info)
+                          (let
+                              ;; The message text is :message
+                              ((msg (plist-get info :message))
+                               ;; The :title of the alert
+                               (title (plist-get info :title))
+                               ;; The :category of the alert
+                               (cat (plist-get info :category)))
+                            (shell-command
+                             (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title "\n" cat "\n" msg "\\\"\"")))))
+    (after! org-alert
+      (setq alert-default-style 'burnttoastwsl))
     )))
 #+end_src
