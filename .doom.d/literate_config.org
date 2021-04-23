@@ -218,6 +218,7 @@ Make it so even rob can see window jumps
 + Set up refiling to go deeeeeep
 + Turn of smartparens for org they make it hard to autocomplete links
 + internal id link completion
++ Disable fancy priorities, idk what they mean.
 #+begin_src elisp
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,
@@ -245,9 +246,12 @@ Make it so even rob can see window jumps
                                  "* %i%? \n %U"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
-
         ;; Show that whitespace
-        org-cycle-separator-lines -1))
+        org-cycle-separator-lines -1
+        ;; Show only top level TODO items.
+        org-agenda-todo-list-sublevels nil
+        ;; Checklist cookies take into account full heirarchy.
+        org-checkbox-hierarchical-statistics nil))
 
 (after! (:and evil-smartparens org-mode)
   :init
@@ -259,6 +263,9 @@ Make it so even rob can see window jumps
     "Create an id: link using completion using ARG."
     (concat "id:" (org-id-get-with-outline-path-completion)))
   (org-link-set-parameters "id" :complete #'org-id-complete-link))
+
+(after! org-fancy-priorities
+  (org-fancy-priorities-mode -1))
 #+end_src
 *** Scripts
 Create master Index file of all org files
