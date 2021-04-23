@@ -381,6 +381,20 @@ Better font bigger text, yo
 (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
 #+end_src
 
+** Command Log Mode
+This allows me to record a sequence of commands. Useful for debugging, seeing
+what functions are bound to what keys I'm pressing, and showing others what I'm
+doing.
+#+begin_src elisp
+(use-package! command-log-mode
+  :config
+  (map! :leader
+        :prefix "v"
+        :nv "l" 'clm/toggle-command-log-buffer)
+  (setq command-log-mode-window-size 80)
+  (setq command-log-mode-open-log-turns-on-mode t))
+#+end_src
+
 * Platform Specific
 ** WSL
 Web browser opening doesnt work without this
