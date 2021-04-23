@@ -298,12 +298,19 @@ descriptions as subtext into an org file with directories indicating subheadings
   (setq command-log-mode-window-size 80)
   (setq command-log-mode-open-log-turns-on-mode t))
 
-(use-package! org-alert
-  :custom (alert-default-style 'libnotify)
+(use-package! org-wild-notifier
   :config
-  (setq org-alert-interval 300
-        org-alert-notification-title "Reminder Alert!")
-  (org-alert-enable))
+  (setq org-wild-notifier-alert-time 10
+        org-wild-notifier-alert-times-property "WILD_NOTIFIER_NOTIFY_BEFORE: 5"
+        org-wild-notifier-notification-title "Reminder Notification!"
+        org-wild-notifier-keyword-whitelist '("TODO")
+        org-wild-notifier-tags-blacklist nil
+        org-wild-notifier-tags-whitelist nil
+        org-wild-notifier-keyword-whitelist nil)
+  (org-wild-notifier-mode))
+
+(after! alert
+  (setq alert-default-style 'libnotify))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
@@ -338,7 +345,8 @@ descriptions as subtext into an org file with directories indicating subheadings
                                (title (plist-get info :title))
                                ;; The :category of the alert
                                (cat (plist-get info :category)))
-                            (shell-command (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title ?\n cat ?\n msg "\\\"\"")))))
-    (after! org-alert
-      (setq alert-default-style 'burnttoastwsl))
-    )))
+                            (message (concat "ALERT!!!!\n\t" title "\n\t" cat "\n\t" msg))
+                            (shell-command
+                             (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title "\n" cat "\n" msg "\\\"\"")))))
+    (after! alert
+      (setq alert-default-style 'burnttoastwsl)))))
