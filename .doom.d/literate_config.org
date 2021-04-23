@@ -331,6 +331,23 @@ descriptions as subtext into an org file with directories indicating subheadings
     (message (buffer-string))))
 #+end_src
 
+** Org Alerts
+#+begin_src elisp
+(use-package! org-wild-notifier
+  :config
+  (setq org-wild-notifier-alert-time 10
+        org-wild-notifier-alert-times-property "WILD_NOTIFIER_NOTIFY_BEFORE: 5"
+        org-wild-notifier-notification-title "Reminder Notification!"
+        org-wild-notifier-keyword-whitelist '("TODO")
+        org-wild-notifier-tags-blacklist nil
+        org-wild-notifier-tags-whitelist nil
+        org-wild-notifier-keyword-whitelist nil)
+  (org-wild-notifier-mode))
+
+(after! alert
+  (setq alert-default-style 'libnotify))
+#+end_src
+
 ** Email mu4e
 Inspired by: [[https://groups.google.com/g/mu-discuss/c/BpGtwVHMd2E][This Google Groups Post]]
 *** Tasks
@@ -407,23 +424,6 @@ doing.
         :nv "l" 'clm/toggle-command-log-buffer)
   (setq command-log-mode-window-size 80)
   (setq command-log-mode-open-log-turns-on-mode t))
-#+end_src
-
-** Org Alerts
-#+begin_src elisp
-(use-package! org-wild-notifier
-  :config
-  (setq org-wild-notifier-alert-time 10
-        org-wild-notifier-alert-times-property "WILD_NOTIFIER_NOTIFY_BEFORE: 5"
-        org-wild-notifier-notification-title "Reminder Notification!"
-        org-wild-notifier-keyword-whitelist '("TODO")
-        org-wild-notifier-tags-blacklist nil
-        org-wild-notifier-tags-whitelist nil
-        org-wild-notifier-keyword-whitelist nil)
-  (org-wild-notifier-mode))
-
-(after! alert
-  (setq alert-default-style 'libnotify))
 #+end_src
 
 * Platform Specific
