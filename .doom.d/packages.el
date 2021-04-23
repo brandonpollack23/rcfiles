@@ -58,4 +58,4 @@
 
 (package! org-fancy-priorities :disable t)
 
-(package! org-alert)
+(package! org-wild-notifier)
