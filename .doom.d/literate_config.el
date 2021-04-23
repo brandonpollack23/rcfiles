@@ -168,9 +168,12 @@
                                  "* %i%? \n %U"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
-
         ;; Show that whitespace
-        org-cycle-separator-lines -1))
+        org-cycle-separator-lines -1
+        ;; Show only top level TODO items.
+        org-agenda-todo-list-sublevels nil
+        ;; Checklist cookies take into account full heirarchy.
+        org-checkbox-hierarchical-statistics nil))
 
 (after! (:and evil-smartparens org-mode)
   :init
@@ -284,6 +287,14 @@ descriptions as subtext into an org file with directories indicating subheadings
   (setq buffer-face-mode-face '(:family "DejaVuSans" :height 150 :width semi-condensed))
   (buffer-face-mode))
 (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
+
+(use-package! command-log-mode
+  :config
+  (map! :leader
+        :prefix "v"
+        :nv "l" 'clm/toggle-command-log-buffer)
+  (setq command-log-mode-window-size 80)
+  (setq command-log-mode-open-log-turns-on-mode t))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
