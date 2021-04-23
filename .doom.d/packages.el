@@ -55,3 +55,5 @@
 (package! aggressive-indent)
 
 (package! command-log-mode)
+
+(package! org-fancy-priorities :disable t)
