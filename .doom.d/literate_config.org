@@ -268,11 +268,18 @@ Make it so even rob can see window jumps
 (use-package! org-depend :after org)
 #+end_src
 *** Scripts
-Create master Index file of all org files
++ Archive all completed TODO files
++ Create master Index file of all org files
 #+begin_src elisp :lexical t
+(defun myorg-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'tree))
+(map! :leader
+      :prefix "m"
+      :n "m" #'myorg-archive-done-tasks)
+
 ;; TODO this doesnt work yet.
 ;; TODO when it does at it to save hook for org files with a check if it within org directory.
-
 (defun myorg-get-title (dirfile-buffer)
   "org helper to extract the #+TITLE string"
   "DUMMY TITLE"
@@ -322,6 +329,23 @@ descriptions as subtext into an org file with directories indicating subheadings
     (myorg-export-files-insert-headings (current-buffer))
     ;; TODO save buffer to org-directory/index.org
     (message (buffer-string))))
+#+end_src
+
+** Org Alerts
+#+begin_src elisp
+(use-package! org-wild-notifier
+  :config
+  (setq org-wild-notifier-alert-time 10
+        org-wild-notifier-alert-times-property "WILD_NOTIFIER_NOTIFY_BEFORE: 5"
+        org-wild-notifier-notification-title "Reminder Notification!"
+        org-wild-notifier-keyword-whitelist '("TODO")
+        org-wild-notifier-tags-blacklist nil
+        org-wild-notifier-tags-whitelist nil
+        org-wild-notifier-keyword-whitelist nil)
+  (org-wild-notifier-mode))
+
+(after! alert
+  (setq alert-default-style 'libnotify))
 #+end_src
 
 ** Email mu4e
@@ -400,23 +424,6 @@ doing.
         :nv "l" 'clm/toggle-command-log-buffer)
   (setq command-log-mode-window-size 80)
   (setq command-log-mode-open-log-turns-on-mode t))
-#+end_src
-
-** Org Alerts
-#+begin_src elisp
-(use-package! org-wild-notifier
-  :config
-  (setq org-wild-notifier-alert-time 10
-        org-wild-notifier-alert-times-property "WILD_NOTIFIER_NOTIFY_BEFORE: 5"
-        org-wild-notifier-notification-title "Reminder Notification!"
-        org-wild-notifier-keyword-whitelist '("TODO")
-        org-wild-notifier-tags-blacklist nil
-        org-wild-notifier-tags-whitelist nil
-        org-wild-notifier-keyword-whitelist nil)
-  (org-wild-notifier-mode))
-
-(after! alert
-  (setq alert-default-style 'libnotify))
 #+end_src
 
 * Platform Specific
