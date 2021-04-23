@@ -8,6 +8,10 @@ export ZSH="$HOME/.oh-my-zsh"
 
 export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
 
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t" # opens in terminal
+export VISUAL="emacsclient -c -a emacs" # opens in gui mode
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -155,13 +159,16 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
-alias vzsh="vim ~/.zshrc"
-alias vimrc="vim ~/.vimrc"
+alias vzsh="emacsclient -t ~/.zshrc"
+alias vimrc="emacsclient -t ~/.vimrc"
 # git (commit) amend  no edit
 alias gane="gca --amend --no-edit"
 alias gpf="gp -f"
 # wireguard aliases
 alias wgup="sudo wg-quick up wg0"
+
+alias e="emacsclient -t -a ''" # (t)erminal mode, (a)lternate editor is emacs
+alias ec="emacsclient -c -n -a ''" # (c)reates a frame (n)o wait for return, (a)lternate editor is emacs itself
 
 if [[ -f /etc/debian_version ]]; then
     # Apt
@@ -210,7 +217,6 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 # Environmental Variables
 export COWPATH=$HOME/.cowfiles
-export EDITOR=vim
 # WSL specific configuration
 if echo $(uname -a) | grep -q WSL; then
     echo "WSL Environment Detected..."
