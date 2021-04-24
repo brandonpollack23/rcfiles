@@ -297,6 +297,34 @@ descriptions as subtext into an org file with directories indicating subheadings
         :prefix "o"
         :n "c" #'my-open-calendar))
 
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode)
+  (setq org-super-agenda-groups '((:name "RIGHT NOW TODO List"
+                                   :and (:priority "A"))
+
+                                  (:name "TODO List"
+                                   :file-path "org/todo.org")
+
+                                  (:name "Technical Project Stuff"
+                                   :and (:not (:priority "C")
+                                         :file-path "org/technical_projects.org"))
+
+                                  (:name "Deepspace9 Tasks"
+                                   :file-path "org/deepspace9.org")
+
+                                  (:name "Japan Move"
+                                   :and (:file-path "org/moving_to_japan.org"
+                                         :not (:todo "WAITING")))
+
+                                  (:name "Backlog" :priority "C")
+
+                                  (:name "Blocked Items"
+                                   :todo "WAITING")))
+  ;; Workaround for keybinding problems
+  (setq org-super-agenda-header-map (make-sparse-keymap)))
+
 (unless (eq system-type 'windows-nt)
   (after! mu4e
     :config
