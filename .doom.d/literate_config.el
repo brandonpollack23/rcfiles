@@ -294,7 +294,7 @@ descriptions as subtext into an org file with directories indicating subheadings
   :config
   (map! :leader
         :prefix "o"
-        :n "c" #'my-open-calendar)
+        :n "c" #'my-open-calendar))
 
 (unless (eq system-type 'windows-nt)
   (after! mu4e
