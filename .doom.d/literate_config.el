@@ -268,11 +268,33 @@ descriptions as subtext into an org file with directories indicating subheadings
 
 (use-package! org-gcal
   :config
+  (defvar gmail_dir (concat org-directory "gmail_calendars/"))
   (setq
    org-gcal-client-id "936800008942-so0ctu4f2029386ujcfcp9ke3af91la2.apps.googleusercontent.com"
-   org-gcal-client-secret (get-string-from-file "~/org/gmail_calendars/gcal_client_secret")
-   org-gcal-fetch-file-alist '(("brandonpollack23@gmail.com" . "~/org/gmail_calendars/personal.org")
-                               ("en.japanese#holiday@group.v.calendar.google.com" . "~/org/gmail_calendars/japanese_holidays.org"))))
+   org-gcal-client-secret (s-trim (get-string-from-file (concat gmail_dir "gcal_client_secret")))
+   org-gcal-fetch-file-alist `(("brandonpollack23@gmail.com" . ,(concat gmail_dir "personal.org"))
+                               ("dnu3qs4g5pp6h4m9rfhsppgbik@group.calendar.google.com" . ,(concat gmail_dir "study.org")))
+   org-gcal-down-days 365
+   org-gcal-recurring-events-mode 'nested))
+
+(use-package calfw-org
+  :init
+  (defun my-open-calendar ()
+    (interactive)
+    (cfw:open-calendar-buffer
+     :contents-sources
+     (list
+      (cfw:org-create-source "Green")  ; org-agenda source
+      ;; (cfw:org-create-file-source "Gmail Personal Calendar" (concat gmail_dir "personal.org") "Green")  ; other org source
+      ;; (cfw:howm-create-source "Blue")  ; howm source
+      ;; (cfw:cal-create-source "Orange") ; diary source
+      ;; (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
+      ;; (cfw:ical-create-source "gcal" "https://..../basic.ics" "IndianRed") ; google calendar ICS
+      )))
+  :config
+  (map! :leader
+        :prefix "o"
+        :n "c" #'my-open-calendar)
 
 (unless (eq system-type 'windows-nt)
   (after! mu4e
