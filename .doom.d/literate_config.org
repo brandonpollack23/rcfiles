@@ -222,7 +222,8 @@ Make it so even rob can see window jumps
 #+end_src
 
 ** Org Mode
-*** Configuration
+*** General
+**** Configuration
 + I set up my default org directory to be in home
 + I set up my TODOs to be more slick
 + Set up refiling to go deeeeeep
@@ -277,7 +278,7 @@ Make it so even rob can see window jumps
 
 (use-package! org-depend :after org)
 #+end_src
-*** Scripts
+**** Scripts
 + Archive all completed TODO files
 + Create master Index file of all org files
 #+begin_src elisp :lexical t
@@ -340,8 +341,7 @@ descriptions as subtext into an org file with directories indicating subheadings
     ;; TODO save buffer to org-directory/index.org
     (message (buffer-string))))
 #+end_src
-
-** Org Alerts
+*** Org Alerts
 #+begin_src elisp
 (use-package! org-wild-notifier
   :config
@@ -357,8 +357,7 @@ descriptions as subtext into an org file with directories indicating subheadings
 (after! alert
   (setq alert-default-style 'libnotify))
 #+end_src
-
-** Org Gcal and calfw
+*** Org Gcal and calfw
 #+begin_src elisp
 
 (use-package! org-gcal
@@ -394,6 +393,36 @@ descriptions as subtext into an org file with directories indicating subheadings
 
 #+RESULTS:
 : calfw-org
+*** Org Super Agenda
+#+begin_src elisp
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode)
+  (setq org-super-agenda-groups '((:name "RIGHT NOW TODO List"
+                                   :and (:priority "A"))
+
+                                  (:name "TODO List"
+                                   :file-path "org/todo.org")
+
+                                  (:name "Technical Project Stuff"
+                                   :and (:not (:priority "C")
+                                         :file-path "org/technical_projects.org"))
+
+                                  (:name "Deepspace9 Tasks"
+                                   :file-path "org/deepspace9.org")
+
+                                  (:name "Japan Move"
+                                   :and (:file-path "org/moving_to_japan.org"
+                                         :not (:todo "WAITING")))
+
+                                  (:name "Backlog" :priority "C")
+
+                                  (:name "Blocked Items"
+                                   :todo "WAITING")))
+  ;; Workaround for keybinding problems
+  (setq org-super-agenda-header-map (make-sparse-keymap)))
+#+end_src
 
 ** Email mu4e
 Inspired by: [[https://groups.google.com/g/mu-discuss/c/BpGtwVHMd2E][This Google Groups Post]]

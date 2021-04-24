@@ -59,3 +59,5 @@
 (package! org-fancy-priorities :disable t)
 
 (package! org-wild-notifier)
+
+(package! org-super-agenda)
