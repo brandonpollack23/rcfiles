@@ -158,14 +158,14 @@
 
         ;; Quick captures
         org-capture-templates '(("x" "[inbox]" entry
-                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
                                  "* %i%?")
                                 ("t" "Todo [inbox]" entry
-                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 (file+headline "~/org/todo.org" "To Do List")
                                  "* TODO %i%?")
-                                ("T" "Tickler" entry
-                                 (file+headline "~/org/tickler.org" "Tickler")
-                                 "* %i%? \n %U"))
+                                ("r" "Add (R)eminder" entry
+                                 (file+headline "~/org/inbox.org" "Reminders")
+                                 "* TODO %i%?"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
@@ -187,6 +187,13 @@
   (org-link-set-parameters "id" :complete #'org-id-complete-link))
 
 (use-package! org-depend :after org)
+
+(defun myorg-archive-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'tree))
+(map! :leader
+      :prefix "m"
+      :n "m" #'myorg-archive-done-tasks)
 
 ;; TODO this doesnt work yet.
 ;; TODO when it does at it to save hook for org files with a check if it within org directory.

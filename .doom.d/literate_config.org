@@ -237,14 +237,14 @@ Make it so even rob can see window jumps
 
         ;; Quick captures
         org-capture-templates '(("x" "[inbox]" entry
-                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
                                  "* %i%?")
                                 ("t" "Todo [inbox]" entry
-                                 (file+headline "~/org/inbox.org" "Tasks")
+                                 (file+headline "~/org/todo.org" "To Do List")
                                  "* TODO %i%?")
-                                ("T" "Tickler" entry
-                                 (file+headline "~/org/tickler.org" "Tickler")
-                                 "* %i%? \n %U"))
+                                ("r" "Add (R)eminder" entry
+                                 (file+headline "~/org/reminders.org" "Reminders")
+                                 "* TODO %i%?"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
