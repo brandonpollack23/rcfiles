@@ -235,6 +235,7 @@ Make it so even rob can see window jumps
   ;; If you use `org' and don't want your org files in the default location below,
   ;; change `org-directory'. It must be set before org loads!
   (setq org-directory "~/org/"
+        org-agenda-files `(,org-directory ,(concat org-directory "gmail_calendars"))
         org-todo-keywords '((sequence "TODO(t)" "INPROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")
                             (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
                             (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))
