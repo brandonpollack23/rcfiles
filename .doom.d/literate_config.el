@@ -104,6 +104,12 @@
         doom-dashboard-widget-loaded
         doom-dashboard-widget-footer))
 
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
 (map! :leader
       :prefix "v"
       :v "v" #'er/expand-region
