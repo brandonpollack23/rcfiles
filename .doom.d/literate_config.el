@@ -266,6 +266,14 @@ descriptions as subtext into an org file with directories indicating subheadings
 (after! alert
   (setq alert-default-style 'libnotify))
 
+(use-package! org-gcal
+  :config
+  (setq
+   org-gcal-client-id "936800008942-so0ctu4f2029386ujcfcp9ke3af91la2.apps.googleusercontent.com"
+   org-gcal-client-secret (get-string-from-file "~/org/gmail_calendars/gcal_client_secret")
+   org-gcal-fetch-file-alist '(("brandonpollack23@gmail.com" . "~/org/gmail_calendars/personal.org")
+                               ("en.japanese#holiday@group.v.calendar.google.com" . "~/org/gmail_calendars/japanese_holidays.org"))))
+
 (unless (eq system-type 'windows-nt)
   (after! mu4e
     :config
