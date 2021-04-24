@@ -363,9 +363,10 @@ descriptions as subtext into an org file with directories indicating subheadings
   :config
   (setq
    org-gcal-client-id "936800008942-so0ctu4f2029386ujcfcp9ke3af91la2.apps.googleusercontent.com"
-   org-gcal-client-secret (get-string-from-file "~/org/gmail_calendars/gcal_client_secret")
+   org-gcal-client-secret (s-trim (get-string-from-file "~/org/gmail_calendars/gcal_client_secret"))
    org-gcal-fetch-file-alist '(("brandonpollack23@gmail.com" . "~/org/gmail_calendars/personal.org")
-                               ("en.japanese#holiday@group.v.calendar.google.com" . "~/org/gmail_calendars/japanese_holidays.org"))))
+                               ("en.japanese#holiday@group.v.calendar.google.com" . "~/org/gmail_calendars/japanese_holidays.org")
+                               ("dnu3qs4g5pp6h4m9rfhsppgbik@group.calendar.google.com" . "~/org/gmail_calendars/study.org"))))
 #+end_src
 
 ** Email mu4e
