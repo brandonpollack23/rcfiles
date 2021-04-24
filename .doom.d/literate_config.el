@@ -152,20 +152,19 @@
         org-todo-keyword-faces '(("TODO" :foreground "forestgreen" :weight bold :underline t)
                                  ("INPROGRESS" :foreground "darkorange" :weight bold :underline t)
                                  ("WAITING" :foreground "yellow" :weight normal :underline nil)
-                                 ("CANCELLED" :foreground "red" :weight bold :underline t)
-                                 )
+                                 ("CANCELLED" :foreground "red" :weight bold :underline t))
         org-log-done 'time
 
         ;; Quick captures
-        org-capture-templates '(("x" "[inbox]" entry
+        org-capture-templates '(("x" "Inbox" entry
                                  (file+headline "~/org/inbox.org" "Tasks To Sort")
                                  "* %i%?")
-                                ("t" "Todo [inbox]" entry
+                                ("t" "TODO Item" entry
                                  (file+headline "~/org/todo.org" "To Do List")
                                  "* TODO %i%?")
                                 ("r" "Add (R)eminder" entry
-                                 (file+headline "~/org/inbox.org" "Reminders")
-                                 "* TODO %i%?"))
+                                 (file+headline "~/org/reminders.org" "Reminders")
+                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
