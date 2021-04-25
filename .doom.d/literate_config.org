@@ -567,3 +567,11 @@ doing.
     (after! alert
       (setq alert-default-style 'burnttoastwsl)))))
 #+end_src
+
+* Local machine only config
+This here detects a local only ".emacs.local" file and runs that as well. This
+is useful for environment specific setup like @ work with custom packages.
+#+begin_src elisp
+(if (file-exists-p "~/.emacs.local")
+    (load-file "~/.emacs.local"))
+#+end_src
