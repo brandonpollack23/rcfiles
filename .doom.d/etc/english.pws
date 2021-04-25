@@ -1,4 +1,4 @@
-personal_ws-1.1 en 62
+personal_ws-1.1 en 65
 Abashiri
 Amex
 Anki
@@ -7,6 +7,7 @@ BurntToast
 Chuubu
 Chuugoku
 Easymotion
+Engadget
 Fi
 Goodfellow
 Googlers
@@ -45,6 +46,7 @@ dired
 el
 elisp
 epub
+gcal
 glaptop
 gmail
 kaboki
@@ -60,4 +62,5 @@ smartparens
 sudo
 whitespace
 workspaces
+yakuza
 zsh
