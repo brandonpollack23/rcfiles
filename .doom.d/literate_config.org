@@ -47,6 +47,18 @@ this file. Emacs searches the `load-path' when you load packages with
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 #+end_src
+
+** Tramp Setup
+*** Fancy Shell prompts with colors
++ Tramp hangs because when it tries to remote in, it attempts to detect a shell
+  prompt. When there are fancy colors this is tough, so adding the .* regexp
+  after the prompt chars fixes the issue.
+#+begin_src elisp
+(setq
+ tramp-shell-prompt-pattern
+ "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*")
+#+end_src
+
 ** Insertion methods :mozc:
 + Japanese input
 + 日本語！ テスト
