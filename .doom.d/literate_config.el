@@ -8,7 +8,12 @@
  evil-emacs-state-cursor '("purple" box)
  ;; Always confirm (even on splash and other not "real" buffers)
  confirm-kill-emacs 'y-or-n-p
- projectile-project-search-path '("$HOME/src", "$HOME/org"))
+ projectile-project-search-path '(
+                                  ;; Local Source files
+                                  "$HOME/src" "$HOME/org"
+                                  ;; My remote ones
+                                  "ssh:brpol@sisko:/mnt/applications"
+                                  ))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -32,6 +37,10 @@
 ;; make it so horizontal scroll is not a thing
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
+
+(setq
+ tramp-shell-prompt-pattern
+ "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*")
 
 (after! mozc
   (setq-default mozc-candidate-style 'echo-area))
