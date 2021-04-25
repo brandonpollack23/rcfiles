@@ -432,3 +432,6 @@ descriptions as subtext into an org file with directories indicating subheadings
                              (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title "\n" cat "\n" msg "\\\"\"")))))
     (after! alert
       (setq alert-default-style 'burnttoastwsl)))))
+
+(if (file-exists-p "~/.emacs.local")
+    (load-file "~/.emacs.local"))

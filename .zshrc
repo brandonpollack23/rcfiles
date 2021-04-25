@@ -1,4 +1,23 @@
 #!/bin/zsh
+
+# Fix dumb terminal usage for emacs TRAMP
+if [[ "$TERM" == "dumb" ]]; then
+    unsetopt zle
+    unsetopt prompt_cr
+    unsetopt prompt_subst
+    if whence -w precmd >/dev/null; then
+        unfunction precmd
+    fi
+    if whence -w preexec >/dev/null; then
+        unfunction preexec
+    fi
+    if [[ "$UUID" -eq 0 ]]; then
+        PS1='# '
+    else
+        PS1='$ '
+    fi
+fi
+
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
