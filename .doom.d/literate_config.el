@@ -38,6 +38,9 @@
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
 
+;; Allow prompting for root whenever editing unpriveleged file
+(auto-sudoedit-mode 1)
+
 (setq
  tramp-shell-prompt-pattern
  "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*")
