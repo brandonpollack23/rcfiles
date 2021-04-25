@@ -9,6 +9,8 @@ cp -RL $HOME/.vimrc /root/
 cp -RL $HOME/.vim /root/
 cp -RL $HOME/.cowfiles /root/
 cp -RL $HOME/.cowrc /root/
+cp -RL $HOME/.emacs.d /root/
+cp -RL $HOME/.doom.d /root/
 
 chown -R root /root
 

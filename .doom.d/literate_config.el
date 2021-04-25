@@ -8,7 +8,12 @@
  evil-emacs-state-cursor '("purple" box)
  ;; Always confirm (even on splash and other not "real" buffers)
  confirm-kill-emacs 'y-or-n-p
- projectile-project-search-path '("$HOME/src", "$HOME/org"))
+ projectile-project-search-path '(
+                                  ;; Local Source files
+                                  "$HOME/src" "$HOME/org"
+                                  ;; My remote ones
+                                  "ssh:brpol@sisko:/mnt/applications"
+                                  ))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -32,6 +37,13 @@
 ;; make it so horizontal scroll is not a thing
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
+
+;; Allow prompting for root whenever editing unpriveleged file
+(auto-sudoedit-mode 1)
+
+(setq
+ tramp-shell-prompt-pattern
+ "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*")
 
 (after! mozc
   (setq-default mozc-candidate-style 'echo-area))
@@ -104,6 +116,12 @@
         doom-dashboard-widget-loaded
         doom-dashboard-widget-footer))
 
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
 (map! :leader
       :prefix "v"
       :v "v" #'er/expand-region
@@ -146,26 +164,26 @@
   ;; If you use `org' and don't want your org files in the default location below,
   ;; change `org-directory'. It must be set before org loads!
   (setq org-directory "~/org/"
+        org-agenda-files `(,org-directory ,(concat org-directory "gmail_calendars"))
         org-todo-keywords '((sequence "TODO(t)" "INPROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")
                             (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
                             (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))
         org-todo-keyword-faces '(("TODO" :foreground "forestgreen" :weight bold :underline t)
                                  ("INPROGRESS" :foreground "darkorange" :weight bold :underline t)
                                  ("WAITING" :foreground "yellow" :weight normal :underline nil)
-                                 ("CANCELLED" :foreground "red" :weight bold :underline t)
-                                 )
+                                 ("CANCELLED" :foreground "red" :weight bold :underline t))
         org-log-done 'time
 
         ;; Quick captures
-        org-capture-templates '(("x" "[inbox]" entry
+        org-capture-templates '(("x" "Inbox" entry
                                  (file+headline "~/org/inbox.org" "Tasks To Sort")
                                  "* %i%?")
-                                ("t" "Todo [inbox]" entry
+                                ("t" "TODO Item" entry
                                  (file+headline "~/org/todo.org" "To Do List")
                                  "* TODO %i%?")
                                 ("r" "Add (R)eminder" entry
-                                 (file+headline "~/org/inbox.org" "Reminders")
-                                 "* TODO %i%?"))
+                                 (file+headline "~/org/reminders.org" "Reminders")
+                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
@@ -260,6 +278,64 @@ descriptions as subtext into an org file with directories indicating subheadings
 
 (after! alert
   (setq alert-default-style 'libnotify))
+
+(use-package! org-gcal
+  :config
+  (defvar gmail_dir (concat org-directory "gmail_calendars/"))
+  (setq
+   org-gcal-client-id "936800008942-so0ctu4f2029386ujcfcp9ke3af91la2.apps.googleusercontent.com"
+   org-gcal-client-secret (s-trim (get-string-from-file (concat gmail_dir "gcal_client_secret")))
+   org-gcal-fetch-file-alist `(("brandonpollack23@gmail.com" . ,(concat gmail_dir "personal.org"))
+                               ("dnu3qs4g5pp6h4m9rfhsppgbik@group.calendar.google.com" . ,(concat gmail_dir "study.org")))
+   org-gcal-down-days 365
+   org-gcal-recurring-events-mode 'nested))
+
+(use-package calfw-org
+  :init
+  (defun my-open-calendar ()
+    (interactive)
+    (cfw:open-calendar-buffer
+     :contents-sources
+     (list
+      (cfw:org-create-source "Green")  ; org-agenda source
+      ;; (cfw:org-create-file-source "Gmail Personal Calendar" (concat gmail_dir "personal.org") "Green")  ; other org source
+      ;; (cfw:howm-create-source "Blue")  ; howm source
+      ;; (cfw:cal-create-source "Orange") ; diary source
+      ;; (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
+      ;; (cfw:ical-create-source "gcal" "https://..../basic.ics" "IndianRed") ; google calendar ICS
+      )))
+  :config
+  (map! :leader
+        :prefix "o"
+        :n "c" #'my-open-calendar))
+
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode)
+  (setq org-super-agenda-groups '((:name "RIGHT NOW TODO List"
+                                   :and (:priority "A"))
+
+                                  (:name "TODO List"
+                                   :file-path "org/todo.org")
+
+                                  (:name "Technical Project Stuff"
+                                   :and (:not (:priority "C")
+                                         :file-path "org/technical_projects.org"))
+
+                                  (:name "Deepspace9 Tasks"
+                                   :file-path "org/deepspace9.org")
+
+                                  (:name "Japan Move"
+                                   :and (:file-path "org/moving_to_japan.org"
+                                         :not (:todo "WAITING")))
+
+                                  (:name "Backlog" :priority "C")
+
+                                  (:name "Blocked Items"
+                                   :todo "WAITING")))
+  ;; Workaround for keybinding problems
+  (setq org-super-agenda-header-map (make-sparse-keymap)))
 
 (unless (eq system-type 'windows-nt)
   (after! mu4e
@@ -356,3 +432,6 @@ descriptions as subtext into an org file with directories indicating subheadings
                              (concat "powershell.exe \"New-BurntToastNotification -Text \\\"" title "\n" cat "\n" msg "\\\"\"")))))
     (after! alert
       (setq alert-default-style 'burnttoastwsl)))))
+
+(if (file-exists-p "~/.emacs.local")
+    (load-file "~/.emacs.local"))
