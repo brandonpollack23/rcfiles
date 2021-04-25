@@ -15,6 +15,7 @@ User information, used for git, email, templates, etc.
 
 this file. Emacs searches the `load-path' when you load packages with
 `require' or `use-package'.
+
 ** Global Options
 #+begin_src elisp
 (setq
@@ -22,7 +23,12 @@ this file. Emacs searches the `load-path' when you load packages with
  evil-emacs-state-cursor '("purple" box)
  ;; Always confirm (even on splash and other not "real" buffers)
  confirm-kill-emacs 'y-or-n-p
- projectile-project-search-path '("$HOME/src", "$HOME/org"))
+ projectile-project-search-path '(
+                                  ;; Local Source files
+                                  "$HOME/src" "$HOME/org"
+                                  ;; My remote ones
+                                  "ssh:brpol@sisko:/mnt/applications"
+                                  ))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
