@@ -61,3 +61,5 @@
 (package! org-wild-notifier)
 
 (package! org-super-agenda)
+
+(package! auto-sudoedit)

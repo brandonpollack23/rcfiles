@@ -46,6 +46,9 @@ this file. Emacs searches the `load-path' when you load packages with
 ;; make it so horizontal scroll is not a thing
 (setq-default truncate-lines nil)
 (setq-default word-wrap t)
+
+;; Allow prompting for root whenever editing unpriveleged file
+(auto-sudoedit-mode 1)
 #+end_src
 
 ** Tramp Setup
