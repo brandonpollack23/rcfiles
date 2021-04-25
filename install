@@ -14,28 +14,6 @@ echo "$(whoami)"
 
 RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-# First do this user tasks
-if [ "$UID" -ne 0 ]; then
-    # Add cronjobs I like
-    # legacy cron style, uncomment for cron instead
-    #CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
-    #NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
-    #echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
-    if [[ -z $IS_WSL ]]; then
-        echo "Setting up systemd timers"
-        mkdir -p $HOME/.config/systemd/user
-        for systemd_file in $RCFILESDIR/systemd/* ; do
-            echo "Setting up $systemd_file"
-            sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
-            # Run systemctl --user enable as the user
-            systemctl --user daemon-reload
-            CMD="systemctl --user enable --now $(basename $systemd_file)"
-            echo $CMD
-            $CMD
-        done
-    fi
-fi
-
 [ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
 
 getopts ":u:" u
@@ -83,7 +61,7 @@ if [[ -f "/etc/debian_version" ]]; then
     fi
     apt update
 
-    platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree devscripts etherwake wakeonlan apt-file net-tools"
+    platform_packages="fortunes-debian-hints debian-handbook texinfo-doc-nonfree devscripts etherwake wakeonlan apt-file net-tools emacs-mozc-bin"
     # future yum stuff: net-tools
 
     # Enable apache cgi (for man2html)
@@ -163,6 +141,27 @@ chown $CALLING_USER $HOME/.cowfiles
 # Load rebuild documents in vim
 vim +"helptags ALL" +":exit"
 vim +"call mkdp#util#install()" +":exit"
+
+if [ "$UID" -ne 0 ]; then
+    # Add cronjobs I like
+    # legacy cron style, uncomment for cron instead
+    #CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
+    #NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
+    #echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
+    if [[ -z $IS_WSL ]]; then
+        echo "Setting up systemd timers"
+        mkdir -p $HOME/.config/systemd/user
+        for systemd_file in $RCFILESDIR/systemd/* ; do
+            echo "Setting up $systemd_file"
+            sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
+            # Run systemctl --user enable as the user
+            runuser -u $CALLING_USER -- systemctl --user daemon-reload
+            CMD="runuser -u $CALLING_USER -- systemctl --user enable --now $(basename $systemd_file)"
+            echo $CMD
+            $CMD
+        done
+    fi
+fi
 
 # Change to zsh
 chsh -s `which zsh` $CALLING_USER
