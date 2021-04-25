@@ -204,7 +204,7 @@ These help with navigation and movement in paren world
  :nvi "C-M-h" 'down-list)
 #+end_src
 
-* Modes
+* Modes/Packages
 ** Evil
 *** Evil Easymotion
 The default did not have enough avy-keys (jump keys, whatever)
