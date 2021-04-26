@@ -318,39 +318,39 @@ descriptions as subtext into an org file with directories indicating subheadings
   :after org-agenda
   :config
   (org-super-agenda-mode)
-  (let ((before-date (format-time-string "%F" (+ (* 60 60 24 5) (float-time))))
-        (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
-                                         :and (:priority "A"))
+  (let ((before-date (format-time-string "%F" (+ (* 60 60 24 5) (float-time)))))
+    (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
+                                     :and (:priority "A"))
 
-                                        (:name "TODO List"
-                                         :file-path "org/todo.org")
+                                    (:name "TODO List"
+                                     :file-path "org/todo.org")
 
-                                        (:name "Upcoming Deadline Reminders In the next 5 days"
-                                         :and (:deadline (before ,before-date)
-                                               :file-path "org/reminders.org"))
+                                    (:name "Upcoming Deadline Reminders In the next 5 days"
+                                     :and (:deadline (before ,before-date)
+                                           :file-path "org/reminders.org"))
 
-                                        (:name "Upcoming Scheduled Reminders In the next 5 days"
-                                         :and (:scheduled (before ,before-date)
-                                               :file-path "org/reminders.org"))
+                                    (:name "Upcoming Scheduled Reminders In the next 5 days"
+                                     :and (:scheduled (before ,before-date)
+                                           :file-path "org/reminders.org"))
 
-                                        (:name "Technical Project Stuff"
-                                         :and (:not (:priority "C")
-                                               :file-path "org/technical_projects.org"))
+                                    (:name "Technical Project Stuff"
+                                     :and (:not (:priority "C")
+                                           :file-path "org/technical_projects.org"))
 
-                                        (:name "Deepspace9 Tasks"
-                                         :file-path "org/deepspace9.org")
+                                    (:name "Deepspace9 Tasks"
+                                     :file-path "org/deepspace9.org")
 
-                                        (:name "Japan Move"
-                                         :and (:file-path "org/moving_to_japan.org"
-                                               :not (:todo "WAITING")))
+                                    (:name "Japan Move"
+                                     :and (:file-path "org/moving_to_japan.org"
+                                           :not (:todo "WAITING")))
 
-                                        (:name "Backlog" :priority "C")
+                                    (:name "Backlog" :priority "C")
 
-                                        (:name "Blocked Items"
-                                         :todo "WAITING"))
-              org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n")))
-    ;; Workaround for keybinding problems
-    org-super-agenda-header-map (make-sparse-keymap)))
+                                    (:name "Blocked Items"
+                                     :todo "WAITING"))))
+  org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n")
+  ;; Workaround for keybinding problems
+  org-super-agenda-header-map (make-sparse-keymap))
 
 (use-package! org-journal
   :config

@@ -73,3 +73,6 @@
 
 ;; Allow for refactoring of languages like elisp, scheme, C.
 (package! emr)
+
+;; Find functions based on inputs/outputs
+(package! suggest)
