@@ -394,6 +394,11 @@ descriptions as subtext into an org file with directories indicating subheadings
   (setq command-log-mode-window-size 80)
   (setq command-log-mode-open-log-turns-on-mode t))
 
+(use-package! emr
+  :config
+  (map!
+   :nvi "M-RET" #'emr-show-refactor-menu))
+
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
 ;; so I'm front-ending system-type with my variable: sysTypeSpecific.
