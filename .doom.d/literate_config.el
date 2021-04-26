@@ -319,6 +319,10 @@ descriptions as subtext into an org file with directories indicating subheadings
                                   (:name "TODO List"
                                    :file-path "org/todo.org")
 
+                                  (:name "Upcoming Reminders"
+                                   ;; TODO do date string this week
+                                   :file-path "org/reminders.org")
+
                                   (:name "Technical Project Stuff"
                                    :and (:not (:priority "C")
                                          :file-path "org/technical_projects.org"))
@@ -336,6 +340,14 @@ descriptions as subtext into an org file with directories indicating subheadings
                                    :todo "WAITING")))
   ;; Workaround for keybinding problems
   (setq org-super-agenda-header-map (make-sparse-keymap)))
+
+(use-package! org-journal
+  :config
+  (setq
+   org-extend-today-until 3
+   org-journal-file-format "jnl_Week_Of_%F"
+   org-journal-file-type 'weekly
+   org-journal-time-format "%I:%M %p"))
 
 (unless (eq system-type 'windows-nt)
   (after! mu4e
