@@ -160,6 +160,11 @@
     :foreground "white" :background "red"
     :weight bold :height 2.5 :box (:line-width 7 :color "red")))
 
+;; Utility since %s is ignored in todo prefix format.
+(defun myorg-get-scheduled-date-for-todo ()
+  (let ((scheduled (org-get-scheduled-time (point))))
+    (if scheduled (format-time-string "%Y-%m-%d " scheduled) "")))
+
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,
   ;; change `org-directory'. It must be set before org loads!
@@ -182,10 +187,10 @@
         ;; Show only top level TODO items.
         org-agenda-todo-list-sublevels nil
         ;; Modified from default to show schedules in TODO items
-        ((agenda . " %i %-12:c%?-12t% s")
-         (todo . " %i %-12:c")
-         (tags . " %i %-12:c")
-         (search . " %i %-12:c"))
+        org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                   (todo . " %i %-12:c%(myorg-get-scheduled-date-for-todo)")
+                                   (tags . " %i %-12:c")
+                                   (search . " %i %-12:c"))
         ;; Checklist cookies take into account full heirarchy.
         org-checkbox-hierarchical-statistics nil))
 
