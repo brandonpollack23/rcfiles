@@ -181,6 +181,11 @@
         org-cycle-separator-lines -1
         ;; Show only top level TODO items.
         org-agenda-todo-list-sublevels nil
+        ;; Modified from default to show schedules in TODO items
+        ((agenda . " %i %-12:c%?-12t% s")
+         (todo . " %i %-12:c")
+         (tags . " %i %-12:c")
+         (search . " %i %-12:c"))
         ;; Checklist cookies take into account full heirarchy.
         org-checkbox-hierarchical-statistics nil))
 
