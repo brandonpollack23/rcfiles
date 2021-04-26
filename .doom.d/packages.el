@@ -70,3 +70,6 @@
 
 ;; Don't make me use tramp by hand just to sudo edit.
 (package! auto-sudoedit)
+
+;; Allow for refactoring of languages like elisp, scheme, C.
+(package! emr)

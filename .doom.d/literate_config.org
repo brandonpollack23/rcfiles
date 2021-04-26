@@ -523,6 +523,17 @@ doing.
   (setq command-log-mode-open-log-turns-on-mode t))
 #+end_src
 
+* Languages
+** Emacs Refactor
+Library that helps me out with extract function and the like, especially for
+elisp (and where there's no LSP I guess)
+#+begin_src elisp
+(use-package! emr
+  :config
+  (map!
+   :nvi "M-RET" #'emr-show-refactor-menu))
+#+end_src
+
 * Platform Specific
 ** WSL
 + Web browser opening doesn't work without this
