@@ -420,7 +420,7 @@ descriptions as subtext into an org file with directories indicating subheadings
   :after org-agenda
   :config
   (org-super-agenda-mode)
-  (setq org-super-agenda-groups '((:name "RIGHT NOW TODO List"
+  (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
                                    :and (:priority "A"))
 
                                   (:name "TODO List"
@@ -428,7 +428,8 @@ descriptions as subtext into an org file with directories indicating subheadings
 
                                   (:name "Upcoming Reminders"
                                    ;; TODO do date string this week
-                                   :file-path "org/reminders.org")
+                                   :and (:scheduled (before ,(format-time-string "%F" (+ (* 60 60 24 5) (float-time))))
+                                         :file-path "org/reminders.org"))
 
                                   (:name "Technical Project Stuff"
                                    :and (:not (:priority "C")
