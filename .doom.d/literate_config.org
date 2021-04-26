@@ -426,6 +426,10 @@ descriptions as subtext into an org file with directories indicating subheadings
                                   (:name "TODO List"
                                    :file-path "org/todo.org")
 
+                                  (:name "Upcoming Reminders"
+                                   ;; TODO do date string this week
+                                   :file-path "org/reminders.org")
+
                                   (:name "Technical Project Stuff"
                                    :and (:not (:priority "C")
                                          :file-path "org/technical_projects.org"))
@@ -443,6 +447,20 @@ descriptions as subtext into an org file with directories indicating subheadings
                                    :todo "WAITING")))
   ;; Workaround for keybinding problems
   (setq org-super-agenda-header-map (make-sparse-keymap)))
+#+end_src
+*** Org Journal SPC-n-j-j
++ Day actually ends at 3 AM
++ not 24 hour time
++ weekly journal files
++ better journal file names
+#+begin_src elisp
+(use-package! org-journal
+  :config
+  (setq
+   org-extend-today-until 3
+   org-journal-file-format "jnl_Week_Of_%F"
+   org-journal-file-type 'weekly
+   org-journal-time-format "%I:%M %p"))
 #+end_src
 
 ** Email mu4e
