@@ -163,7 +163,9 @@
 ;; Utility since %s is ignored in todo prefix format.
 (defun myorg-get-scheduled-date-for-todo ()
   (let ((scheduled (org-get-scheduled-time (point))))
-    (if scheduled (format-time-string "%Y-%m-%d " scheduled) "")))
+    (if scheduled
+        (format-time-string "%Y-%m-%d %I:%M %p => " scheduled)
+      "")))
 
 (after! org
   ;; If you use `org' and don't want your org files in the default location below,
