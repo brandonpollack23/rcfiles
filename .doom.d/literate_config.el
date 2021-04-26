@@ -174,16 +174,7 @@
                                  ("CANCELLED" :foreground "red" :weight bold :underline t))
         org-log-done 'time
 
-        ;; Quick captures
-        org-capture-templates '(("x" "Inbox" entry
-                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
-                                 "* %i%?")
-                                ("t" "TODO Item" entry
-                                 (file+headline "~/org/todo.org" "To Do List")
-                                 "* TODO %i%?")
-                                ("r" "Add (R)eminder" entry
-                                 (file+headline "~/org/reminders.org" "Reminders")
-                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))
+
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
@@ -192,6 +183,19 @@
         org-agenda-todo-list-sublevels nil
         ;; Checklist cookies take into account full heirarchy.
         org-checkbox-hierarchical-statistics nil))
+
+(after! org-capture
+  :config
+  ;; Quick captures
+  (setq org-capture-templates '(("x" "Inbox" entry
+                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
+                                 "* %i%?")
+                                ("t" "TODO Item" entry
+                                 (file+headline "~/org/todo.org" "To Do List")
+                                 "* TODO %i%?")
+                                ("r" "Add (R)eminder" entry
+                                 (file+headline "~/org/reminders.org" "Reminders")
+                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))))
 
 (after! (:and evil-smartparens org-mode)
   :init
@@ -309,38 +313,44 @@ descriptions as subtext into an org file with directories indicating subheadings
         :prefix "o"
         :n "c" #'my-open-calendar))
 
+;; Before date is 5 days from now (so within a work week)
 (use-package! org-super-agenda
   :after org-agenda
   :config
   (org-super-agenda-mode)
-  (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
-                                   :and (:priority "A"))
+  (let ((before-date (format-time-string "%F" (+ (* 60 60 24 5) (float-time))))
+        (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
+                                         :and (:priority "A"))
 
-                                  (:name "TODO List"
-                                   :file-path "org/todo.org")
+                                        (:name "TODO List"
+                                         :file-path "org/todo.org")
 
-                                  (:name "Upcoming Reminders In the next 5 days"
-                                   :and (:scheduled (before ,(format-time-string "%F" (+ (* 60 60 24 5) (float-time))))
-                                         :file-path "org/reminders.org"))
+                                        (:name "Upcoming Deadline Reminders In the next 5 days"
+                                         :and (:deadline (before ,before-date)
+                                               :file-path "org/reminders.org"))
 
-                                  (:name "Technical Project Stuff"
-                                   :and (:not (:priority "C")
-                                         :file-path "org/technical_projects.org"))
+                                        (:name "Upcoming Scheduled Reminders In the next 5 days"
+                                         :and (:scheduled (before ,before-date)
+                                               :file-path "org/reminders.org"))
 
-                                  (:name "Deepspace9 Tasks"
-                                   :file-path "org/deepspace9.org")
+                                        (:name "Technical Project Stuff"
+                                         :and (:not (:priority "C")
+                                               :file-path "org/technical_projects.org"))
 
-                                  (:name "Japan Move"
-                                   :and (:file-path "org/moving_to_japan.org"
-                                         :not (:todo "WAITING")))
+                                        (:name "Deepspace9 Tasks"
+                                         :file-path "org/deepspace9.org")
 
-                                  (:name "Backlog" :priority "C")
+                                        (:name "Japan Move"
+                                         :and (:file-path "org/moving_to_japan.org"
+                                               :not (:todo "WAITING")))
 
-                                  (:name "Blocked Items"
-                                   :todo "WAITING"))
-        org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n"))
-  ;; Workaround for keybinding problems
-  (setq org-super-agenda-header-map (make-sparse-keymap)))
+                                        (:name "Backlog" :priority "C")
+
+                                        (:name "Blocked Items"
+                                         :todo "WAITING"))
+              org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n")))
+    ;; Workaround for keybinding problems
+    org-super-agenda-header-map (make-sparse-keymap)))
 
 (use-package! org-journal
   :config

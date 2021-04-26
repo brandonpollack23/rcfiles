@@ -267,16 +267,7 @@ Make it so even rob can see window jumps
                                  ("CANCELLED" :foreground "red" :weight bold :underline t))
         org-log-done 'time
 
-        ;; Quick captures
-        org-capture-templates '(("x" "Inbox" entry
-                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
-                                 "* %i%?")
-                                ("t" "TODO Item" entry
-                                 (file+headline "~/org/todo.org" "To Do List")
-                                 "* TODO %i%?")
-                                ("r" "Add (R)eminder" entry
-                                 (file+headline "~/org/reminders.org" "Reminders")
-                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))
+
         org-refile-targets '((nil :maxlevel . 4)
                              (org-agenda-files :maxlevel . 4))
         ;; Show that whitespace
@@ -285,6 +276,19 @@ Make it so even rob can see window jumps
         org-agenda-todo-list-sublevels nil
         ;; Checklist cookies take into account full heirarchy.
         org-checkbox-hierarchical-statistics nil))
+
+(after! org-capture
+  :config
+  ;; Quick captures
+  (setq org-capture-templates '(("x" "Inbox" entry
+                                 (file+headline "~/org/inbox.org" "Tasks To Sort")
+                                 "* %i%?")
+                                ("t" "TODO Item" entry
+                                 (file+headline "~/org/todo.org" "To Do List")
+                                 "* TODO %i%?")
+                                ("r" "Add (R)eminder" entry
+                                 (file+headline "~/org/reminders.org" "Reminders")
+                                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date t t nil \"When would you like to be reminded?\") t)"))))
 
 (after! (:and evil-smartparens org-mode)
   :init
@@ -417,11 +421,11 @@ descriptions as subtext into an org file with directories indicating subheadings
 *** Org Super Agenda
 #+begin_src elisp
 ;; Before date is 5 days from now (so within a work week)
-(let ((before-date (format-time-string "%F" (+ (* 60 60 24 5) (float-time)))))
-  (use-package! org-super-agenda
-    :after org-agenda
-    :config
-    (org-super-agenda-mode)
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode)
+  (let ((before-date (format-time-string "%F" (+ (* 60 60 24 5) (float-time)))))
     (setq org-super-agenda-groups `((:name "RIGHT NOW TODO List"
                                      :and (:priority "A"))
 
@@ -450,10 +454,10 @@ descriptions as subtext into an org file with directories indicating subheadings
                                     (:name "Backlog" :priority "C")
 
                                     (:name "Blocked Items"
-                                     :todo "WAITING"))
-          org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n"))
-    ;; Workaround for keybinding problems
-    (setq org-super-agenda-header-map (make-sparse-keymap))))
+                                     :todo "WAITING"))))
+  org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n")
+  ;; Workaround for keybinding problems
+  org-super-agenda-header-map (make-sparse-keymap))
 #+end_src
 *** Org Journal SPC-n-j-j
 + Day actually ends at 3 AM
