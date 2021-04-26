@@ -319,8 +319,7 @@ descriptions as subtext into an org file with directories indicating subheadings
                                   (:name "TODO List"
                                    :file-path "org/todo.org")
 
-                                  (:name "Upcoming Reminders"
-                                   ;; TODO do date string this week
+                                  (:name "Upcoming Reminders In the next 5 days"
                                    :and (:scheduled (before ,(format-time-string "%F" (+ (* 60 60 24 5) (float-time))))
                                          :file-path "org/reminders.org"))
 
@@ -338,7 +337,8 @@ descriptions as subtext into an org file with directories indicating subheadings
                                   (:name "Backlog" :priority "C")
 
                                   (:name "Blocked Items"
-                                   :todo "WAITING")))
+                                   :todo "WAITING"))
+        org-super-agenda-header-separator (concat "\n" (make-string 80 ?=) "\n"))
   ;; Workaround for keybinding problems
   (setq org-super-agenda-header-map (make-sparse-keymap)))
 
