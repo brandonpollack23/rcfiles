@@ -49,6 +49,11 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
                                         ;(unpin! t)
 
+;; Source local packages (for non shared stuff like for work)
+(let ((local-packages "~/.doom.local/packages.el"))
+  (if (file-exists-p local-packages)
+      (load-file local-packages)))
+
 ;; Japanese input.
 (package! mozc
   :recipe (:files ("src/unix/emacs/*.el")))
