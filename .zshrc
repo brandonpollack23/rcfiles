@@ -250,9 +250,9 @@ if echo $(uname -a) | grep -q WSL; then
 fi
 
 # source any machine specific stuff
-if [[ -f $HOME/.zshrc_extras ]]; then
-    echo "Sourcing zshrc extras..."
-    source $HOME/.zshrc_extras
+if [[ -f $HOME/.zshrc.local ]]; then
+    echo "Sourcing zshrc local only file..."
+    source $HOME/.zshrc.local
 fi
 
 # Finally, show a welcome message and fortune!

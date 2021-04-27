@@ -1,3 +1,6 @@
+"Local file sourcing
+source ~/.vimrc.local
+
 "Vimmy vim and security stuff
 set secure "make it secure so that no one can infect my machine with a malicious vimrc
 set nocompatible "for compatibility with modern vim and not old vi
