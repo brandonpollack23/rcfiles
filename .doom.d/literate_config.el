@@ -120,6 +120,15 @@
     (insert-file-contents filePath)
     (buffer-string)))
 
+(defun my-move-window-to-mini-repl ()
+  "Move window to bottm and give it a height of 15px"
+  (interactive)
+  (+evil/window-move-down)
+  (evil-window-set-height 15))
+(map! :leader
+      ;; m for mini
+      :n "M" #'my-move-window-to-mini-repl)
+
 (map! :leader
       :prefix "v"
       :v "v" #'er/expand-region

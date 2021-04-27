@@ -169,6 +169,10 @@ This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el
         doom-dashboard-widget-loaded
         doom-dashboard-widget-footer))
 #+end_src
+*** Pretty symbols
+#+begin_src elisp
+(global-prettify-symbols-mode)
+#+end_src
 
 * Custom helpful scripts
 ** Read file into a string
