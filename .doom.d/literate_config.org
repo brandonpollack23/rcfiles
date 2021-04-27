@@ -25,9 +25,7 @@ this file. Emacs searches the `load-path' when you load packages with
  confirm-kill-emacs 'y-or-n-p
  projectile-project-search-path '(
                                   ;; Local Source files
-                                  "$HOME/src" "$HOME/org"
-                                  ;; My remote ones
-                                  "ssh:brpol@sisko:/mnt/applications"
+                                  "~/src/" "~/org/"
                                   ))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -180,6 +178,18 @@ This is mostly ripped from [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el
   (with-temp-buffer
     (insert-file-contents filePath)
     (buffer-string)))
+#+end_src
+** Turn into lower mini buffer (good for repls)
++ Bind mini replify to :leader M
+#+begin_src elisp
+(defun my-move-window-to-mini-repl ()
+  "Move window to bottm and give it a height of 15px"
+  (interactive)
+  (+evil/window-move-down)
+  (evil-window-set-height 15))
+(map! :leader
+      ;; m for mini
+      :n "M" #'my-move-window-to-mini-repl)
 #+end_src
 
 * Custom (non mode specific) Bindings

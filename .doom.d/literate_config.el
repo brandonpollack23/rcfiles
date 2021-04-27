@@ -10,9 +10,7 @@
  confirm-kill-emacs 'y-or-n-p
  projectile-project-search-path '(
                                   ;; Local Source files
-                                  "$HOME/src" "$HOME/org"
-                                  ;; My remote ones
-                                  "ssh:brpol@sisko:/mnt/applications"
+                                  "~/src/" "~/org/"
                                   ))
 ;; Start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
