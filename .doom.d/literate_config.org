@@ -412,7 +412,8 @@ descriptions as subtext into an org file with directories indicating subheadings
   (defvar gmail_dir (concat org-directory "gmail_calendars/"))
   (setq
    org-gcal-client-id "936800008942-so0ctu4f2029386ujcfcp9ke3af91la2.apps.googleusercontent.com"
-   org-gcal-client-secret (s-trim (get-string-from-file (concat gmail_dir "gcal_client_secret")))
+   org-gcal-client-secret (if (file-exists-p (concat gmail_dir "gcal_client_secret"))
+                              (s-trim (get-string-from-file (concat gmail_dir "gcal_client_secret"))) "")
    org-gcal-fetch-file-alist `(("brandonpollack23@gmail.com" . ,(concat gmail_dir "personal.org"))
                                ("dnu3qs4g5pp6h4m9rfhsppgbik@group.calendar.google.com" . ,(concat gmail_dir "study.org")))
    org-gcal-down-days 365
