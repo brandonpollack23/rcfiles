@@ -28,7 +28,7 @@ export ZSH="$HOME/.oh-my-zsh"
 export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
 
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t" # opens in terminal
+export EDITOR="emacsclient -t -a ''" # opens in terminal
 export VISUAL="emacsclient -c -a emacs" # opens in gui mode
 
 # Set name of the theme to load --- if set to "random", it will
