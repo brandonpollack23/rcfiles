@@ -585,6 +585,14 @@ elisp (and where there's no LSP I guess)
   (map!
    :nvi "M-RET" #'emr-show-refactor-menu))
 #+end_src
+** Racket
+#+begin_src elisp
+(map! :after racket-mode
+      :map racket-mode-map
+      :localleader
+      :n "n" #'racket-debug-step-over
+      :n "N" #'racket-debug-step)
+#+end_src
 
 * Platform Specific
 ** WSL
