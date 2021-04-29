@@ -1,4 +1,4 @@
-personal_ws-1.1 en 66
+personal_ws-1.1 en 67
 Abashiri
 Amex
 Anki
@@ -61,6 +61,7 @@ pubsub
 pws
 smartparens
 sudo
+utils
 whitespace
 workspaces
 yakuza
