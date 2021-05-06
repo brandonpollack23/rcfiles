@@ -137,10 +137,12 @@
 (map!
  :nvi "C-M-," 'sp-backward-slurp-sexp
  :nvi "C-M-." 'sp-forward-slurp-sexp
+ :nvi "C-M-l" 'sp-forward-barf-sexp
+ :nvi "C-M-h" 'sp-backward-barf-sexp
  :nvi "C-M-j" 'sp-beginning-of-next-sexp
  :nvi "C-M-k" 'sp-beginning-of-previous-sexp
  :nvi "C-M-u" 'backward-up-list
- :nvi "C-M-h" 'down-list)
+ :nvi "C-M-g" 'down-list)
 
 (after! evil-easymotion
   ;; evil-easymotion (built on avy) jump keys
@@ -448,11 +450,9 @@ descriptions as subtext into an org file with directories indicating subheadings
       :n "N" #'racket-debug-step)
 
 (use-package! cider-mode
-  :hook ((cider-mode . cider-company-enable-fuzzy-completion)
-         (cider-mode . cider-enlighten-mode)))
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
 (use-package! cider-repl-mode
-  :hook ((cider-mode . cider-company-enable-fuzzy-completion)
-         (cider-mode . cider-enlighten-mode)))
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,

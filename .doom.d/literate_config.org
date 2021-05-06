@@ -208,10 +208,12 @@ These help with navigation and movement in paren world
 (map!
  :nvi "C-M-," 'sp-backward-slurp-sexp
  :nvi "C-M-." 'sp-forward-slurp-sexp
+ :nvi "C-M-l" 'sp-forward-barf-sexp
+ :nvi "C-M-h" 'sp-backward-barf-sexp
  :nvi "C-M-j" 'sp-beginning-of-next-sexp
  :nvi "C-M-k" 'sp-beginning-of-previous-sexp
  :nvi "C-M-u" 'backward-up-list
- :nvi "C-M-h" 'down-list)
+ :nvi "C-M-g" 'down-list)
 #+end_src
 
 * Modes/Packages
