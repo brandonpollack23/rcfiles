@@ -593,6 +593,14 @@ elisp (and where there's no LSP I guess)
       :n "n" #'racket-debug-step-over
       :n "N" #'racket-debug-step)
 #+end_src
+** Clojure
+Enable Fuzzy candidate matching in Cider
+#+begin_src elisp
+(use-package! cider-mode
+  :hook (cider-mode . cider-company-enable-fuzzy-completion))
+(use-package! cider-repl-mode
+  :hook (cider-repl-mode . cider-company-enable-fuzzy-completion))
+#+end_src
 
 * Platform Specific
 ** WSL
