@@ -596,9 +596,9 @@ elisp (and where there's no LSP I guess)
 Enable Fuzzy candidate matching in Cider
 #+begin_src elisp
 (use-package! cider-mode
-  :hook (cider-mode . cider-company-enable-fuzzy-completion))
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
 (use-package! cider-repl-mode
-  :hook (cider-repl-mode . cider-company-enable-fuzzy-completion))
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
 #+end_src
 
 * Platform Specific
