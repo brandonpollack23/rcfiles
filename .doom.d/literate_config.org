@@ -332,8 +332,7 @@ Make it so even rob can see window jumps
 (defun myorg-archive-done-tasks ()
   (interactive)
   (org-map-entries 'org-archive-subtree "/DONE" 'tree))
-(map! :leader
-      :prefix "m"
+(map! :localleader
       :n "m" #'myorg-archive-done-tasks)
 
 ;; TODO this doesnt work yet.
