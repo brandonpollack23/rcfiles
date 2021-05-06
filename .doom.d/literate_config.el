@@ -55,7 +55,7 @@
         :i [return] (cmds! mozc-mode (cmd! (mozc-handle-event last-command-event))
                            (cmd! (org-return electric-indent-mode)))))
 
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type t)
 
 (set-popup-rules!
   '(("^\\*\\([Hh]elp\\|Apropos\\)"
@@ -232,8 +232,7 @@
 (defun myorg-archive-done-tasks ()
   (interactive)
   (org-map-entries 'org-archive-subtree "/DONE" 'tree))
-(map! :leader
-      :prefix "m"
+(map! :localleader
       :n "m" #'myorg-archive-done-tasks)
 
 ;; TODO this doesnt work yet.
@@ -441,6 +440,19 @@ descriptions as subtext into an org file with directories indicating subheadings
   :config
   (map!
    :nvi "M-RET" #'emr-show-refactor-menu))
+
+(map! :after racket-mode
+      :map racket-mode-map
+      :localleader
+      :n "n" #'racket-debug-step-over
+      :n "N" #'racket-debug-step)
+
+(use-package! cider-mode
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)
+         (cider-mode . cider-enlighten-mode)))
+(use-package! cider-repl-mode
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion)
+         (cider-mode . cider-enlighten-mode)))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
