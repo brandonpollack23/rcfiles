@@ -109,6 +109,7 @@ plugins=(
     fzf
     git
     git-extras
+    lein
     mix
     sudo
     systemd
