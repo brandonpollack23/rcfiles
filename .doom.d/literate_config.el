@@ -234,7 +234,9 @@
 (defun myorg-archive-done-tasks ()
   (interactive)
   (org-map-entries 'org-archive-subtree "/DONE" 'tree))
-(map! :localleader
+(map! :after org
+      :map org-mode-map
+      :localleader
       :n "m" #'myorg-archive-done-tasks)
 
 ;; TODO this doesnt work yet.
@@ -459,7 +461,7 @@ descriptions as subtext into an org file with directories indicating subheadings
 ;; so I'm front-ending system-type with my variable: sysTypeSpecific.
 ;; I'm no elisp hacker, so I'm diverging from the elisp naming convention
 ;; to ensure that I'm not stepping on any pre-existing variable.
-(setq-default sysTypeSpecific  system-type) ;; get the system-type value
+(setq sysTypeSpecific  system-type) ;; get the system-type value
 
 (cond
  ;; If type is "gnu/linux", override to "wsl/linux" if it's WSL.
@@ -467,7 +469,7 @@ descriptions as subtext into an org file with directories indicating subheadings
   (when (string-match "Linux.*Microsoft.*Linux"
                       (shell-command-to-string "uname -a"))
 
-    (setq-default sysTypeSpecific "wsl/linux") ;; for later use.
+    (setq sysTypeSpecific "wsl/linux") ;; for later use.
     (setq
      cmdExeBin "/mnt/c/Windows/System32/cmd.exe"
      cmdExeArgs '("/c" "start"))
