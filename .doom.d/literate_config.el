@@ -169,6 +169,9 @@
     :foreground "white" :background "red"
     :weight bold :height 2.5 :box (:line-width 7 :color "red")))
 
+(use-package! evil-matchit)
+(global-evil-matchit-mode 1)
+
 ;; Utility since %s is ignored in todo prefix format.
 (defun myorg-get-scheduled-date-for-todo ()
   (let ((scheduled (org-get-scheduled-time (point))))

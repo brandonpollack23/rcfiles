@@ -245,6 +245,7 @@ Let me use jj to exit insert mode.
   (setq evil-escape-delay 0.3)
   (setq evil-escape-key-sequence "jj"))
 #+end_src
+
 *** Ace Window
 Make it so even rob can see window jumps
 #+begin_src elisp
@@ -252,6 +253,13 @@ Make it so even rob can see window jumps
   '(aw-leading-char-face
     :foreground "white" :background "red"
     :weight bold :height 2.5 :box (:line-width 7 :color "red")))
+#+end_src
+
+*** Evil Matchit
+Enable matching on stuff like html tags
+#+begin_src elisp
+(use-package! evil-matchit)
+(global-evil-matchit-mode 1)
 #+end_src
 
 ** Org Mode
