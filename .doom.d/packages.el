@@ -61,6 +61,9 @@
 ;; Indent things to be pretty as I type.
 (package! aggressive-indent)
 
+;; Match html tags and more
+(package! evil-matchit)
+
 ;; Create a buffer that contains all the commands I type when enabled.
 (package! command-log-mode)
 
