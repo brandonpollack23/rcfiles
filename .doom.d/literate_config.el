@@ -455,9 +455,21 @@ descriptions as subtext into an org file with directories indicating subheadings
       :n "N" #'racket-debug-step)
 
 (use-package! cider-mode
-  :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
+  :hook ((cider-mode . cider-company-enable-fuzzy-completion))
+  :config
+  (map! :map cider-mode-map
+        :localleader
+        :prefix "e"
+        :nv "s" #'cider-eval-sexp-at-point))
 (use-package! cider-repl-mode
   :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
+
+(map!
+ :after cider-mode
+ :map (clojure-mode-map clojurescript-mode-map)
+ (:localleader
+  (:prefix ("e" . "eval")
+   :desc "Eval and Insert Last Sexpr" :vi "i" #'cider-eval-last-sexp-and-replace)))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
