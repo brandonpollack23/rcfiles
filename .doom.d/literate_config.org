@@ -605,7 +605,7 @@ elisp (and where there's no LSP I guess)
       :n "N" #'racket-debug-step)
 #+end_src
 ** Clojure
-Enable Fuzzy candidate matching in Cider
+*** Enable Fuzzy candidate matching in Cider
 #+begin_src elisp
 (use-package! cider-mode
   :hook ((cider-mode . cider-company-enable-fuzzy-completion))
@@ -617,6 +617,16 @@ Enable Fuzzy candidate matching in Cider
 (use-package! cider-repl-mode
   :hook ((cider-mode . cider-company-enable-fuzzy-completion)))
 #+end_src
+*** Some extra helpful bindings
+#+begin_src elisp
+(map!
+ :after cider-mode
+ :map (clojure-mode-map clojurescript-mode-map)
+ (:localleader
+  (:prefix ("e" . "eval")
+   :desc "Eval and Insert Last Sexpr" :vi "i" #'cider-eval-last-sexp-and-replace)))
+#+end_src
+
 
 * Platform Specific
 ** WSL
