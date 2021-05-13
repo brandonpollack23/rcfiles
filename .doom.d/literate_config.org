@@ -631,18 +631,21 @@ This little guy lets me select my profile.  This let's me:
 + Have my :dev profile require and call =(clojure.spec.test.alpha/instrument)=
 + Change anything else I might want.
   #+begin_src elisp
-(defun start-cider-repl-with-profile ()
+(defun start-cider-repl-with-profile (&optional repltype)
+  "Defaults to clj, can pass 'cljs to do that instead"
   (interactive)
-  (letrec ((profile (read-string "Enter profile name: "))
-           (lein-params (concat "with-profile +" profile " repl :headless")))
-    (message "lein-params set to: %s" lein-params)
-    (set-variable 'cider-lein-parameters lein-params)
-    (cider-jack-in)))
+  (let* ((profile (read-string "Enter profile name: "))
+         (cider-lein-parameters (concat "with-profile +" profile " repl :headless")))
+    (message "lein-params set to: %s" cider-lein-parameters)
+    (if (eq 'cljs repltype)
+        (cider-jack-in-cljs '())
+      (cider-jack-in-clj '()))))
 (map!
  :after cider-mode
  :map (clojure-mode-map clojurescript-mode-map)
  (:localleader
-  :desc "Cider Jack in Profile (lein)" :vi ";" #'start-cider-repl-with-profile))
+  :desc "Cider Jack in Profile (lein)" :vi ";" #'start-cider-repl-with-profile
+  :desc "Cider(script) Jack in Profile (lein)" :vi ":" (lambda () (start-cider-repl-with-profile 'cljs))))
   #+end_src
 
 * Platform Specific

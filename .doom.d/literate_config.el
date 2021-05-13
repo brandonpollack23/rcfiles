@@ -471,7 +471,21 @@ descriptions as subtext into an org file with directories indicating subheadings
   (:prefix ("e" . "eval")
    :desc "Eval and Insert Last Sexpr" :vi "i" #'cider-eval-last-sexp-and-replace)))
 
-
+(defun start-cider-repl-with-profile (&optional repltype)
+  "Defaults to clj, can pass 'cljs to do that instead"
+  (interactive)
+  (let* ((profile (read-string "Enter profile name: "))
+         (cider-lein-parameters (concat "with-profile +" profile " repl :headless")))
+    (message "lein-params set to: %s" cider-lein-parameters)
+    (if (eq 'cljs repltype)
+        (cider-jack-in-cljs '())
+      (cider-jack-in-clj '()))))
+(map!
+ :after cider-mode
+ :map (clojure-mode-map clojurescript-mode-map)
+ (:localleader
+  :desc "Cider Jack in Profile (lein)" :vi ";" #'start-cider-repl-with-profile
+  :desc "Cider(script) Jack in Profile (lein)" :vi ":" (lambda () (start-cider-repl-with-profile 'cljs))))
 
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
