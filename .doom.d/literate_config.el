@@ -471,6 +471,8 @@ descriptions as subtext into an org file with directories indicating subheadings
   (:prefix ("e" . "eval")
    :desc "Eval and Insert Last Sexpr" :vi "i" #'cider-eval-last-sexp-and-replace)))
 
+
+
 ;; Determine the specific system type.
 ;; Emacs variable system-type doesn't yet have a "wsl/linux" value,
 ;; so I'm front-ending system-type with my variable: sysTypeSpecific.
