@@ -626,7 +626,24 @@ elisp (and where there's no LSP I guess)
   (:prefix ("e" . "eval")
    :desc "Eval and Insert Last Sexpr" :vi "i" #'cider-eval-last-sexp-and-replace)))
 #+end_src
-
+*** Cider Jack in with a profile (Leiningen)
+This little guy lets me select my profile.  This let's me:
++ Have my :dev profile require and call =(clojure.spec.test.alpha/instrument)=
++ Change anything else I might want.
+  #+begin_src elisp
+(defun start-cider-repl-with-profile ()
+  (interactive)
+  (letrec ((profile (read-string "Enter profile name: "))
+           (lein-params (concat "with-profile +" profile " repl :headless")))
+    (message "lein-params set to: %s" lein-params)
+    (set-variable 'cider-lein-parameters lein-params)
+    (cider-jack-in)))
+(map!
+ :after cider-mode
+ :map (clojure-mode-map clojurescript-mode-map)
+ (:localleader
+  :desc "Cider Jack in Profile (lein)" :vi ";" #'start-cider-repl-with-profile))
+  #+end_src
 
 * Platform Specific
 ** WSL
