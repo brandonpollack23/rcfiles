@@ -647,6 +647,20 @@ This little guy lets me select my profile.  This let's me:
   :desc "Cider Jack in Profile (lein)" :vi ";" #'start-cider-repl-with-profile
   :desc "Cider(script) Jack in Profile (lein)" :vi ":" (lambda () (start-cider-repl-with-profile 'cljs))))
   #+end_src
+*** Cider inspect helpers
+inspect var at point, prints all meta data
+#+begin_src elisp
+(defun my-cider-inspect-sexp-at-point-var ()
+  "Inspect the result of the the expression preceding point."
+  (interactive)
+  (cider-inspect-expr (concat "#'" (cider-sexp-at-point)) (cider-current-ns)))
+(map!
+ :after cider-mode
+ :map (clojure-mode-map clojurescript-mode-map)
+ (:localleader
+  :prefix "i"
+  :desc "Inspect var metadata" :vi "I" #'my-cider-inspect-sexp-at-point-var))
+#+end_src
 
 * Platform Specific
 ** WSL
