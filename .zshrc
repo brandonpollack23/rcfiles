@@ -109,6 +109,8 @@ plugins=(
     fzf
     git
     git-extras
+    gitignore
+    gradle
     lein
     mix
     sudo
