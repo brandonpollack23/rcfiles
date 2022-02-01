@@ -27,9 +27,9 @@ export ZSH="$HOME/.oh-my-zsh"
 
 export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
 
-export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t -a ''" # opens in terminal
-export VISUAL="emacsclient -c -a emacs" # opens in gui mode
+export ALTERNATE_EDITOR="nano"
+export EDITOR="vim" # opens in terminal
+export VISUAL="gvim" # opens in gui mode
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,

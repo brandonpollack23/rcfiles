@@ -41,6 +41,7 @@ osInfo[/etc/fedora-release]=$dnf
 for f in ${!osInfo[@]}
 do
     if [[ -f $f ]];then
+        echo "Package manager is ${osInfo[$f]}"
         package_manager=${osInfo[$f]}
     fi
 done
@@ -77,11 +78,11 @@ fi
 
 optional_stupid_packages="figlet lolcat"
 packages="git tmux wordnet zsh emacs fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
-ruby info2www cowsay fortune-mod info pinfo apache2 nfs-common $platform_packages $optional_stupid_packages"
+ruby info2www cowsay fortune-mod info apache2 nfs-common $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
 
-${package_manager} ${packages} || true
+${package_manager} ${packages}
 
 gem install mdless || true
 
