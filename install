@@ -85,7 +85,7 @@ echo "Installing packages: $packages"
 ${package_manager} ${packages}
 
 gem install mdless || true
-pip install Pygmentize
+pip install Pygments
 
 # Run any platform specific commands that
 $platform_commands
