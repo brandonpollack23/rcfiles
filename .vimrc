@@ -62,7 +62,7 @@ let g:mkdp_preview_options = {
 let g:mkdp_filetypes = ['md', 'markdown']
 
 "coc
-let g:coc_global_extensions = ['coc-marketplace', 'coc-json', 'coc-git', 'coc-sh', 'coc-dot-complete', 'coc-rust-analyzer', 'coc-toml', 'coc-yaml', 'coc-vimlsp', 'coc-toml']
+"let g:coc_global_extensions = ['coc-marketplace', 'coc-json', 'coc-git', 'coc-sh', 'coc-dot-complete', 'coc-rust-analyzer', 'coc-toml', 'coc-yaml', 'coc-vimlsp', 'coc-toml']
 
 " Set internal encoding of vim, not needed on neovim, 
 " since coc.nvim using some unicode characters in the file autoload/float.vim
