@@ -27,11 +27,11 @@ export ZSH="$HOME/.oh-my-zsh"
 
 export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
 
-#export ALTERNATE_EDITOR=""
 #export EDITOR="emacsclient -t -a ''" # opens in terminal
 #export VISUAL="emacsclient -c -a emacs" # opens in gui mode
 export EDITOR="vim" # opens in terminal
 export VISUAL="gvim" # opens in gui mode
+export ALTERNATE_EDITOR="vi"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -130,6 +130,7 @@ MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
 export FZF_BASE=$(which fzf)
 
 # ccat setup
+export ZSH_COLORIZE_TOOL=pygmentize
 export ZSH_COLORIZE_STYLE=monokai
 alias catraw=/bin/cat
 alias cat=ccat

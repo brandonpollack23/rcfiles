@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 set -e
 
 if $(uname -a | grep -q WSL); then
@@ -41,11 +42,20 @@ osInfo[/etc/fedora-release]=$dnf
 for f in ${!osInfo[@]}
 do
     if [[ -f $f ]];then
+        echo "Package manager is ${osInfo[$f]}"
         package_manager=${osInfo[$f]}
     fi
 done
 
-if [[ -f "/etc/debian_version" ]]; then
+# If available, use LSB to identify distribution
+if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
+    export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+# Otherwise, use release info file
+else
+    export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
+fi
+
+if [ $DISTRO == "Debian" ]; then
     # Enable non free sources in Debian based os's that use it's packages.
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~Debian System Detected!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     set +e
@@ -73,17 +83,23 @@ if [[ -f "/etc/debian_version" ]]; then
     fi
 
     export LOGIN_FORTUNES="debian-hints"
+elif [ $DISTRO == "Ubuntu" ]; then
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~Ubuntu System Detected!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    sudo add-apt-repository ppa:kelleyk/emacs
+    sudo apt update
+    sudo apt install -y emacs27
 fi
 
 optional_stupid_packages="figlet lolcat"
-packages="git tmux wordnet zsh emacs fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
-ruby info2www cowsay fortune-mod info pinfo apache2 nfs-common $platform_packages $optional_stupid_packages"
+packages="git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
+ruby info2www cowsay fortune-mod info apache2 nfs-common pip $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
 
-${package_manager} ${packages} || true
+${package_manager} ${packages}
 
 gem install mdless || true
+pip install Pygments
 
 # Run any platform specific commands that
 $platform_commands
@@ -110,6 +126,8 @@ mkdir -p $HOME/.vim/swapdir
 chown $CALLING_USER $HOME/.vim/swapdir
 mkdir -p $HOME/.vim/backupdir
 chown $CALLING_USER $HOME/.vim/backupdir
+touch $HOME/.vimrc.local
+chown $CALLING_USER $HOME/.vimrc.local
 mkdir -p $HOME/.config
 chown $CALLING_USER $HOME/.config
 
