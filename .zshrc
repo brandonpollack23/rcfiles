@@ -100,7 +100,6 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    cargo
     catimg
     colorize
     command-not-found
@@ -115,6 +114,7 @@ plugins=(
     gradle
     lein
     mix
+    rust
     sudo
     systemd
     tmux
