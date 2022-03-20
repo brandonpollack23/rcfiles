@@ -30,6 +30,9 @@ if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
 
+#rustup
+source $HOME/.cargo/env
+
 #export EDITOR="emacsclient -t -a ''" # opens in terminal
 #export VISUAL="emacsclient -c -a emacs" # opens in gui mode
 export EDITOR="vim" # opens in terminal
@@ -136,7 +139,9 @@ export FZF_BASE=$(which fzf)
 export ZSH_COLORIZE_TOOL=pygmentize
 export ZSH_COLORIZE_STYLE=monokai
 alias catraw=/bin/cat
-alias cat=ccat
+
+# but im using bat now
+alias cat=bat
 
 source $ZSH/oh-my-zsh.sh
 
