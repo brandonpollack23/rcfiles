@@ -26,6 +26,9 @@ fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 export ZSH="$HOME/.oh-my-zsh"
 
 export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
+if ! [[ "$OSTYPE" =~ darwin* ]]; then
+    export PATH=/opt/homebrew/bin:$PATH
+fi
 
 #export EDITOR="emacsclient -t -a ''" # opens in terminal
 #export VISUAL="emacsclient -c -a emacs" # opens in gui mode
@@ -232,6 +235,10 @@ source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
 source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
 # better history search
 source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+# Better brew for mac
+if [[ "$OSTYPE" =~ darwin* ]]; then
+    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
+fi
 
 ################### Extra self managed Plugin configurations ###############################
 # History search

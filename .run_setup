@@ -1,0 +1,128 @@
+#!/bin/bash
+set -x
+set -e
+
+# Setup portion that is always run as root for us by ./install
+RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+getopts ":u:" u
+case $u in
+    u)
+        CALLING_USER=$OPTARG
+        ;;
+    *)
+        echo "dont run as root, just run and let me do it"
+        exit 1
+esac
+
+if $(uname -a | grep -q WSL); then
+  echo "WSL system detected"
+  IS_WSL_OR_MACOS="true"
+fi
+
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  IS_WSL_OR_MACOS="true"
+fi
+
+if $IS_WSL_OR_MACOS; then
+  RUNUSER=sudo
+else
+  RUNUSER=runuser
+fi
+
+# Run any platform specific commands that
+
+# Enable apache cgi (for man2html)
+# a2enmod is a debian-ism, it'll have to be done manually on other distros.
+# TODO do it on other distros
+if [ ! -d /google && ! $IS_WSL_OR_MACOS]; then
+    # work laptop is debian but not really up to date so there are some exceptions.
+    a2enmod cgid
+fi
+# TODO MAC SO
+
+gem install mdless || true
+pip3 install Pygments
+
+# Install Emacs DOOM
+if [ -d $HOME/.emacs.d ]; then
+    echo "Emacs.d already exists, skipping DOOM setup"
+else
+    echo "No Emacs configuration, Ripping and Tearing your config...(Installing Doom Emacs)"
+    $RUNUSER -u $CALLING_USER -- git clone https://github.com/hlissner/doom-emacs $HOME/.emacs.d
+    yes | $RUNUSER -u $CALLING_USER -- $HOME/.emacs.d/bin/doom install
+fi
+echo "Linking DOOMDIR"
+rm -rf $HOME/.doom.d
+$RUNUSER -u $CALLING_USER -- ln -sfn $RCFILESDIR/.doom.d $HOME/.doom.d
+
+mkdir -p $HOME/.vim/backupdir
+chown $CALLING_USER $HOME/.vim/backupdir
+mkdir -p $HOME/.vim/swapdir
+chown $CALLING_USER $HOME/.vim/swapdir
+
+# Make directories
+mkdir -p $HOME/.vim/swapdir
+chown $CALLING_USER $HOME/.vim/swapdir
+mkdir -p $HOME/.vim/backupdir
+chown $CALLING_USER $HOME/.vim/backupdir
+touch $HOME/.vimrc.local
+chown $CALLING_USER $HOME/.vimrc.local
+mkdir -p $HOME/.config
+chown $CALLING_USER $HOME/.config
+
+# Make symbolic links into this dir
+# TODO move this to non priveleged part top of file
+ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
+chown $CALLING_USER $HOME/.zshrc
+ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
+chown $CALLING_USER $HOME/zsh-plugins
+ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
+chown $CALLING_USER $HOME/.oh-my-zsh
+ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
+chown $CALLING_USER $HOME/.vimrc
+ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
+chown $CALLING_USER $HOME/.tmux.conf
+ln -sfn $RCFILESDIR/.gitconfig $HOME/.gitconfig
+chown $CALLING_USER $HOME/.gitconfig
+ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
+chown $CALLING_USER $HOME/.vim/pack
+ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
+chown $CALLING_USER $HOME/.vim/colors
+ln -sfn $RCFILESDIR/.config/coc $HOME/.config/coc
+chown $CALLING_USER $HOME/.config/coc
+ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
+chown $CALLING_USER $HOME/.cowrc
+ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
+chown $CALLING_USER $HOME/.cowfiles
+
+# Load rebuild documents in vim
+vim +"helptags ALL" +":exit"
+vim +"call mkdp#util#install()" +":exit"
+
+if [ "$UID" -ne 0 ]; then
+    # Add cronjobs I like
+    # legacy cron style, uncomment for cron instead
+    #CURRENT_CRONTAB=$(crontab -u $CALLING_USER -l) || $(echo "")
+    #NEW_TABLE_ENTRIES=$(/bin/cat $RCFILESDIR/append_user_crontable)
+    #echo "$CURRENT_CRONTAB"; echo "$NEW_TABLE_ENTRIES" | crontab -u $CALLING_USER -
+    if [[ -z $IS_WSL_OR_MACOS ]]; then
+        echo "Setting up systemd timers"
+        mkdir -p $HOME/.config/systemd/user
+        for systemd_file in $RCFILESDIR/systemd/* ; do
+            echo "Setting up $systemd_file"
+            sed 's/!~USER~!/'"$CALLING_USER"'/g' $systemd_file > "$HOME/.config/systemd/user/$(basename $systemd_file)"
+            # Run systemctl --user enable as the user
+            $RUNUSER -u $CALLING_USER -- systemctl --user daemon-reload
+            CMD="$RUNUSER -u $CALLING_USER -- systemctl --user enable --now $(basename $systemd_file)"
+            echo $CMD
+            $CMD
+        done
+    fi
+fi
+
+# Change to zsh
+chsh -s `which zsh` $CALLING_USER
+
+echo "Setup complete, please logout and log back in to access the new shell enviornment"
+echo "Consider running ./update_root_prefs as well if you are the system administrator"
