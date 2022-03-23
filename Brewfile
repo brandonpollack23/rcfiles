@@ -28,6 +28,7 @@ brew "gnu-sed"
 brew "gnu-tar"
 brew "gnu-which"
 brew "gpatch"
+brew "gradle"
 brew "grep"
 brew "gzip"
 brew "htop"
@@ -71,6 +72,7 @@ cask "google-drive"
 cask "intellij-idea-ce"
 cask "iterm2"
 cask "keeweb"
+cask "middleclick"
 cask "oracle-jdk"
 cask "oracle-jdk-javadoc"
 cask "private-internet-access"
@@ -78,16 +80,19 @@ cask "qlmarkdown"
 cask "qlstephen"
 cask "qlvideo"
 cask "quicklook-json"
-cask "rectangle"
 cask "spotify"
 cask "steam"
 cask "syntax-highlight"
 cask "teamspeak-client"
 cask "visual-studio-code"
+cask "vlc"
+mas "BetterSnapTool", id: 417375580
 mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "LINE", id: 539883307
+mas "Messenger", id: 1480068668
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
+mas "WhatsApp", id: 1147396723
 mas "Xcode", id: 497799835
