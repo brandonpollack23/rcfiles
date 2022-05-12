@@ -104,5 +104,10 @@ echo "Installing packages: $packages"
 ${package_manager} ${packages}
 fi
 
+#Setup cargo packages
+cargo install cargo-binstall
+cargo binstall mdcat
+cargo binstall bat
+
 # Become ROOT for sure now and finish
 exec sudo HOME=$HOME "$RCFILESDIR/.run_setup" -u ${CALLING_USER}
