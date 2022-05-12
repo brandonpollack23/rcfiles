@@ -97,7 +97,7 @@ fi
 
 optional_stupid_packages="figlet lolcat"
 packages="bat git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick chroma fzf man2html \
-ruby info2www cowsay fortune-mod info apache2 nfs-common pip $platform_packages $optional_stupid_packages"
+ruby cowsay fortune-mod info apache2 nfs-common pip $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
 
