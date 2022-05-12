@@ -96,9 +96,9 @@ chown $CALLING_USER $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
 chown $CALLING_USER $HOME/.cowfiles
 
+vim +"call mkdp#util#install()" +":exit"
 # Load rebuild documents in vim
 vim +"helptags ALL" +":exit"
-vim +"call mkdp#util#install()" +":exit"
 
 if [ "$UID" -ne 0 ]; then
     # Add cronjobs I like

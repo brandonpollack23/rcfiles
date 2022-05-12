@@ -46,6 +46,7 @@
 [submodule ".vim/pack/brpol/start/coc.nvim"]
 	path = .vim/pack/brpol/start/coc.nvim
 	url = https://github.com/neoclide/coc.nvim.git
+	branch = release
 [submodule "zsh-plugins/omz-homebrew"]
 	path = zsh-plugins/omz-homebrew
 	url = https://github.com/digitalraven/omz-homebrew.git
