@@ -120,6 +120,7 @@ plugins=(
     gradle
     lein
     mix
+    repo
     rust
     sudo
     systemd
