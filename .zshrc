@@ -268,6 +268,17 @@ if echo $(uname -a) | grep -q WSL; then
     }
 fi
 
+# Git aliases
+# Print a pretty git log up to each local branches tracking branch
+# $1 is the upstream branch youd like to build from
+function gitxl() {
+    local upstream=$1
+    local branches=$(git branch | tr -d '*' | awk '{print "'"$upstream"^\!' " $1}' | tr '\n' ' ')
+    echo $branches | xargs git --no-pager log --pretty=oneline --graph --abbrev-commit --decorate
+}
+alias gitxl_rvc='gitxl "goog/rvc-arc"'
+
+
 # source any machine specific stuff
 if [[ -f $HOME/.zshrc.local ]]; then
     echo "Sourcing zshrc local only file..."
@@ -280,7 +291,9 @@ if [ -f /etc/debian_version ] && [ ! -d /google ]; then
     PLATFORM_LOGIN_FORTUNES="debian-hints"
 fi
 
-echo "Welcome to $HOST!" | figlet | lolcat
-fortune $PLATFORM_LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
+echo "Welcome to $HOST!" | lolcat
+#echo "Welcome to $HOST!" | figlet | lolcat
+# Disable icon for now
+#fortune $PLATFORM_LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
 
 if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
