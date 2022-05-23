@@ -196,7 +196,7 @@ alias :q="exit"
 alias vzsh="emacsclient -t ~/.zshrc"
 alias vimrc="emacsclient -t ~/.vimrc"
 # git (commit) amend  no edit
-alias gane="gca --amend --no-edit"
+alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 # wireguard aliases
 alias wgup="sudo wg-quick up wg0"
