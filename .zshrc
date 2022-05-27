@@ -29,6 +29,7 @@ export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
+export MANPATH="$HOME/man/":$MANPATH
 
 #rustup
 source $HOME/.cargo/env
@@ -198,6 +199,11 @@ alias vimrc="emacsclient -t ~/.vimrc"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
+# repo aliases
+alias rco="repo checkout"
+function rcob() {
+    # repo create branch and checkout, setting upstream
+}
 # wireguard aliases
 alias wgup="sudo wg-quick up wg0"
 
