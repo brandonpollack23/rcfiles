@@ -284,6 +284,19 @@ function gitxl() {
 }
 alias gitxl_rvc='gitxl "goog/rvc-arc"'
 
+# adb aliases
+function perfetto_pull_trace {
+    local tracename
+    if [ ! -z $1 ]; then
+        tracename=$1
+    else
+        local datetime=$(date +"%Y_%m_%d_%H:%M")
+        tracename=trace_${datetime}
+    fi
+    adb pull /data/misc/perfetto-traces/trace ~/traces/${tracename}
+    echo "Copied trace to $HOME/traces/${tracename}"
+}
+
 
 # source any machine specific stuff
 if [[ -f $HOME/.zshrc.local ]]; then
