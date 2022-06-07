@@ -201,6 +201,7 @@ alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 # repo aliases
 alias rco="repo checkout"
+alias rpushd="pushd $(gettop)"
 function rcob() {
     # repo create branch and checkout, setting upstream
 }
@@ -282,7 +283,15 @@ function gitxl() {
     local branches=$(git branch | tr -d '*' | awk '{print "'"$upstream"^\!' " $1}' | tr '\n' ' ')
     echo $branches | xargs git --no-pager log --pretty=oneline --graph --abbrev-commit --decorate
 }
+function gitsync() {
+    local branches=$(git branch | tr -d '*' | sed 's/^ *//g' | sed 's/\n/ /g')
+    for b in $branches; do
+        git checkout $b
+        git rebase
+    done
+}
 alias gitxl_rvc='gitxl "goog/rvc-arc"'
+alias gitxl_master='gitxl "goog/master"'
 
 # adb aliases
 function perfetto_pull_trace {
