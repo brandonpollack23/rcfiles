@@ -66,6 +66,7 @@ cask "alt-tab"
 cask "android-studio"
 cask "anki"
 cask "betterzip"
+cask "discord"
 cask "disk-inventory-x"
 cask "google-chrome"
 cask "google-drive"
@@ -87,6 +88,7 @@ cask "teamspeak-client"
 cask "visual-studio-code"
 cask "vlc"
 mas "BetterSnapTool", id: 417375580
+mas "Evernote", id: 406056744
 mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
@@ -96,4 +98,5 @@ mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Wake Up Time", id: 495945638
 mas "WhatsApp", id: 1147396723
+mas "WireGuard", id: 1451685025
 mas "Xcode", id: 497799835
