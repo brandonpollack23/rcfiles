@@ -201,7 +201,6 @@ alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 # repo aliases
 alias rco="repo checkout"
-alias rpushd="pushd $(gettop)"
 function rcob() {
     # repo create branch and checkout, setting upstream
 }
