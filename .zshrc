@@ -318,6 +318,14 @@ if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
     source $HOME/bin/vulkan/setup-env.sh
 fi
 
+# Setup chromeos go stuff
+export GOPATH=$HOME/go
+if [[ ! -z $CHROMEOS_SRC ]]; then
+    echo "ChromeOS path detected, setting up..."
+    export GOPATH=$GOPATH:$CHROMEOS_SRC/src/platform/tast-tests:$CHROMEOS_SRC/src/platform/tast
+    export GOPATH=$GOPATH:$CHROMEOS_SRC/chroot/usr/lib/gopath
+fi
+
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
 if [ -f /etc/debian_version ] && [ ! -d /google ]; then
