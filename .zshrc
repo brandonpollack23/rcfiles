@@ -312,6 +312,12 @@ if [[ -f $HOME/.zshrc.local ]]; then
     source $HOME/.zshrc.local
 fi
 
+# source vulkan sdk if present
+if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
+    echo "Sourcing vulkan sdk"
+    source $HOME/bin/vulkan/setup-env.sh
+fi
+
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
 if [ -f /etc/debian_version ] && [ ! -d /google ]; then
