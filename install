@@ -106,8 +106,9 @@ fi
 
 #Setup cargo packages
 cargo install cargo-binstall
-cargo binstall mdcat
-cargo binstall bat
+cargo binstall --no-confirm mdcat 
+cargo binstall --no-confirm bat 
+cargo binstall --no-confirm git-delta 
 
 # Become ROOT for sure now and finish
 exec sudo HOME=$HOME "$RCFILESDIR/.run_setup" -u ${CALLING_USER}
