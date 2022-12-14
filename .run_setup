@@ -44,18 +44,6 @@ fi
 gem install mdless || true
 pip3 install Pygments
 
-# Install Emacs DOOM
-if [ -d $HOME/.emacs.d ]; then
-    echo "Emacs.d already exists, skipping DOOM setup"
-else
-    echo "No Emacs configuration, Ripping and Tearing your config...(Installing Doom Emacs)"
-    $RUNUSER -u $CALLING_USER -- git clone https://github.com/hlissner/doom-emacs $HOME/.emacs.d
-    yes | $RUNUSER -u $CALLING_USER -- $HOME/.emacs.d/bin/doom install
-fi
-echo "Linking DOOMDIR"
-rm -rf $HOME/.doom.d
-$RUNUSER -u $CALLING_USER -- ln -sfn $RCFILESDIR/.doom.d $HOME/.doom.d
-
 mkdir -p $HOME/.vim/backupdir
 chown $CALLING_USER $HOME/.vim/backupdir
 mkdir -p $HOME/.vim/swapdir
