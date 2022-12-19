@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Detect if in chroot (good for prompt and cros development)
-if [[ "$(ls -di /)" != "2" ]]; then
+if [[ "$(ls -di /)" != "2 /" ]]; then
     export HOST="$HOST-chroot"
 fi
 
