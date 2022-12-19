@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+# Detect if in chroot (good for prompt and cros development)
+if [[ "$(ls -di /)" != "2" ]]; then
+    export HOST="$HOST-chroot"
+fi
+
 # Fix dumb terminal usage for emacs TRAMP
 if [[ "$TERM" == "dumb" ]]; then
     unsetopt zle
@@ -143,7 +148,9 @@ export ZSH_COLORIZE_STYLE=monokai
 alias catraw=/bin/cat
 
 # but im using bat now
-alias cat=bat
+if [ -x "$(command -v bat)" ]; then
+    alias cat=bat
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -161,7 +168,7 @@ function emoji_status_prompt() {
     fi
 }
 local JST_DATE=$(TZ=Asia/Tokyo date "+%X (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%m %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
+PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
@@ -324,6 +331,7 @@ if [[ ! -z $CHROMEOS_SRC ]]; then
     echo "ChromeOS path detected, setting up..."
     export GOPATH=$GOPATH:$CHROMEOS_SRC/src/platform/tast-tests:$CHROMEOS_SRC/src/platform/tast
     export GOPATH=$GOPATH:$CHROMEOS_SRC/chroot/usr/lib/gopath
+    alias cros-boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
 fi
 
 # Finally, show a welcome message and fortune!
@@ -332,7 +340,11 @@ if [ -f /etc/debian_version ] && [ ! -d /google ]; then
     PLATFORM_LOGIN_FORTUNES="debian-hints"
 fi
 
-echo "Welcome to $HOST!" | lolcat
+if [ -x "$(command -v lolcat)" ]; then
+    echo "Welcome to $HOST!" | lolcat
+else
+    echo "Welcome to $HOST!"
+fi
 #echo "Welcome to $HOST!" | figlet | lolcat
 # Disable icon for now
 #fortune $PLATFORM_LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
