@@ -219,6 +219,8 @@ alias ec="emacsclient -c -n -a ''" # (c)reates a frame (n)o wait for return, (a)
 
 # node/js/deno stuff
 alias npm=pnpm
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
 
 if [[ -f /etc/debian_version ]]; then
     # Apt
