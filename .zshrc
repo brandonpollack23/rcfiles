@@ -217,6 +217,9 @@ alias wgup="sudo wg-quick up wg0"
 alias e="emacsclient -t -a ''" # (t)erminal mode, (a)lternate editor is emacs
 alias ec="emacsclient -c -n -a ''" # (c)reates a frame (n)o wait for return, (a)lternate editor is emacs itself
 
+# node/js/deno stuff
+alias npm=pnpm
+
 if [[ -f /etc/debian_version ]]; then
     # Apt
     alias sau="sudo apt update"
