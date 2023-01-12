@@ -299,6 +299,22 @@ function gitsync() {
 alias gitxl_rvc='gitxl "goog/rvc-arc"'
 alias gitxl_master='gitxl "goog/master"'
 
+# Chrome OS development helpers
+function cros_build_chrome() {
+    autoninja -C out_$SDK_BOARD/Release chrome chrome_sandbox nacl_helper
+}
+function cros_deploy_chrome() {
+    ./third_party/chromite/bin/deploy_chrome \
+        --strip-flags=-S \
+        --build-dir=out_$SDK_BOARD/Release \                                                                                          <<<NORMAL MODE
+        --device=\[$DUT\] \
+        --target-dir=/usr/local/chrome \
+        --mount-dir=/opt/google/chrome
+}
+function cros_build_deploy() {
+    cros_build_chrome && cros_deploy_chrome
+}
+
 # adb aliases
 function perfetto_pull_trace {
     local tracename
@@ -331,7 +347,7 @@ if [[ ! -z $CHROMEOS_SRC ]]; then
     echo "ChromeOS path detected, setting up..."
     export GOPATH=$GOPATH:$CHROMEOS_SRC/src/platform/tast-tests:$CHROMEOS_SRC/src/platform/tast
     export GOPATH=$GOPATH:$CHROMEOS_SRC/chroot/usr/lib/gopath
-    alias cros-boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
+    alias cros_boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
 fi
 
 # Finally, show a welcome message and fortune!
