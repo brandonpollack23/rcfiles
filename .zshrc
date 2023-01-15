@@ -219,7 +219,6 @@ alias e="emacsclient -t -a ''" # (t)erminal mode, (a)lternate editor is emacs
 alias ec="emacsclient -c -n -a ''" # (c)reates a frame (n)o wait for return, (a)lternate editor is emacs itself
 
 # node/js/deno stuff
-alias npm=pnpm
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
