@@ -240,6 +240,11 @@ export LESS="-R -I"
 # Key bindings (like normal to insert mode in vi mode)
 bindkey -M viins 'jj' vi-cmd-mode
 
+# Override some common aliases
+alias -g G='| rg'
+alias -g L='| bat'
+alias -g LL='2>&1 | bat'
+
 # Override date to print both EST and JST
 function dates() {
     echo "CTZ: $(date)\n"
