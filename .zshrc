@@ -30,7 +30,7 @@ fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$PATH"
+export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
