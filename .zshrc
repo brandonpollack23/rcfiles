@@ -309,6 +309,9 @@ function gitsync() {
 }
 alias gitxl_rvc='gitxl "goog/rvc-arc"'
 alias gitxl_master='gitxl "goog/master"'
+alias gamc='git am --continue'
+alias gama='git am --abort'
+alias gamd='git am --show-current-patch=diff'
 
 # Chrome OS development helpers
 function cros_build_chrome() {
@@ -360,6 +363,9 @@ if [[ ! -z $CHROMEOS_SRC ]]; then
     export GOPATH=$GOPATH:$CHROMEOS_SRC/chroot/usr/lib/gopath
     alias cros_boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
 fi
+
+# Setup kernel stuff
+alias gitmail_drm='git send-email --to=dri-devel@lists.freedesktop.org --cc=maarten.lankhorst@linux.intel.com,mripard@kernel.org,tzimmermann@suse.de,airlied@gmail.com,daniel@ffwll.ch --bcc=mduggan@google.com --annotate'
 
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
