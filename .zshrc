@@ -365,7 +365,7 @@ if [[ ! -z $CHROMEOS_SRC ]]; then
 fi
 
 # Setup kernel stuff
-alias gitmail_drm='git send-email --to=dri-devel@lists.freedesktop.org --cc=maarten.lankhorst@linux.intel.com,mripard@kernel.org,tzimmermann@suse.de,airlied@gmail.com,daniel@ffwll.ch --bcc=mduggan@google.com --annotate'
+alias gitmail_drm='git send-email --to=dri-devel@lists.freedesktop.org --cc=maarten.lankhorst@linux.intel.com,mripard@kernel.org,tzimmermann@suse.de,airlied@gmail.com,daniel@ffwll.ch --bcc=brpol@google.com,mduggan@google.com --annotate'
 
 # Finally, show a welcome message and fortune!
 # add more cowsays! https://charc0al.github.io/cowsay-files/converter/
