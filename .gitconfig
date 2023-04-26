@@ -1,72 +1,74 @@
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[include]
+        path = .gitconfig.local
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[user]
+	email = brandonpollack23@gmail.com
+	name = Brandon Pollack
 
-***REMOVED***
-***REMOVED***
+[core]
+	editor = vim
+	pager = delta
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[interactive]
+        diffFilter = delta --color-only
 
-***REMOVED***
-***REMOVED***
+[delta]
+        navigate = true
+        light = false
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[pull]
+	rebase = true
 
-***REMOVED***
-***REMOVED***
+[http]
+	cookiefile = /home/brpol/.gitcookies
+[submodule]
+	recurse = true
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[color]
+	ui = auto
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[review "URL"]
+	uploadtopic = true
+	autoupload = true
 
-***REMOVED***
-***REMOVED***
+[merge]
+        conflictstyle = diff3
+	tool = vimdiff
 
-***REMOVED***
-***REMOVED***
+[diff]
+        colorMoved = default
 
-***REMOVED***
-***REMOVED***
+[fetch]
+	prune = false
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
+[credential]
+	helper = corpsso
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-	token = 4889f8fa852dfdf1bb4103fc9768dcf857854e91
+# Android configuration for work
+[url "persistent-https://android.git.corp.google.com"]
+            insteadof = https://android.googlesource.com
+[url "persistent-https://android.git.corp.google.com"]
+            insteadof = persistent-https://android.googlesource.com
+[url "persistent-https://android-review.git.corp.google.com"]
+            insteadof = https://android-review.googlesource.com
+[url "persistent-https://googleplex-android.git.corp.google.com"]
+            insteadof = https://googleplex-android.googlesource.com
+[url "persistent-https://googleplex-android.git.corp.google.com"]
+            insteadof = persistent-https://googleplex-android.googlesource.com
+[url "persistent-https://googleplex-android-review.git.corp.google.com"]
+            insteadof = https://googleplex-android-review.googlesource.com
+[url "persistent-https://partner-android.git.corp.google.com"]
+            insteadof = https://partner-android.googlesource.com
+[url "persistent-https://partner-android.git.corp.google.com"]
+            insteadof = persistent-https://partner-android.googlesource.com
+[url "persistent-https://partner-android-review.git.corp.google.com"]
+            insteadof = https://partner-android-review.googlesource.com
+[repo]
+	superprojectChoiceExpire = 1667448345
+	superprojectChoice = true
+        rebase = false
+
+; For Linux Kernel
+[pw]
+	server = https://patchwork.kernel.org/api/1.2
+	project = dri-devel
