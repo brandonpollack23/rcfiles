@@ -41,9 +41,6 @@
 [fetch]
 	prune = false
 
-[credential]
-	helper = corpsso
-
 # Android configuration for work
 [url "persistent-https://android.git.corp.google.com"]
             insteadof = https://android.googlesource.com
