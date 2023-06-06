@@ -329,6 +329,10 @@ function cros_build_deploy() {
     cros_build_chrome && cros_deploy_chrome
 }
 
+function qemu-kill() {
+    ps aux G qemu-system-x86_64 | grep -v grep | head -n 1 | awk '{print $2}' | xargs kill -9
+}
+
 # adb aliases
 function perfetto_pull_trace {
     local tracename
