@@ -391,3 +391,20 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+
+function cros_qemu() {
+    qemu-system-x86_64 \                                                                                                                                                                                                                                             <<<NORMAL MODE
+      --enable-kvm \
+      -smp 4 \
+      -m 16384 \
+      -cpu Haswell-noTSX,-invpcid,-tsc-deadline,check,vmx=on,svm=on \
+      -usb \
+      -device usb-tablet \
+      -device virtio-rng \
+      -net nic,model=virtio \
+      -net user,hostfwd=tcp:127.0.0.1:9222-:22 \
+      -drive file=./src/build/images/betty-arc-r/chromiumos_test_image.bin \
+      -vga none \
+      -display none \
+      -nographic
+}
