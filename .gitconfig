@@ -69,3 +69,5 @@
 [pw]
 	server = https://patchwork.kernel.org/api/1.2
 	project = dri-devel
+
+[includeIf "gitdir:~/.gitconfig.local"]
