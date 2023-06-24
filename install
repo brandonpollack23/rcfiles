@@ -109,6 +109,7 @@ node i -g pnpm
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 cargo install cargo-binstall
+cargo install --locked cargo-outdated
 cargo binstall --no-confirm mdcat 
 cargo binstall --no-confirm bat 
 cargo binstall --no-confirm git-delta 

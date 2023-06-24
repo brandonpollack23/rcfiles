@@ -63,17 +63,19 @@
 [repo]
 	superprojectChoiceExpire = 1667448345
 	superprojectChoice = true
-        rebase = false
+	rebase = false
 
 ; For Linux Kernel
 [pw]
 	server = https://patchwork.kernel.org/api/1.2
 	project = dri-devel
 
+; lfs
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
 
+; local stuff
 [includeIf "gitdir:~/.gitconfig.local"]
