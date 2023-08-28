@@ -320,7 +320,7 @@ function cros_build_chrome() {
 function cros_deploy_chrome() {
     ./third_party/chromite/bin/deploy_chrome \
         --strip-flags=-S \
-        --build-dir=out_$SDK_BOARD/Release \                                                                                          <<<NORMAL MODE
+        --build-dir=out_$SDK_BOARD/Release \
         --device=\[$DUT\] \
         --target-dir=/usr/local/chrome \
         --mount-dir=/opt/google/chrome
@@ -393,7 +393,6 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
 function cros_qemu() {
-    qemu-system-x86_64 \                                                                                                                                                                                                                                             <<<NORMAL MODE
       --enable-kvm \
       -smp 4 \
       -m 16384 \
@@ -407,4 +406,8 @@ function cros_qemu() {
       -vga none \
       -display none \
       -nographic
+}
+
+function adb_start_shizuku() {
+    adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh
 }
