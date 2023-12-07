@@ -6,7 +6,7 @@ set secure "make it secure so that no one can infect my machine with a malicious
 set nocompatible "for compatibility with modern vim and not old vi
 set backupdir=$HOME/.vim/backupdir "backup files (~ files)
 set directory=$HOME/.vim/swapdir "Swap files
-set mouse=""
+set mouse="a"
 let mapleader=","
 set updatetime=250
 set wildmenu "tab completion menu in commadn mode
