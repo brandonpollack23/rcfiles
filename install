@@ -91,7 +91,7 @@ if [ $DISTRO == "Debian" ]; then
 fi
 
 optional_stupid_packages="figlet lolcat"
-packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick fzf man2html \
+packages="neovim bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick fzf man2html \
 ruby cowsay fortune-mod info apache2 nfs-common pip $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
