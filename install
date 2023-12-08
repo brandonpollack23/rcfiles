@@ -94,8 +94,8 @@ fi
 # https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
 # and put in ~/bin/ with a symlink to the bin dir inside the download.
 optional_stupid_packages="figlet lolcat"
-packages="neovim bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs npm imagemagick fzf man2html \
-ruby cowsay fortune-mod info apache2 nfs-common pip $platform_packages $optional_stupid_packages"
+packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs imagemagick fzf man2html \
+ruby cowsay fortune-mod info apache2 neovim nfs-common pip $platform_packages $optional_stupid_packages"
 
 echo "Installing packages: $packages"
 
@@ -103,7 +103,7 @@ ${package_manager} ${packages}
 fi
 
 echo "installing pnpm stuff"
-node i -g pnpm
+npm i -g pnpm
 
 #Setup rust and cargo packages
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
