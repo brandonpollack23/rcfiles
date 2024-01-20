@@ -24,6 +24,8 @@ if [[ "$TERM" == "dumb" ]]; then
 fi
 
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
+fpath+=$HOME/zsh-my-completions
+autoload -Uz compinit && compinit
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 

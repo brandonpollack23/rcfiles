@@ -35,7 +35,7 @@ fi
 # Enable apache cgi (for man2html)
 # a2enmod is a debian-ism, it'll have to be done manually on other distros.
 # TODO do it on other distros
-if [ ! -d /google && ! $IS_WSL_OR_MACOS]; then
+if [ ! -d /google ] && [ ! $IS_WSL_OR_MACOS ]; then
     # work laptop is debian but not really up to date so there are some exceptions.
     a2enmod cgid
 fi
@@ -65,6 +65,8 @@ ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
 chown $CALLING_USER $HOME/.zshrc
 ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
 chown $CALLING_USER $HOME/zsh-plugins
+ln -sfn $RCFILESDIR/zsh-my-completions $HOME/zsh-my-completions
+chown $CALLING_USER $HOME/zsh-my-completions
 ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
 chown $CALLING_USER $HOME/.oh-my-zsh
 ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
