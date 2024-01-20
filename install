@@ -115,8 +115,11 @@ cargo binstall --no-confirm bat
 cargo binstall --no-confirm git-delta 
 
 # Get python stuff
-pip install pipx
-pipx install poetry
+pip install pylint # python linter
+pip install mypy # python type checker
+pip install black # python formatter
+pip install pipx # venv wrapped package installer (for poetry)
+pipx install poetry # poetry is a python package manager/venv manager
 
 # Become ROOT for sure now and finish
 exec sudo HOME=$HOME "$RCFILESDIR/.run_setup" -u ${CALLING_USER}
