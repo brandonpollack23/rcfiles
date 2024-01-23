@@ -15,7 +15,7 @@ RCFILESDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "Installing to home directory: $HOME"
 
 if [[ "$OSTYPE" =~ darwin* ]]; then
-# Mac OS
+    # Mac OS
     # Brew does not run as root
     CALLING_USER=$USER
     echo "Package manager is brew--Macintosh, baby!"
@@ -27,79 +27,79 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
     # Run brew bundle, this installs all the needed packages (such better than a list)
     brew bundle --file=$RCFILESDIR/Brewfile
 else
-# Linux
-# Become root right away in linux
-[ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
-
-getopts ":u:" u
-case $u in
-    u)
-        CALLING_USER=$OPTARG
+    # Linux
+    # Become root right away in linux
+    [ "$UID" -eq 0 ] || exec sudo HOME=$HOME "$0" -u ${USER}
+    
+    getopts ":u:" u
+    case $u in
+        u)
+            CALLING_USER=$OPTARG
         ;;
-    *)
-        echo "dont run as root, just run and let me do it"
-        exit 1
-esac
-
-
-declare -A osInfo;
-apt="apt-get install -my"
-osInfo[/etc/debian_version]=$apt
-apk="apk --update add"
-osInfo[/etc/alpine-release]=$apk
-yum="yum install -y"
-osInfo[/etc/centos-release]=$yum
-dnf="dnf install -y"
-osInfo[/etc/fedora-release]=$dnf
-
-for f in ${!osInfo[@]}
-do
-    if [[ -f $f ]];then
-        echo "Package manager is ${osInfo[$f]}"
-        package_manager=${osInfo[$f]}
+        *)
+            echo "dont run as root, just run and let me do it"
+            exit 1
+    esac
+    
+    
+    declare -A osInfo;
+    apt="apt-get install -my"
+    osInfo[/etc/debian_version]=$apt
+    apk="apk --update add"
+    osInfo[/etc/alpine-release]=$apk
+    yum="yum install -y"
+    osInfo[/etc/centos-release]=$yum
+    dnf="dnf install -y"
+    osInfo[/etc/fedora-release]=$dnf
+    
+    for f in ${!osInfo[@]}
+    do
+        if [[ -f $f ]];then
+            echo "Package manager is ${osInfo[$f]}"
+            package_manager=${osInfo[$f]}
+        fi
+    done
+    
+    # If available, use LSB to identify distribution
+    if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
+        export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+        # Otherwise, use release info file
+    else
+        export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
     fi
-done
-
-# If available, use LSB to identify distribution
-if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
-    export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
-# Otherwise, use release info file
-else
-    export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
-fi
-
-if [ $DISTRO == "Debian" ]; then
-    # Enable non free sources in Debian based os's that use it's packages.
-    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~Debian System Detected!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    set +e
-    CONFIGURED_SOURCES=$(grep -E -e "\<contrib\>" -e "\<non-free\>" /etc/apt/sources.list)
-    set -e
-    if [[ -z $CONFIGURED_SOURCES ]]; then
-        echo "Configuring sources to include contrib and nonfree"
-        sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
+    
+    if [ $DISTRO == "Debian" ]; then
+        # Enable non free sources in Debian based os's that use it's packages.
+        echo "~~~~~~~~~~~~~~~~~~~~~~~~~~Debian System Detected!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        set +e
+        CONFIGURED_SOURCES=$(grep -E -e "\<contrib\>" -e "\<non-free\>" /etc/apt/sources.list)
+        set -e
+        if [[ -z $CONFIGURED_SOURCES ]]; then
+            echo "Configuring sources to include contrib and nonfree"
+            sed -i 's/debian\.org.*$/& contrib non-free/g' /etc/apt/sources.list
+        fi
+        if [[ ! -f /etc/apt/sources.list.d/buster-backports.list ]] && [[ "$(cat /etc/apt/sources.list | grep buster)" != "" ]]; then
+            echo "~~~Installing buster backports~~~"
+            echo 'deb http://deb.debian.org/debian buster-backports main contrib non-free' > /etc/apt/sources.list.d/buster-backports.list
+        fi
+        apt update
+        
+        platform_packages="fortunes-debian-hints debian-handbook texinfo info devscripts etherwake wakeonlan apt-file net-tools"
+        # future yum stuff: net-tools
+        
+        export LOGIN_FORTUNES="debian-hints"
     fi
-    if [[ ! -f /etc/apt/sources.list.d/buster-backports.list ]] && [[ "$(cat /etc/apt/sources.list | grep buster)" != "" ]]; then
-        echo "~~~Installing buster backports~~~"
-        echo 'deb http://deb.debian.org/debian buster-backports main contrib non-free' > /etc/apt/sources.list.d/buster-backports.list
-    fi
-    apt update
-
-    platform_packages="fortunes-debian-hints debian-handbook texinfo info devscripts etherwake wakeonlan apt-file net-tools"
-    # future yum stuff: net-tools
-
-    export LOGIN_FORTUNES="debian-hints"
-fi
-
-# TODO remplace neovim here with a download of the latest:
-# https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-# and put in ~/bin/ with a symlink to the bin dir inside the download.
-optional_stupid_packages="figlet lolcat"
-packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs imagemagick fzf man2html \
-ruby cowsay fortune-mod info apache2 neovim nfs-common pip $platform_packages $optional_stupid_packages"
-
-echo "Installing packages: $packages"
-
-${package_manager} ${packages}
+    
+    # TODO remplace neovim here with a download of the latest:
+    # https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+    # and put in ~/bin/ with a symlink to the bin dir inside the download.
+    optional_stupid_packages="figlet lolcat"
+    packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo coreutils pandoc shellcheck vim curl tree nodejs imagemagick fzf man2html \
+    ruby cowsay fortune-mod info apache2 neovim nfs-common pip $platform_packages $optional_stupid_packages"
+    
+    echo "Installing packages: $packages"
+    
+    ${package_manager} ${packages}
 fi
 
 echo "installing pnpm stuff"
@@ -110,9 +110,9 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 cargo install cargo-binstall
 cargo install --locked cargo-outdated
-cargo binstall --no-confirm mdcat 
-cargo binstall --no-confirm bat 
-cargo binstall --no-confirm git-delta 
+cargo binstall --no-confirm mdcat
+cargo binstall --no-confirm bat
+cargo binstall --no-confirm git-delta
 
 # Get python stuff
 pip install pylint # python linter
@@ -120,6 +120,19 @@ pip install mypy # python type checker
 pip install black # python formatter
 pip install pipx # venv wrapped package installer (for poetry)
 pipx install poetry # poetry is a python package manager/venv manager
+
+# Setup asdf and erlang/elixir/beam plugins
+git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
+. $HOME/.asdf/asdf.sh
+asdf plugin add erlang
+asdf plugin add elixir
+# Install elixir and erlang from source and set them as global
+asdf install erlang ref:OTP-26.2.1
+asdf install elixir ref:v1.16.0
+# Set them as global
+asdf global erlang ref:OTP-26.2.1
+asdf global elixir ref:v1.16
+
 
 # Become ROOT for sure now and finish
 exec sudo HOME=$HOME "$RCFILESDIR/.run_setup" -u ${CALLING_USER}

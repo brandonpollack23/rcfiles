@@ -393,6 +393,9 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
 
+# asdf setup if it exists
+[[ -f ~/.asdf/asdf.sh ]] && . ~/.asdf/asdf.sh || true
+
 function cros_qemu() {
       --enable-kvm \
       -smp 4 \
