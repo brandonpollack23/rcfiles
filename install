@@ -128,10 +128,12 @@ asdf plugin add erlang
 asdf plugin add elixir
 # Install elixir and erlang from source and set them as global
 asdf install erlang ref:OTP-26.2.1
-asdf install elixir ref:v1.16.0
-# Set them as global
 asdf global erlang ref:OTP-26.2.1
+asdf reshim
+# Set them as global
+asdf install elixir ref:v1.16.0
 asdf global elixir ref:v1.16
+asdf reshim
 
 
 # Become ROOT for sure now and finish
