@@ -371,6 +371,8 @@ if [[ ! -z $CHROMEOS_SRC ]]; then
     alias cros_boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
 fi
 
+export PATH=$PATH:$HOME/bin/go/bin
+
 # Setup kernel stuff
 alias gitmail_drm='git send-email --to=dri-devel@lists.freedesktop.org --cc=maarten.lankhorst@linux.intel.com,mripard@kernel.org,tzimmermann@suse.de,airlied@gmail.com,daniel@ffwll.ch --bcc=brpol@google.com,mduggan@google.com --annotate'
 
