@@ -27,7 +27,7 @@
 	url = https://github.com/preservim/nerdcommenter.git
 [submodule "zsh-plugins/zsh-completions"]
 	path = zsh-plugins/zsh-completions
-	url = https://github.com/zsh-users/zsh-completions.git
+	url = git@github.com:zsh-users/zsh-completions.git
 [submodule "zsh-plugins/zfs-completion"]
 	path = zsh-plugins/zfs-completion
 	url = https://github.com/luoxu34/zfs-completion.git

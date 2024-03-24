@@ -32,7 +32,7 @@ autoload -Uz compinit && compinit
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin/google-cloud-sdk/bin:$HOME/.pulumi/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
@@ -46,6 +46,8 @@ source $HOME/.cargo/env
 export EDITOR="vim" # opens in terminal
 export VISUAL="gvim" # opens in gui mode
 export ALTERNATE_EDITOR="vi"
+
+export CLOUDSDK_HOME=$HOME/bin/google-cloud-sdk
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -122,12 +124,12 @@ plugins=(
     docker-compose
     emoji
     fzf
+    gcloud
     git
     git-extras
     gitignore
     gradle
     lein
-    mix
     npm
     repo
     rust
@@ -415,3 +417,11 @@ function cros_qemu() {
 function adb_start_shizuku() {
     adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh
 }
+
+# add Pulumi to the PATH
+export PATH=$PATH:/home/brpol/.pulumi/bin
+
+# add nvm (node version manager) to the PATH
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
