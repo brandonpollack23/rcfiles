@@ -1,5 +1,6 @@
--- TODO fixes
--- move vscode and hop to after directory
+-- TODO
+-- telescope select tab instead of replacing
+-- telescope order by recently opened
 
 -- TODO plugins
 -- copilot
@@ -56,9 +57,37 @@ table.insert(vimgrep_arguments, "--hidden")
 -- I don't want to search in the `.git` directory.
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!**/.git/*")
+
+local actions = require('telescope.actions')
+local action_state = require('telescope.actions.state')
+-- function openTabIfItExists()
+--   local selected_file = action_state.get_selected_entry()
+--   -- Check each tab to see if the selected file is already open
+--   for tabnr = 1, vim.fn.tabpagenr('$') do
+--     local wins = vim.api.nvim_tabpage_list_wins(tabnr)
+--     for _, win in ipairs(wins) do
+--       local buf = vim.api.nvim_win_get_buf(win)
+--       local buf_file = vim.api.nvim_buf_get_name(buf)
+--       if buf_file == selected_file.path then
+--         -- If file is found in a tab, switch to that tab
+--         vim.cmd(tabnr .. 'tabnext')
+--         return
+--       end
+--     end
+--   end
+--   -- If file wasn't found in any tab, open it in a new tab
+--   vim.cmd('tabnew ' .. selected_file.path)
+-- end
+
 require("telescope").setup({
   defaults = {
-    vimgrep_arguments = vimgrep_arguments
+    vimgrep_arguments = vimgrep_arguments,
+
+    -- mappings = {
+    --   i = {
+    --     ["<CR>"] = openTabIfItExists
+    --   }
+    -- }
   },
   pickers = {
     find_files = {

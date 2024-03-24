@@ -3,6 +3,7 @@
   "lazy.nvim": { "branch": "main", "commit": "af6afefbb46ab29a8a1db69536b04290a9403876" },
   "nvim-surround": { "branch": "main", "commit": "d47001f8ddf9646c24f16d2732d4d0255acd2121" },
   "plenary.nvim": { "branch": "master", "commit": "f7adfc4b3f4f91aab6caebf42b3682945fbc35be" },
+  "telescope-frecency.nvim": { "branch": "master", "commit": "9f4b0faae411667f3066d7235e2b67f55923dbe6" },
   "telescope.nvim": { "branch": "master", "commit": "c2b8311dfacd08b3056b8f0249025d633a4e71a8" },
   "vscode.nvim": { "branch": "main", "commit": "d7a8ad9806eaba47f20bab71df2b3f2c39784645" }
 }
