@@ -1,9 +1,16 @@
 -- TODO
+-- Neotree configuration https://github.com/nvim-neo-tree/neo-tree.nvim?tab=readme-ov-file#quickstart
+  -- split open, rebind open dir to o, etc
 -- telescope select tab instead of replacing
 -- telescope order by recently opened
 
 -- TODO plugins
+-- a git plugin
+-- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
 -- copilot
+-- harpoon
+-- undotree
+-- commenter
 -- todo highlighting
 
 -- Package manager
@@ -40,6 +47,22 @@ require("lazy").setup({
   -- Fuzzy finder (file finder etc), see "after" config directory for bindings, 
   -- ctrl-p from vscode is equivalent and for non git repos there is <leader>ff
   {"nvim-telescope/telescope.nvim", dependencies =  {'nvim-lua/plenary.nvim'} }, 
+  {
+    "nvim-treesitter/nvim-treesitter", -- Better syntax highlighting etc
+    build = function()
+      require("nvim-treesitter.install").update({ with_sync = true })()
+    end,
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    }
+  }
 })
 
 -- Key remaps
@@ -49,6 +72,7 @@ require("brpol.remap")
 
 require("brpol.vscode_theme")
 require("brpol.hop_easymotion")
+require("brpol.treesitter")
 
 -- telescope (fuzzy finder pickers)
 local telescopeConfig = require("telescope.config")
@@ -105,7 +129,7 @@ vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
 vim.o.ignorecase = true -- ignore case in searches
 vim.cmd('syntax enable')
 vim.opt.encoding = "utf-8"
--- vim.o.wildmode = "longest" -- tab completion that doesnt suck
+vim.opt.hlsearch = false
 
 -- Tab options
 vim.o.expandtab = true

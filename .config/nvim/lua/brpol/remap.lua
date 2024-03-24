@@ -10,3 +10,6 @@ vim.keymap.set("i", "jj", "<Esc>", {noremap = true})
 -- Create/delete a tab
 vim.keymap.set("n", "<leader>t", vim.cmd.tabnew)
 vim.keymap.set("n", "<leader>w", vim.cmd.tabclose)
+
+-- Neotree
+vim.keymap.set("n", "<leader>f", ":Neotree toggle<CR>")
