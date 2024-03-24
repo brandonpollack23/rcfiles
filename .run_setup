@@ -118,3 +118,10 @@ chsh -s `which zsh` $CALLING_USER
 
 echo "Setup complete, please logout and log back in to access the new shell enviornment"
 echo "Consider running ./update_root_prefs as well if you are the system administrator"
+
+# install neovim
+mkdir -p $HOME/downloads
+mkdir -p /opt/
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz --output-dir $HOME/downloads
+sudo rm -rf /opt/nvim
+sudo tar -C /opt -xzf nvim-linux64.tar.gz

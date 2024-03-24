@@ -421,6 +421,9 @@ function adb_start_shizuku() {
 # add Pulumi to the PATH
 export PATH=$PATH:/home/brpol/.pulumi/bin
 
+# add neovim to the PATH
+export PATH=$PATH:/opt/nvim-linux64/bin
+
 # add nvm (node version manager) to the PATH
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
