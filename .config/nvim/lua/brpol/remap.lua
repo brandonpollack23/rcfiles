@@ -1,15 +1,25 @@
+local wk = require("which-key")
+
 vim.g.mapleader = ","
 
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex) -- Return to nvim's default file explorer
-vim.keymap.set("n", "<leader>h", vim.cmd.noh) -- keybind to turn off search highlight
+-- https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings
+wk.register({
+    f = {
+      name = "File Operations",
+      f = { "<cmd>Telescope find files<cr>", "Find File" },
+      t = { "<cmd>Neotree toggle<cr>", "File Tree" },
+    },
+    p = {
+      name = "Default Vim Functions",
+      v = { "<cmd>Ex<cr>", "Vim File Browser (netrw)" },
+    },
+    -- Create/delete a tab
+    t = {  "<cmd>tabnew<cr>" ,"Tab Open" },
+    w = {  "<cmd>tabclose<cr>" ,"Tab Open" },
+  },
+  { prefix = "<leader>" }
+)
 
 -- Return to normal mode from insert mode
 vim.o.timeoutlen = 500 -- set timeout length so I can type literal jj faster
 vim.keymap.set("i", "jj", "<Esc>", {noremap = true})
-
--- Create/delete a tab
-vim.keymap.set("n", "<leader>t", vim.cmd.tabnew)
-vim.keymap.set("n", "<leader>w", vim.cmd.tabclose)
-
--- Neotree
-vim.keymap.set("n", "<leader>f", ":Neotree toggle<CR>")

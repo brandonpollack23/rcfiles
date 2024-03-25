@@ -293,6 +293,8 @@ if echo $(uname -a) | grep -q WSL; then
         chrome index.html
         popd
     }
+
+    # Windows native neovide here
 fi
 
 # Git aliases

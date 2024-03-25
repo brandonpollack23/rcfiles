@@ -117,6 +117,7 @@ cargo install --locked cargo-outdated
 cargo binstall --no-confirm mdcat
 cargo binstall --no-confirm bat
 cargo binstall --no-confirm git-delta
+cargo install --git https://github.com/neovide/neovide # NVim gui
 
 # Get python stuff
 pip install pylint # python linter

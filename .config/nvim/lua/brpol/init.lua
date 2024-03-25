@@ -8,15 +8,10 @@
   -- ctrl q for info about variable/type
   -- ctrl shift p for parameter info
 
--- Neotree configuration https://github.com/nvim-neo-tree/neo-tree.nvim?tab=readme-ov-file#quickstart
-  -- up directory
-  -- Hiding files not yet tracked in git
-  --
--- telescope select tab instead of replacing
--- telescope order by recently opened
+-- IF bufferline doesnt work: telescope select tab instead of replacing
 
 -- TODO plugins
-  -- autoformat on save
+  -- jump to window with easymotion
   -- a git plugin https://github.com/NeogitOrg/neogit
   -- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
   -- copilot
@@ -24,6 +19,7 @@
   -- debugging files
   -- undotree
   -- commenter
+  -- autoformat on save
   -- todo highlighting
 
 -- Go through old vimrc to see if im missing anything
@@ -69,16 +65,19 @@ require("lazy").setup({
     end,
   },
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-      "MunifTanjim/nui.nvim",
-      "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    "folke/which-key.nvim", -- Helps remember keybindings
+    event = "VeryLazy",
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+    end,
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
     }
   },
-  
+
   -- LSP stuff
   --- Uncomment the two plugins below if you want to manage the language servers from neovim
   {'williamboman/mason.nvim'},
@@ -108,74 +107,55 @@ table.insert(vimgrep_arguments, "--hidden")
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!**/.git/*")
 
-local actions = require('telescope.actions')
-local action_state = require('telescope.actions.state')
--- function openTabIfItExists()
-  --   local selected_file = action_state.get_selected_entry()
-  --   -- Check each tab to see if the selected file is already open
-  --   for tabnr = 1, vim.fn.tabpagenr('$') do
-  --     local wins = vim.api.nvim_tabpage_list_wins(tabnr)
-  --     for _, win in ipairs(wins) do
-  --       local buf = vim.api.nvim_win_get_buf(win)
-  --       local buf_file = vim.api.nvim_buf_get_name(buf)
-  --       if buf_file == selected_file.path then
-  --         -- If file is found in a tab, switch to that tab
-  --         vim.cmd(tabnr .. 'tabnext')
-  --         return
-  --       end
-  --     end
-  --   end
-  --   -- If file wasn't found in any tab, open it in a new tab
-  --   vim.cmd('tabnew ' .. selected_file.path)
-  -- end
+require("telescope").setup({
+  defaults = {
+    vimgrep_arguments = vimgrep_arguments,
+  },
+  pickers = {
+    find_files = {
+      -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+      find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+    },
+  },
+})
+require("brpol.telescope")
 
-  require("telescope").setup({
-    defaults = {
-      vimgrep_arguments = vimgrep_arguments,
+-- Global options
+vim.o.number = true
+vim.o.backupdir = vim.fn.expand("$HOME/.vim/backupdir") -- Backup and swap dirs
+vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
+vim.o.ignorecase = true -- ignore case in searches
+vim.cmd('syntax enable')
+vim.opt.encoding = "utf-8"
+vim.opt.hlsearch = false
 
-      -- mappings = {
-        --   i = {
-          --     ["<CR>"] = openTabIfItExists
-          --   }
-          -- }
-        },
-        pickers = {
-          find_files = {
-            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
-            find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
-          },
-        },
-      })
-      require("brpol.telescope")
+-- Tab options
+vim.o.expandtab = true
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+vim.cmd('filetype indent on')
+vim.cmd('filetype plugin on')
+vim.o.smartindent = true
 
-      -- Global options
-      vim.o.number = true
-      vim.o.backupdir = vim.fn.expand("$HOME/.vim/backupdir") -- Backup and swap dirs
-      vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
-      vim.o.ignorecase = true -- ignore case in searches
-      vim.cmd('syntax enable')
-      vim.opt.encoding = "utf-8"
-      vim.opt.hlsearch = false
+-- New tabs open with vertical splits
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "help",
+  callback = function()
+    -- Check if the current window is not already in a vertically split window
+    if vim.fn.winwidth(0) > 80 then
+      vim.cmd("wincmd L") -- Move the current window to the far right
+      vim.cmd("vertical resize 80") -- Optionally resize the help window to a specific width
+    else
+      -- If the window is too narrow, just open help in the current window
+      -- Alternatively, you can decide to split the window anyway or adjust it differently
+    end
+  end
+})
 
-      -- Tab options
-      vim.o.expandtab = true
-      vim.o.shiftwidth = 2
-      vim.o.softtabstop = 2
-      vim.cmd('filetype indent on')
-      vim.cmd('filetype plugin on')
-      vim.o.smartindent = true
+vim.api.nvim_create_autocmd("WinNew", {
+  pattern = "*",
+  callback = function()
+    vim.cmd('wincmd p')
+  end,
+})
 
-      -- New tabs open with vertical splits
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "help",
-        callback = function()
-          -- Check if the current window is not already in a vertically split window
-          if vim.fn.winwidth(0) > 80 then
-            vim.cmd("wincmd L") -- Move the current window to the far right
-            vim.cmd("vertical resize 80") -- Optionally resize the help window to a specific width
-          else
-            -- If the window is too narrow, just open help in the current window
-            -- Alternatively, you can decide to split the window anyway or adjust it differently
-          end
-        end
-      })
