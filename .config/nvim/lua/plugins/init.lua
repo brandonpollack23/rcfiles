@@ -42,6 +42,10 @@ return {
       require("nvim-treesitter.install").update({ with_sync = true })()
     end,
   },
+  {
+    "nvim-treesitter/nvim-treesitter-refactor",
+    dependencies = "nvim-treesitter/nvim-treesitter"
+  },
 
   -- modern NERDTree
   {

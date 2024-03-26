@@ -18,4 +18,23 @@ require('nvim-treesitter.configs').setup ({
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
+
+  refactor = {
+    highlight_definitions = {
+      enable = true,
+      clear_on_cursor_move = false, -- No need, update time is high enough
+    },
+
+    smart_rename = {
+      enable = true,
+      -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+  }
 })
+
+-- https://github.com/nvim-treesitter/nvim-treesitter-refactor/blob/master/doc/nvim-treesitter-refactor.txt#L145
+-- vim.cmd('hi TSDefinition guibg=')
+vim.cmd('hi TSDefinitionUsage guibg=#3A3A3A')
