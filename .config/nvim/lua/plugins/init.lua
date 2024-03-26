@@ -109,6 +109,12 @@ return {
     end,
   },
 
+  -- Pretty status line
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' }
+  },
+
   {
     "folke/which-key.nvim", -- Helps remember keybindings
     event = "VeryLazy",

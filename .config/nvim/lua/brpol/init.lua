@@ -53,6 +53,7 @@ require("brpol.treesitter")
 require("brpol.nvim-tree")
 require("brpol.lsp")
 require("brpol.telescope")
+require("brpol.lualine")
 
 -- Global options
 -- Disable netrw (default file picker) at startup
