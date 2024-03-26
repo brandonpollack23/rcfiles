@@ -95,9 +95,9 @@ else
     # and put in ~/bin/ with a symlink to the bin dir inside the download.
     optional_stupid_packages="figlet lolcat"
     packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo
-    coreutils pandoc shellcheck vim curl tree nodejs imagemagick fzf man2html \
+    coreutils pandoc shellcheck sqlite3 vim curl tree nodejs imagemagick fzf man2html \
     ruby cowsay fortune-mod info apache2 neovim nfs-common unixodbc-dev
-    libncurses5-dev libwxgtk-webview3.0-gtk3-0v5 xsltproc fop libxml2-utils
+    libncurses5-dev libwxgtk-webview3.0-gtk3-0v5 xsltproc fop fzy libxml2-utils
     libglu1-mesa libwxbase3.0-dev wx-common wx3.0-headers pip $platform_packages
     $optional_stupid_packages"
     

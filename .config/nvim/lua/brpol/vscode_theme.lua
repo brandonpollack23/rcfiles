@@ -32,15 +32,16 @@ require('vscode').setup({
 local vscode = require('vscode')
 vscode.load()
 
-darkMode = "dark"
-function toggle()
-  if darkMode == "dark" then
-    darkMode = "light"
+local M = {}
+DarkMode = "dark"
+function M.toggleDarkMode()
+  if DarkMode == "dark" then
+    DarkMode = "light"
   else
-    darkMode = "dark"
+    DarkMode = "dark"
   end
 
-  vscode.load(darkMode)
+  vscode.load(DarkMode)
 end
 
-vim.keymap.set("n", "<leader>bg", toggle)
+return M

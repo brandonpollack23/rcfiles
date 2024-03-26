@@ -1,15 +1,18 @@
 local builtin = require('telescope.builtin')
+local extensions = require('telescope').extensions
 
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<C-p>', builtin.git_files, {})
+vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only =true }) end, {})
 
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-
-vim.keymap.set('n', '<leader>ps', function()
-  builtin.grep_string({ search = vim.fn.input("Grep > ") })
-end)
+-- Hack to make Ctrl-C work to close
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('user-telescope-picker', { clear = true }),
+  pattern = { 'TelescopePrompt' },
+  callback = function(event)
+    vim.keymap.set('i', '<C-c>', function()
+      require('telescope.actions').close(event.buf)
+    end, { noremap = true, silent = true, buffer = event.buf })
+  end,
+})
 
 local telescopeConfig = require("telescope.config")
 local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
@@ -27,4 +30,14 @@ require("telescope").setup({
       find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
     },
   },
+  extensions = {
+    smart_open = {
+      show_scores = false,
+      ignore_patterns = {"*.git/*"},
+      -- Enable to use fzy, needs to be installed though
+      match_algorithm = "fzy",
+      disable_devicons = false,
+      -- open_buffer_indicators = {previous = "👀", others = "🙈"},
+    },
+  }
 })
