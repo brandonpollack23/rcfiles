@@ -109,3 +109,28 @@ vim.api.nvim_create_autocmd("WinNew", {
 vim.keymap.set("n", "<C-u>", "<C-u>zz", {noremap = true})
 vim.keymap.set("n", "<C-d>", "<C-d>zz", {noremap = true})
 vim.o.scrolloff = 8
+
+-- WSL Stuff
+local function is_wsl()
+    -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
+    -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
+    local proc_version = vim.fn.readfile("/proc/version")
+    if string.find(table.concat(proc_version), "Microsoft") or string.find(table.concat(proc_version), "WSL") then
+        return true
+    end
+    return false
+end
+
+local function on_yank()
+    -- Check if we're in WSL and if the yank was into the '+' register
+    if is_wsl() and vim.v.event.regname == '+' then
+        -- Use the '+' register content and write to clip.exe
+        local content = vim.fn.getreg('+')
+        vim.fn.system('clip.exe', content)
+    end
+end
+
+-- Set up the autocmd for the TextYankPost event
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = on_yank
+})
