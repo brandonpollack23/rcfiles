@@ -67,7 +67,9 @@ vim.diagnostic.config({
     virtual_text = true
 })
 
+-- Language configs
 local lspconfig = require('lspconfig')
+
 -- Lua config
 lspconfig.lua_ls.setup {
   on_init = function(client)

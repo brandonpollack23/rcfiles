@@ -1,21 +1,22 @@
 local wk = require("which-key")
 
-vim.g.mapleader = ","
-
 -- https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings
 wk.register({
-    f = {
-      name = "File Operations",
-      f = { "<cmd>Telescope find files<cr>", "Find File" },
-      t = { "<cmd>Neotree toggle<cr>", "File Tree" },
-    },
-    p = {
-      name = "Default Vim Functions",
-      v = { "<cmd>Ex<cr>", "Vim File Browser (netrw)" },
-    },
-    -- Create/delete a tab
-    t = {  "<cmd>tabnew<cr>" ,"Tab Open" },
-    w = {  "<cmd>tabclose<cr>" ,"Tab Open" },
+  d = {
+    name = "File Tree Operations",
+    d = { "<cmd>NvimTreeToggle<cr>", "File Tree" },
+    f = { "<cmd>NvimTreeFindFile<cr>", "File Tree (current file)" },
+  },
+  f = {
+    name = "File Operations",
+    f = { "<cmd>Telescope find files<cr>", "Find File" },
+  },
+  p = {
+    name = "Default Vim Functions",
+  },
+  -- Create/delete a tab
+  t = {  "<cmd>tabnew<cr>" ,"Tab Open" },
+  w = {  "<cmd>tabclose<cr>" ,"Tab Open" },
   },
   { prefix = "<leader>" }
 )

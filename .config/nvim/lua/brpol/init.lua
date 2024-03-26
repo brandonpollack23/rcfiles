@@ -15,14 +15,16 @@
   -- a git plugin https://github.com/NeogitOrg/neogit
   -- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
   -- copilot
+  -- file outline (function list etc)
   -- harpoon
   -- debugging files
   -- undotree
   -- commenter
   -- autoformat on save
   -- todo highlighting
-
 -- Go through old vimrc to see if im missing anything
+
+vim.g.mapleader = ","
 
 -- Package manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -38,56 +40,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
-  {"Mofiqul/vscode.nvim"},
-  {
-    'smoka7/hop.nvim', -- EasyMotion
-    version = "*",
-    opts = {},
-  },
-  {
-    "kylechui/nvim-surround",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup({
-        -- Configuration here, or leave empty to use defaults
-      })
-    end
-  },
-  -- Fuzzy finder (file finder etc), see "after" config directory for bindings, 
-  -- ctrl-p from vscode is equivalent and for non git repos there is <leader>ff
-  {"nvim-telescope/telescope.nvim", dependencies =  {'nvim-lua/plenary.nvim'} }, 
-  {
-    "nvim-treesitter/nvim-treesitter", -- Better syntax highlighting etc
-    build = function()
-      require("nvim-treesitter.install").update({ with_sync = true })()
-    end,
-  },
-  {
-    "folke/which-key.nvim", -- Helps remember keybindings
-    event = "VeryLazy",
-    init = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-    end,
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  },
-
-  -- LSP stuff
-  --- Uncomment the two plugins below if you want to manage the language servers from neovim
-  {'williamboman/mason.nvim'},
-  {'williamboman/mason-lspconfig.nvim'},
-  {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
-  {'neovim/nvim-lspconfig'},
-  {'hrsh7th/cmp-nvim-lsp'},
-  {'hrsh7th/nvim-cmp'},
-  {'L3MON4D3/LuaSnip'},
-})
+require("lazy").setup("plugins")
 
 -- Key remaps
 require("brpol.remap")
@@ -97,30 +50,18 @@ require("brpol.remap")
 require("brpol.vscode_theme")
 require("brpol.hop_easymotion")
 require("brpol.treesitter")
+require("brpol.nvim-tree")
 require("brpol.lsp")
-
--- telescope (fuzzy finder pickers)
-local telescopeConfig = require("telescope.config")
-local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-table.insert(vimgrep_arguments, "--hidden")
--- I don't want to search in the `.git` directory.
-table.insert(vimgrep_arguments, "--glob")
-table.insert(vimgrep_arguments, "!**/.git/*")
-
-require("telescope").setup({
-  defaults = {
-    vimgrep_arguments = vimgrep_arguments,
-  },
-  pickers = {
-    find_files = {
-      -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
-      find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
-    },
-  },
-})
 require("brpol.telescope")
 
 -- Global options
+-- Disable netrw (default file picker) at startup
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Enable 24 bit color
+vim.opt.termguicolors = true
+
 vim.o.number = true
 vim.o.backupdir = vim.fn.expand("$HOME/.vim/backupdir") -- Backup and swap dirs
 vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
@@ -128,6 +69,14 @@ vim.o.ignorecase = true -- ignore case in searches
 vim.cmd('syntax enable')
 vim.opt.encoding = "utf-8"
 vim.opt.hlsearch = false
+
+-- Used for swapdir writing and hover in normal mode like for previews in tree
+vim.o.updatetime = 100
+
+-- Make tab completion work like bash but with a list if you press tab again
+vim.o.wildmode = "longest:full,full"
+vim.o.wildmenu = true
+vim.o.wildignorecase = true
 
 -- Tab options
 vim.o.expandtab = true
@@ -137,21 +86,7 @@ vim.cmd('filetype indent on')
 vim.cmd('filetype plugin on')
 vim.o.smartindent = true
 
--- New tabs open with vertical splits
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "help",
-  callback = function()
-    -- Check if the current window is not already in a vertically split window
-    if vim.fn.winwidth(0) > 80 then
-      vim.cmd("wincmd L") -- Move the current window to the far right
-      vim.cmd("vertical resize 80") -- Optionally resize the help window to a specific width
-    else
-      -- If the window is too narrow, just open help in the current window
-      -- Alternatively, you can decide to split the window anyway or adjust it differently
-    end
-  end
-})
-
+-- New windows always focused
 vim.api.nvim_create_autocmd("WinNew", {
   pattern = "*",
   callback = function()
@@ -159,3 +94,7 @@ vim.api.nvim_create_autocmd("WinNew", {
   end,
 })
 
+-- Make scrolling always centered and have some offset
+vim.keymap.set("n", "<C-u>", "<C-u>zz", {noremap = true})
+vim.keymap.set("n", "<C-d>", "<C-d>zz", {noremap = true})
+vim.o.scrolloff = 8
