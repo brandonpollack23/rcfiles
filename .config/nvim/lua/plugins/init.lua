@@ -129,6 +129,14 @@ return {
     }
   },
 
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- add any options here
+    },
+    lazy = false,
+  },
+
   -- LSP stuff
   --- Uncomment the two plugins below if you want to manage the language servers from neovim
   {'williamboman/mason.nvim'},

@@ -46,7 +46,6 @@ require("lazy").setup("plugins")
 require("brpol.remap")
 
 -- Individual Plugin Setup
-
 require("brpol.vscode_theme")
 require("brpol.hop_easymotion")
 require("brpol.treesitter")
@@ -54,6 +53,7 @@ require("brpol.nvim-tree")
 require("brpol.lsp")
 require("brpol.telescope")
 require("brpol.lualine")
+require('Comment').setup()
 
 -- Global options
 -- Disable netrw (default file picker) at startup
