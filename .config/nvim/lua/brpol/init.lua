@@ -8,6 +8,9 @@
   -- ctrl q for info about variable/type
   -- ctrl shift p for parameter info
 
+-- Lualine lsp progress https://github.com/linrongbin16/lsp-progress.nvim
+-- Recursively open in nvim tree https://github.com/nvim-tree/nvim-tree.lua/pull/1292
+
 -- IF bufferline doesnt work: telescope select tab instead of replacing
 
 -- TODO plugins
@@ -71,9 +74,15 @@ vim.o.ignorecase = true -- ignore case in searches
 vim.cmd('syntax enable')
 vim.opt.encoding = "utf-8"
 vim.opt.hlsearch = false
+vim.opt.incsearch = true
+vim.opt.colorcolumn = "100"
+
+-- Save undos to a file
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- Used for swapdir writing and hover in normal mode like for previews in tree
-vim.o.updatetime = 100
+vim.o.updatetime = 50
 
 -- Make tab completion work like bash but with a list if you press tab again
 vim.o.wildmode = "longest:full,full"
