@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup ({
+require('nvim-treesitter.configs').setup({
   -- A list of parser names, or "all" https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#supported-languages
   ensure_installed = "all",
 

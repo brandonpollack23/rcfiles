@@ -38,4 +38,3 @@ require("nvim-tree").setup({
 
 -- Allow for LSP refactors etc to work from the tree
 require("lsp-file-operations").setup()
-

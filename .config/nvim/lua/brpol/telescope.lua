@@ -1,7 +1,7 @@
 local builtin = require('telescope.builtin')
 local extensions = require('telescope').extensions
 
-vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only =true }) end, {})
+vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only = true }) end, {})
 
 -- Hack to make Ctrl-C work to close
 vim.api.nvim_create_autocmd('FileType', {
@@ -33,7 +33,7 @@ require("telescope").setup({
   extensions = {
     smart_open = {
       show_scores = false,
-      ignore_patterns = {"*.git/*"},
+      ignore_patterns = { "*.git/*" },
       -- Enable to use fzy, needs to be installed though
       match_algorithm = "fzy",
       disable_devicons = false,

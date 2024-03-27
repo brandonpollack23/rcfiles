@@ -1,12 +1,12 @@
 -- TODO
--- LSP 
-  -- trigger and accept with ctrl space
-  -- autoformatting
-  -- undefined global "vim"
-  -- remove gutter icons, add squigles instead
-  -- quick fix
-  -- ctrl q for info about variable/type
-  -- ctrl shift p for parameter info
+-- LSP
+-- trigger and accept with ctrl space
+-- autoformatting
+-- undefined global "vim"
+-- remove gutter icons, add squigles instead
+-- quick fix
+-- ctrl q for info about variable/type
+-- ctrl shift p for parameter info
 
 -- Lualine lsp progress https://github.com/linrongbin16/lsp-progress.nvim
 -- Recursively open in nvim tree https://github.com/nvim-tree/nvim-tree.lua/pull/1292
@@ -14,17 +14,17 @@
 -- IF bufferline doesnt work: telescope select tab instead of replacing
 
 -- TODO plugins
-  -- jump to window with easymotion
-  -- a git plugin https://github.com/NeogitOrg/neogit
-  -- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
-  -- copilot
-  -- file outline (function list etc)
-  -- harpoon
-  -- debugging files
-  -- undotree
-  -- commenter
-  -- autoformat on save
-  -- todo highlighting
+-- jump to window with easymotion
+-- a git plugin https://github.com/NeogitOrg/neogit
+-- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
+-- copilot
+-- file outline (function list etc)
+-- harpoon
+-- debugging files
+-- undotree
+-- commenter
+-- autoformat on save
+-- todo highlighting
 -- Go through old vimrc to see if im missing anything
 
 vim.g.mapleader = ","
@@ -70,7 +70,7 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.backupdir = vim.fn.expand("$HOME/.vim/backupdir") -- Backup and swap dirs
 vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
-vim.o.ignorecase = true -- ignore case in searches
+vim.o.ignorecase = true                                 -- ignore case in searches
 vim.cmd('syntax enable')
 vim.opt.encoding = "utf-8"
 vim.opt.hlsearch = false
@@ -106,31 +106,31 @@ vim.api.nvim_create_autocmd("WinNew", {
 })
 
 -- Make scrolling always centered and have some offset
-vim.keymap.set("n", "<C-u>", "<C-u>zz", {noremap = true})
-vim.keymap.set("n", "<C-d>", "<C-d>zz", {noremap = true})
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true })
 vim.o.scrolloff = 8
 
 -- WSL Stuff
 local function is_wsl()
-    -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
-    -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
-    local proc_version = vim.fn.readfile("/proc/version")
-    if string.find(table.concat(proc_version), "Microsoft") or string.find(table.concat(proc_version), "WSL") then
-        return true
-    end
-    return false
+  -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
+  -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
+  local proc_version = vim.fn.readfile("/proc/version")
+  if string.find(table.concat(proc_version), "Microsoft") or string.find(table.concat(proc_version), "WSL") then
+    return true
+  end
+  return false
 end
 
 local function on_yank()
-    -- Check if we're in WSL and if the yank was into the '+' register
-    if is_wsl() and vim.v.event.regname == '+' then
-        -- Use the '+' register content and write to clip.exe
-        local content = vim.fn.getreg('+')
-        vim.fn.system('clip.exe', content)
-    end
+  -- Check if we're in WSL and if the yank was into the '+' register
+  if is_wsl() and vim.v.event.regname == '+' then
+    -- Use the '+' register content and write to clip.exe
+    local content = vim.fn.getreg('+')
+    vim.fn.system('clip.exe', content)
+  end
 end
 
 -- Set up the autocmd for the TextYankPost event
 vim.api.nvim_create_autocmd("TextYankPost", {
-    callback = on_yank
+  callback = on_yank
 })

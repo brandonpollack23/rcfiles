@@ -1,5 +1,5 @@
 return {
-  {"Mofiqul/vscode.nvim"},
+  { "Mofiqul/vscode.nvim" },
 
   {
     'smoka7/hop.nvim', -- EasyMotion
@@ -18,9 +18,9 @@ return {
     end
   },
 
-  -- Fuzzy finder (file finder etc), see "after" config directory for bindings, 
+  -- Fuzzy finder (file finder etc), see "after" config directory for bindings,
   -- ctrl-p from vscode is equivalent and for non git repos there is <leader>ff
-  {"nvim-telescope/telescope.nvim", dependencies =  {'nvim-lua/plenary.nvim'} },
+  { "nvim-telescope/telescope.nvim", dependencies = { 'nvim-lua/plenary.nvim' } },
   {
     "danielfalk/smart-open.nvim",
     branch = "0.2.x",
@@ -143,11 +143,11 @@ return {
 
   -- LSP stuff
   --- Uncomment the two plugins below if you want to manage the language servers from neovim
-  {'williamboman/mason.nvim'},
-  {'williamboman/mason-lspconfig.nvim'},
-  {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
-  {'neovim/nvim-lspconfig'},
-  {'hrsh7th/cmp-nvim-lsp'},
-  {'hrsh7th/nvim-cmp'},
-  {'L3MON4D3/LuaSnip'},
+  { 'williamboman/mason.nvim' },
+  { 'williamboman/mason-lspconfig.nvim' },
+  { 'VonHeikemen/lsp-zero.nvim',        branch = 'v3.x' },
+  { 'neovim/nvim-lspconfig' },
+  { 'hrsh7th/cmp-nvim-lsp' },
+  { 'hrsh7th/nvim-cmp' },
+  { 'L3MON4D3/LuaSnip' },
 }
