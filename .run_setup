@@ -58,6 +58,8 @@ touch $HOME/.vimrc.local
 chown $CALLING_USER $HOME/.vimrc.local
 mkdir -p $HOME/.config
 chown $CALLING_USER $HOME/.config
+mkdir -p $HOME/.local
+chown $CALLING_USER $HOME/.local
 
 # Make symbolic links into this dir
 # TODO move this to non priveleged part top of file
@@ -87,6 +89,8 @@ ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
 chown $CALLING_USER $HOME/.cowrc
 ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
 chown $CALLING_USER $HOME/.cowfiles
+ln -sfn $RCFILESDIR/scripts $HOME/.local/scripts
+chown $CALLING_USER $HOME/.local/scripts
 
 vim +"call mkdp#util#install()" +":exit"
 # Load rebuild documents in vim
