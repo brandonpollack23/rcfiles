@@ -27,35 +27,35 @@
 -- todo highlighting
 -- Go through old vimrc to see if im missing anything
 
-vim.g.mapleader = ","
+vim.g.mapleader = ','
 
 -- Package manager
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins")
+require('lazy').setup('plugins')
 
 -- Key remaps
-require("brpol.remap")
+require('brpol.remap')
 
 -- Individual Plugin Setup
-require("brpol.vscode_theme")
-require("brpol.hop_easymotion")
-require("brpol.treesitter")
-require("brpol.nvim-tree")
-require("brpol.lsp")
-require("brpol.telescope")
-require("brpol.lualine")
+require('brpol.vscode_theme')
+require('brpol.hop_easymotion')
+require('brpol.treesitter')
+require('brpol.nvim-tree')
+require('brpol.lsp')
+require('brpol.telescope')
+require('brpol.lualine')
 require('Comment').setup()
 
 -- Global options
@@ -68,24 +68,24 @@ vim.opt.termguicolors = true
 
 vim.o.number = true
 vim.o.relativenumber = true
-vim.o.backupdir = vim.fn.expand("$HOME/.vim/backupdir") -- Backup and swap dirs
-vim.o.directory = vim.fn.expand("$HOME/.vim/swapdir")
+vim.o.backupdir = vim.fn.expand('$HOME/.vim/backupdir') -- Backup and swap dirs
+vim.o.directory = vim.fn.expand('$HOME/.vim/swapdir')
 vim.o.ignorecase = true                                 -- ignore case in searches
 vim.cmd('syntax enable')
-vim.opt.encoding = "utf-8"
+vim.opt.encoding = 'utf-8'
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
-vim.opt.colorcolumn = "100"
+vim.opt.colorcolumn = '100'
 
 -- Save undos to a file
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
 vim.opt.undofile = true
 
 -- Used for swapdir writing and hover in normal mode like for previews in tree
 vim.o.updatetime = 50
 
 -- Make tab completion work like bash but with a list if you press tab again
-vim.o.wildmode = "longest:full,full"
+vim.o.wildmode = 'longest:full,full'
 vim.o.wildmenu = true
 vim.o.wildignorecase = true
 
@@ -98,24 +98,24 @@ vim.cmd('filetype plugin on')
 vim.o.smartindent = true
 
 -- New windows always focused
-vim.api.nvim_create_autocmd("WinNew", {
-  pattern = "*",
+vim.api.nvim_create_autocmd('WinNew', {
+  pattern = '*',
   callback = function()
     vim.cmd('wincmd p')
   end,
 })
 
 -- Make scrolling always centered and have some offset
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
 vim.o.scrolloff = 8
 
 -- WSL Stuff
 local function is_wsl()
   -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
   -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
-  local proc_version = vim.fn.readfile("/proc/version")
-  if string.find(table.concat(proc_version), "Microsoft") or string.find(table.concat(proc_version), "WSL") then
+  local proc_version = vim.fn.readfile('/proc/version')
+  if string.find(table.concat(proc_version), 'Microsoft') or string.find(table.concat(proc_version), 'WSL') then
     return true
   end
   return false
@@ -131,6 +131,6 @@ local function on_yank()
 end
 
 -- Set up the autocmd for the TextYankPost event
-vim.api.nvim_create_autocmd("TextYankPost", {
+vim.api.nvim_create_autocmd('TextYankPost', {
   callback = on_yank
 })

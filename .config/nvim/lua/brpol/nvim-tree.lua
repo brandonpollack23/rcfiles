@@ -1,19 +1,19 @@
 local function change_root_to_global_cwd()
-  local api = require("nvim-tree.api")
+  local api = require('nvim-tree.api')
   local global_cwd = vim.fn.getcwd(-1, -1)
   api.tree.change_root(global_cwd)
 end
 
-require("nvim-tree").setup({
+require('nvim-tree').setup({
   on_attach = function(bufnr)
-    local floatPreview = require("float-preview")
+    local floatPreview = require('float-preview')
     floatPreview.attach_nvimtree(bufnr)
 
     local function opts(desc)
       return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
     end
 
-    local nvimTreeApi = require("nvim-tree.api")
+    local nvimTreeApi = require('nvim-tree.api')
 
     -- Change updatetime only in here so I don't thrash my swapdir
     -- local defaultUpdateTime = vim.o.updatetime
@@ -37,4 +37,4 @@ require("nvim-tree").setup({
 })
 
 -- Allow for LSP refactors etc to work from the tree
-require("lsp-file-operations").setup()
+require('lsp-file-operations').setup()

@@ -1,6 +1,6 @@
 require('nvim-treesitter.configs').setup({
   -- A list of parser names, or "all" https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#supported-languages
-  ensure_installed = "all",
+  ensure_installed = 'all',
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -29,7 +29,7 @@ require('nvim-treesitter.configs').setup({
       enable = true,
       -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
       keymaps = {
-        smart_rename = "grr",
+        smart_rename = 'grr',
       },
     },
   }

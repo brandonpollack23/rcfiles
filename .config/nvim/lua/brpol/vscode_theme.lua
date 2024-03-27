@@ -33,12 +33,12 @@ local vscode = require('vscode')
 vscode.load()
 
 local M = {}
-DarkMode = "dark"
+DarkMode = 'dark'
 function M.toggleDarkMode()
-  if DarkMode == "dark" then
-    DarkMode = "light"
+  if DarkMode == 'dark' then
+    DarkMode = 'light'
   else
-    DarkMode = "dark"
+    DarkMode = 'dark'
   end
 
   vscode.load(DarkMode)
