@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+
+  "format": {
+    "enable": true,
+    "defaultConfig": {
+      "indent_style": "space",
+      "indent_size": "2",
+      "quote_style": "single",
+      "insert_final_newline": "true"
+    }
+  },
+
+  "runtime.version": "LuaJIT"
+}

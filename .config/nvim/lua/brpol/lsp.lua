@@ -12,14 +12,18 @@ end)
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
 require('mason').setup()
 require('mason-lspconfig').setup({
+  -- Anything you always want installed add to this list, otherwise you need to use Mason to install.
+  -- Everything is enabled by the lsp_zero.default_setup below, but you can customize them as I have done with lua_ls if necessary.
+  -- Each of their docs are in lspconfig or their own docs.
   ensure_installed = {
     'bashls',
-    'gopls',
     'eslint',
-    'rust_analyzer',
+    'gopls',
+    'jsonls',
     'lua_ls',
+    'rust_analyzer',
     'tsserver',
-    'zls'
+    'zls',
   },
 
   automatic_installation = true,
