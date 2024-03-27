@@ -4,7 +4,7 @@ local lspconfig = require('lspconfig')
 lsp_zero.on_attach(function(client, bufnr)
   -- see :help lsp-zero-keybindings
   -- to learn the available actions
-  lsp_zero.default_keymaps({buffer = bufnr})
+  lsp_zero.default_keymaps({ buffer = bufnr })
 end)
 
 -- Browse and install more with :Mason
@@ -31,7 +31,7 @@ require('mason-lspconfig').setup({
     lspconfig.lua_ls.setup {
       on_init = function(client)
         local path = client.workspace_folders[1].name
-        if vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc') then
+        if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then
           return
         end
 
@@ -52,6 +52,11 @@ require('mason-lspconfig').setup({
             }
             -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
             -- library = vim.api.nvim_get_runtime_file("", true)
+          },
+          format = {
+            enable = true,
+            indent_style = "space",
+            indent_size = "2",
           }
         })
       end,
@@ -76,12 +81,12 @@ cmp.setup({
 })
 
 lsp_zero.set_preferences({
-  sign_icons = { }
+  sign_icons = {}
 })
 
 -- Use LSP for these things if it exists, otherwise use vim's built in
 lsp_zero.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+  local opts = { buffer = bufnr, remap = false }
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)

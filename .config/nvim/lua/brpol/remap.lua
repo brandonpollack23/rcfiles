@@ -58,9 +58,14 @@ wk.register({
 wk.register({
     J = { ":move '>+1<CR>gv=gv", "Move Selection Down" },
     K = { ":move '<-2<CR>gv=gv", "Move Selection Up" },
-    y = { "<\"+y", "yank into system clipboard" },
   },
   { mode = 'v' }
+)
+
+wk.register({
+    y = { "<\"+y", "yank into system clipboard" },
+  },
+  { mode = 'v', prefix = "<leader>" }
 )
 
 wk.register({
