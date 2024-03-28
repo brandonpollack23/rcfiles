@@ -210,7 +210,12 @@ return {
   -- Pretty status line
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons', 'linrongbin16/lsp-progress.nvim', 'Mofiqul/vscode.nvim' },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'linrongbin16/lsp-progress.nvim',
+      'Mofiqul/vscode.nvim',
+      'folke/noice.nvim'
+    },
     config = function()
       CopilotEnabled = false
       local function copilot_status()
@@ -244,6 +249,13 @@ return {
           lualine_a = { 'mode' },
           lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
+            function()
+              if require('noice').api.statusline.mode.has() then
+                return require('noice').api.statusline.mode.get()
+              else
+                return ''
+              end
+            end,
             'filename',
             require('lsp-progress').progress,
           },
@@ -491,8 +503,10 @@ return {
               row = '20%',
               col = '50%',
             }
-          }
+          },
+          -- TODO Set notifications to use compact render style and static animation style
         },
+        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes
       })
 
       -- Add a keybinding to open noice errors with telescope
