@@ -212,6 +212,15 @@ return {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons', 'linrongbin16/lsp-progress.nvim', 'Mofiqul/vscode.nvim' },
     config = function()
+      CopilotEnabled = false
+      local function copilot_status()
+        if CopilotEnabled then
+          return 'Copilot: '
+        else
+          return 'Copilot: 😞'
+        end
+      end
+
       require('lualine').setup {
         options = {
           icons_enabled = true,
@@ -234,8 +243,16 @@ return {
         sections = {
           lualine_a = { 'mode' },
           lualine_b = { 'branch', 'diff', 'diagnostics' },
-          lualine_c = { 'filename', require('lsp-progress').progress },
-          lualine_x = { 'encoding', 'fileformat', 'filetype' },
+          lualine_c = {
+            'filename',
+            require('lsp-progress').progress,
+          },
+          lualine_x = {
+            copilot_status,
+            'encoding',
+            'fileformat',
+            'filetype'
+          },
           lualine_y = { 'progress' },
           lualine_z = { 'location' }
         },
@@ -307,7 +324,7 @@ return {
           E = { '<cmd>IconPickerYank<cr>', 'Emoji Picker into register' }
         }
       }, { prefix = '<leader>' })
-      -- vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', opts)
+      vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', opts)
     end
   },
 
@@ -432,6 +449,43 @@ return {
             name = 'LSP/IDE Operations',
             f = { require('conform').format, 'Format File' },
           }
+        },
+        { prefix = '<leader>' }
+      )
+    end
+  },
+
+  -- Github copilot
+  {
+    'github/copilot.vim',
+    build = function()
+      vim.cmd('Copilot setup')
+    end,
+    config = function()
+      CopilotEnabled = true
+      local function toggle_copilot()
+        CopilotEnabled = not CopilotEnabled
+        if CopilotEnabled then
+          vim.cmd('Copilot enable')
+          vim.notify('Copilot enabled')
+        else
+          vim.cmd('Copilot disable')
+          vim.notify('Copilot disabled')
+        end
+      end
+
+      require('which-key').register({
+          v = {
+            name = 'LSP/IDE Operations',
+            C = {
+              name = 'Github Copilot Operations',
+              t = { toggle_copilot, 'Toggle Copilot' },
+              s = { '<Plug>(copilot-suggest)', 'Suggest' },
+              d = { '<Plug>(copilot-dismiss)', 'Dismiss' },
+              n = { '<Plug>(copilot-next)', 'Next Suggestion' },
+              p = { '<Plug>(copilot-previous)', 'Previous Suggestion' },
+            }
+          },
         },
         { prefix = '<leader>' }
       )
