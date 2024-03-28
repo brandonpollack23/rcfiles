@@ -33,7 +33,7 @@ wk.register({
       t = { '<cmd>tabnew<cr>', 'Tab Open' },
       w = { '<cmd>tabclose<cr>', 'Tab Close' },
     },
-    w = {
+    ['?'] = {
       name = 'Show Mappings (WhichKey)',
       n = { ":WhichKey '' n<cr>", 'normal mode' },
       v = { ":WhichKey '' v<cr>", 'visual mode' },
@@ -79,4 +79,3 @@ vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })
 
 -- Disable capital Q it is annoying and I don't understand it
 vim.keymap.set('n', 'Q', '<nop>')
-
