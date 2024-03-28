@@ -376,6 +376,9 @@ return {
     lazy = not vim.g.started_by_firenvim,
     build = function()
       vim.fn['firenvim#install'](0)
+    end,
+    config = function()
+      vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
     end
   }
 }
