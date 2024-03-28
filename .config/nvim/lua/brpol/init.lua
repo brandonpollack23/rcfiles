@@ -1,9 +1,5 @@
--- TODO
--- LSP
+-- TODO:
 -- trigger and accept with ctrl space
--- autoformatting
--- undefined global "vim"
--- remove gutter icons, add squigles instead
 -- quick fix
 -- ctrl q for info about variable/type
 -- ctrl shift p for parameter info
@@ -29,6 +25,10 @@
 
 vim.g.mapleader = ','
 
+if vim.fn.has('win32') == 1 or vim.fn.has('win64') then
+  require('brpol.windows')
+end
+
 -- Package manager
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -45,9 +45,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup('plugins')
 
--- Key remaps
-require('brpol.remap')
-
 -- Individual Plugin Setup
 require('brpol.vscode_theme')
 require('brpol.hop_easymotion')
@@ -55,8 +52,10 @@ require('brpol.treesitter')
 require('brpol.nvim-tree')
 require('brpol.lsp')
 require('brpol.telescope')
-require('brpol.lualine')
 require('Comment').setup()
+
+-- Key remaps
+require('brpol.remap')
 
 -- Global options
 -- Disable netrw (default file picker) at startup
@@ -134,3 +133,14 @@ end
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = on_yank
 })
+
+-- Command to execute current buffer
+local function execute_current_buffer()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local code = table.concat(lines, '\n')
+  load(code)()
+end
+
+require('which-key').register({
+  l = { execute_current_buffer, 'Source current buffer' },
+}, { prefix = '<leader>' })

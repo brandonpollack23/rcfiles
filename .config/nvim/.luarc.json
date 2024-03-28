@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-
   "format": {
     "enable": true,
     "defaultConfig": {
@@ -10,6 +9,5 @@
       "insert_final_newline": "true"
     }
   },
-
   "runtime.version": "LuaJIT"
 }

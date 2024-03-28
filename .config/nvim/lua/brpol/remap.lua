@@ -3,6 +3,8 @@ local vscode_theme = require('brpol.vscode_theme')
 local telescopeBuiltin = require('telescope.builtin')
 local telescopeExtensions = require('telescope').extensions
 
+-- TODO change things to be in their respective on attach for plugins?
+
 -- https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings
 wk.register({
     d = {
@@ -22,10 +24,6 @@ wk.register({
     k = {
       name = 'Colors',
       m = { vscode_theme.toggleDarkMode, 'Toggle Dark Mode' }
-    },
-    l = {
-      name = 'LSP Operations',
-      f = { vim.lsp.buf.format, 'Format File' }
     },
     -- quick replace word
     s = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], 'Replace word in file' },
@@ -81,3 +79,4 @@ vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })
 
 -- Disable capital Q it is annoying and I don't understand it
 vim.keymap.set('n', 'Q', '<nop>')
+

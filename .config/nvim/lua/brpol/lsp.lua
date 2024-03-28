@@ -7,6 +7,13 @@ lsp_zero.on_attach(function(client, bufnr)
   lsp_zero.default_keymaps({ buffer = bufnr })
 end)
 
+lsp_zero.set_sign_icons({
+  error = '✘',
+  warn = '▲',
+  hint = '⚑',
+  info = '»'
+})
+
 -- Browse and install more with :Mason
 -- to learn how to use mason.nvim with lsp-zero
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
@@ -59,16 +66,21 @@ require('mason-lspconfig').setup({
           Lua = {}
         }
       }
-    end
+    end,
   },
 })
 
 local cmp = require('cmp')
 local cmp_select = { behaviour = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp_zero.defaults.cmp_mappings({
+  ['C-k'] = cmp.mapping.select_prev_item(cmp_select),
+  ['C-j'] = cmp.mapping.select_next_item(cmp_select),
   ['C-p'] = cmp.mapping.select_prev_item(cmp_select),
   ['C-n'] = cmp.mapping.select_next_item(cmp_select),
+
   ['C-y'] = cmp.mapping.confirm({ select = true }),
+  ['C-e'] = cmp.mapping.abort(),
+
   ['C-Space'] = cmp.mapping.complete(),
 })
 cmp.setup({
@@ -82,22 +94,43 @@ lsp_zero.set_preferences({
 
 -- Use LSP for these things if it exists, otherwise use vim's built in
 lsp_zero.on_attach(function(client, bufnr)
-  local opts = { buffer = bufnr, remap = false }
+  local wk = require('which-key')
+  local telescopeBuiltin = require('telescope.builtin')
 
-  vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end, opts)
-  vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts)
-  vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts)
-  vim.keymap.set('n', '<leader>vd', function() vim.diagnostic.open_float() end, opts)
-  vim.keymap.set('n', '[d', function() vim.diagnostic.goto_next() end, opts)
-  vim.keymap.set('n', ']d', function() vim.diagnostic.goto_prev() end, opts)
-  vim.keymap.set('n', '<leader>vca', function() vim.lsp.buf.code_action() end, opts)
-  vim.keymap.set('n', '<leader>vrr', function() vim.lsp.buf.references() end, opts)
-  vim.keymap.set('n', '<leader>vrn', function() vim.lsp.buf.rename() end, opts)
-  vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, opts)
+  wk.register({
+      gd = { vim.lsp.buf.definition, 'Go to definition' },
+      K = { vim.lsp.buf.hover, 'Hover Information' },
+      ['[d'] = { vim.diagnostic.goto_next, 'Next diagnostic' },
+      [']d'] = { vim.diagnostic.goto_prev, 'Previous diagnostic' },
+    },
+    { buffer = bufnr, noremap = true }
+  )
+
+  wk.register({
+      v = {
+        name = 'LSP/IDE Operations',
+        ws = { telescopeBuiltin.workspace_symbols, 'Workspace symbols' },
+        d = { vim.diagnostic.open_float, 'Open diagnostic floating window' },
+        c = { vim.lsp.buf.code_action, 'Open code actions' },
+        r = { vim.lsp.buf.rename, 'Rename' },
+        R = { telescopeBuiltin.lsp_references, 'Open references' },
+      },
+    },
+    { buffer = bufnr, noremap = true, prefix = '<leader>' }
+  )
+
+  vim.keymap.set('n', '<C-q>', vim.lsp.buf.hover, { noremap = true })
+  vim.keymap.set('i', '<C-q>', vim.lsp.buf.hover, { noremap = true })
+  vim.keymap.set('n', '<C-.>', vim.lsp.buf.code_action, { noremap = true })
+  vim.keymap.set('i', '<C-.>', vim.lsp.buf.code_action, { noremap = true })
+  vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, { remap = false, buffer = bufnr })
+  vim.keymap.set('i', '<C-P>', function() vim.lsp.buf.signature_help() end, { remap = false, buffer = bufnr })
 end)
 
 lsp_zero.setup()
 
+-- Diagnostics
 vim.diagnostic.config({
-  virtual_text = true
+  virtual_text = { severity = { min = vim.diagnostic.severity.INFO } },
+  underline = true,
 })
