@@ -41,33 +41,13 @@ return {
   {
     'smoka7/hop.nvim', -- EasyMotion
     version = '*',
+    lazy = false,
     opts = {},
     config = function()
       local hop = require('hop')
       local directions = require('hop.hint').HintDirection
       local positions = require('hop.hint').HintPosition
       local wk = require('which-key')
-
-      wk.register {
-        {
-          ['<leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
-          ['<leader>e'] = { function()
-            hop.hint_words({
-              direction = directions.AFTER_CURSOR,
-              hint_position = positions
-                  .END
-            })
-          end, 'Easymotion e' },
-          ['<leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
-          ['<leader>j'] = { function() hop.hint_vertical({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
-          ['<leader>k'] = { function() hop.hint_vertical({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
-          ['<leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
-          ['<leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
-          ['<leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
-          ['<leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
-        },
-        { prefix = '<leader>' }
-      }
 
       hop.setup({
         quit_key = '<SPC>',
@@ -81,6 +61,27 @@ return {
       vim.cmd('hi HopNextKey1 guibg=Red')
       vim.cmd('hi HopNextKey2 guifg=White')
       vim.cmd('hi HopNextKey2 guifg=Red')
+
+      wk.register {
+        {
+          ['<leader><leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
+          ['<leader>e'] = { function()
+            hop.hint_words({
+              direction = directions.AFTER_CURSOR,
+              hint_position = positions
+                  .END
+            })
+          end, 'Easymotion e' },
+          ['<leader><leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
+          ['<leader><leader>j'] = { function() hop.hint_vertical({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
+          ['<leader><leader>k'] = { function() hop.hint_vertical({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
+          ['<leader><leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
+          ['<leader><leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
+          ['<leader><leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
+          ['<leader><leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
+        },
+        {}
+      }
     end
   },
 
@@ -160,6 +161,8 @@ return {
     'nvim-treesitter/nvim-treesitter', -- Better syntax highlighting etc
     build = function()
       require('nvim-treesitter.install').update({ with_sync = true })()
+    end,
+    config = function()
       require('nvim-treesitter.configs').setup({
         -- A list of parser names, or "all" https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#supported-languages
         ensure_installed = 'all',
@@ -584,6 +587,42 @@ return {
   { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/nvim-cmp' },
   { 'L3MON4D3/LuaSnip' },
+
+  -- Git stuff
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      local gs = require('gitsigns')
+      gs.setup {
+        current_line_blame = true,
+        current_line_blame_opts = {
+          delay = 50,
+        },
+        on_attach = function(bufnr)
+          local wk = require('which-key')
+
+          wk.register(
+            {
+              g = {
+                n = { gs.next_hunk, 'Next git hunk' },
+                N = { gs.prev_hunk, 'Prev git hunk' },
+                R = { gs.reset_buffer, 'Reset buffer' },
+                h = {
+                  name = 'hunk operations',
+                  hp = { gs.preview_hunk, 'Preview hunk' },
+                  hs = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
+                  hd = { gs.diffthis, 'Diff against index' },
+                  hD = { function() gs.diffthis('~') end, 'Diff against last commit' },
+                  hr = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
+                },
+              }
+            },
+            { prefix = '<leader>' }
+          )
+        end
+      }
+    end
+  },
 
   -- Formatting
   {

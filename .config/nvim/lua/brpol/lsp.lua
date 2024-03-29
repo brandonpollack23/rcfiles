@@ -63,12 +63,20 @@ require('mason-lspconfig').setup({
                 '${3rd}/luassert/library',
                 '${3rd}/luv/library',
                 '${3rd}/busted/library',
-              }
+              },
             },
           })
         end,
         settings = {
-          Lua = {}
+          Lua = {
+            diagnostics = {
+              -- Get the language server to recognize the `vim` global
+              globals = {
+                'vim',
+                'require'
+              },
+            },
+          }
         }
       }
     end,
