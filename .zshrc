@@ -43,8 +43,7 @@ source $HOME/.cargo/env
 
 #export EDITOR="emacsclient -t -a ''" # opens in terminal
 #export VISUAL="emacsclient -c -a emacs" # opens in gui mode
-export EDITOR="vim" # opens in terminal
-export VISUAL="gvim" # opens in gui mode
+export EDITOR="nvim" # opens in terminal
 export ALTERNATE_EDITOR="vi"
 
 export CLOUDSDK_HOME=$HOME/bin/google-cloud-sdk
@@ -136,13 +135,19 @@ plugins=(
     sudo
     systemd
     tmux
-    vi-mode
 )
 
-# Vi Mode Setup
-VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
-VI_MODE_SET_CURSOR=true
-MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
+if [[ "$VIM" == "" ]]; then
+  plugins+=vi-mode
+
+  # Vi Mode Setup
+  VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+  VI_MODE_SET_CURSOR=true
+  MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
+
+  # Key bindings (like normal to insert mode in vi mode)
+  bindkey -M viins 'jj' vi-cmd-mode
+fi
 
 # fzf setup
 export FZF_BASE=$(which fzf)
@@ -206,8 +211,6 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
-alias vzsh="emacsclient -t ~/.zshrc"
-alias vimrc="emacsclient -t ~/.vimrc"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
@@ -239,9 +242,6 @@ fi
 # Application default arguments
 alias mdless="mdless -I"
 export LESS="-R -I"
-
-# Key bindings (like normal to insert mode in vi mode)
-bindkey -M viins 'jj' vi-cmd-mode
 
 # Override some common aliases
 alias -g G='| rg'
