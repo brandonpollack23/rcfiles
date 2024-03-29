@@ -47,12 +47,7 @@ require('lazy').setup('plugins')
 
 -- Individual Plugin Setup
 require('brpol.vscode_theme')
-require('brpol.hop_easymotion')
-require('brpol.treesitter')
-require('brpol.nvim-tree')
 require('brpol.lsp')
-require('brpol.telescope')
-require('Comment').setup()
 
 -- Key remaps
 require('brpol.remap')
@@ -107,13 +102,17 @@ vim.api.nvim_create_autocmd('WinNew', {
 -- Make scrolling always centered and have some offset
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
-vim.o.scrolloff = 8
+vim.o.scrolloff = 4
 
 -- WSL Stuff
 local function is_wsl()
   -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
   -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
-  local proc_version = vim.fn.readfile('/proc/version')
+  local ok, proc_version = pcall(vim.fn.readfile, '/proc/version')
+  if not ok or type(proc_version) ~= 'string' then
+    return
+  end
+
   if string.find(table.concat(proc_version), 'Microsoft') or string.find(table.concat(proc_version), 'WSL') then
     return true
   end

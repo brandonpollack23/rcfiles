@@ -42,6 +42,46 @@ return {
     'smoka7/hop.nvim', -- EasyMotion
     version = '*',
     opts = {},
+    config = function()
+      local hop = require('hop')
+      local directions = require('hop.hint').HintDirection
+      local positions = require('hop.hint').HintPosition
+      local wk = require('which-key')
+
+      wk.register {
+        {
+          ['<leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
+          ['<leader>e'] = { function()
+            hop.hint_words({
+              direction = directions.AFTER_CURSOR,
+              hint_position = positions
+                  .END
+            })
+          end, 'Easymotion e' },
+          ['<leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
+          ['<leader>j'] = { function() hop.hint_vertical({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
+          ['<leader>k'] = { function() hop.hint_vertical({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
+          ['<leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
+          ['<leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
+          ['<leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
+          ['<leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
+        },
+        { prefix = '<leader>' }
+      }
+
+      hop.setup({
+        quit_key = '<SPC>',
+        multi_windows = true,
+      })
+
+      -- Color configuration
+      vim.cmd('hi HopNextKey guifg=White')
+      vim.cmd('hi HopNextKey guibg=Red')
+      vim.cmd('hi HopNextKey1 guifg=White')
+      vim.cmd('hi HopNextKey1 guibg=Red')
+      vim.cmd('hi HopNextKey2 guifg=White')
+      vim.cmd('hi HopNextKey2 guifg=Red')
+    end
   },
 
   {
@@ -62,6 +102,49 @@ return {
     'danielfalk/smart-open.nvim',
     branch = '0.2.x',
     config = function()
+      local extensions = require('telescope').extensions
+
+      vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only = true }) end, {})
+
+      -- Hack to make Ctrl-C work to close
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('user-telescope-picker', { clear = true }),
+        pattern = { 'TelescopePrompt' },
+        callback = function(event)
+          vim.keymap.set('i', '<C-c>', function()
+            require('telescope.actions').close(event.buf)
+          end, { noremap = true, silent = true, buffer = event.buf })
+        end,
+      })
+
+      local telescopeConfig = require('telescope.config')
+      local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+      table.insert(vimgrep_arguments, '--hidden')
+      -- I don't want to search in the `.git` directory.
+      table.insert(vimgrep_arguments, '--glob')
+      table.insert(vimgrep_arguments, '!**/.git/*')
+      require('telescope').setup({
+        defaults = {
+          vimgrep_arguments = vimgrep_arguments,
+        },
+        pickers = {
+          find_files = {
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+          },
+        },
+        extensions = {
+          smart_open = {
+            show_scores = false,
+            ignore_patterns = { '*.git/*' },
+            -- Enable to use fzy, needs to be installed though
+            match_algorithm = 'fzy',
+            disable_devicons = false,
+            -- open_buffer_indicators = {previous = "👀", others = "🙈"},
+          },
+        }
+      })
+
       require('telescope').load_extension('smart_open')
     end,
     dependencies = {
@@ -77,6 +160,37 @@ return {
     'nvim-treesitter/nvim-treesitter', -- Better syntax highlighting etc
     build = function()
       require('nvim-treesitter.install').update({ with_sync = true })()
+      require('nvim-treesitter.configs').setup({
+        -- A list of parser names, or "all" https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#supported-languages
+        ensure_installed = 'all',
+
+        -- Install parsers synchronously (only applied to `ensure_installed`)
+        sync_install = false,
+
+        -- Automatically install missing parsers when entering buffer
+        -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+        auto_install = true,
+
+        highlight = {
+          enable = true,
+
+          -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+          -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+          -- Using this option may slow down your editor, and you may see some duplicate highlights.
+          -- Instead of true it can also be a list of languages
+          additional_vim_regex_highlighting = false,
+        },
+
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            node_incremental = 'u',
+            node_decremental = 'V',
+          }
+        }
+      })
+
+      -- https://github.com/RRethy/vim-illuminate?tab=readme-ov-file#highlight-groups
     end,
   },
   {
@@ -193,7 +307,46 @@ return {
       }
     },
     config = function()
-      require('nvim-tree').setup {}
+      local function change_root_to_global_cwd()
+        local api = require('nvim-tree.api')
+        local global_cwd = vim.fn.getcwd(-1, -1)
+        api.tree.change_root(global_cwd)
+      end
+
+      require('nvim-tree').setup({
+        on_attach = function(bufnr)
+          local floatPreview = require('float-preview')
+          floatPreview.attach_nvimtree(bufnr)
+
+          local function opts(desc)
+            return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+          end
+
+          local nvimTreeApi = require('nvim-tree.api')
+
+          -- Change updatetime only in here so I don't thrash my swapdir
+          -- local defaultUpdateTime = vim.o.updatetime
+          -- vim.o.updatetime = 100
+          -- TODO executing too soon
+          -- vim.api.nvim_create_autocmd("BufLeave", {
+          --   pattern = "*",
+          --   once = true,
+          --   callback = function() vim.o.updatetime = defaultUpdateTime end
+          -- })
+
+          -- Run Default first
+          nvimTreeApi.config.mappings.default_on_attach(bufnr)
+          vim.keymap.set('n', '<C-c>', change_root_to_global_cwd, opts('Change Root To Global CWD'))
+          vim.keymap.set('n', '?', nvimTreeApi.tree.toggle_help, opts('Help'))
+          vim.keymap.set('n', 'v', nvimTreeApi.node.open.vertical, opts('Open: Vertical Split'))
+          vim.keymap.set('n', '<CR>', nvimTreeApi.node.open.no_window_picker, opts('Open'))
+          vim.keymap.set('n', 'o', nvimTreeApi.node.open.no_window_picker, opts('Open'))
+          vim.keymap.set('n', 'O', nvimTreeApi.node.open.no_window_picker, opts('Open: Window Picker'))
+        end
+      })
+
+      -- Allow for LSP refactors etc to work from the tree
+      require('lsp-file-operations').setup()
     end,
   },
   {
@@ -217,7 +370,7 @@ return {
       'folke/noice.nvim'
     },
     config = function()
-      CopilotEnabled = false
+      CopilotEnabled = CopilotEnabled or false
       local function copilot_status()
         if CopilotEnabled then
           return 'Copilot: '
@@ -318,6 +471,9 @@ return {
       -- add any options here
     },
     lazy = false,
+    config = function()
+      require('Comment').setup()
+    end
   },
 
   {
@@ -481,8 +637,16 @@ return {
       --   `nvim-notify` is only needed, if you want to use the notification view.
       --   If not available, we use `mini` as the fallback
       'rcarriga/nvim-notify',
+      'hrsh7th/nvim-cmp',
     },
     config = function()
+      -- TODO https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
+      require('notify').setup({
+        render = 'compact',
+        timeout = 4000,
+        fps = 10, -- default is 30
+        stages = 'static',
+      })
       require('noice').setup({
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
@@ -500,13 +664,33 @@ return {
         views = {
           cmdline_popup = {
             position = {
-              row = '20%',
+              row = 5,
               col = '50%',
-            }
+            },
+            size = {
+              width = 60,
+              height = 'auto',
+            },
           },
-          -- TODO Set notifications to use compact render style and static animation style
+          popupmenu = {
+            relative = 'editor',
+            position = {
+              row = 16,
+              col = '50%',
+            },
+            size = {
+              width = 60,
+              height = 10,
+            },
+            border = {
+              style = 'rounded',
+              padding = { 0, 1 },
+            },
+            win_options = {
+              winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
+            },
+          },
         },
-        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes
       })
 
       -- Add a keybinding to open noice errors with telescope
