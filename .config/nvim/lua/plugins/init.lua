@@ -4,7 +4,23 @@ return {
     event = 'VimEnter',
     config = function()
       require('dashboard').setup {
+        theme = 'doom',
         shortcut_type = 'letter',
+        config = {
+          header = {
+            -- TODO find suitable ascii art or braille art for this, check the github
+            '                                                       ',
+            '                                                       ',
+            ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
+            ' ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
+            ' ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
+            ' ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
+            ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
+            ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
+            '                                                       ',
+            '                                                       ',
+          }
+        }
       }
     end,
     dependencies = { { 'nvim-tree/nvim-web-devicons' } }
@@ -496,27 +512,55 @@ return {
           E = { '<cmd>IconPickerYank<cr>', 'Emoji Picker into register' }
         }
       }, { prefix = '<leader>' })
-      vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', opts)
+      -- TODO try to use which key for this like so: [C-i] = {}
+      vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', { remap = false })
     end
   },
 
   -- Terminal that toggles like vscode
-  -- {
-  --   'akinsho/toggleterm.nvim',
-  --   version = '*',
-  --   config = function()
-  --     require('toggleterm').setup {
-  --       size = 20,
-  --     }
-  --
-  --     require('which-key').register({
-  --       vt = { vim.cmd('ToggleTerm'), 'Terminal' }
-  --     }, { prefix = '<leader>' })
-  --
-  --     vim.keymap.set('n', '<C-`>', vim.cmd('ToggleTerm'), {})
-  --     vim.keymap.set('n', '<C-`>', vim.cmd('ToggleTerm'), {})
-  --   end
-  -- },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = function()
+      require('toggleterm').setup {
+        open_mapping = [[<c-\>]],
+        direction = 'float',
+        on_open = function(terminal)
+          vim.cmd('startinsert')
+        end,
+        float_opts = {
+          -- The border key is *almost* the same as 'nvim_open_win'
+          -- see :h nvim_open_win for details on borders however
+          -- the 'curved' border is a custom border type
+          -- not natively supported but implemented in this plugin.
+          -- border = 'single' | 'double' | 'shadow' | 'curved' | ... other options supported by win open
+          border = 'double',
+          -- like `size`, width, height, row, and col can be a number or function which is passed the current terminal
+          winblend = 10,
+          title_pos = 'left',
+        },
+      }
+
+      -- TODO continue with configuration (send line to terminal commands etc)
+
+      local wk = require('which-key')
+      wk.register({
+        ['<C-\\>'] = { ':ToggleTerm<cr>', 'Toggle Terminal, takes a prefix for term #' },
+      }, {})
+      wk.register(
+        {
+          t = {
+            name = 'Terminals',
+            -- TODO change this to a safer method that reads input once you can
+            T = { ':ToggleTerm name=', 'toggle/create named Terminal' },
+            t = { ':ToggleTerm<cr>', 'Toggle Terminal' },
+            s = { ':TermSelect<cr>', 'Select from list of open terminals' },
+          }
+        },
+        { prefix = '<leader>' }
+      )
+    end
+  },
 
   -- Sessions and workspaces
   {

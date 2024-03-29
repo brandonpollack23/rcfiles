@@ -1,6 +1,5 @@
 -- TODO:
 -- trigger and accept with ctrl space
--- quick fix
 -- ctrl q for info about variable/type
 -- ctrl shift p for parameter info
 

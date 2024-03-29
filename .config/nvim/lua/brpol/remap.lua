@@ -13,7 +13,7 @@ wk.register({
       f = { '<cmd>NvimTreeFindFile<cr>', 'File Tree (current file)' },
     },
     f = {
-      name = 'File Operations',
+      name = 'Find/File/Search/Select Operations',
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
       g = { '<cmd>Telescope live_grep<cr>', 'Live Grep' },
       s = { function() telescopeBuiltin.grep_string({ search = vim.fn.input('Grep > ') }) end, 'Grep Files' },
@@ -27,12 +27,6 @@ wk.register({
     },
     -- quick replace word
     s = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], 'Replace word in file' },
-    -- Create/delete a tab
-    t = {
-      name = 'Tab operations',
-      t = { '<cmd>tabnew<cr>', 'Tab Open' },
-      w = { '<cmd>tabclose<cr>', 'Tab Close' },
-    },
     ['?'] = {
       name = 'Show Mappings (WhichKey)',
       n = { ":WhichKey '' n<cr>", 'normal mode' },
