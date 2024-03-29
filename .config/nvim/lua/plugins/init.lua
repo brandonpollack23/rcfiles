@@ -324,16 +324,6 @@ return {
 
           local nvimTreeApi = require('nvim-tree.api')
 
-          -- Change updatetime only in here so I don't thrash my swapdir
-          -- local defaultUpdateTime = vim.o.updatetime
-          -- vim.o.updatetime = 100
-          -- TODO executing too soon
-          -- vim.api.nvim_create_autocmd("BufLeave", {
-          --   pattern = "*",
-          --   once = true,
-          --   callback = function() vim.o.updatetime = defaultUpdateTime end
-          -- })
-
           -- Run Default first
           nvimTreeApi.config.mappings.default_on_attach(bufnr)
           vim.keymap.set('n', '<C-c>', change_root_to_global_cwd, opts('Change Root To Global CWD'))
@@ -754,6 +744,8 @@ return {
       vim.fn['firenvim#install'](0)
     end,
     config = function()
+      -- Manually trigger with ctrl+e (cmd on mac)
+      vim.g.firenvim_config.localSettings['.*'] = { takeover = 'never' }
       vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
     end
   }
