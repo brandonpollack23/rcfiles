@@ -61,7 +61,6 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 vim.o.number = true
-vim.o.relativenumber = true
 vim.o.backupdir = vim.fn.expand('$HOME/.vim/backupdir') -- Backup and swap dirs
 vim.o.directory = vim.fn.expand('$HOME/.vim/swapdir')
 vim.o.ignorecase = true                                 -- ignore case in searches
@@ -100,8 +99,6 @@ vim.api.nvim_create_autocmd('WinNew', {
 })
 
 -- Make scrolling always centered and have some offset
-vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
 vim.o.scrolloff = 4
 
 -- WSL Stuff

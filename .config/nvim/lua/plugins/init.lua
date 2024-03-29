@@ -1,5 +1,16 @@
 return {
   {
+    'nvimdev/dashboard-nvim',
+    event = 'VimEnter',
+    config = function()
+      require('dashboard').setup {
+        shortcut_type = 'letter',
+      }
+    end,
+    dependencies = { { 'nvim-tree/nvim-web-devicons' } }
+  },
+
+  {
     'Mofiqul/vscode.nvim',
     config = function()
       -- Lua:
@@ -54,14 +65,6 @@ return {
         multi_windows = true,
       })
 
-      -- Color configuration
-      vim.cmd('hi HopNextKey guifg=White')
-      vim.cmd('hi HopNextKey guibg=Red')
-      vim.cmd('hi HopNextKey1 guifg=White')
-      vim.cmd('hi HopNextKey1 guibg=Red')
-      vim.cmd('hi HopNextKey2 guifg=White')
-      vim.cmd('hi HopNextKey2 guifg=Red')
-
       wk.register {
         {
           ['<leader><leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
@@ -82,6 +85,14 @@ return {
         },
         {}
       }
+
+      -- Color configuration
+      vim.cmd('hi HopNextKey guifg=White')
+      vim.cmd('hi HopNextKey guibg=Red')
+      vim.cmd('hi HopNextKey1 guifg=White')
+      vim.cmd('hi HopNextKey1 guibg=Red')
+      vim.cmd('hi HopNextKey2 guifg=White')
+      vim.cmd('hi HopNextKey2 guifg=Red')
     end
   },
 
@@ -589,6 +600,7 @@ return {
   { 'L3MON4D3/LuaSnip' },
 
   -- Git stuff
+  -- TODO diffview and mergetool https://github.com/sindrets/diffview.nvim
   {
     'lewis6991/gitsigns.nvim',
     config = function()
@@ -623,6 +635,24 @@ return {
       }
     end
   },
+
+  -- Buffer line aka tabs
+  {
+    'akinsho/bufferline.nvim',
+    version = '*',
+    dependencies = 'nvim-tree/nvim-web-devicons'
+  },
+
+  -- Smooth scrolling
+  {
+    'karb94/neoscroll.nvim',
+    config = function()
+      vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
+      vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
+      require('neoscroll').setup {}
+    end
+  },
+
 
   -- Formatting
   {
