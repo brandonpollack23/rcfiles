@@ -66,8 +66,9 @@ return {
     end
   },
 
+  -- Easymotion
   {
-    'smoka7/hop.nvim', -- EasyMotion
+    'smoka7/hop.nvim',
     version = '*',
     lazy = false,
     opts = {},
@@ -76,6 +77,8 @@ return {
       local directions = require('hop.hint').HintDirection
       local positions = require('hop.hint').HintPosition
       local wk = require('which-key')
+
+      -- TODO if possible show hints at the beginning of the line for hj
 
       hop.setup({
         quit_key = '<SPC>',
@@ -618,9 +621,23 @@ return {
               end,
               'Set terminal name'
             },
+            e = { ':ToggleTermSendCurrentLine<cr>', 'Execute current line in terminal' },
           }
         },
         { prefix = '<leader>' }
+      )
+
+      wk.register(
+        {
+          t = {
+            name = 'Terminals',
+            e = { ':ToggleTermSendVisualSelection<cr>', 'Execute current selection in terminal' },
+          },
+        },
+        {
+          prefix = '<leader>',
+          mode = 'v',
+        }
       )
     end
   },
