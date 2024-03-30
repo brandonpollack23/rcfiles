@@ -89,14 +89,6 @@ vim.cmd('filetype indent on')
 vim.cmd('filetype plugin on')
 vim.o.smartindent = true
 
--- New windows always focused
-vim.api.nvim_create_autocmd('WinNew', {
-  pattern = '*',
-  callback = function()
-    vim.cmd('wincmd p')
-  end,
-})
-
 -- Make scrolling always centered and have some offset
 vim.o.scrolloff = 4
 

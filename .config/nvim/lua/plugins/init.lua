@@ -28,6 +28,7 @@ return {
 
   {
     'Mofiqul/vscode.nvim',
+    priority = 2000,
     config = function()
       -- Lua:
       -- For dark theme (neovim's default)
@@ -129,6 +130,14 @@ return {
   {
     'danielfalk/smart-open.nvim',
     branch = '0.2.x',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'kkharji/sqlite.lua',
+      -- Only required if using match_algorithm fzf
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
+      { 'nvim-telescope/telescope-fzy-native.nvim' },
+    },
     config = function()
       local extensions = require('telescope').extensions
 
@@ -175,13 +184,36 @@ return {
 
       require('telescope').load_extension('smart_open')
     end,
-    dependencies = {
-      'kkharji/sqlite.lua',
-      -- Only required if using match_algorithm fzf
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-      -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
-      { 'nvim-telescope/telescope-fzy-native.nvim' },
-    },
+  },
+  {
+    'nvim-telescope/telescope-ui-select.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+    config = function()
+      require('telescope').setup {
+        extensions = {
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown {
+              -- even more opts
+            }
+
+            -- pseudo code / specification for writing custom displays, like the one
+            -- for "codeactions"
+            -- specific_opts = {
+            --   [kind] = {
+            --     make_indexed = function(items) -> indexed_items, width,
+            --     make_displayer = function(widths) -> displayer
+            --     make_display = function(displayer) -> function(e)
+            --     make_ordinal = function(e) -> string
+            --   },
+            --   -- for example to disable the custom builtin "codeactions" display
+            --      do the following
+            --   codeactions = false,
+            -- }
+          }
+        }
+      }
+      require('telescope').load_extension('ui-select')
+    end
   },
 
   {
@@ -389,6 +421,7 @@ return {
       'Mofiqul/vscode.nvim',
       'folke/noice.nvim'
     },
+    cond = not vim.g.started_by_firenvim,
     config = function()
       CopilotEnabled = CopilotEnabled or false
       local function copilot_status()
@@ -522,11 +555,29 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
     config = function()
+      local sessionNamePrefix = vim.fn.getcwd() .. '#nvim'
+      -- TODO binding to cycle through these
+      local terminal_type = 'horizontal'
       require('toggleterm').setup {
+        size = function(term)
+          if term.direction == 'horizontal' then
+            return 20
+          elseif term.direction == 'vertical' then
+            return 50
+          end
+        end,
         open_mapping = [[<c-\>]],
-        direction = 'float',
-        on_open = function(terminal)
+        direction = terminal_type,
+        on_open = function(term)
+          term:send('tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
+          term:send(
+            'echo "Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux"',
+            false
+          )
           vim.cmd('startinsert')
+        end,
+        on_close = function(term)
+          term:send('tmux detach', false)
         end,
         float_opts = {
           -- The border key is *almost* the same as 'nvim_open_win'
@@ -536,7 +587,7 @@ return {
           -- border = 'single' | 'double' | 'shadow' | 'curved' | ... other options supported by win open
           border = 'double',
           -- like `size`, width, height, row, and col can be a number or function which is passed the current terminal
-          winblend = 10,
+          winblend = 20,
           title_pos = 'left',
         },
       }
@@ -551,10 +602,22 @@ return {
         {
           t = {
             name = 'Terminals',
-            -- TODO change this to a safer method that reads input once you can
-            T = { ':ToggleTerm name=', 'toggle/create named Terminal' },
             t = { ':ToggleTerm<cr>', 'Toggle Terminal' },
             s = { ':TermSelect<cr>', 'Select from list of open terminals' },
+            n = {
+              function()
+                local term = require('toggleterm.terminal').get_last_focused()
+                -- check a terminal exists
+                if not term then
+                  vim.notify('No terminal to rename')
+                  return
+                end
+
+                local name = vim.fn.input('Set name of a terminal: ')
+                vim.cmd('ToggleTermSetName ' .. name)
+              end,
+              'Set terminal name'
+            },
           }
         },
         { prefix = '<leader>' }
@@ -732,6 +795,7 @@ return {
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
+    cond = not vim.g.started_by_firenvim,
     opts = {},
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
@@ -843,22 +907,32 @@ return {
         },
         { prefix = '<leader>' }
       )
+
+      require('which-key').register(
+        {
+          ['<C-]>'] = { '<Plug>(copilot-next)', 'Next Suggestion' },
+          ['<C-[>'] = { '<Plug>(copilot-previous)', 'Previous Suggestion' },
+        },
+        {}
+      )
     end
   },
 
   -- Firenvim, use vim in chrome, firefox, and other web browsers
   {
     'glacambre/firenvim',
-
-    -- Lazy load firenvim
+    priority = 1000,
     -- Explanation: https://github.com/folke/lazy.nvim/discussions/463#discussioncomment-4819297
     lazy = not vim.g.started_by_firenvim,
     build = function()
+      require('lazy').load({ plugins = 'firenvim', wait = true })
       vim.fn['firenvim#install'](0)
     end,
     config = function()
       -- Manually trigger with ctrl+e (cmd on mac)
-      vim.g.firenvim_config.localSettings['.*'] = { takeover = 'never' }
+      vim.g.firenvim_config.localSettings = {
+        ['.*'] = { takeover = 'never', },
+      }
       vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
     end
   }
