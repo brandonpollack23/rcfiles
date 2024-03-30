@@ -1,26 +1,24 @@
+local art = require('lua.brpol.ascii_art')
+
 return {
   {
     'nvimdev/dashboard-nvim',
     event = 'VimEnter',
     config = function()
+      local dashLogo = {}
+      for k, v in pairs(art.enterprise) do
+        dashLogo[k] = v
+      end
+      for k, v in pairs(art.neovim) do
+        dashLogo[k] = v
+      end
       require('dashboard').setup {
         theme = 'doom',
         shortcut_type = 'letter',
         config = {
-          header = {
-            -- TODO find suitable ascii art or braille art for this, check the github
-            '                                                       ',
-            '                                                       ',
-            ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
-            ' ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
-            ' ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
-            ' ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
-            ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
-            ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
-            '                                                       ',
-            '                                                       ',
-          }
-        }
+          header = dashLogo,
+        },
+        center = {}
       }
     end,
     dependencies = { { 'nvim-tree/nvim-web-devicons' } }
@@ -593,8 +591,6 @@ return {
         },
       }
 
-      -- TODO continue with configuration (send line to terminal commands etc)
-
       local wk = require('which-key')
       wk.register({
         ['<C-\\>'] = { ':ToggleTerm<cr>', 'Toggle Terminal, takes a prefix for term #' },
@@ -822,9 +818,8 @@ return {
       'hrsh7th/nvim-cmp',
     },
     config = function()
-      -- TODO https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
       require('notify').setup({
-        render = 'compact',
+        -- render = 'compact',
         timeout = 4000,
         fps = 10, -- default is 30
         stages = 'static',
