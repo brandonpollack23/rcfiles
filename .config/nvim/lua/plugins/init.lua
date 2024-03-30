@@ -78,8 +78,6 @@ return {
       local positions = require('hop.hint').HintPosition
       local wk = require('which-key')
 
-      -- TODO if possible show hints at the beginning of the line for hj
-
       hop.setup({
         quit_key = '<SPC>',
         multi_windows = true,
@@ -96,8 +94,8 @@ return {
             })
           end, 'Easymotion e' },
           ['<leader><leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
-          ['<leader><leader>j'] = { function() hop.hint_vertical({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
-          ['<leader><leader>k'] = { function() hop.hint_vertical({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
+          ['<leader><leader>j'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
+          ['<leader><leader>k'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
           ['<leader><leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
           ['<leader><leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
           ['<leader><leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
