@@ -18,7 +18,6 @@ return {
         config = {
           header = dashLogo,
         },
-        center = {}
       }
     end,
     dependencies = { { 'nvim-tree/nvim-web-devicons' } }
