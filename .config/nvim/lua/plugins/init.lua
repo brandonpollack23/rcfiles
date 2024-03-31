@@ -64,6 +64,14 @@ return {
     end
   },
 
+  -- AUtoclose
+  {
+    'm4xshen/autoclose.nvim',
+    config = function()
+      require('autoclose').setup()
+    end
+  },
+
   -- Easymotion
   {
     'smoka7/hop.nvim',
