@@ -112,6 +112,35 @@ return {
     end
   },
 
+  -- Window picker
+  {
+    'ten3roberts/window-picker.nvim',
+    config = function()
+      require('window-picker').setup {
+        -- Default keys to annotate, keys will be used in order. The default uses the
+        -- most accessible keys from the home row and then top row.
+        keys = 'alskdjfhgwoeiruty',
+        -- Swap windows by holding shift + letter
+        swap_shift = true,
+        -- Windows containing filetype to exclude
+        exclude = { qf = true, NvimTree = true, aerial = true },
+        -- Flash the cursor line of the newly focused window for 300ms.
+        -- Set to 0 or false to disable.
+        flash_duration = 300,
+      }
+
+      require('which-key').register(
+        {
+          ['<leader>W'] = { ':WindowPick<cr>', 'Pick a window' },
+        },
+        {
+          prefix = '<leader>',
+        }
+      )
+    end
+  },
+
+
   {
     'kylechui/nvim-surround',
     version = '*', -- Use for stability; omit to use `main` branch for the latest features
@@ -715,6 +744,8 @@ return {
   { 'neovim/nvim-lspconfig' },
   { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/nvim-cmp' },
+  { 'hrsh7th/cmp-buffer' },
+  { 'hrsh7th/cmp-path' },
   { 'L3MON4D3/LuaSnip' },
 
   -- Git stuff

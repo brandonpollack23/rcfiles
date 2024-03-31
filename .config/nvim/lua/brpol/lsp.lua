@@ -128,6 +128,12 @@ local cmp_mappings = lsp_zero.defaults.cmp_mappings({
 cmp.setup({
   window = {},
   mapping = cmp_mappings,
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+    { name = 'buffer' },
+    { name = 'path' },
+  },
 })
 
 lsp_zero.set_preferences({
