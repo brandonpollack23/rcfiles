@@ -903,29 +903,78 @@ return {
       end
 
       require('which-key').register({
-          v = {
-            name = 'LSP/IDE Operations',
-            C = {
-              name = 'Github Copilot Operations',
-              t = { toggle_copilot, 'Toggle Copilot' },
-              s = { '<Plug>(copilot-suggest)', 'Suggest' },
-              d = { '<Plug>(copilot-dismiss)', 'Dismiss' },
-              n = { '<Plug>(copilot-next)', 'Next Suggestion' },
-              p = { '<Plug>(copilot-previous)', 'Previous Suggestion' },
-            }
+          c = {
+            name = 'Github Copilot Operations',
+            t = { toggle_copilot, 'Toggle Copilot' },
+            l = { ':vert rightb Copilot panel<cr>', 'List Suggestions' },
+            s = { ':<Plug>(copilot-suggest)<cr>', 'Suggest' },
+            d = { ':<Plug>(copilot-dismiss)<cr>', 'Dismiss' },
+            n = { ':<Plug>(copilot-next)<cr>', 'Next Suggestion' },
+            p = { ':<Plug>(copilot-previous)<cr>', 'Previous Suggestion' },
           },
         },
         { prefix = '<leader>' }
       )
 
+      -- Add keybinding for insert mode for suggestion panel
       require('which-key').register(
         {
-          ['<C-]>'] = { '<Plug>(copilot-next)', 'Next Suggestion' },
-          ['<C-[>'] = { '<Plug>(copilot-previous)', 'Previous Suggestion' },
+          ['<C-l>'] = { function() vim.cmd('vert rightb Copilot panel') end, 'List suggestions' },
+          ['<C-]>'] = { ':<Plug>(copilot-next)<cr>', 'Next Suggestion' },
+          ['<C-[>'] = { ':<Plug>(copilot-previous)<cr>', 'Previous Suggestion' },
         },
-        {}
+        { mode = 'i' }
       )
     end
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    opts = {
+      show_help = 'yes',         -- Show help text for CopilotChatInPlace, default: yes
+      debug = false,             -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
+      disable_extra_info = 'no', -- Disable extra information (e.g: system prompt) in the response.
+      language =
+      'English'                  -- Copilot answer language settings when using default prompts. Default language is English.
+      -- proxy = "socks5://127.0.0.1:3000", -- Proxies requests via https or socks.
+      -- temperature = 0.1,
+    },
+    build = function()
+      vim.notify("Please update the remote plugins by running ':UpdateRemotePlugins', then restart Neovim.")
+    end,
+    event = 'VeryLazy',
+    -- TODO HERE use which-key https://copilotc-nvim.github.io/CopilotChat.nvim/#how-to-setup-with-which-keynvim
+    keys = {
+      { '<leader>ccb', ':CopilotChatBuffer ',         desc = 'CopilotChat - Chat with current buffer' },
+      { '<leader>cce', '<cmd>CopilotChatExplain<cr>', desc = 'CopilotChat - Explain code' },
+      { '<leader>cct', '<cmd>CopilotChatTests<cr>',   desc = 'CopilotChat - Generate tests' },
+      {
+        '<leader>ccT',
+        '<cmd>CopilotChatVsplitToggle<cr>',
+        desc = 'CopilotChat - Toggle Vsplit', -- Toggle vertical split
+      },
+      {
+        '<leader>ccv',
+        ':CopilotChatVisual ',
+        mode = 'x',
+        desc = 'CopilotChat - Open in vertical split',
+      },
+      {
+        '<leader>ccx',
+        ':CopilotChatInPlace<cr>',
+        mode = 'x',
+        desc = 'CopilotChat - Run in-place code',
+      },
+      {
+        '<leader>ccf',
+        '<cmd>CopilotChatFixDiagnostic<cr>', -- Get a fix for the diagnostic message under the cursor.
+        desc = 'CopilotChat - Fix diagnostic',
+      },
+      {
+        '<leader>ccr',
+        '<cmd>CopilotChatReset<cr>', -- Reset chat history and clear buffer.
+        desc = 'CopilotChat - Reset chat history and clear buffer',
+      }
+    },
   },
 
   -- Firenvim, use vim in chrome, firefox, and other web browsers
