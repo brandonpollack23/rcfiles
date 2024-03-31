@@ -758,7 +758,51 @@ return {
   {
     'akinsho/bufferline.nvim',
     version = '*',
-    dependencies = 'nvim-tree/nvim-web-devicons'
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      local bufferline = require('bufferline')
+      bufferline.setup {
+        options = {
+          middle_mouse_command = 'bdelete! %d',
+          right_mouse_command = nil,
+          buffer_close_icon = '',
+          sort_by = 'insert_at_end',
+          diagnostics = 'nvim_lsp',
+          color_icons = true,
+          separator_style = 'slope',
+          custom_filter = function() return true end, -- show all buffer types
+        }
+      }
+
+      require('bufferline.groups').builtin.pinned:with({ icon = '' })
+
+      local wk = require('which-key')
+      wk.register(
+        {
+          b = {
+            name = 'Buffers',
+            p = { ':BufferLineTogglePin<cr>', 'Pin Buffer' },
+            n = { ':BufferLineCycleNext<cr>', 'Next buffer' },
+            N = { ':BufferLineCyclePrev<cr>', 'Previous buffer' },
+            l = { ':BufferLineMoveNext<cr>', 'Move Right' },
+            h = { ':BufferLineMovePrev<cr>', 'Move Left' },
+            L = { function() require('bufferline').move_to(-1) end, 'Move to beginning' },
+            H = { function() require('bufferline').move_to(1) end, 'Move to end' },
+            x = { ':bdelete<cr>', 'Close Current buffer' },
+            X = {
+              name = 'Close',
+              o = { ':BufferLineCloseOthers<cr>', 'Close other buffers' },
+              L = { ':BufferLineCloseRight<cr>', 'Close all to the right' },
+              H = { ':BufferLineCloseLeft<cr>', 'Close all to the Left' },
+            }
+          },
+          ['<leader>B'] = { ':BufferLinePick<cr>', 'Pick buffer' },
+        },
+        {
+          prefix = '<leader>',
+        }
+      )
+    end
   },
 
   -- Smooth scrolling
