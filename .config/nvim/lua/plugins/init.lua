@@ -905,7 +905,7 @@ return {
       require('which-key').register({
           c = {
             name = 'Github Copilot Operations',
-            t = { toggle_copilot, 'Toggle Copilot' },
+            T = { toggle_copilot, 'Toggle Copilot' },
             l = { ':vert rightb Copilot panel<cr>', 'List Suggestions' },
             s = { ':<Plug>(copilot-suggest)<cr>', 'Suggest' },
             d = { ':<Plug>(copilot-dismiss)<cr>', 'Dismiss' },
@@ -929,52 +929,54 @@ return {
   },
   {
     'CopilotC-Nvim/CopilotChat.nvim',
-    opts = {
-      show_help = 'yes',         -- Show help text for CopilotChatInPlace, default: yes
-      debug = false,             -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
-      disable_extra_info = 'no', -- Disable extra information (e.g: system prompt) in the response.
-      language =
-      'English'                  -- Copilot answer language settings when using default prompts. Default language is English.
-      -- proxy = "socks5://127.0.0.1:3000", -- Proxies requests via https or socks.
-      -- temperature = 0.1,
+    dependencies = {
+      { 'github/copilot.vim' },    -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
     },
-    build = function()
-      vim.notify("Please update the remote plugins by running ':UpdateRemotePlugins', then restart Neovim.")
-    end,
-    event = 'VeryLazy',
-    -- TODO HERE use which-key https://copilotc-nvim.github.io/CopilotChat.nvim/#how-to-setup-with-which-keynvim
-    keys = {
-      { '<leader>ccb', ':CopilotChatBuffer ',         desc = 'CopilotChat - Chat with current buffer' },
-      { '<leader>cce', '<cmd>CopilotChatExplain<cr>', desc = 'CopilotChat - Explain code' },
-      { '<leader>cct', '<cmd>CopilotChatTests<cr>',   desc = 'CopilotChat - Generate tests' },
-      {
-        '<leader>ccT',
-        '<cmd>CopilotChatVsplitToggle<cr>',
-        desc = 'CopilotChat - Toggle Vsplit', -- Toggle vertical split
-      },
-      {
-        '<leader>ccv',
-        ':CopilotChatVisual ',
-        mode = 'x',
-        desc = 'CopilotChat - Open in vertical split',
-      },
-      {
-        '<leader>ccx',
-        ':CopilotChatInPlace<cr>',
-        mode = 'x',
-        desc = 'CopilotChat - Run in-place code',
-      },
-      {
-        '<leader>ccf',
-        '<cmd>CopilotChatFixDiagnostic<cr>', -- Get a fix for the diagnostic message under the cursor.
-        desc = 'CopilotChat - Fix diagnostic',
-      },
-      {
-        '<leader>ccr',
-        '<cmd>CopilotChatReset<cr>', -- Reset chat history and clear buffer.
-        desc = 'CopilotChat - Reset chat history and clear buffer',
+    opts = {
+      window = {
+        layout = 'float'
       }
     },
+    -- TODO copy paste this and put it in it's own file: https://github.com/jellydn/lazy-nvim-ide/blob/main/lua/plugins/extras/copilot-chat-v2.lua
+    config = function()
+      local chat = require('CopilotChat')
+      local select = require('CopilotChat.select')
+
+      chat.setup()
+
+      vim.api.nvim_create_user_command('CopilotChatInline', function(args)
+        chat.ask(args.args, {
+          selection = select.visual,
+          window = {
+            layout = 'float',
+            relative = 'cursor',
+            width = 1,
+            height = 0.2,
+            row = 1,
+          },
+        })
+      end, { nargs = '*', range = true })
+
+      local wk = require('which-key')
+      wk.register({
+          c = {
+            name = 'Github Copilot Operations',
+            c = { ':CopilotChatInline<cr>', 'CopilotChat - Chat with current buffer' },
+            e = { ':CopilotChatExplain<cr>', 'CopilotChat - Explain code' },
+            gt = { ':CopilotChatTests<cr>', 'CopilotChat - Generate tests' },
+            f = { ':CopilotChatFixDiagnostic<cr>', 'CopilotChat - Fix diagnostic', },
+            R = { ':CopilotChatReset<cr>', 'CopilotChat - Reset chat history and clear buffer', }
+          }
+        },
+        {
+          mode = 'n',
+          prefix = '<leader>',
+          silent = true,
+          noremap = true,
+          nowait = false,
+        })
+    end
   },
 
   -- Firenvim, use vim in chrome, firefox, and other web browsers
