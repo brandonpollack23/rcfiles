@@ -854,6 +854,19 @@ return {
     end
   },
 
+  -- Scope indication lines
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    opts = {},
+    config = function()
+      vim.cmd('hi IblIndent guifg=#333333')
+      vim.cmd('hi IblWhitespace guifg=#333333')
+      vim.cmd('hi IblScope guifg=#3F3F3F')
+      require('ibl').setup()
+    end
+  },
+
 
   -- Formatting
   {
