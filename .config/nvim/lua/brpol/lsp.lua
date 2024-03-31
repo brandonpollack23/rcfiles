@@ -156,17 +156,22 @@ lsp_zero.on_attach(function(client, bufnr)
         c = { vim.lsp.buf.code_action, 'Open code actions' },
         r = { vim.lsp.buf.rename, 'Rename' },
         R = { telescopeBuiltin.lsp_references, 'Open references' },
+        ['<C-q>'] = { vim.lsp.buf.hover, 'Code hover' },
+        ['<C-.>'] = { vim.lsp.buf.code_action, 'Code action' },
       },
     },
     { buffer = bufnr, noremap = true, prefix = '<leader>' }
   )
 
-  vim.keymap.set('n', '<C-q>', vim.lsp.buf.hover, { noremap = true })
-  vim.keymap.set('i', '<C-q>', vim.lsp.buf.hover, { noremap = true })
-  vim.keymap.set('n', '<C-.>', vim.lsp.buf.code_action, { noremap = true })
-  vim.keymap.set('i', '<C-.>', vim.lsp.buf.code_action, { noremap = true })
-  vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, { remap = false, buffer = bufnr })
-  vim.keymap.set('i', '<C-P>', function() vim.lsp.buf.signature_help() end, { remap = false, buffer = bufnr })
+  wk.register(
+    {
+      ['<C-q>'] = { vim.lsp.buf.hover, 'Code hover' },
+      ['<C-.>'] = { vim.lsp.buf.code_action, 'Code action' },
+      ['<C-h>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
+      ['<C-P>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
+    },
+    { mode = 'i' }
+  )
 end)
 
 lsp_zero.setup()
