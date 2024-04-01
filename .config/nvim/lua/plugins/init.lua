@@ -863,6 +863,15 @@ return {
       vim.cmd('hi IblWhitespace guifg=#333333')
       vim.cmd('hi IblScope guifg=#3F3F3F')
       require('ibl').setup()
+
+      -- Set an autocommand that disables the scope lines on dashboard files
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('user-indent-blankline', { clear = true }),
+        pattern = { 'dashboard' },
+        callback = function()
+          vim.cmd('IBLDisable')
+        end,
+      })
     end
   },
 
