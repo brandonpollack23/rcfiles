@@ -1,81 +1,84 @@
 [include]
-        path = .gitconfig.local
+  path = .gitconfig.local
 
 [user]
-	email = brandonpollack23@gmail.com
-	name = Brandon Pollack
+  email = brandonpollack23@gmail.com
+  name = Brandon Pollack
 
 [core]
-	editor = vim
-	pager = delta
+  editor = vim
+  pager = delta
 
 [interactive]
-        diffFilter = delta --color-only
+  diffFilter = delta --color-only
 
 [delta]
-        navigate = true
-        light = false
+  navigate = true
+  light = false
 
 [pull]
-	rebase = true
+  rebase = true
 
 [http]
-	cookiefile = /home/brpol/.gitcookies
+  cookiefile = /home/brpol/.gitcookies
 [submodule]
-	recurse = true
+  recurse = true
 
 [color]
-	ui = auto
+  ui = auto
 
 [review "URL"]
-	uploadtopic = true
-	autoupload = true
+  uploadtopic = true
+  autoupload = true
 
 [merge]
-        conflictstyle = diff3
-	tool = vimdiff
+  tool = nvimdiffview
+
+[mergetool "nvimdiffview"]
+  cmd = nvim -c 'DiffviewOpen'
+  trustExitCode = true
 
 [diff]
-        colorMoved = default
+  colorMoved = default
 
 [fetch]
-	prune = false
+  prune = false
 
 # Android configuration for work
 [url "persistent-https://android.git.corp.google.com"]
-            insteadof = https://android.googlesource.com
+  insteadof = https://android.googlesource.com
 [url "persistent-https://android.git.corp.google.com"]
-            insteadof = persistent-https://android.googlesource.com
+  insteadof = persistent-https://android.googlesource.com
 [url "persistent-https://android-review.git.corp.google.com"]
-            insteadof = https://android-review.googlesource.com
+  insteadof = https://android-review.googlesource.com
 [url "persistent-https://googleplex-android.git.corp.google.com"]
-            insteadof = https://googleplex-android.googlesource.com
+  insteadof = https://googleplex-android.googlesource.com
 [url "persistent-https://googleplex-android.git.corp.google.com"]
-            insteadof = persistent-https://googleplex-android.googlesource.com
+  insteadof = persistent-https://googleplex-android.googlesource.com
 [url "persistent-https://googleplex-android-review.git.corp.google.com"]
-            insteadof = https://googleplex-android-review.googlesource.com
+  insteadof = https://googleplex-android-review.googlesource.com
 [url "persistent-https://partner-android.git.corp.google.com"]
-            insteadof = https://partner-android.googlesource.com
+  insteadof = https://partner-android.googlesource.com
 [url "persistent-https://partner-android.git.corp.google.com"]
-            insteadof = persistent-https://partner-android.googlesource.com
+  insteadof = persistent-https://partner-android.googlesource.com
 [url "persistent-https://partner-android-review.git.corp.google.com"]
-            insteadof = https://partner-android-review.googlesource.com
+  insteadof = https://partner-android-review.googlesource.com
 [repo]
-	superprojectChoiceExpire = 1667448345
-	superprojectChoice = true
-	rebase = false
+  superprojectChoiceExpire = 1667448345
+  superprojectChoice = true
+  rebase = false
 
 ; For Linux Kernel
 [pw]
-	server = https://patchwork.kernel.org/api/1.2
-	project = dri-devel
+  server = https://patchwork.kernel.org/api/1.2
+  project = dri-devel
 
 ; lfs
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 
 ; local stuff
 [includeIf "gitdir:~/.gitconfig.local"]
