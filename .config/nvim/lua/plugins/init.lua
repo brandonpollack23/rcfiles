@@ -85,29 +85,37 @@ return {
 
       hop.setup({
         quit_key = '<SPC>',
+        keys = 'asdfghjkl;qwertyuiopzxcvbnm',
         multi_windows = true,
       })
 
-      wk.register {
-        {
-          ['<leader><leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
-          ['<leader>e'] = { function()
-            hop.hint_words({
-              direction = directions.AFTER_CURSOR,
-              hint_position = positions
-                  .END
-            })
-          end, 'Easymotion e' },
-          ['<leader><leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
-          ['<leader><leader>j'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
-          ['<leader><leader>k'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
-          ['<leader><leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
-          ['<leader><leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
-          ['<leader><leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
-          ['<leader><leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
-        },
-        {}
+      local bindings = {
+        ['<leader><leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
+        ['<leader>e'] = { function()
+          hop.hint_words({
+            direction = directions.AFTER_CURSOR,
+            hint_position = positions
+                .END
+          })
+        end, 'Easymotion e' },
+        ['<leader><leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
+        ['<leader><leader>j'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
+        ['<leader><leader>k'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
+        ['<leader><leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
+        ['<leader><leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
+        ['<leader><leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
+        ['<leader><leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
       }
+
+      wk.register {
+        bindings,
+        { mode = 'n' }
+      }
+
+      for bind, fd in pairs(bindings) do
+        local f = fd[1]
+        vim.keymap.set('v', bind, f, { noremap = true })
+      end
 
       -- Color configuration
       vim.cmd('hi HopNextKey guifg=White')
@@ -115,7 +123,7 @@ return {
       vim.cmd('hi HopNextKey1 guifg=White')
       vim.cmd('hi HopNextKey1 guibg=Red')
       vim.cmd('hi HopNextKey2 guifg=White')
-      vim.cmd('hi HopNextKey2 guifg=Red')
+      vim.cmd('hi HopNextKey2 guibg=Red')
     end
   },
 
@@ -756,7 +764,6 @@ return {
   { 'L3MON4D3/LuaSnip' },
 
   -- Git stuff
-  -- TODO diffview and mergetool https://github.com/sindrets/diffview.nvim
   {
     'lewis6991/gitsigns.nvim',
     config = function()
@@ -789,6 +796,33 @@ return {
           )
         end
       }
+    end
+  },
+  {
+    'sindrets/diffview.nvim',
+    config = function()
+      require('diffview').setup()
+      require('which-key').register({
+          g = {
+            name = 'Git',
+            d = { ':DiffviewOpen<cr>', 'Open Diffview' },
+            D = { ':DiffviewClose<cr>', 'Close Diffview' },
+            R = { ':DiffviewRefresh<cr>', 'Refresh Diffview' },
+            h = { ':DiffviewFileHistory<cr>', 'File History' },
+          }
+        },
+        { prefix = '<leader>' }
+      )
+
+      require('which-key').register(
+        {
+          g = {
+            name = 'Git',
+            h = { ":'<,'>DiffviewFileHistory<cr>", 'File History (selection)' },
+          }
+        },
+        { prefix = '<leader>', mode = 'v' }
+      )
     end
   },
 
