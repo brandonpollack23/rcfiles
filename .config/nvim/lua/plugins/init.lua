@@ -852,7 +852,7 @@ return {
       wk.register(
         {
           b = {
-            name = 'Buffers',
+            name = 'Buffers/Tabs',
             p = { ':BufferLineTogglePin<cr>', 'Pin Buffer' },
             n = { ':BufferLineCycleNext<cr>', 'Next buffer' },
             N = { ':BufferLineCyclePrev<cr>', 'Previous buffer' },
@@ -906,6 +906,25 @@ return {
           vim.cmd('IBLDisable')
         end,
       })
+    end
+  },
+  {
+    'LukasPietzschmann/telescope-tabs',
+    event = 'VeryLazy',
+    config = function()
+      local tt = require('telescope-tabs')
+
+      tt.setup()
+
+      require('which-key').register({
+          b = {
+            name = 'Buffers/Tabs',
+            t = { tt.list_tabs, 'Switch tabs (as in workspaces)' },
+            T = { tt.go_to_previous, 'Go to previous tab' },
+          }
+        },
+        { prefix = '<leader>' }
+      )
     end
   },
 
