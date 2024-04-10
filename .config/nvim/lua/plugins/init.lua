@@ -1,4 +1,4 @@
-local art = require('lua.brpol.ascii_art')
+local art = require('brpol.ascii_art')
 
 return {
   {
