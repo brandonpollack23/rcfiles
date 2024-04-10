@@ -1,26 +1,14 @@
 -- TODO:
--- trigger and accept with ctrl space
--- ctrl q for info about variable/type
--- ctrl shift p for parameter info
-
 -- Lualine lsp progress https://github.com/linrongbin16/lsp-progress.nvim
 -- Recursively open in nvim tree https://github.com/nvim-tree/nvim-tree.lua/pull/1292
 
 -- IF bufferline doesnt work: telescope select tab instead of replacing
 
 -- TODO plugins
--- jump to window with easymotion
--- a git plugin https://github.com/NeogitOrg/neogit
--- popup terminal like vscode https://www.reddit.com/r/neovim/comments/kbwb0n/neovim_terminal_like_vscode/
--- copilot
 -- file outline (function list etc)
--- harpoon
 -- debugging files
 -- undotree
--- commenter
--- autoformat on save
 -- todo highlighting
--- Go through old vimrc to see if im missing anything
 
 vim.g.mapleader = ','
 
@@ -85,6 +73,7 @@ vim.o.wildignorecase = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
+vim.o.tabstop = 2
 vim.cmd('filetype indent on')
 vim.cmd('filetype plugin on')
 vim.o.smartindent = true

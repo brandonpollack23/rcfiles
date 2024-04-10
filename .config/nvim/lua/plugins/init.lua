@@ -611,16 +611,17 @@ return {
         end,
         open_mapping = [[<c-\>]],
         direction = terminal_type,
+        on_create = function(term)
+          term:send('export HISTCONTROL=ignorespace', false)
+        end,
         on_open = function(term)
-          term:send('tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
-          term:send(
-            'echo "Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux"',
-            false
-          )
+          vim.notify('Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
+          term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
           vim.cmd('startinsert')
         end,
         on_close = function(term)
-          term:send('tmux detach', false)
+          -- Cancel current command with interrupt then detach tmux
+          -- term:send(' tmux detach', false)
         end,
         float_opts = {
           -- The border key is *almost* the same as 'nvim_open_win'
