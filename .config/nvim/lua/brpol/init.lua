@@ -120,3 +120,5 @@ end
 require('which-key').register({
   l = { execute_current_buffer, 'Source current buffer' },
 }, { prefix = '<leader>' })
+
+-- TODO Create an autocommand to confirm on exiting if there are unclosed buffers and the command does not include 'a'

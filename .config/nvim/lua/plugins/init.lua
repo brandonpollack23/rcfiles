@@ -680,6 +680,15 @@ return {
       )
     end
   },
+  {
+    'willothy/flatten.nvim',
+    config = true,
+    -- or pass configuration with
+    -- opts = {  }
+    -- Ensure that it runs first to minimize delay when opening file from terminal
+    lazy = false,
+    priority = 1001,
+  },
 
   -- Sessions and workspaces
   {
@@ -874,6 +883,13 @@ return {
         {
           prefix = '<leader>',
         }
+      )
+      wk.register(
+        {
+          gt = { ':BufferLineCycleNext<cr>', 'Next buffer' },
+          gT = { ':BufferLineCyclePrev<cr>', 'Previous buffer' },
+        },
+        {}
       )
     end
   },
