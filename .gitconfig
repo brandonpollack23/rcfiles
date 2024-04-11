@@ -6,7 +6,7 @@
   name = Brandon Pollack
 
 [core]
-  editor = vim
+	editor = nvim
   pager = delta
 
 [interactive]
