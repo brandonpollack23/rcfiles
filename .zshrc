@@ -32,7 +32,7 @@ autoload -Uz compinit && compinit
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$HOME/bin/google-cloud-sdk/bin:$HOME/.pulumi/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH:$HOME/.local/scripts"
+export PATH="$HOME/go/bin:$HOME/bin/google-cloud-sdk/bin:$HOME/.pulumi/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH:$HOME/.local/scripts"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
