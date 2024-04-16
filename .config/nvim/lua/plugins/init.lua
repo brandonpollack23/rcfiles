@@ -23,6 +23,20 @@ return {
     dependencies = { { 'nvim-tree/nvim-web-devicons' } }
   },
 
+  -- Imports vscode settings.json coc settings and nlsp and has its own .neoconf.json
+  {
+    'folke/neoconf.nvim',
+    config = function()
+      require('neoconf').setup()
+    end,
+  },
+  {
+    'folke/neodev.nvim',
+    config = function()
+      require('neodev').setup()
+    end
+  },
+
   {
     'Mofiqul/vscode.nvim',
     priority = 2000,
@@ -930,6 +944,24 @@ return {
               }
             },
             { prefix = '<leader>' }
+          )
+          wk.register(
+            {
+              g = {
+                n = { gs.next_hunk, 'Next git hunk' },
+                N = { gs.prev_hunk, 'Prev git hunk' },
+                R = { gs.reset_buffer, 'Reset buffer' },
+                h = {
+                  name = 'hunk operations',
+                  p = { gs.preview_hunk, 'Preview hunk' },
+                  s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
+                  d = { gs.diffthis, 'Diff against index' },
+                  D = { function() gs.diffthis('~') end, 'Diff against last commit' },
+                  r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
+                },
+              }
+            },
+            { mode = 'x', prefix = '<leader>' }
           )
         end
       }

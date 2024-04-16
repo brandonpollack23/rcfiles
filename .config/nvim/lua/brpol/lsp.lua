@@ -53,6 +53,8 @@ require('mason-lspconfig').setup({
             -- Make the server aware of Neovim runtime files
             workspace = {
               checkThirdParty = 'Ask',
+              -- None of this is needed because neodev handles it
+              --
               -- library = {
               --   vim.env.VIMRUNTIME
               --   -- Depending on the usage, you might want to add additional paths here.
@@ -60,24 +62,17 @@ require('mason-lspconfig').setup({
               --   -- "${3rd}/busted/library",
               -- }
               -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-              library = {
-                vim.api.nvim_get_runtime_file('', true),
-                '${3rd}/luassert/library',
-                '${3rd}/luv/library',
-                '${3rd}/busted/library',
-              },
+              -- library = {
+              --   vim.api.nvim_get_runtime_file('', true),
+              --   '${3rd}/luassert/library',
+              --   '${3rd}/luv/library',
+              --   '${3rd}/busted/library',
+              -- },
             },
           })
         end,
         settings = {
           Lua = {
-            diagnostics = {
-              -- Get the language server to recognize the `vim` global
-              globals = {
-                'vim',
-                'require'
-              },
-            },
           }
         }
       }
@@ -121,6 +116,20 @@ require('mason-lspconfig').setup({
         },
       }
     end,
+
+    ['elixirls'] = function()
+      lspconfig.elixirls.setup {
+        settings = {
+          elixirLS = {
+            dialyzerEnabled = true,
+            fetchDeps = true,
+            incrementalDialyzer = true,
+            suggestSpecs = true,
+            enableTestLenses = true,
+          },
+        },
+      }
+    end
   },
 })
 
@@ -202,6 +211,7 @@ lsp_zero.on_attach(function(client, bufnr)
         c = { vim.lsp.buf.code_action, 'Open code actions' },
         r = { vim.lsp.buf.rename, 'Rename' },
         R = { telescopeBuiltin.lsp_references, 'Open references' },
+        h = { function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, 'Toggle inlay hints' }
       },
     },
     { buffer = bufnr, noremap = true, prefix = '<leader>' }
@@ -227,8 +237,37 @@ end)
 
 lsp_zero.setup()
 
+vim.api.nvim_set_hl(0, 'LspCodeLens', { italic = true, fg = '#7a7a7a' })
+vim.api.nvim_set_hl(0, 'LspCodeLensSeparator', { fg = '#7a7a7a' })
+
 -- Diagnostics
 vim.diagnostic.config({
   virtual_text = { severity = { min = vim.diagnostic.severity.INFO } },
   underline = true,
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client == nil then
+      return
+    end
+
+    if client.server_capabilities.inlayHintProvider then
+      vim.lsp.inlay_hint.enable(args.buf, true)
+    end
+
+    if client.server_capabilities.codeLensProvider then
+      vim.lsp.codelens.refresh()
+
+      require('which-key').register({
+        v = {
+          name = 'LSP/IDE Operations',
+          R = { vim.lsp.codelens.run, 'Display code lens' },
+          L = { vim.lsp.codelens.refresh, 'Refresh code lens' },
+        },
+      }, { prefix = '<leader>' })
+    end
+  end
 })
