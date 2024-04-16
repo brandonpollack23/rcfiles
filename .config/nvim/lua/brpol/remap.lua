@@ -16,10 +16,12 @@ wk.register({
       name = 'Find/File/Search/Select Operations',
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
       g = { '<cmd>Telescope live_grep<cr>', 'Live Grep' },
-      s = { function() telescopeBuiltin.grep_string({ search = vim.fn.input('Grep > ') }) end, 'Grep Files' },
+      G = { function() telescopeBuiltin.grep_string({ search = vim.fn.input('Grep > ') }) end, 'Grep Files' },
       b = { '<cmd>Telescope buffers<cr>', 'Search Buffers' },
       h = { '<cmd>Telescope help_tags<cr>', 'Search Help' },
       p = { telescopeExtensions.smart_open.smart_open, 'Smart open (FULL)' },
+      r = { ':Telescope lsp_references<cr>', 'LSP References' },
+      s = { ':Telescope lsp_dynamic_workspace_symbols<cr>', 'LSP References' },
     },
     k = {
       name = 'Colors',
