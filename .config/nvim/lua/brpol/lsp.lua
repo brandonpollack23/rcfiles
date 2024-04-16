@@ -25,6 +25,7 @@ require('mason-lspconfig').setup({
   -- Each of their docs are in lspconfig or their own docs.
   ensure_installed = {
     'bashls',
+    'elixirls',
     'eslint',
     'gopls',
     'jsonls',

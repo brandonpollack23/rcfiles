@@ -169,7 +169,10 @@ return {
 
   -- Fuzzy finder (file finder etc), see "after" config directory for bindings,
   -- ctrl-p from vscode is equivalent and for non git repos there is <leader>ff
-  { 'nvim-telescope/telescope.nvim',    dependencies = { 'nvim-lua/plenary.nvim' } },
+  {
+    'nvim-telescope/telescope.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' }
+  },
   {
     'danielfalk/smart-open.nvim',
     branch = '0.2.x',
@@ -612,11 +615,12 @@ return {
         open_mapping = [[<c-\>]],
         direction = terminal_type,
         on_create = function(term)
-          term:send('export HISTCONTROL=ignorespace', false)
+          vim.notify('Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
+          term:send(' export HISTCONTROL=ignorespace', false)
+          term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
+          term:send(' export NVIM=' .. vim.v.servername)
         end,
         on_open = function(term)
-          vim.notify('Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
-          term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
           vim.cmd('startinsert')
         end,
         on_close = function(term)
@@ -830,6 +834,65 @@ return {
   { 'hrsh7th/cmp-path' },
   { 'L3MON4D3/LuaSnip' },
 
+  -- Refactor stuff when LSP doesnt work
+  {
+    'ThePrimeagen/refactoring.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-telescope/telescope.nvim',
+    },
+    config = function()
+      require('refactoring').setup()
+      require('telescope').load_extension('refactoring')
+
+      local wk = require('which-key')
+      wk.register({
+          r = {
+            name = 'Refactors',
+            e = { ':Refactor extract ', 'Extract' },
+            f = { ':Refactor extract_to_file ', 'Extract to file' },
+            v = { ':Refactor extract_var ', 'Extract variable' },
+          }
+        },
+        {
+          mode = 'x',
+          prefix = '<leader>',
+        })
+
+      local sharedBindings = {
+        r = {
+          name = 'Refactors',
+          r = { function() require('refactoring').select_refactor() end, 'Select refactor' },
+          i = { ':Refactor inline_var', 'Inline variable' },
+        }
+      }
+      wk.register(sharedBindings,
+        {
+          mode = 'x',
+          prefix = '<leader>',
+        })
+      wk.register(sharedBindings,
+        {
+          mode = 'n',
+          prefix = '<leader>',
+        })
+
+      wk.register({
+          r = {
+            name = 'Refactors',
+            I = { ':Refactor inline_func', 'Inline function' },
+            b = { ':Refactor extract_block', 'Extract block' },
+            B = { ':Refactor extract_block_to_file', 'Extract block to file' },
+          }
+        },
+        {
+          mode = 'n',
+          prefix = '<leader>',
+        })
+    end,
+  },
+
   -- Git stuff
   {
     'lewis6991/gitsigns.nvim',
@@ -851,11 +914,11 @@ return {
                 R = { gs.reset_buffer, 'Reset buffer' },
                 h = {
                   name = 'hunk operations',
-                  hp = { gs.preview_hunk, 'Preview hunk' },
-                  hs = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
-                  hd = { gs.diffthis, 'Diff against index' },
-                  hD = { function() gs.diffthis('~') end, 'Diff against last commit' },
-                  hr = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
+                  p = { gs.preview_hunk, 'Preview hunk' },
+                  s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
+                  d = { gs.diffthis, 'Diff against index' },
+                  D = { function() gs.diffthis('~') end, 'Diff against last commit' },
+                  r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
                 },
               }
             },
