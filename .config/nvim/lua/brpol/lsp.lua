@@ -237,17 +237,19 @@ end)
 
 lsp_zero.setup()
 
-vim.api.nvim_set_hl(0, 'LspCodeLens', { italic = true, fg = '#7a7a7a' })
-vim.api.nvim_set_hl(0, 'LspCodeLensSeparator', { fg = '#7a7a7a' })
-
 -- Diagnostics
 vim.diagnostic.config({
   virtual_text = { severity = { min = vim.diagnostic.severity.INFO } },
   underline = true,
 })
 
+-- Lsp hints etc
+vim.api.nvim_set_hl(0, 'LspCodeLens', { italic = true, fg = '#7a7a7a' })
+vim.api.nvim_set_hl(0, 'LspCodeLensSeparator', { fg = '#7a7a7a' })
+
+local lspGroup = vim.api.nvim_create_augroup('UserLspConfig', {})
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  group = lspGroup,
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client == nil then
@@ -259,15 +261,33 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     if client.server_capabilities.codeLensProvider then
-      vim.lsp.codelens.refresh()
+      vim.api.nvim_create_autocmd('CursorHold', {
+        group = lspGroup,
+        callback = function(_)
+          vim.lsp.codelens.refresh()
+        end
+      })
 
       require('which-key').register({
         v = {
           name = 'LSP/IDE Operations',
-          R = { vim.lsp.codelens.run, 'Display code lens' },
+          l = { vim.lsp.codelens.run, 'Display code lens' },
           L = { vim.lsp.codelens.refresh, 'Refresh code lens' },
         },
       }, { prefix = '<leader>' })
     end
   end
 })
+
+-- -- Make all code lenses on the previous line like in vscode
+-- local original_code_lens = vim.lsp.codelens.on_codelens
+-- vim.lsp.codelens.on_codelens = function(err, result, ctx, config)
+--   for _, codeLens in pairs(result) do
+--     local line = codeLens.range.start.line
+--     codeLens.range.start.line = line - 1
+--     -- get first character column of the current line
+--     local firstNonWhitespace = string.find(vim.fn.getline(line), '[^[:space:]]')
+--     codeLens.range.start.character = firstNonWhitespace
+--   end
+--   original_code_lens(err, result, ctx, config)
+-- end
