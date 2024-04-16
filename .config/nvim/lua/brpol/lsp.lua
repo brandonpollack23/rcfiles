@@ -211,7 +211,7 @@ lsp_zero.on_attach(function(client, bufnr)
     {
       ['<C-q>'] = { vim.lsp.buf.hover, 'Code hover' },
       ['<C-.>'] = { vim.lsp.buf.code_action, 'Code action' },
-      ['<C-h>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
+      ['<C-k>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
     },
     { mode = 'i' }
   )
@@ -219,7 +219,7 @@ lsp_zero.on_attach(function(client, bufnr)
     {
       ['<C-q>'] = { vim.lsp.buf.hover, 'Code hover' },
       ['<C-.>'] = { vim.lsp.buf.code_action, 'Code action' },
-      ['<C-h>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
+      ['<C-k>'] = { function() vim.lsp.buf.signature_help() end, 'Signature help' },
     },
     { mode = 'n' }
   )

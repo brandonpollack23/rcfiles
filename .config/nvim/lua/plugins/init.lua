@@ -832,7 +832,14 @@ return {
   { 'hrsh7th/nvim-cmp' },
   { 'hrsh7th/cmp-buffer' },
   { 'hrsh7th/cmp-path' },
-  { 'L3MON4D3/LuaSnip' },
+  {
+    'L3MON4D3/LuaSnip',
+    dependencies = { 'rafamadriz/friendly-snippets', 'saadparwaiz1/cmp_luasnip', 'benfowler/telescope-luasnip.nvim' },
+    config = function()
+      require('luasnip.loaders.from_vscode').lazy_load()
+      require('telescope').load_extension('luasnip')
+    end
+  },
 
   -- Refactor stuff when LSP doesnt work
   {

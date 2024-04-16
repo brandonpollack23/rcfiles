@@ -22,6 +22,7 @@ wk.register({
       p = { telescopeExtensions.smart_open.smart_open, 'Smart open (FULL)' },
       r = { ':Telescope lsp_references<cr>', 'LSP References' },
       s = { ':Telescope lsp_dynamic_workspace_symbols<cr>', 'LSP References' },
+      S = { ':Telescope luasnip<cr>', 'Search snippets' }
     },
     k = {
       name = 'Colors',
