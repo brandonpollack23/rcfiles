@@ -26,11 +26,12 @@ require('mason-lspconfig').setup({
   ensure_installed = {
     'bashls',
     'elixirls',
-    -- 'nextls', -- another elixir language server
+    'elp', -- erlang
     'eslint',
     'gopls',
     'jsonls',
     'lua_ls',
+    -- 'nextls', -- another elixir language server
     'rust_analyzer',
     'tsserver',
     'zls',

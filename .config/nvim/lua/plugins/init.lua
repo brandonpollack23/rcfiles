@@ -1336,7 +1336,7 @@ return {
 
       elixir.setup {
         nextls = {
-          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls')
+          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls')
         },
 
         credo = {
