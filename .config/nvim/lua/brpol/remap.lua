@@ -70,6 +70,12 @@ wk.register({
   { mode = 'x', prefix = '<leader>' }
 )
 
+wk.register({
+  v = {
+    P = { ':OutputPanel<cr>', 'Toggle LSP Output Panel' },
+  }
+}, { prefix = '<leader>' })
+
 -- Return to normal mode from insert mode
 vim.o.timeoutlen = 500 -- set timeout length so I can type literal jj faster
 vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })

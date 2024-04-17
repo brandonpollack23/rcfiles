@@ -857,6 +857,13 @@ return {
       require('telescope').load_extension('luasnip')
     end
   },
+  {
+    'mhanberg/output-panel.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('output_panel').setup()
+    end
+  },
 
   -- Refactor stuff when LSP doesnt work
   {

@@ -290,20 +290,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- Make all code lenses on the previous line like in vscode
 -- TODO when im not fucked to do this, look into extmark and see if i can modify neovim to handle this and put it above directly
 -- https://github.com/neovim/neovim/blob/8e5c48b08dad54706500e353c58ffb91f2684dd3/runtime/lua/vim/lsp/codelens.lua#L174C11-L174C31
-local original_code_lens = vim.lsp.codelens.on_codelens
-vim.lsp.codelens.on_codelens = function(err, result, ctx, config)
-  if result == nil then
-    return
-  end
-
-  for _, codeLens in pairs(result) do
-    local line = codeLens.range.start.line
-    codeLens.range.start.line = line - 1
-    -- codeLens.command.title = '\n' .. codeLens.command.title
-    -- get first character column of the current line
-    local firstNonWhitespace = string.find(vim.fn.getline(line), '[^[:space:]]')
-    codeLens.range.start.character = firstNonWhitespace
-  end
-
-  original_code_lens(err, result, ctx, config)
-end
+-- local original_code_lens = vim.lsp.codelens.on_codelens
+-- vim.lsp.codelens.on_codelens = function(err, result, ctx, config)
+--   if result == nil then
+--     return
+--   end
+--
+--   for _, codeLens in pairs(result) do
+--     local line = codeLens.range.start.line
+--     codeLens.range.start.line = line - 1
+--     -- codeLens.command.title = '\n' .. codeLens.command.title
+--     -- get first character column of the current line
+--     local firstNonWhitespace = string.find(vim.fn.getline(line), '[^[:space:]]')
+--     codeLens.range.start.character = firstNonWhitespace
+--   end
+--
+--   original_code_lens(err, result, ctx, config)
+-- end
