@@ -1339,6 +1339,10 @@ return {
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls')
         },
 
+        credo = {
+          version = '0.3.0',
+        },
+
         elixirls = {
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
