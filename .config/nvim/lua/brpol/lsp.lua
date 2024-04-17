@@ -268,7 +268,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
         pattern = '*.ex',
         callback = function(_)
           -- swallow any error
+          -- temporarily disable vim notify for this call
+          local notifyBackup = vim.notify
+          vim.notify = function() end
           pcall(vim.lsp.codelens.refresh)
+          vim.notify = notifyBackup
         end
       })
 
