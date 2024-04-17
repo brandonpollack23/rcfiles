@@ -17,6 +17,7 @@
         "/Users/brpol/.local/share/nvim/lazy/neoconf.nvim/lua",
         "/Users/brpol/.local/share/nvim/lazy/neoconf.nvim/types",
         "/Users/brpol/.local/share/nvim/lazy/neoconf.nvim/types/lua",
-        "/Users/brpol/src/rcfiles/.config/nvim/lua"
+        "/Users/brpol/src/rcfiles/.config/nvim/lua",
+        "${3rd}/luv/library"
     ]
 }

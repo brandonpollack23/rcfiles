@@ -696,6 +696,9 @@ return {
           mode = 'v',
         }
       )
+
+      -- Return to normal mode from terminal mode to leave terminal open etc
+      vim.keymap.set('t', '<C-/>', function() vim.cmd('stopinsert') end, { noremap = true })
     end
   },
   {
@@ -1311,6 +1314,50 @@ return {
           nowait = false,
         })
     end
+  },
+
+  -- Individual language tools
+  -- Elixir
+  {
+    'elixir-tools/elixir-tools.nvim',
+    version = '*',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local elixir = require('elixir')
+      local elixirls = require('elixir.elixirls')
+      local wk = require('which-key')
+
+      elixir.setup {
+        nextls = {
+          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls')
+        },
+
+        elixirls = {
+          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
+          settings = elixirls.settings {
+            fetchDeps = true,
+            enableTestLenses = true,
+            suggestSpecs = true,
+            dialyzerEnabled = true,
+            incrementalDialyzer = true,
+          },
+          on_attach = function()
+            wk.register({
+                E = {
+                  name = 'Elixir Code Actions',
+                  f = { ':ElixirFromPipe<cr>', 'Convert to standard function from pipe' },
+                  p = { ':ElixirToPipe<cr>', 'Convert to pipe from standard function' },
+                  m = { ':ElixirExpandMacro<cr>', 'Expand Macro' },
+                }
+              },
+              { prefix = '<leader>' })
+          end
+        }
+      }
+    end,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
   },
 
   -- Firenvim, use vim in chrome, firefox, and other web browsers

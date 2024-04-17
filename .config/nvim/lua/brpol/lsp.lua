@@ -26,6 +26,7 @@ require('mason-lspconfig').setup({
   ensure_installed = {
     'bashls',
     'elixirls',
+    -- 'nextls', -- another elixir language server
     'eslint',
     'gopls',
     'jsonls',
@@ -118,17 +119,18 @@ require('mason-lspconfig').setup({
     end,
 
     ['elixirls'] = function()
-      lspconfig.elixirls.setup {
-        settings = {
-          elixirLS = {
-            dialyzerEnabled = true,
-            fetchDeps = true,
-            incrementalDialyzer = true,
-            suggestSpecs = true,
-            enableTestLenses = true,
-          },
-        },
-      }
+      -- Currently configured by elixir-tools.nvim in plugins/init.lua
+      -- lspconfig.elixirls.setup {
+      --   settings = {
+      --     elixirLS = {
+      --       dialyzerEnabled = true,
+      --       fetchDeps = true,
+      --       incrementalDialyzer = true,
+      --       suggestSpecs = true,
+      --       enableTestLenses = true,
+      --     },
+      --   },
+      -- }
     end
   },
 })
@@ -263,8 +265,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
     if client.server_capabilities.codeLensProvider then
       vim.api.nvim_create_autocmd('CursorHold', {
         group = lspGroup,
+        pattern = '*.ex',
         callback = function(_)
-          vim.lsp.codelens.refresh()
+          -- swallow any error
+          pcall(vim.lsp.codelens.refresh)
         end
       })
 
@@ -296,5 +300,6 @@ vim.lsp.codelens.on_codelens = function(err, result, ctx, config)
     local firstNonWhitespace = string.find(vim.fn.getline(line), '[^[:space:]]')
     codeLens.range.start.character = firstNonWhitespace
   end
+
   original_code_lens(err, result, ctx, config)
 end
