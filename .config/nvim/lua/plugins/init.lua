@@ -1017,6 +1017,13 @@ return {
       )
     end
   },
+  {
+    'wintermute-cell/gitignore.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+    config = function()
+      require('gitignore')
+    end,
+  },
 
   -- Buffer line aka tabs
   {
