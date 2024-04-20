@@ -23,15 +23,20 @@ return {
         shortcut_type = 'letter',
         config = {
           header = dashLogo,
-          center = {
-            { desc = config_time_string }
-          },
+          footer = { config_time_string }
         },
       }
     end,
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'mrquantumcodes/configpulse'
+    }
+  },
+
+  {
+    'jsongerber/thanks.nvim',
+    opts = {
+      plugin_manager = 'lazy',
     }
   },
 
