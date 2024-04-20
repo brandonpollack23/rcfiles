@@ -69,6 +69,8 @@ ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
 chown $CALLING_USER $HOME/zsh-plugins
 ln -sfn $RCFILESDIR/zsh-my-completions $HOME/zsh-my-completions
 chown $CALLING_USER $HOME/zsh-my-completions
+ln -sfn $RCFILESDIR/nix-zsh-completions $HOME/nix-zsh-completions
+chown $CALLING_USER $HOME/nix-zsh-completions
 ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
 chown $CALLING_USER $HOME/.oh-my-zsh
 ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc

@@ -25,6 +25,8 @@ fi
 
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 fpath+=$HOME/zsh-my-completions
+source $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh
+fpath+=$HOME/nix-zsh-completions
 autoload -Uz compinit && compinit
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH

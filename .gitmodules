@@ -64,3 +64,6 @@
 [submodule ".tmux/plugins/tmux-easy-motion"]
 	path = .tmux/plugins/tmux-easy-motion
 	url = git@github.com:IngoMeyer441/tmux-easy-motion.git
+[submodule "nix-zsh-completions"]
+	path = nix-zsh-completions
+	url = git@github.com:nix-community/nix-zsh-completions.git
