@@ -606,7 +606,7 @@ return {
         }
       }, { prefix = '<leader>' })
       -- TODO try to use which key for this like so: [C-i] = {}
-      vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', { remap = false })
+      -- vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', { remap = false })
     end
   },
 
