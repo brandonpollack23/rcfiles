@@ -94,14 +94,6 @@ return {
     end
   },
 
-  -- AUtoclose
-  {
-    'm4xshen/autoclose.nvim',
-    config = function()
-      require('autoclose').setup()
-    end
-  },
-
   -- Easymotion
   {
     'smoka7/hop.nvim',
@@ -121,7 +113,12 @@ return {
       })
 
       local bindings = {
-        ['<leader><leader>w'] = { function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, 'Easymotion w' },
+        ['<leader><leader>w'] = { function()
+          hop.hint_words({
+            direction = directions
+                .AFTER_CURSOR
+          })
+        end, 'Easymotion w' },
         ['<leader>e'] = { function()
           hop.hint_words({
             direction = directions.AFTER_CURSOR,
@@ -129,13 +126,54 @@ return {
                 .END
           })
         end, 'Easymotion e' },
-        ['<leader><leader>b'] = { function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion b' },
-        ['<leader><leader>j'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, 'Easymotion j' },
-        ['<leader><leader>k'] = { function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, 'Easymotion k' },
-        ['<leader><leader>f'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, 'Easymotion f' },
-        ['<leader><leader>F'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, 'Easymotion F' },
-        ['<leader><leader>t'] = { function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, 'Easymotion t' },
-        ['<leader><leader>T'] = { function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, 'Easymotion T' },
+        ['<leader><leader>b'] = { function()
+          hop.hint_words({
+            direction = directions
+                .BEFORE_CURSOR
+          })
+        end, 'Easymotion b' },
+        ['<leader><leader>j'] = { function()
+          hop.hint_lines_skip_whitespace({
+            direction =
+                directions.AFTER_CURSOR
+          })
+        end, 'Easymotion j' },
+        ['<leader><leader>k'] = { function()
+          hop.hint_lines_skip_whitespace({
+            direction =
+                directions.BEFORE_CURSOR
+          })
+        end, 'Easymotion k' },
+        ['<leader><leader>f'] = { function()
+          hop.hint_char1({
+            direction = directions
+                .AFTER_CURSOR,
+            current_line_only = true
+          })
+        end, 'Easymotion f' },
+        ['<leader><leader>F'] = { function()
+          hop.hint_char1({
+            direction = directions
+                .BEFORE_CURSOR,
+            current_line_only = true
+          })
+        end, 'Easymotion F' },
+        ['<leader><leader>t'] = { function()
+          hop.hint_char1({
+            direction = directions
+                .AFTER_CURSOR,
+            current_line_only = true,
+            hint_offset = -1
+          })
+        end, 'Easymotion t' },
+        ['<leader><leader>T'] = { function()
+          hop.hint_char1({
+            direction = directions
+                .BEFORE_CURSOR,
+            current_line_only = true,
+            hint_offset = 1
+          })
+        end, 'Easymotion T' },
       }
 
       wk.register {
@@ -218,7 +256,8 @@ return {
     config = function()
       local extensions = require('telescope').extensions
 
-      vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only = true }) end, {})
+      vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only = true }) end,
+        {})
 
       -- Hack to make Ctrl-C work to close
       vim.api.nvim_create_autocmd('FileType', {
@@ -465,12 +504,15 @@ return {
 
           -- Run Default first
           nvimTreeApi.config.mappings.default_on_attach(bufnr)
-          vim.keymap.set('n', '<C-c>', change_root_to_global_cwd, opts('Change Root To Global CWD'))
+          vim.keymap.set('n', '<C-c>', change_root_to_global_cwd,
+            opts('Change Root To Global CWD'))
           vim.keymap.set('n', '?', nvimTreeApi.tree.toggle_help, opts('Help'))
-          vim.keymap.set('n', 'v', nvimTreeApi.node.open.vertical, opts('Open: Vertical Split'))
+          vim.keymap.set('n', 'v', nvimTreeApi.node.open.vertical,
+            opts('Open: Vertical Split'))
           vim.keymap.set('n', '<CR>', nvimTreeApi.node.open.no_window_picker, opts('Open'))
           vim.keymap.set('n', 'o', nvimTreeApi.node.open.no_window_picker, opts('Open'))
-          vim.keymap.set('n', 'O', nvimTreeApi.node.open.no_window_picker, opts('Open: Window Picker'))
+          vim.keymap.set('n', 'O', nvimTreeApi.node.open.no_window_picker,
+            opts('Open: Window Picker'))
         end
       })
 
@@ -646,7 +688,8 @@ return {
         open_mapping = [[<c-\>]],
         direction = terminal_type,
         on_create = function(term)
-          vim.notify('Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
+          vim.notify(
+            'Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
           term:send(' export HISTCONTROL=ignorespace', false)
           term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
           term:send(' export NVIM=' .. vim.v.servername)
@@ -683,7 +726,8 @@ return {
             s = { ':TermSelect<cr>', 'Select from list of open terminals' },
             n = {
               function()
-                local term = require('toggleterm.terminal').get_last_focused()
+                local term = require('toggleterm.terminal')
+                    .get_last_focused()
                 -- check a terminal exists
                 if not term then
                   vim.notify('No terminal to rename')
@@ -862,10 +906,21 @@ return {
   { 'williamboman/mason-lspconfig.nvim' },
   { 'VonHeikemen/lsp-zero.nvim',        branch = 'v3.x' },
   { 'neovim/nvim-lspconfig' },
-  { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/nvim-cmp' },
+  { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/cmp-buffer' },
   { 'hrsh7th/cmp-path' },
+  {
+    'ray-x/lsp_signature.nvim',
+    event = 'VeryLazy',
+    opts = {
+      hint_enable = false,
+      handler_opts = {
+        border = 'rounded',
+      }
+    },
+    config = function(_, opts) require 'lsp_signature'.setup(opts) end
+  },
   {
     'L3MON4D3/LuaSnip',
     dependencies = { 'rafamadriz/friendly-snippets', 'saadparwaiz1/cmp_luasnip', 'benfowler/telescope-luasnip.nvim' },
@@ -1206,6 +1261,13 @@ return {
           inc_rename = false,           -- enables an input dialog for inc-rename.nvim
           lsp_doc_border = false,       -- add a border to hover docs and signature help
         },
+        lsp = {
+          signature = {
+            enabled = false,
+            trigger = false,
+            luasnip = false,
+          },
+        },
         views = {
           cmdline_popup = {
             position = {
@@ -1378,7 +1440,7 @@ return {
           },
           on_attach = function()
             wk.register({
-                E = {
+                e = {
                   name = 'Elixir Code Actions',
                   f = { ':ElixirFromPipe<cr>', 'Convert to standard function from pipe' },
                   p = { ':ElixirToPipe<cr>', 'Convert to pipe from standard function' },
@@ -1393,6 +1455,22 @@ return {
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
+  },
+
+  -- Golang
+  {
+    'ray-x/go.nvim',
+    dependencies = { -- optional packages
+      'ray-x/guihua.lua',
+      'neovim/nvim-lspconfig',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('go').setup()
+    end,
+    event = { 'CmdlineEnter' },
+    ft = { 'go', 'gomod' },
+    build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
 
   -- Firenvim, use vim in chrome, firefox, and other web browsers

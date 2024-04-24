@@ -1,5 +1,6 @@
 local lsp_zero = require('lsp-zero')
 local lspconfig = require('lspconfig')
+local configs = require('lspconfig/configs')
 local luasnip = require('luasnip')
 
 lsp_zero.on_attach(function(client, bufnr)
@@ -29,6 +30,7 @@ require('mason-lspconfig').setup({
     'elp', -- erlang
     'eslint',
     'gopls',
+    'golangci_lint_ls',
     'jsonls',
     'lua_ls',
     -- 'nextls', -- another elixir language server
@@ -119,6 +121,25 @@ require('mason-lspconfig').setup({
       }
     end,
 
+    ['golangci_lint_ls'] = function()
+      lspconfig.golangci_lint_ls.setup {
+        filetypes = { 'go', 'gomod' },
+        cmd = { vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint-langserver') },
+        root_dir = lspconfig.util.root_pattern('.golangci.yml', '.golangci.yaml', '.golangci.toml', '.golangci.json',
+          'go.work', 'go.mod', '.git'),
+        init_options = {
+          command = {
+            vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint'),
+            'run',
+            '--enable-all',
+            '--out-format', 'json',
+            '--issues-exit-code=1',
+            '--disable', 'maligned,nosnakecase,interfacer,deadcode,ifshort,exhaustivestruct,scopelint,varcheck,structcheck,golint,wsl,godox,forbidigo'
+          },
+        }
+      }
+    end,
+
     ['elixirls'] = function()
       -- Currently configured by elixir-tools.nvim in plugins/init.lua
       -- lspconfig.elixirls.setup {
@@ -181,9 +202,9 @@ cmp.setup({
   window = {},
   mapping = cmp_mappings,
   sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
     { name = 'buffer' },
+    { name = 'luasnip' },
+    { name = 'nvim_lsp' },
     { name = 'path' },
   },
 })
@@ -218,6 +239,15 @@ lsp_zero.on_attach(function(client, bufnr)
       },
     },
     { buffer = bufnr, noremap = true, prefix = '<leader>' }
+  )
+
+  wk.register({
+      v = {
+        name = 'LSP/IDE Operations',
+        c = { vim.lsp.buf.code_action, 'Open code actions' },
+      },
+    },
+    { mode = 'x', buffer = bufnr, noremap = true, prefix = '<leader>' }
   )
 
   wk.register(
