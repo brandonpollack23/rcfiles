@@ -7,11 +7,6 @@ local telescopeExtensions = require('telescope').extensions
 
 -- https://github.com/folke/which-key.nvim?tab=readme-ov-file#%EF%B8%8F-mappings
 wk.register({
-    d = {
-      name = 'File Tree Operations',
-      d = { '<cmd>NvimTreeToggle<cr>', 'File Tree' },
-      f = { '<cmd>NvimTreeFindFile<cr>', 'File Tree (current file)' },
-    },
     f = {
       name = 'Find/File/Search/Select Operations',
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
