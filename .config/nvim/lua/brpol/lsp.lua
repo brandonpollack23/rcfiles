@@ -234,7 +234,7 @@ lsp_zero.on_attach(function(client, bufnr)
         c = { vim.lsp.buf.code_action, 'Open code actions' },
         r = { vim.lsp.buf.rename, 'Rename' },
         R = { telescopeBuiltin.lsp_references, 'Open references' },
-        h = { function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, 'Toggle inlay hints' }
+        h = { function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, 'Toggle inlay hints' }
       },
     },
     { buffer = bufnr, noremap = true, prefix = '<leader>' }
@@ -289,7 +289,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     if client.server_capabilities.inlayHintProvider then
-      vim.lsp.inlay_hint.enable(args.buf, true)
+      vim.lsp.inlay_hint.enable(true)
     end
 
     if client.server_capabilities.codeLensProvider then
