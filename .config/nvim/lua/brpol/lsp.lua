@@ -1,7 +1,5 @@
 local lsp_zero = require('lsp-zero')
 local lspconfig = require('lspconfig')
-local configs = require('lspconfig/configs')
-local luasnip = require('luasnip')
 
 lsp_zero.on_attach(function(client, bufnr)
   -- see :help lsp-zero-keybindings
@@ -66,6 +64,7 @@ require('mason-lspconfig').setup({
               --   -- "${3rd}/busted/library",
               -- }
               -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+              -- TODO NOW uncomment
               -- library = {
               --   vim.api.nvim_get_runtime_file('', true),
               --   '${3rd}/luassert/library',

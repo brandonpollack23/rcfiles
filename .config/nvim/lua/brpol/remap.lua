@@ -33,6 +33,19 @@ wk.register({
     },
     y = { '<\"+y', 'yank into system clipboard' },
     Y = { '<\"+Y', 'yank line into system clipboard' },
+    Q = {
+      name = 'Profiling and debugging vim itself',
+      s = { function()
+        local log = vim.fn.expand('$HOME/tmp/profile.log')
+        require('plenary.profile').start(log, { flame = true })
+        vim.notify('Started profiling to ' ..
+          log .. '\nStop with <leader>QS and use inferno-flamegraph to turn into a flamegraph')
+      end, 'Start Profiling' },
+      S = { function()
+        require('plenary.profile').stop()
+        vim.notify('Stopped profiling')
+      end, 'Stop Profiling' },
+    }
   },
   { prefix = '<leader>' }
 )
