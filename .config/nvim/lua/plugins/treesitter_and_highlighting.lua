@@ -30,7 +30,7 @@ return {
           enable = true,
           keymaps = {
             node_incremental = 'u',
-            node_decremental = 'V',
+            node_decremental = 'i',
           }
         }
       })

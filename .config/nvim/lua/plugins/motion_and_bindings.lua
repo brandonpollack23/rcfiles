@@ -38,7 +38,7 @@ return {
                 .AFTER_CURSOR
           })
         end, 'Easymotion w' },
-        ['<leader>e'] = { function()
+        ['<leader><leader>e'] = { function()
           hop.hint_words({
             direction = directions.AFTER_CURSOR,
             hint_position = positions
