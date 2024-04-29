@@ -61,5 +61,24 @@ return {
   --   ft = { 'go', 'gomod' },
   --   build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   -- },
-
 }
+
+-- Pattern for language specific stuff
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   pattern = "*.go",
+--   callback = add_go_keybindings,
+-- })
+--
+-- vim.api.nvim_create_autocmd("BufLeave", {
+--   pattern = "*.go",
+--   callback = remove_go_keybindings,
+-- })
+--
+-- function add_go_keybindings()
+-- wk.register({ -- etc
+-- end
+--
+-- function remove_go_keybindings()
+-- wk.register({ -- etc
+-- KEY = "which_key_ignore"
