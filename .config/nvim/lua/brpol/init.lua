@@ -110,15 +110,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = on_yank
 })
 
--- Command to execute current buffer
-local function execute_current_buffer()
-  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-  local code = table.concat(lines, '\n')
-  load(code)()
-end
-
-require('which-key').register({
-  l = { execute_current_buffer, 'Source current buffer' },
-}, { prefix = '<leader>' })
-
 -- TODO Create an autocommand to confirm on exiting if there are unclosed buffers and the command does not include 'a'

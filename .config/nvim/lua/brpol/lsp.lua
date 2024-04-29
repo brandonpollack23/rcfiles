@@ -115,6 +115,21 @@ require('mason-lspconfig').setup({
             },
             staticcheck = true,
             gofumpt = false,
+            codelenses = {
+              generate = true,
+              regenerate_cgo = true,
+              tidy = true,
+              upgrade_dependency = true,
+            },
+            hints = {
+              assignVariableTypes = true,
+              compositeLiteralFields = true,
+              compositeLiteralTypes = true,
+              constantValues = true,
+              functionTypeParameters = true,
+              parameterNames = true,
+              rangeVariableTypes = true,
+            }
           },
         },
       }

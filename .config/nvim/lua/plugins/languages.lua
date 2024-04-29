@@ -1,3 +1,119 @@
+local wk = require('which-key')
+
+-- Pattern for language specific stuff
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   pattern = "*.go",
+--   callback = add_go_keybindings,
+-- })
+--
+-- vim.api.nvim_create_autocmd("BufLeave", {
+--   pattern = "*.go",
+--   callback = remove_go_keybindings,
+-- })
+--
+-- function add_go_keybindings()
+-- wk.register({ -- etc
+-- end
+--
+-- function remove_go_keybindings()
+-- wk.register({ -- etc
+-- KEY = "which_key_ignore"
+
+-- I use <leader>h for language specific stuff.
+
+-- Command to execute current buffer in lua
+local function execute_current_buffer()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local code = table.concat(lines, '\n')
+  load(code)()
+end
+
+wk.register({
+  l = { execute_current_buffer, 'Source current buffer' },
+}, { prefix = '<leader>' })
+
+
+local function add_go_keybindings()
+  wk.register({
+      h = {
+        name = 'Go Specific keybindings',
+        c = { ':GoCmt<cr>', 'Add Doc comment' },
+        d = { ':GoCheat ', 'Lookup cheat docs for function' },
+
+        i = { ':GoImpl', 'Generate interface implementation' },
+        e = { ':GoEnum ', 'Generate enum' },
+
+        r = { ':GoGenReturn<cr>', 'Generate a return value (ie iferr)' },
+
+        n = { ':GoNew<cr>', 'Create new file' },
+
+        a = { ':GoAddTag<cr>', 'Add struct tags' },
+        A = { ':GoRemoveTag<cr>', 'Remove struct tags' },
+
+        t = {
+          name = 'Test',
+          t = { ':GoTest<cr>', 'Run test' },
+          f = { ':GoTestFunc<cr>', 'Run current test function' },
+          F = { ':GoTestFile<cr>', 'Run current test file' },
+        },
+
+        R = {
+          name = 'Refactor',
+          m = { ':Gomvp ', 'Move/Rename package' },
+        },
+      },
+
+      vr = { ':GoRename<cr>', 'Rename' },
+    },
+    { prefix = '<leader>' })
+end
+
+local function remove_go_keybindings()
+  wk.register({
+      h = {
+        name = 'Go Specific keybindings',
+        c = 'which_key_ignore',
+        d = 'which_key_ignore',
+
+        i = 'which_key_ignore',
+        e = 'which_key_ignore',
+
+        r = 'which_key_ignore',
+
+        n = 'which_key_ignore',
+
+        a = 'which_key_ignore',
+        A = 'which_key_ignore',
+
+        t = {
+          t = 'which_key_ignore',
+          f = 'which_key_ignore',
+          F = 'which_key_ignore',
+        },
+
+        R = {
+          name = 'Refactor',
+          m = 'which_key_ignore',
+        },
+      },
+
+      vr = { vim.lsp.buf.rename, 'Rename' },
+    },
+    { prefix = '<leader>' })
+end
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = '*.go',
+  callback = add_go_keybindings,
+})
+
+vim.api.nvim_create_autocmd('BufLeave', {
+  pattern = '*.go',
+  callback = remove_go_keybindings,
+})
+
+
 return {
   -- Elixir
   {
@@ -62,23 +178,3 @@ return {
     build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
 }
-
--- Pattern for language specific stuff
---
--- vim.api.nvim_create_autocmd("BufEnter", {
---   pattern = "*.go",
---   callback = add_go_keybindings,
--- })
---
--- vim.api.nvim_create_autocmd("BufLeave", {
---   pattern = "*.go",
---   callback = remove_go_keybindings,
--- })
---
--- function add_go_keybindings()
--- wk.register({ -- etc
--- end
---
--- function remove_go_keybindings()
--- wk.register({ -- etc
--- KEY = "which_key_ignore"
