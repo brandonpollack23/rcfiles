@@ -9,9 +9,13 @@ local telescopeExtensions = require('telescope').extensions
 wk.register({
     f = {
       name = 'Find/File/Search/Select Operations',
+      ['<Space>'] = { '<cmd>Telescope resume<cr>', 'Registers' },
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
       g = { '<cmd>Telescope live_grep<cr>', 'Live Grep' },
-      G = { function() telescopeBuiltin.grep_string({ search = vim.fn.input('Grep > ') }) end, 'Grep Files' },
+      G = { function()
+        local d = vim.fn.input('Grep root dir> ', vim.fn.expand('$HOME/'), 'dir')
+        telescopeBuiltin.live_grep({ cwd = d })
+      end, 'Live grep from directory' },
       b = { '<cmd>Telescope buffers<cr>', 'Search Buffers' },
       h = { '<cmd>Telescope help_tags<cr>', 'Search Help' },
       p = { telescopeExtensions.smart_open.smart_open, 'Smart open (FULL)' },
