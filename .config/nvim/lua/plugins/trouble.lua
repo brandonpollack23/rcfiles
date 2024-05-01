@@ -1,6 +1,7 @@
 return {
   {
     'folke/trouble.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
     branch = 'dev', -- IMPORTANT!
     keys = {
       {
@@ -19,7 +20,7 @@ return {
       },
       {
         '<leader>xs',
-        '<cmd>Trouble symbols toggle focus=false<cr>',
+        '<cmd>Trouble symbols toggle focus=true<cr>',
         desc = 'Symbols (Trouble)',
       },
       {
@@ -37,9 +38,31 @@ return {
         '<cmd>Trouble quickfix toggle<cr>',
         desc = 'Quickfix List (Trouble)',
       },
+      {
+        '<leader>xq',
+        '<cmd>Trouble telescope toggle<cr>', -- Used for things added to 'quickfix' from telescope (it isnt quickfix anymore its just for telescope results) (telescope instead of quickfix)
+        desc = 'Quickfix List (Trouble)',
+      }
     },
     opts = {
       focus = true,
     }, -- for default options, refer to the configuration section for custom setup.
+    config = function()
+      local open_with_trouble = require('trouble.sources.telescope').open
+
+      -- Use this to add more results without clearing the trouble list
+      local add_to_trouble = require('trouble.sources.telescope').add
+
+      local telescope = require('telescope')
+
+      telescope.setup({
+        defaults = {
+          mappings = {
+            i = { ['<c-t>'] = open_with_trouble },
+            n = { ['<c-t>'] = open_with_trouble },
+          },
+        },
+      })
+    end
   }
 }
