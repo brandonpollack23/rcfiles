@@ -48,6 +48,8 @@ return {
       focus = true,
     }, -- for default options, refer to the configuration section for custom setup.
     config = function()
+      require('trouble').setup()
+
       local open_with_trouble = require('trouble.sources.telescope').open
 
       -- Use this to add more results without clearing the trouble list
