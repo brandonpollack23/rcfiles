@@ -33,6 +33,7 @@ return {
   { 'williamboman/mason-lspconfig.nvim' },
   {
     'mfussenegger/nvim-dap',
+    dependencies = { 'Weissle/persistent-breakpoints.nvim' },
     config = function()
       local dap = require('dap')
       dap.set_log_level('INFO') -- Helps when configuring DAP, see logs with :DapShowLog
@@ -102,8 +103,9 @@ return {
           -- e because d is already used for tree operations and e is the same finger as d
           e = {
             name = 'Debugging',
-            b = { dap.toggle_breakpoint, 'Toggle breakpoint' },
-            B = { dap.clear_breakpoints, 'Clear breakpoints' },
+            b = { require('persistent-breakpoints.api').toggle_breakpoint, 'Toggle breakpoint' },
+            B = { require('persistent-breakpoints.api').set_conditional_breakpoint, 'Set breakpoint' },
+            z = { require('persistent-breakpoints.api').clear_breakpoints, 'Clear breakpoints' },
             E = { dap.set_exception_breakpoints, 'Set exception breakpoints' },
             c = { dap.continue, 'Start/Continue' },
             C = { dap.run_last, 'Start/Continue Last configuration' },
@@ -152,6 +154,14 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         dapui.close()
       end
+    end
+  },
+  {
+    'Weissle/persistent-breakpoints.nvim',
+    config = function()
+      require('persistent-breakpoints').setup {
+        load_breakpoints_event = { 'BufReadPost' }
+      }
     end
   },
   { 'jay-babu/mason-nvim-dap.nvim' },
