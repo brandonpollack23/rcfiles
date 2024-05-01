@@ -69,6 +69,10 @@ return {
         end
       end
 
+      -- TODO for tests see how rayx does it with :GoDebug -t and :GoDebug -n
+      -- https://github.com/ray-x/go.nvim?tab=readme-ov-file#debug
+
+
       -- Here is how to do it in Lua if i need, but this is handled usually by mason-dap
       -- dap.configurations = {
       --   go = {
@@ -92,6 +96,62 @@ return {
       --     },
       --   }
       -- }
+
+      local wk = require('which-key')
+      wk.register({
+          -- e because d is already used for tree operations and e is the same finger as d
+          e = {
+            name = 'Debugging',
+            b = { dap.toggle_breakpoint, 'Toggle breakpoint' },
+            B = { dap.clear_breakpoints, 'Clear breakpoints' },
+            E = { dap.set_exception_breakpoints, 'Set exception breakpoints' },
+            c = { dap.continue, 'Start/Continue' },
+            C = { dap.run_last, 'Start/Continue Last configuration' },
+            r = { dap.restart, 'Restart' },
+            g = { dap.run_to_cursor, 'Run to cursor' },
+            i = { dap.step_into, 'Step into' },
+            j = { dap.step_over, 'Step over' },
+            k = { dap.step_back, 'Step back (if supported)' },
+            O = { dap.step_out, 'Step out' },
+            S = { dap.terminate, 'Stop' },
+          }
+        },
+        {
+          prefix = '<leader>',
+        })
+    end
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
+    config = function()
+      local dapui = require('dapui')
+      local dap = require('dap')
+
+      dapui.setup({
+        mappings = {
+          open = 'o',
+          remove = 'd',
+          edit = 'e',
+          repl = 'r',
+          toggle = 't',
+        },
+        expand_lines = vim.fn.has('nvim-0.7'),
+      })
+
+      -- Auto open and close the DAP UI when debugging
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
     end
   },
   { 'jay-babu/mason-nvim-dap.nvim' },
