@@ -53,6 +53,10 @@ git submodule add $PLUGIN
 echo "source $PWD/$PLUGIN_PATH_TO_DOT_ZSH_FILE" > ${ZDOTDIR:-$HOME}/.zshrc
 ```
 
+## Fonts
+
+I included a consolas font that has all nerd fonts as well as devicons.  Install it and use it.
+
 ## Bonus Utilities You May Want
 
 ### Printing
