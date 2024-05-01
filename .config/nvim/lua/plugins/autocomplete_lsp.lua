@@ -1,7 +1,101 @@
+-- Function that detects if there is a "cmd" directory in the project root and walks the files in there to see if there is a main function in a main package in any go files there and returns the list of them
+local function get_go_main_files()
+  vim.notify(
+    'Searching for main files in cmd directory, if there are more you will need to add them manually to a launch.json or a local nvim configuration',
+    vim.log.levels.TRACE)
+
+  local cmd_dir = './cmd'
+  local main_files = {}
+  if vim.fn.isdirectory(cmd_dir) == 0 then
+    return main_files
+  end
+
+  local files = vim.fn.readdir(cmd_dir)
+  for _, file in ipairs(files) do
+    local full_path = cmd_dir .. '/' .. file
+    vim.notify('Checking file: ' .. full_path, vim.log.levels.TRACE)
+    if vim.fn.isdirectory(full_path) == 0 then
+      local file_contents = vim.fn.readfile(full_path)
+      for _, line in ipairs(file_contents) do
+        if string.match(line, '^%s*func main') then
+          table.insert(main_files, full_path)
+          break
+        end
+      end
+    end
+  end
+
+  return main_files
+end
+
 return {
   { 'williamboman/mason.nvim' },
   { 'williamboman/mason-lspconfig.nvim' },
-  { 'VonHeikemen/lsp-zero.nvim',        branch = 'v3.x' },
+  {
+    'mfussenegger/nvim-dap',
+    config = function()
+      local dap = require('dap')
+      dap.set_log_level('INFO') -- Helps when configuring DAP, see logs with :DapShowLog
+
+      vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
+      vim.fn.sign_define('DapLogPoint', { text = '🪵', texthl = '', linehl = '', numhl = '' })
+      vim.fn.sign_define('DapStopped', { text = '➡️', texthl = '', linehl = '', numhl = '' })
+      vim.fn.sign_define('DapBreakpointCondition', { text = '🚥', texthl = '', linehl = '', numhl = '' })
+      vim.fn.sign_define('DapBreakpointRejected', { text = '⭕', texthl = '', linehl = '', numhl = '' })
+
+      -- Debug Configurations
+      -- I default to using the vscode json format because it's more common and can be configured per project without another dependency.
+      -- For handling inputs, or multiple platforms in launch.json, see dap.txt or the docs on vscode launch.json
+      require('dap.ext.vscode').load_launchjs(nil,
+        {
+          delve = { 'go', },
+        }
+      )
+
+      -- Add configurations for certain languages
+
+      -- Go
+      if vim.loop.fs_stat(vim.fn.getcwd() .. '/go.mod') ~= nil then
+        for _, file in ipairs(get_go_main_files()) do
+          -- extend dap.configurations
+          table.insert(dap.configurations.go,
+            {
+              type = 'delve',
+              name = 'Autodetected Binary - ' .. file,
+              request = 'launch',
+              program = file,
+            }
+          )
+        end
+      end
+
+      -- Here is how to do it in Lua if i need, but this is handled usually by mason-dap
+      -- dap.configurations = {
+      --   go = {
+      --     {
+      --       type = 'delve',         -- Which adapter to use
+      --       name = 'Debug',      -- Human readable name
+      --       request = 'launch',  -- Whether to "launch" or "attach" to program
+      --       program = '${file}', -- The buffer you are focused on when running nvim-dap
+      --     },
+      --   }
+      -- }
+
+      -- Debug adapters
+      -- dap.adapters = {
+      --   delve = {
+      --     type = 'server',
+      --     port = '${port}',
+      --     executable = {
+      --       command = vim.fn.stdpath('data') .. '/mason/bin/dlv',
+      --       args = { 'dap', '-l', '127.0.0.1:${port}' },
+      --     },
+      --   }
+      -- }
+    end
+  },
+  { 'jay-babu/mason-nvim-dap.nvim' },
+  { 'VonHeikemen/lsp-zero.nvim',   branch = 'v3.x' },
   { 'neovim/nvim-lspconfig' },
   { 'hrsh7th/nvim-cmp' },
   { 'hrsh7th/cmp-nvim-lsp' },

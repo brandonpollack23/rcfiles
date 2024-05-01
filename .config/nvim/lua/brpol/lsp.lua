@@ -37,6 +37,7 @@ require('mason-lspconfig').setup({
     'zls',
   },
 
+
   automatic_installation = true,
 
   handlers = {
@@ -169,6 +170,23 @@ require('mason-lspconfig').setup({
       -- }
     end
   },
+})
+require('mason-nvim-dap').setup({
+  ensure_installed = {
+    'bash',
+    'codelldb',
+    'cppdbg',
+    'delve',
+    'elixir',
+    'javadbg',
+    'javatest',
+    'js',
+    'kotlin',
+    'python',
+  },
+
+  -- See mason-nvim-dap advanced configuration for an example on how to override default handlers/adapter setup
+  handlers = {}
 })
 
 local cmp = require('cmp')
