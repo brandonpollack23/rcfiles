@@ -39,6 +39,9 @@ require('brpol.lsp')
 -- Key remaps
 require('brpol.remap')
 
+-- Custom commands
+require('brpol.commands')
+
 -- Global options
 -- Disable netrw (default file picker) at startup
 vim.g.loaded_netrw = 1

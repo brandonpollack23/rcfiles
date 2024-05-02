@@ -98,14 +98,15 @@ return {
       --   }
       -- }
 
+      local persistentBreakpoints = require('persistent-breakpoints.api')
       local wk = require('which-key')
       wk.register({
           -- e because d is already used for tree operations and e is the same finger as d
           e = {
             name = 'Debugging',
-            b = { require('persistent-breakpoints.api').toggle_breakpoint, 'Toggle breakpoint' },
-            B = { require('persistent-breakpoints.api').set_conditional_breakpoint, 'Set breakpoint' },
-            z = { require('persistent-breakpoints.api').clear_breakpoints, 'Clear breakpoints' },
+            b = { persistentBreakpoints.toggle_breakpoint, 'Toggle breakpoint' },
+            B = { persistentBreakpoints.set_conditional_breakpoint, 'Set breakpoint' },
+            z = { persistentBreakpoints.clear_breakpoints, 'Clear breakpoints' },
             E = { dap.set_exception_breakpoints, 'Set exception breakpoints' },
             c = { dap.continue, 'Start/Continue' },
             C = { dap.run_last, 'Start/Continue Last configuration' },
