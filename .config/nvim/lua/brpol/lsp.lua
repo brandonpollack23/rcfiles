@@ -140,8 +140,7 @@ require('mason-lspconfig').setup({
       lspconfig.golangci_lint_ls.setup {
         filetypes = { 'go', 'gomod' },
         cmd = { vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint-langserver') },
-        root_dir = lspconfig.util.root_pattern('.golangci.yml', '.golangci.yaml', '.golangci.toml', '.golangci.json',
-          'go.work', 'go.mod', '.git'),
+        root_dir = lspconfig.util.root_pattern('go.work', 'go.mod', '.git', '.golangci.yml', '.golangci.yaml', '.golangci.toml', '.golangci.json'),
         init_options = {
           command = {
             vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint'),
