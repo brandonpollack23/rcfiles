@@ -35,6 +35,7 @@ return {
 
       workspaces.add(vim.fn.expand('$HOME/rcfiles/.config/nvim'), 'Neovim Configuration')
       workspaces.add(vim.fn.expand('$HOME/rcfiles/'), 'rcfiles')
+      workspaces.add(vim.fn.expand('$HOME/.local/share/nvim/lazy'), 'nvim lazy packages')
     end,
 
     config = function()
