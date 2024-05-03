@@ -148,7 +148,7 @@ require('mason-lspconfig').setup({
             '--enable-all',
             '--out-format', 'json',
             '--issues-exit-code=1',
-            '--disable', 'deadcode,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,golint,ifshort,interfacer,maligned,nonamedreturns,nosnakecase,scopelint,structcheck,varcheck,varnamelen,wsl'
+            '--disable', 'deadcode,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,gofumpt,golint,ifshort,interfacer,maligned,nonamedreturns,nosnakecase,scopelint,structcheck,varcheck,varnamelen,wsl'
           },
         }
       }
