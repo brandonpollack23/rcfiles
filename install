@@ -94,7 +94,7 @@ else
     # https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
     # and put in ~/bin/ with a symlink to the bin dir inside the download.
     optional_stupid_packages="figlet lolcat"
-    packages="bat cmake git tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo
+    packages="bat cmake git deno tmux wordnet zsh fd-find ripgrep libtool-bin cmigemo
     coreutils pandoc shellcheck sqlite3 vim curl tree nodejs imagemagick fzf man2html \
     ruby cowsay fortune-mod info apache2 neovim nfs-common unixodbc-dev
     libncurses5-dev libwxgtk-webview3.0-gtk3-0v5 xsltproc fop fzy libxml2-utils

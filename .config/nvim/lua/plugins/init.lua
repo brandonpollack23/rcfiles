@@ -100,5 +100,16 @@ return {
       }
       vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
     end
-  }
+  },
+
+  {
+    'toppair/peek.nvim',
+    event = { 'VeryLazy' },
+    build = 'deno task --quiet build:fast',
+    config = function()
+      require('peek').setup()
+      vim.api.nvim_create_user_command('MarkdownOpen', require('peek').open, {})
+      vim.api.nvim_create_user_command('MarkdownClose', require('peek').close, {})
+    end,
+  },
 }
