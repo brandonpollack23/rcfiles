@@ -59,6 +59,9 @@ return {
       if vim.loop.fs_stat(vim.fn.getcwd() .. '/go.mod') ~= nil then
         for _, file in ipairs(get_go_main_files()) do
           -- extend dap.configurations
+          if dap.configurations.go == nil then
+            dap.configurations.go = {}
+          end
           table.insert(dap.configurations.go,
             {
               type = 'delve',
@@ -106,8 +109,8 @@ return {
           e = {
             name = 'Debugging',
             b = { persistentBreakpoints.toggle_breakpoint, 'Toggle breakpoint' },
-            B = { persistentBreakpoints.set_conditional_breakpoint, 'Set breakpoint' },
-            z = { persistentBreakpoints.clear_breakpoints, 'Clear breakpoints' },
+            B = { persistentBreakpoints.set_conditional_breakpoint, 'Set Conditional breakpoint' },
+            z = { persistentBreakpoints.clear_all_breakpoints, 'Clear breakpoints' },
             E = { dap.set_exception_breakpoints, 'Set exception breakpoints' },
             c = { dap.continue, 'Start/Continue' },
             C = { dap.run_last, 'Start/Continue Last configuration' },
@@ -123,6 +126,12 @@ return {
         {
           prefix = '<leader>',
         })
+      wk.register({
+        ['<F5>'] = { dap.continue, 'Start/Continue Debugger' },
+        ['<F10>'] = { dap.step_over, 'Step Over Debugger' },
+        ['<F11>'] = { dap.step_into, 'Step In Debugger' },
+        ['<F12>'] = { dap.step_out, 'Step In Debugger' },
+      })
     end
   },
   {

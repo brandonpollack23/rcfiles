@@ -51,6 +51,9 @@ local function add_go_keybindings()
         a = { ':GoAddTag<cr>', 'Add struct tags' },
         A = { ':GoRemoveTag<cr>', 'Remove struct tags' },
 
+        s = { ':GoFillStruct<cr>', 'Fill struct fields' },
+        S = { ':GoFillSwitch<cr>', 'Fill switch arms' },
+
         t = {
           name = 'Test',
           t = { ':GoTest<cr>', 'Run test' },
