@@ -116,7 +116,6 @@ vim.api.nvim_create_autocmd('BufLeave', {
   callback = remove_go_keybindings,
 })
 
-
 return {
   -- Elixir
   {
@@ -182,5 +181,10 @@ return {
     event = { 'CmdlineEnter' },
     ft = { 'go', 'gomod' },
     build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
+  },
+
+  -- CSharp #
+  {
+    'Hoffs/omnisharp-extended-lsp.nvim',
   },
 }

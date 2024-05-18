@@ -30,6 +30,7 @@ require('mason-lspconfig').setup({
     'gopls',
     'golangci_lint_ls',
     'jsonls',
+    'omnisharp_mono',
     'lua_ls',
     -- 'nextls', -- another elixir language server
     'rust_analyzer',
@@ -167,6 +168,14 @@ require('mason-lspconfig').setup({
       --     },
       --   },
       -- }
+    end,
+
+    ['omnisharp_mono'] = function()
+      lspconfig.omnisharp_mono.setup {
+        handlers = {
+          ['textDocument/definition'] = require('omnisharp_extended').handler,
+        }
+      }
     end
   },
 })
