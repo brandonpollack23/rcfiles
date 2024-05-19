@@ -14,6 +14,26 @@ lsp_zero.set_sign_icons({
   info = '»'
 })
 
+local ensure_installed_lsps = {
+  'bashls',
+  'elixirls',
+  'eslint',
+  'gopls',
+  'golangci_lint_ls',
+  'jsonls',
+  'omnisharp_mono',
+  'lua_ls',
+  -- 'nextls', -- another elixir language server
+  'rust_analyzer',
+  'tsserver',
+  'zls',
+}
+
+-- Add lsps not supported on windows
+if vim.fn.has('win32') ~= 1 then
+  table.insert(ensure_installed_lsps, 'elp')
+end
+
 -- Browse and install more with :Mason
 -- to learn how to use mason.nvim with lsp-zero
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
@@ -22,21 +42,7 @@ require('mason-lspconfig').setup({
   -- Anything you always want installed add to this list, otherwise you need to use Mason to install.
   -- Everything is enabled by the lsp_zero.default_setup below, but you can customize them as I have done with lua_ls if necessary.
   -- Each of their docs are in lspconfig or their own docs.
-  ensure_installed = {
-    'bashls',
-    'elixirls',
-    'elp', -- erlang
-    'eslint',
-    'gopls',
-    'golangci_lint_ls',
-    'jsonls',
-    'omnisharp_mono',
-    'lua_ls',
-    -- 'nextls', -- another elixir language server
-    'rust_analyzer',
-    'tsserver',
-    'zls',
-  },
+  ensure_installed = ensure_installed_lsps,
 
 
   automatic_installation = true,
@@ -174,6 +180,9 @@ require('mason-lspconfig').setup({
       lspconfig.omnisharp_mono.setup {
         handlers = {
           ['textDocument/definition'] = require('omnisharp_extended').handler,
+          ['textDocument/typeDefinition'] = require('omnisharp_extended').type_definition_handler,
+          ['textDocument/references'] = require('omnisharp_extended').references_handler,
+          ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
         }
       }
     end
@@ -208,7 +217,6 @@ local cmp_mappings = lsp_zero.defaults.cmp_mappings({
 
   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
 
-
   ['<C-e>'] = cmp.mapping.close(),
   ['<C-u>'] = cmp.mapping.scroll_docs(-4),
   ['<C-d>'] = cmp.mapping.scroll_docs(4),
@@ -242,10 +250,10 @@ cmp.setup({
   window = {},
   mapping = cmp_mappings,
   sources = {
-    { name = 'buffer' },
     { name = 'luasnip' },
     { name = 'nvim_lsp' },
     { name = 'path' },
+    { name = 'buffer' },
   },
 })
 
