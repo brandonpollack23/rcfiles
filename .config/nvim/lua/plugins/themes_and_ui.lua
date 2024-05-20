@@ -264,10 +264,10 @@ return {
             luasnip = false,
           },
         },
+        notify = {
+          enable = false,
+        },
         views = {
-          notify = {
-            enabled = false,
-          },
           cmdline_popup = {
             position = {
               row = 5,
