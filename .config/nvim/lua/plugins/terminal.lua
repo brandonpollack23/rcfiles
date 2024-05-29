@@ -3,6 +3,11 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
     config = function()
+      if vim.fn.has('win32') == 1 then
+        vim.cmd [[let &shell = '"C:/Program Files/Git/bin/bash.exe"']]
+        vim.cmd [[let &shellcmdflag = '-s']]
+      end
+
       local sessionNamePrefix = vim.fn.getcwd() .. '#nvim'
       -- TODO binding to cycle through these
       local terminal_type = 'horizontal'
@@ -17,6 +22,10 @@ return {
         open_mapping = [[<c-\>]],
         direction = terminal_type,
         on_create = function(term)
+          if vim.fn.has('win32') == 1 then
+            return
+          end
+
           vim.notify(
             'Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
           term:send(' export HISTCONTROL=ignorespace', false)
