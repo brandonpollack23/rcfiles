@@ -112,4 +112,15 @@ return {
       vim.api.nvim_create_user_command('MarkdownClose', require('peek').close, {})
     end,
   },
+
+  {
+    url = 'https://git.sr.ht/~reggie/licenses.nvim',
+    config = function()
+      require('licenses').setup({
+        copyright_holder = 'Brandon Pollack',
+        email = 'brandonpollack23@gmail.com',
+        license = 'MIT'
+      })
+    end,
+  },
 }
