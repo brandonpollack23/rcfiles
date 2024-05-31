@@ -2,7 +2,6 @@ return {
   {
     'folke/trouble.nvim',
     dependencies = { 'nvim-telescope/telescope.nvim' },
-    branch = 'dev', -- IMPORTANT!
     keys = {
       {
         '<leader>x',
