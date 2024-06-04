@@ -439,3 +439,6 @@ export PROJECT_DIRS="$HOME/src"
 
 # Nix stuff
 prompt_nix_shell_setup
+
+# Python/Rye stuff
+source "$HOME/.rye/env"

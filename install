@@ -98,7 +98,7 @@ else
     coreutils pandoc shellcheck sqlite3 vim curl tree nodejs imagemagick fzf man2html \
     ruby cowsay fortune-mod info apache2 neovim nfs-common unixodbc-dev
     libncurses5-dev libwxgtk-webview3.0-gtk3-0v5 xsltproc fop fzy libxml2-utils
-    libglu1-mesa libwxbase3.0-dev wx-common wx3.0-headers pip $platform_packages
+    libglu1-mesa libwxbase3.0-dev wx-common wx3.0-headers $platform_packages
     $optional_stupid_packages"
     
     echo "Installing packages: $packages"
@@ -123,11 +123,12 @@ cargo binstall --no-confirm git-delta
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
 # Get python stuff
-pip install pylint # python linter
-pip install mypy # python type checker
-pip install black # python formatter
-pip install pipx # venv wrapped package installer (for poetry)
-pipx install poetry # poetry is a python package manager/venv manager
+curl -sSf https://rye.astral.sh/get | bash
+# pip install pylint # python linter
+# pip install mypy # python type checker
+# pip install black # python formatter
+# pip install pipx # venv wrapped package installer (for poetry)
+# pipx install poetry # poetry is a python package manager/venv manager
 
 # Setup asdf and erlang/elixir/beam plugins
 git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
