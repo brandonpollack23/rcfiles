@@ -10,6 +10,8 @@ wk.register({
     f = {
       name = 'Find/File/Search/Select Operations',
       ['<Space>'] = { '<cmd>Telescope resume<cr>', 'Registers' },
+      t = { '<cmd>Telescope<cr>', 'Telescope' },
+
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
       g = { '<cmd>Telescope live_grep<cr>', 'Live Grep' },
       G = { function()
@@ -17,9 +19,11 @@ wk.register({
         telescopeBuiltin.live_grep({ cwd = d })
       end, 'Live grep from directory' },
       b = { '<cmd>Telescope buffers<cr>', 'Search Buffers' },
+      c = { '<cmd>Telescope commands<cr>', 'Search commands' },
       h = { '<cmd>Telescope help_tags<cr>', 'Search Help' },
       p = { telescopeExtensions.smart_open.smart_open, 'Smart open (FULL)' },
       r = { ':Telescope lsp_references<cr>', 'LSP References' },
+      k = { ':Telescope keymaps<cr>', 'Telescope keymap' },
       s = { ':Telescope lsp_dynamic_workspace_symbols<cr>', 'LSP References' },
       S = { ':Telescope luasnip<cr>', 'Search snippets' }
     },
