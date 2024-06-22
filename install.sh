@@ -43,11 +43,10 @@ fd
 "
 
 AUR_ARCH_PACKAGES="
-neovim-nightly
 google-chrome
+neovim-nightly
+obsidian
 "
-
-#!/bin/bash
 
 ask_confirmation() {
   read -p "You are running this script as root. Are you sure you want to continue? (yes/no): " response
@@ -267,8 +266,6 @@ fi
 
 echo "Executing install.sh for $USER"
 
-RCFILES_DIR="${BASH_SOURCE[0]}"
-
 echo "Installing to home directory: $HOME"
 
 if [[ "$OSTYPE" =~ darwin* ]]; then
@@ -280,6 +277,7 @@ else
   exit 1
 fi
 
+RCFILES_DIR="$(dirname "$(realpath "$0")")"
 
 # Install node version manager and latest node version
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
