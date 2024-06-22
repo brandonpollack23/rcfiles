@@ -35,7 +35,23 @@ net-tools
 texinfo
 wakeonlan
 "
-ARCH_PACKAGES=""
+
+ARCH_PACKAGES="neovim-nightly"
+
+#!/bin/bash
+
+ask_confirmation() {
+  read -p "You are running this script as root. Are you sure you want to continue? (yes/no): " response
+  case "$response" in
+    [yY][eE][sS]|[yY])
+      return 0  # User confirmed to continue
+      ;;
+    *)
+      echo "Exiting the script."
+      exit 1  # User chose not to continue
+      ;;
+  esac
+}
 
 function get_platform_packages() {
   if [[ "$OSTYPE" =~ linux* ]]; then
@@ -58,16 +74,16 @@ function update_and_get_package_manager() {
         [ "$EUID" -eq 0 ] && echo "apt install -y" || echo "sudo apt install -y"
       fi
       if [[ -f /etc/arch-release ]]; then
-        echo "Arch based OS detected, updating system"
+        echo "Arch based OS detected, updating system" >&2
         if [ -x "$(command -v pamac)" ]; then
-          [ "$EUID" -eq 0 ] && (pamac update || sudo pamac update)
-          [ "$EUID" -eq 0 ] && (echo "pamac install -a" || echo "sudo pamac install -a")
+            ([ "$EUID" -eq 0 ] && pamac update || sudo pamac update) >&2
+            ([ "$EUID" -eq 0 ] && echo "pamac install --no-confirm") || echo "sudo pamac install --no-confirm"
         elif [ -x "$(command -v yay)" ]; then
-          [ "$EUID" -eq 0 ] && (yay -Syu || sudo yay -Syu)
-          [ "$EUID" -eq 0 ] && (echo "yay -S" || echo "sudo yay -S")
+           ([ "$EUID" -eq 0 ] && yay -Syu || sudo yay -Syu) >&2
+	   ([ "$EUID" -eq 0 ] && echo "yay -S --noconfirm") || echo "sudo yay -S --noconfirm"
         else
-          [ "$EUID" -eq 0 ] && (pacman -Syu || sudo pacman -Syu)
-          [ "$EUID" -eq 0 ] && echo "pacman -S" || echo "sudo pacman -S"
+          (([ "$EUID" -eq 0 ] && pacman -Syu) || sudo pacman -Syu) >&2
+          ([ "$EUID" -eq 0 ] && echo "pacman -S --noconfirm") || echo "sudo pacman -S --noconfirm"
         fi
       fi
     else
@@ -89,6 +105,8 @@ function handle_mac_setup() {
 
 function handle_linux_setup() {
   INSTALL_COMMAND=$(update_and_get_package_manager)
+
+  echo "Install command set to '$INSTALL_COMMAND'" >&2
 
   # Install all the packages
   for package in $PACKAGES; do
@@ -134,8 +152,13 @@ function setup_home_dir() {
 }
 
 # Debugging enabled
-set -x # Print commands to terminal
+# set -x # Print commands to terminal
 set -e # Exit on error
+
+# Check if the script is running as root
+if [ "$EUID" -eq 0 ]; then
+  ask_confirmation
+fi
 
 if [[ -z $HOME ]];then
   echo "must have a home directory!"
