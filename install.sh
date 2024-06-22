@@ -306,7 +306,7 @@ fi
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
 # Install python stuff and rye
-curl -sSf https://rye.astral.sh/get | bash
+curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
 rye install pylint
 rye install mypy
 
