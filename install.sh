@@ -7,7 +7,7 @@ coreutils
 cowsay
 curl
 deno
-fd-find
+fd
 fzf
 fzy
 git 
@@ -26,6 +26,7 @@ zsh
 "
 
 DEBIAN_PACKAGES="
+fd-find
 apt-file
 debian-handbook
 devscripts
@@ -36,7 +37,10 @@ texinfo
 wakeonlan
 "
 
-ARCH_PACKAGES="neovim-nightly"
+ARCH_PACKAGES="
+neovim-nightly
+fd
+"
 
 #!/bin/bash
 
@@ -234,6 +238,9 @@ cargo install --locked cargo-outdated
 cargo binstall --no-confirm mdcat
 cargo binstall --no-confirm bat
 cargo binstall --no-confirm git-delta
+if [[ -x "$(command -v fd)" ]]; then
+  cargo binstall --no-confirm fd-find
+fi
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
 # Install python stuff and rye
