@@ -225,6 +225,21 @@ if [[ -f /etc/debian_version ]]; then
     alias sar="sudo apt remove"
     alias as="apt search"
     alias asho="apt show"
+elif [ -x "$(command -v pamac)" ]; then
+  function display_pkg_build() {
+    pamac clone $1
+    bat /var/tmp/pamac-build-$USER/$1/PKGBUILD
+  }
+  function pP() {
+    display_pkg_build
+  }
+
+  alias p="pamac"
+  alias pi="pamac install"
+  alias pb="pamac build"
+  alias pI="pamac info"
+  alias pr="pamac remove"
+  alias pu="pamac update"
 fi
 
 # Application default arguments

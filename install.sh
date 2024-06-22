@@ -44,6 +44,7 @@ alacritty
 bitwarden
 bitwarden-cli
 fd
+neovide
 "
 
 AUR_ARCH_PACKAGES="
@@ -311,6 +312,11 @@ cargo install --git https://github.com/neovide/neovide # NVim gui
 curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
 rye install pylint
 rye install mypy
+if [[ "$XDG_CURRENT_DESKTOP" -eq "KDE" ]]; then
+  rye install konsave
+  konsave -i $RCFILES_DIR/kde_konsave_profile.knsv
+  konsave -a kde_konsave_profile
+fi
 
 # Install asdf, erlang, and elixir
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
