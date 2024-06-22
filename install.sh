@@ -12,6 +12,7 @@ fzf
 fzy
 git 
 imagemagick
+make
 neovim
 pandoc
 ripgrep
@@ -40,6 +41,7 @@ wakeonlan
 ARCH_PACKAGES="
 fd
 neovim-nightly
+google-chrome
 "
 
 #!/bin/bash
@@ -60,9 +62,9 @@ ask_confirmation() {
 function get_platform_packages() {
   if [[ "$OSTYPE" =~ linux* ]]; then
     if [[ -f /etc/debian_version ]]; then
-      echo $DEBIAN_PACKAGES
+      echo "$DEBIAN_PACKAGES"
     elif [[ -f /etc/arch-release ]]; then
-      echo $ARCH_PACKAGES
+      echo "$ARCH_PACKAGES"
     fi
     exit 1
   else
@@ -123,6 +125,23 @@ function update_and_get_package_manager() {
     fi
 }
 
+function get_platform_install_command() {
+  if [[ "$OSTYPE" =~ linux* ]]; then
+    if [[ -f /etc/debian_version ]]; then
+      echo "apt install -y"
+    elif [[ -f /etc/arch-release && -x "$(command -v pamac)" ]]; then
+      echo "pamac build --no-confirm"
+    elif [[ -f /etc/arch-release && -x "$(command -v yay)" ]]; then
+      echo "yay -S --noconfirm"
+    elif [[ -f /etc/arch-release ]]; then
+      echo "pacman -S --noconfirm"
+    fi
+  else
+    echo "Error: Unknown OS: $OSTYPE" >&2
+    exit 1
+  fi
+}
+
 function handle_mac_setup() {
   echo "Package manager is brew--Macintosh, baby!"
   echo "Gotta install it first"
@@ -136,6 +155,7 @@ function handle_mac_setup() {
 
 function handle_linux_setup() {
   INSTALL_COMMAND=$(update_and_get_package_manager)
+  PLATFORM_INSTALL_COMMAND=$(get_platform_install_command)
 
   echo "Install command set to '$INSTALL_COMMAND'" >&2
 
@@ -153,7 +173,7 @@ function handle_linux_setup() {
 
   for package in $(get_platform_packages); do
     echo "Installing $package"
-    $INSTALL_COMMAND "$package"
+    $PLATFORM_INSTALL_COMMAND "$package"
     # If there was an error let the user know
     if [ $? -ne 0 ]; then
       FAILED_PACKAGES="$package $FAILED_PACKAGES"
