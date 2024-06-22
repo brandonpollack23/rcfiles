@@ -154,16 +154,6 @@ fi
 # fzf setup
 export FZF_BASE=$(which fzf)
 
-# ccat setup
-export ZSH_COLORIZE_TOOL=pygmentize
-export ZSH_COLORIZE_STYLE=monokai
-alias catraw=/bin/cat
-
-# but im using bat now
-if [ -x "$(command -v bat)" ]; then
-    alias cat=bat
-fi
-
 source $ZSH/oh-my-zsh.sh
 
 #################### User configuration ###############################
@@ -216,16 +206,12 @@ alias :q="exit"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
-# repo aliases
-alias rco="repo checkout"
-function rcob() {
-    # repo create branch and checkout, setting upstream
-}
+
+# Used for neovim workspaces.
+export PROJECT_DIRS="$HOME/src"
+
 # wireguard aliases
 alias wgup="sudo wg-quick up wg0"
-
-alias e="emacsclient -t -a ''" # (t)erminal mode, (a)lternate editor is emacs
-alias ec="emacsclient -c -n -a ''" # (c)reates a frame (n)o wait for return, (a)lternate editor is emacs itself
 
 # node/js/deno stuff
 export DENO_INSTALL="$HOME/.deno"
@@ -282,23 +268,6 @@ bindkey '^n' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-# Environmental Variables
-export COWPATH=$HOME/.cowfiles
-# WSL specific configuration
-if echo $(uname -a) | grep -q WSL; then
-    echo "WSL Environment Detected..."
-    function chrome { "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" $@ }
-    export BROWSER="chrome"
-
-    function debian-handbook-chrome() {
-        pushd /usr/share/doc/debian-handbook/html/en-US
-        chrome index.html
-        popd
-    }
-
-    # Windows native neovide here
-fi
-
 # Git aliases
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from
@@ -314,87 +283,22 @@ function gitsync() {
         git rebase
     done
 }
-alias gitxl_rvc='gitxl "goog/rvc-arc"'
-alias gitxl_master='gitxl "goog/master"'
 alias gamc='git am --continue'
 alias gama='git am --abort'
 alias gamd='git am --show-current-patch=diff'
-
-# Chrome OS development helpers
-function cros_build_chrome() {
-    autoninja -C out_$SDK_BOARD/Release chrome chrome_sandbox nacl_helper
-}
-function cros_deploy_chrome() {
-    ./third_party/chromite/bin/deploy_chrome \
-        --strip-flags=-S \
-        --build-dir=out_$SDK_BOARD/Release \
-        --device=\[$DUT\] \
-        --target-dir=/usr/local/chrome \
-        --mount-dir=/opt/google/chrome
-}
-function cros_build_deploy() {
-    cros_build_chrome && cros_deploy_chrome
-}
 
 function qemu-kill() {
     ps aux G qemu-system-x86_64 | grep -v grep | head -n 1 | awk '{print $2}' | xargs kill -9
 }
 
-# adb aliases
-function perfetto_pull_trace {
-    local tracename
-    if [ ! -z $1 ]; then
-        tracename=$1
-    else
-        local datetime=$(date +"%Y_%m_%d_%H:%M")
-        tracename=trace_${datetime}
-    fi
-    adb pull /data/misc/perfetto-traces/trace ~/traces/${tracename}
-    echo "Copied trace to $HOME/traces/${tracename}"
-}
-
-
-# source any machine specific stuff
-if [[ -f $HOME/.zshrc.local ]]; then
-    echo "Sourcing zshrc local only file..."
-    source $HOME/.zshrc.local
-fi
-
-# source vulkan sdk if present
-if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
-    echo "Sourcing vulkan sdk"
-    source $HOME/bin/vulkan/setup-env.sh
-fi
-
-# Setup chromeos go stuff
-export GOPATH=$HOME/go
-if [[ ! -z $CHROMEOS_SRC ]]; then
-    echo "ChromeOS path detected, setting up..."
-    export GOPATH=$GOPATH:$CHROMEOS_SRC/src/platform/tast-tests:$CHROMEOS_SRC/src/platform/tast
-    export GOPATH=$GOPATH:$CHROMEOS_SRC/chroot/usr/lib/gopath
-    alias cros_boards="ls -l $CHROMEOS_SRC/src/overlays/ | sed -n '/^d.*/p' | cut -d ' ' -f10 | cut -d '-' -f2 G -v '^$' | sort -u"
-fi
-
+# Go bin path
 export PATH=$PATH:$HOME/bin/go/bin
 
-# Setup kernel stuff
-alias gitmail_drm='git send-email --to=dri-devel@lists.freedesktop.org --cc=maarten.lankhorst@linux.intel.com,mripard@kernel.org,tzimmermann@suse.de,airlied@gmail.com,daniel@ffwll.ch --bcc=brpol@google.com,mduggan@google.com --annotate'
+# Node Version Manager nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-# Finally, show a welcome message and fortune!
-# add more cowsays! https://charc0al.github.io/cowsay-files/converter/
-if [ -f /etc/debian_version ] && [ ! -d /google ]; then
-    PLATFORM_LOGIN_FORTUNES="debian-hints"
-fi
-
-if [ -x "$(command -v lolcat)" ]; then
-    echo "Welcome to $HOST!" | lolcat
-else
-    echo "Welcome to $HOST!"
-fi
-#echo "Welcome to $HOST!" | figlet | lolcat
-# Disable icon for now
-#fortune $PLATFORM_LOGIN_FORTUNES | cowsay -f $(ls $HOME/.cowfiles/ | shuf -n1)
-
+# Nix
 if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # tabtab source for packages
@@ -404,41 +308,27 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # asdf setup if it exists
 [[ -f ~/.asdf/asdf.sh ]] && . ~/.asdf/asdf.sh || true
 
-function cros_qemu() {
-      --enable-kvm \
-      -smp 4 \
-      -m 16384 \
-      -cpu Haswell-noTSX,-invpcid,-tsc-deadline,check,vmx=on,svm=on \
-      -usb \
-      -device usb-tablet \
-      -device virtio-rng \
-      -net nic,model=virtio \
-      -net user,hostfwd=tcp:127.0.0.1:9222-:22 \
-      -drive file=./src/build/images/betty-arc-r/chromiumos_test_image.bin \
-      -vga none \
-      -display none \
-      -nographic
-}
-
-function adb_start_shizuku() {
-    adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh
-}
-
-# add Pulumi to the PATH
-export PATH=$PATH:/home/brpol/.pulumi/bin
-
-# add neovim to the PATH
-export PATH=$PATH:/opt/nvim-linux64/bin
-
-# add nvm (node version manager) to the PATH
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PROJECT_DIRS="$HOME/src"
-
 # Nix stuff
 prompt_nix_shell_setup
 
 # Python/Rye stuff
 source "$HOME/.rye/env"
+
+# source vulkan sdk if present
+if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
+    echo "Sourcing vulkan sdk"
+    source $HOME/bin/vulkan/setup-env.sh
+fi
+
+# source any machine specific stuff
+if [[ -f $HOME/.zshrc.local ]]; then
+    echo "Sourcing zshrc local only file..."
+    source $HOME/.zshrc.local
+fi
+
+# Finally, show a welcome message and fortune!
+if [ -x "$(command -v lolcat)" ]; then
+    echo "Welcome to $HOST!" | lolcat
+else
+    echo "Welcome to $HOST!"
+fi
