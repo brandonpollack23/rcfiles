@@ -40,6 +40,9 @@ wakeonlan
 
 ARCH_PACKAGES="
 fd
+"
+
+AUR_ARCH_PACKAGES="
 neovim-nightly
 google-chrome
 "
@@ -65,6 +68,18 @@ function get_platform_packages() {
       echo "$DEBIAN_PACKAGES"
     elif [[ -f /etc/arch-release ]]; then
       echo "$ARCH_PACKAGES"
+    fi
+    exit 1
+  else
+    echo "Error: Unknown OS: $OSTYPE" >&2
+    exit 1
+  fi
+}
+
+function get_aur_packages() {
+  if [[ "$OSTYPE" =~ linux* ]]; then
+    if [[ -f /etc/arch-release ]]; then
+      echo "$AUR_ARCH_PACKAGES"
     fi
     exit 1
   else
@@ -125,7 +140,7 @@ function update_and_get_package_manager() {
     fi
 }
 
-function get_platform_install_command() {
+function get_aur_install_command() {
   if [[ "$OSTYPE" =~ linux* ]]; then
     if [[ -f /etc/debian_version ]]; then
       echo "apt install -y"
@@ -142,6 +157,29 @@ function get_platform_install_command() {
   fi
 }
 
+function install_aur_packages() {
+  AUR_INSTALL_COMMAND=$(get_aur_install_command)
+
+  echo "Install command set to '$AUR_INSTALL_COMMAND'" >&2
+
+  FAILED_PACKAGES=""
+  # Install all the packages
+  for package in $(get_aur_packages); do
+    echo "Installing $package"
+    $AUR_INSTALL_COMMAND "$package"
+    # If there was an error let the user know
+    if [ $? -ne 0 ]; then
+      FAILED_PACKAGES="$package $FAILED_PACKAGES"
+      echo "Error installing $package"
+    fi
+  done
+
+  # If there were any failed packages, let the user know
+  if [ -n "$FAILED_PACKAGES" ]; then
+    echo "Failed to install the following packages: $FAILED_PACKAGES" >&2
+  fi
+}
+
 function handle_mac_setup() {
   echo "Package manager is brew--Macintosh, baby!"
   echo "Gotta install it first"
@@ -155,7 +193,6 @@ function handle_mac_setup() {
 
 function handle_linux_setup() {
   INSTALL_COMMAND=$(update_and_get_package_manager)
-  PLATFORM_INSTALL_COMMAND=$(get_platform_install_command)
 
   echo "Install command set to '$INSTALL_COMMAND'" >&2
 
@@ -173,13 +210,18 @@ function handle_linux_setup() {
 
   for package in $(get_platform_packages); do
     echo "Installing $package"
-    $PLATFORM_INSTALL_COMMAND "$package"
+    $INSTALL_COMMAND "$package"
     # If there was an error let the user know
     if [ $? -ne 0 ]; then
       FAILED_PACKAGES="$package $FAILED_PACKAGES"
       echo "Error installing $package"
     fi
   done
+
+  # If arch do aur packages
+  if [[ -f /etc/arch-release ]]; then
+    install_aur_packages
+  fi
 
   # If there were any failed packages, let the user know
   if [ -n "$FAILED_PACKAGES" ]; then
