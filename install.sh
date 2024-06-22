@@ -40,6 +40,7 @@ wakeonlan
 "
 
 ARCH_PACKAGES="
+alacritty
 bitwarden
 bitwarden-cli
 fd
