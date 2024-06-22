@@ -23,6 +23,7 @@ tmux
 tree
 vim
 zsh
+xclip
 "
 
 DEBIAN_PACKAGES="
@@ -39,6 +40,8 @@ wakeonlan
 "
 
 ARCH_PACKAGES="
+bitwarden
+bitwarden-cli
 fd
 "
 

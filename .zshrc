@@ -125,7 +125,7 @@ plugins=(
     docker-compose
     emoji
     fzf
-    gcloud
+    # gcloud
     git
     git-extras
     gitignore
