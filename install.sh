@@ -12,7 +12,6 @@ fzf
 fzy
 git 
 imagemagick
-info
 neovim
 pandoc
 ripgrep
@@ -26,20 +25,21 @@ zsh
 "
 
 DEBIAN_PACKAGES="
-fd-find
 apt-file
 debian-handbook
 devscripts
 etherwake
+fd-find
 fortunes-debian-hints
+info
 net-tools
 texinfo
 wakeonlan
 "
 
 ARCH_PACKAGES="
-neovim-nightly
 fd
+neovim-nightly
 "
 
 #!/bin/bash
@@ -192,7 +192,7 @@ function setup_home_dir() {
 
 # Debugging enabled
 # set -x # Print commands to terminal
-set -e # Exit on error
+# set -e # Exit on error
 
 # Check if the script is running as root
 if [ "$EUID" -eq 0 ]; then
