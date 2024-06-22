@@ -76,14 +76,41 @@ function update_and_get_package_manager() {
       if [[ -f /etc/arch-release ]]; then
         echo "Arch based OS detected, updating system" >&2
         if [ -x "$(command -v pamac)" ]; then
-            ([ "$EUID" -eq 0 ] && pamac update || sudo pamac update) >&2
-            ([ "$EUID" -eq 0 ] && echo "pamac install --no-confirm") || echo "sudo pamac install --no-confirm"
+          if [[ "$EUID" -eq 0 ]]; then
+            pamac update >&2
+          else
+            sudo pamac update >&2
+          fi
+
+          if [[ "$EUID" -eq 0 ]]; then
+            echo "pamac install --no-confirm"
+          else
+            echo "sudo pamac install --no-confirm"
+          fi
         elif [ -x "$(command -v yay)" ]; then
-           ([ "$EUID" -eq 0 ] && yay -Syu || sudo yay -Syu) >&2
-	   ([ "$EUID" -eq 0 ] && echo "yay -S --noconfirm") || echo "sudo yay -S --noconfirm"
+          if [[ "$EUID" -eq 0 ]]; then
+            yay -Syu >&2
+          else
+            sudo yay -Syu >&2
+          fi
+
+          if [[ "$EUID" -eq 0 ]]; then
+            echo "yay -S --noconfirm"
+          else
+            echo "sudo yay -S --noconfirm"
+          fi
         else
-          (([ "$EUID" -eq 0 ] && pacman -Syu) || sudo pacman -Syu) >&2
-          ([ "$EUID" -eq 0 ] && echo "pacman -S --noconfirm") || echo "sudo pacman -S --noconfirm"
+          if [[ "$EUID" -eq 0 ]]; then
+            pacman -Syu >&2
+          else
+            sudo pacman -Syu >&2
+          fi
+
+          if [[ "$EUID" -eq 0 ]]; then
+            echo "pacman -S --noconfirm"
+          else
+            echo "sudo pacman -S --noconfirm"
+          fi
         fi
       fi
     else
@@ -108,12 +135,14 @@ function handle_linux_setup() {
 
   echo "Install command set to '$INSTALL_COMMAND'" >&2
 
+  FAILED_PACKAGES=""
   # Install all the packages
   for package in $PACKAGES; do
     echo "Installing $package"
     $INSTALL_COMMAND "$package"
     # If there was an error let the user know
     if [ $? -ne 0 ]; then
+      FAILED_PACKAGES="$package $FAILED_PACKAGES"
       echo "Error installing $package"
     fi
   done
@@ -123,32 +152,38 @@ function handle_linux_setup() {
     $INSTALL_COMMAND "$package"
     # If there was an error let the user know
     if [ $? -ne 0 ]; then
+      FAILED_PACKAGES="$package $FAILED_PACKAGES"
       echo "Error installing $package"
     fi
   done
+
+  # If there were any failed packages, let the user know
+  if [ -n "$FAILED_PACKAGES" ]; then
+    echo "Failed to install the following packages: $FAILED_PACKAGES" >&2
+  fi
 }
 
 function setup_home_dir() {
-  mkdir -p $HOME/.vim/backupdir
-  mkdir -p $HOME/.vim/swapdir
+  mkdir -p "$HOME/.vim/backupdir"
+  mkdir -p "$HOME/.vim/swapdir"
   touch ~/.vimrc.local
-  mkdir -p $HOME/.config
-  mkdir -p $HOME/.local
+  mkdir -p "$HOME/.config"
+  mkdir -p "$HOME/.local"
 
-  ln -sfn $RCFILESDIR/.zshrc $HOME/.zshrc
-  ln -sfn $RCFILESDIR/zsh-plugins $HOME/zsh-plugins
-  ln -sfn $RCFILESDIR/zsh-my-completions $HOME/zsh-my-completions
-  ln -sfn $RCFILESDIR/nix-zsh-completions $HOME/nix-zsh-completions
-  ln -sfn $RCFILESDIR/.oh-my-zsh $HOME/.oh-my-zsh
-  ln -sfn $RCFILESDIR/.vimrc $HOME/.vimrc
-  ln -sfn $RCFILESDIR/.tmux.conf $HOME/.tmux.conf
-  ln -sfn $RCFILESDIR/.tmux $HOME/.tmux
-  ln -sfn $RCFILESDIR/.gitconfig $HOME/.gitconfig
-  ln -sfn $RCFILESDIR/.vim/pack $HOME/.vim/pack
-  ln -sfn $RCFILESDIR/.vim/colors $HOME/.vim/colors
-  ln -sfn $RCFILESDIR/.config/nvim $HOME/.config/nvim
-  ln -sfn $RCFILESDIR/.cowrc $HOME/.cowrc
-  ln -sfn $RCFILESDIR/.cowfiles $HOME/.cowfiles
+  ln -sfn "$RCFILES_DIR/.zshrc" "$HOME/.zshrc"
+  ln -sfn "$RCFILES_DIR/zsh-plugins" "$HOME/zsh-plugins"
+  ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
+  ln -sfn "$RCFILES_DIR/nix-zsh-completions" "$HOME/nix-zsh-completions"
+  ln -sfn "$RCFILES_DIR/.oh-my-zsh" "$HOME/.oh-my-zsh"
+  ln -sfn "$RCFILES_DIR/.vimrc" "$HOME/.vimrc"
+  ln -sfn "$RCFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+  ln -sfn "$RCFILES_DIR/.tmux" "$HOME/.tmux"
+  ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+  ln -sfn "$RCFILES_DIR/.vim/pack" "$HOME/.vim/pack"
+  ln -sfn "$RCFILES_DIR/.vim/colors" "$HOME/.vim/colors"
+  ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+  ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
+  ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
 }
 
 # Debugging enabled
