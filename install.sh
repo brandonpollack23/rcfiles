@@ -96,6 +96,7 @@ function update_and_get_package_manager() {
     if [[ "$OSTYPE" =~ linux* ]]; then
       if [[ -f /etc/debian_version ]]; then
         echo "Debian based system detected"
+	sudo apt update >&2
         [ "$EUID" -eq 0 ] && echo "apt install -y" || echo "sudo apt install -y"
       fi
       if [[ -f /etc/arch-release ]]; then
