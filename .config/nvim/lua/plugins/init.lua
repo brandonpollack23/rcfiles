@@ -95,11 +95,24 @@ return {
     end,
     config = function()
       -- Manually trigger with ctrl+e (cmd on mac)
-      vim.g.firenvim_config.localSettings = {
-        ['.*'] = { takeover = 'never', },
+      vim.g.firenvim_config = {
+        globalSettings = {
+          alt = 'all',
+        },
+        localSettings = {
+          ['.*'] = {
+            cmdline  = 'neovim',
+            content  = 'text',
+            priority = 0,
+            selector = 'textarea',
+            takeover = 'never',
+          },
+          ['stackoverflow.com'] = { takeover = 'always' },
+          ['github.com'] = { takeover = 'always' },
+        }
       }
       vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
-    end
+    end,
   },
 
   {
