@@ -150,6 +150,17 @@ end
 
 -- Keybindings
 config.keys = {
+  -- Domains (like sessions)
+  {
+    key = 'a', --attach to domains (usually populated from sshconfig)
+    mods = 'SUPER|SHIFT',
+    action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|DOMAINS" }
+  },
+  {
+    key = 'd',
+    mods = 'SUPER|SHIFT',
+    action = wezterm.action.DetachDomain('CurrentPaneDomain')
+  },
   -- Tabs/Workspaces
   {
     key = ',',
