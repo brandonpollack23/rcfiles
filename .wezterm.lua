@@ -57,7 +57,7 @@ config.colors = {
   }
 }
 
--- Asterisk on tab title
+-- Tab name format
 local function tab_title(tab_info)
   local title = tab_info.tab_title
   -- if the tab title is explicitly set, take that
@@ -68,19 +68,15 @@ local function tab_title(tab_info)
   -- in that tab
   return tab_info.active_pane.title
 end
-
--- wezterm.on(
---   'format-tab-title',
---   function(tab, tabs, panes, config, hover, max_width)
---     local title = tab_title(tab)
---     if tab.is_active then
---       return {
---         { Text = ' ' .. title .. '* ' },
---       }
---     end
---     return title
---   end
--- )
+wezterm.on(
+  'format-tab-title',
+  function(tab, tabs, panes, config, hover, max_width)
+    local title = tab_title(tab)
+    return {
+      { Text = ' ' .. title .. ' ' },
+    }
+  end
+)
 
 -- Hyperlinks
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
@@ -95,8 +91,50 @@ table.insert(config.hyperlink_rules, {
   format = 'https://www.github.com/$1/$3',
 })
 
+-- Custom functions
+local function prompt_tab_title()
+  return wezterm.action.PromptInputLine {
+    description = wezterm.format {
+      { Attribute = { Intensity = 'Bold' } },
+      { Text = 'New Tab Name' },
+    },
+    action = wezterm.action_callback(function(window, pane, line)
+      if line then
+        local tab = window:active_tab()
+        tab:set_title(line)
+      end
+    end)
+  }
+end
+
+local function prompt_workspace_title()
+  return wezterm.action.PromptInputLine {
+    description = wezterm.format {
+      { Attribute = { Intensity = 'Bold' } },
+      { Text = 'New Workspace Name' },
+    },
+    action = wezterm.action_callback(function(window, pane, line)
+      if line then
+        local workspace = window:active_workspace()
+        workspace:set_title(line)
+      end
+    end)
+  }
+end
+
 -- Keybindings
 config.keys = {
+  -- Tabs/Workspaces
+  {
+    key = ',',
+    mods = 'SUPER',
+    action = prompt_tab_title()
+  },
+  {
+    key = ';',
+    mods = 'SUPER',
+    action = prompt_workspace_title()
+  },
   -- Panes
   {
     key = '|',
