@@ -45,7 +45,7 @@ return {
       'nvim-tree/nvim-web-devicons',
       'linrongbin16/lsp-progress.nvim',
       'Mofiqul/vscode.nvim',
-      'folke/noice.nvim'
+      -- 'folke/noice.nvim'
     },
     cond = not vim.g.started_by_firenvim,
     config = function()
@@ -82,11 +82,11 @@ return {
           lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
             function()
-              if require('noice').api.statusline.mode.has() then
-                return require('noice').api.statusline.mode.get()
-              else
-                return ''
-              end
+              -- if require('noice').api.statusline.mode.has() then
+              --   return require('noice').api.statusline.mode.get()
+              -- else
+              --   return ''
+              -- end
             end,
             'filename',
             require('lsp-progress').progress,
@@ -222,94 +222,94 @@ return {
   -- Pretty notifications with Noice
   -- configures command line, messages, popupmenu, commands history, notifications, etc
   -- https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    cond = not vim.g.started_by_firenvim,
-    opts = {},
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      'MunifTanjim/nui.nvim',
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      'rcarriga/nvim-notify',
-      'hrsh7th/nvim-cmp',
-    },
-    config = function()
-      require('notify').setup({
-        -- render = 'compact',
-        timeout = 4000,
-        fps = 10, -- default is 30
-        stages = 'static',
-      })
-      require('noice').setup({
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-          ['vim.lsp.util.stylize_markdown'] = true,
-          ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
-        },
-        presets = {
-          bottom_search = true,         -- use a classic bottom cmdline for search
-          command_palette = true,       -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false,       -- add a border to hover docs and signature help
-        },
-        lsp = {
-          signature = {
-            enabled = false,
-            trigger = false,
-            luasnip = false,
-          },
-        },
-        notify = {
-          enable = false,
-        },
-        views = {
-          cmdline_popup = {
-            position = {
-              row = 5,
-              col = '50%',
-            },
-            size = {
-              width = 60,
-              height = 'auto',
-            },
-          },
-          popupmenu = {
-            relative = 'editor',
-            position = {
-              row = 16,
-              col = '50%',
-            },
-            size = {
-              width = 60,
-              height = 10,
-            },
-            border = {
-              style = 'rounded',
-              padding = { 0, 1 },
-            },
-            win_options = {
-              winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
-            },
-          },
-        },
-      })
-
-      -- Add a keybinding to open noice errors with telescope
-      require('which-key').register({
-          n = {
-            name = 'LSP/IDE Operations',
-            e = { ':Telescope noice<cr>', 'Show messages history' },
-          }
-        },
-        { prefix = '<leader>' }
-      )
-      --
-    end
-  },
+  -- {
+  --   'folke/noice.nvim',
+  --   event = 'VeryLazy',
+  --   cond = not vim.g.started_by_firenvim,
+  --   opts = {},
+  --   dependencies = {
+  --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+  --     'MunifTanjim/nui.nvim',
+  --     -- OPTIONAL:
+  --     --   `nvim-notify` is only needed, if you want to use the notification view.
+  --     --   If not available, we use `mini` as the fallback
+  --     'rcarriga/nvim-notify',
+  --     'hrsh7th/nvim-cmp',
+  --   },
+  --   config = function()
+  --     require('notify').setup({
+  --       -- render = 'compact',
+  --       timeout = 4000,
+  --       fps = 10, -- default is 30
+  --       stages = 'static',
+  --     })
+  --     require('noice').setup({
+  --       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+  --       override = {
+  --         ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+  --         ['vim.lsp.util.stylize_markdown'] = true,
+  --         ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+  --       },
+  --       presets = {
+  --         bottom_search = true,         -- use a classic bottom cmdline for search
+  --         command_palette = true,       -- position the cmdline and popupmenu together
+  --         long_message_to_split = true, -- long messages will be sent to a split
+  --         inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+  --         lsp_doc_border = false,       -- add a border to hover docs and signature help
+  --       },
+  --       lsp = {
+  --         signature = {
+  --           enabled = false,
+  --           trigger = false,
+  --           luasnip = false,
+  --         },
+  --       },
+  --       notify = {
+  --         enable = false,
+  --       },
+  --       views = {
+  --         cmdline_popup = {
+  --           position = {
+  --             row = 5,
+  --             col = '50%',
+  --           },
+  --           size = {
+  --             width = 60,
+  --             height = 'auto',
+  --           },
+  --         },
+  --         popupmenu = {
+  --           relative = 'editor',
+  --           position = {
+  --             row = 16,
+  --             col = '50%',
+  --           },
+  --           size = {
+  --             width = 60,
+  --             height = 10,
+  --           },
+  --           border = {
+  --             style = 'rounded',
+  --             padding = { 0, 1 },
+  --           },
+  --           win_options = {
+  --             winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
+  --           },
+  --         },
+  --       },
+  --     })
+  --
+  --     -- Add a keybinding to open noice errors with telescope
+  --     require('which-key').register({
+  --         n = {
+  --           name = 'LSP/IDE Operations',
+  --           e = { ':Telescope noice<cr>', 'Show messages history' },
+  --         }
+  --       },
+  --       { prefix = '<leader>' }
+  --     )
+  --     --
+  --   end
+  -- },
 
 }
