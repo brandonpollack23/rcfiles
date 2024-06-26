@@ -28,6 +28,20 @@ config.colors = {
   scrollbar_thumb = '#AAAAAA'
 }
 
+-- Hyperlinks
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+-- Github issues like TODO[abc123/abc123#424242]
+table.insert(config.hyperlink_rules, {
+  regex = [=[TODO(\[|\()([-A-Za-z0-9]+)\/([-A-Za-z0-9]+)\#([0-9]+)(\]|)]=],
+  format = 'https://www.github.com/$2/$3/issues/$4',
+  hightlight = 1,
+})
+-- Github links
+table.insert(config.hyperlink_rules, {
+  regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+  format = 'https://www.github.com/$1/$3',
+})
+
 -- Keybindings
 config.keys = {
   -- Panes
