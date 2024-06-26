@@ -194,8 +194,8 @@ function emoji_status_prompt() {
         echo 😡
     fi
 }
-local JST_DATE=$(TZ=Asia/Tokyo date "+%X (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
+local UTC_DATE=$(TZ=UTC date "+%X (%Z)")
+PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${UTC_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
@@ -276,9 +276,9 @@ alias -g G='| rg'
 alias -g L='| bat'
 alias -g LL='2>&1 | bat'
 
-# Override date to print both EST and JST
+# Override date to print many dates
 function dates() {
-    echo "CTZ: $(date)\n"
+    echo "UTC: $(TZ=UTC date)\n"
     echo "JST: $(TZ=Asia/Tokyo date)\n"
     echo "PST: $(TZ=America/Los_Angeles date)\n"
     echo "EST: $(TZ=America/New_York date)"
