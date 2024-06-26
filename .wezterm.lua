@@ -274,6 +274,11 @@ config.keys = {
     mods = 'CTRL|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
+  {
+    key = '[',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.ActivateCopyMode,
+  },
   -- Tabs
   {
     key = ']',
