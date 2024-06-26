@@ -27,6 +27,7 @@ config.enable_scroll_bar = true
 config.colors = {
   scrollbar_thumb = '#AAAAAA'
 }
+config.enable_kitty_graphics = true
 
 -- Hyperlinks
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
