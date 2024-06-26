@@ -57,6 +57,31 @@ config.colors = {
   }
 }
 
+-- Asterisk on tab title
+local function tab_title(tab_info)
+  local title = tab_info.tab_title
+  -- if the tab title is explicitly set, take that
+  if title and #title > 0 then
+    return title
+  end
+  -- Otherwise, use the title from the active pane
+  -- in that tab
+  return tab_info.active_pane.title
+end
+
+-- wezterm.on(
+--   'format-tab-title',
+--   function(tab, tabs, panes, config, hover, max_width)
+--     local title = tab_title(tab)
+--     if tab.is_active then
+--       return {
+--         { Text = ' ' .. title .. '* ' },
+--       }
+--     end
+--     return title
+--   end
+-- )
+
 -- Hyperlinks
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- Github issues like TODO[abc123/abc123#424242]
