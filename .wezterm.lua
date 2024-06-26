@@ -35,7 +35,6 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 table.insert(config.hyperlink_rules, {
   regex = [=[TODO(\[|\()([-A-Za-z0-9]+)\/([-A-Za-z0-9]+)\#([0-9]+)(\]|)]=],
   format = 'https://www.github.com/$2/$3/issues/$4',
-  hightlight = 1,
 })
 -- Github links
 table.insert(config.hyperlink_rules, {
