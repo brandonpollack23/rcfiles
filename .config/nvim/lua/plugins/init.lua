@@ -94,7 +94,10 @@ return {
       vim.fn['firenvim#install'](0)
     end,
     config = function()
-      -- Manually trigger with ctrl+e (cmd on mac)
+      if not vim.g.started_by_firenvim then
+        return
+      end
+
       vim.g.firenvim_config = {
         globalSettings = {
           alt = 'all',

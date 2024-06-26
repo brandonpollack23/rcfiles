@@ -1,12 +1,5 @@
 -- TODO:
--- Lualine lsp progress https://github.com/linrongbin16/lsp-progress.nvim
--- Recursively open in nvim tree https://github.com/nvim-tree/nvim-tree.lua/pull/1292
-
--- IF bufferline doesnt work: telescope select tab instead of replacing
-
 -- TODO plugins
--- file outline (function list etc)
--- debugging files
 -- undotree
 -- todo highlighting
 
