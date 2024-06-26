@@ -127,6 +127,21 @@ config.keys = {
     mods = 'SUPER',
     action = prompt_workspace_title()
   },
+  {
+    key = 't',
+    mods = 'SUPER|SHIFT',
+    action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|TABS" }
+  },
+  {
+    key = 'c', -- Create a new workspace with a random name.
+    mods = 'SUPER',
+    action = wezterm.action.SwitchToWorkspace {}
+  },
+  {
+    key = 'z',
+    mods = 'SUPER',
+    action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|WORKSPACES" }
+  },
   -- Panes
   {
     key = 'x',
