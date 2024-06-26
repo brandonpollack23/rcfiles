@@ -11,6 +11,11 @@ local wezterm = require('wezterm')
 
 local config = wezterm.config_builder()
 
+if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+  -- Windows, set domain to Manjaro.
+  config.default_domain = 'WSL:Manjaro'
+end
+
 -- Appearance
 config.color_scheme = 'Vs Code Dark+ (Gogh)'
 config.use_fancy_tab_bar = false
