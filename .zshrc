@@ -156,6 +156,31 @@ export FZF_BASE=$(which fzf)
 
 source $ZSH/oh-my-zsh.sh
 
+################### Extra self managed plugins ###############################
+
+# Syntax highlighting
+source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# ZFS
+source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
+# Alias reminding
+source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
+# better cd
+#source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
+# better history search
+source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+# Better brew for mac
+if [[ "$OSTYPE" =~ darwin* ]]; then
+    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
+fi
+
+################### Extra self managed Plugin configurations ###############################
+# History search
+bindkey '^p' history-substring-search-up
+bindkey '^n' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+
 #################### User configuration ###############################
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
@@ -258,30 +283,6 @@ function dates() {
     echo "PST: $(TZ=America/Los_Angeles date)\n"
     echo "EST: $(TZ=America/New_York date)"
 }
-
-################### Extra self managed plugins ###############################
-
-# Syntax highlighting
-source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# ZFS
-source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
-# Alias reminding
-source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
-# better cd
-#source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
-# better history search
-source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-# Better brew for mac
-if [[ "$OSTYPE" =~ darwin* ]]; then
-    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
-fi
-
-################### Extra self managed Plugin configurations ###############################
-# History search
-bindkey '^p' history-substring-search-up
-bindkey '^n' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
 
 # Git aliases
 # Print a pretty git log up to each local branches tracking branch

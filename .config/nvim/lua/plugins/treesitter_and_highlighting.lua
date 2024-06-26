@@ -30,6 +30,7 @@ return {
           'rust',
           'typescript',
           'vim',
+          'vimdoc',
         },
 
         -- Install parsers synchronously (only applied to `ensure_installed`)

@@ -47,6 +47,11 @@ fd
 neovide
 "
 
+MANJARO_ONLY_PACKAGES="
+libpamac-flatpack-plugin
+libpamac-snap-plugin
+"
+
 AUR_ARCH_PACKAGES="
 google-chrome
 neovim-nightly
@@ -72,6 +77,11 @@ function get_platform_packages() {
       echo "$DEBIAN_PACKAGES"
     elif [[ -f /etc/arch-release ]]; then
       echo "$ARCH_PACKAGES"
+
+      # Also manjaro packages if needed.
+      if [ -x "$(command -v pamac)" ]; then
+        echo "$MANJARO_ONLY_PACKAGES"
+      fi
     fi
     exit 1
   else

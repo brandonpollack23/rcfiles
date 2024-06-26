@@ -12,6 +12,11 @@
 
 vim.g.mapleader = ','
 
+-- Setup neovide gui preferences
+vim.g.neovide_cursor_animation_length = 0.0
+vim.g.neovide_cursor_trail_size = 0.0
+vim.g.neovide_scroll_animation_length = 0.0
+
 if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
   require('brpol.windows')
 end
@@ -29,6 +34,8 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
+
+vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
 
 require('lazy').setup('plugins')
 
