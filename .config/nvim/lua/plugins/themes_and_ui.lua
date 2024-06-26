@@ -218,6 +218,12 @@ return {
       })
     end
   },
+  {
+    '3rd/image.nvim',
+    config = function()
+      require('image').setup()
+    end
+  }
 
   -- Pretty notifications with Noice
   -- configures command line, messages, popupmenu, commands history, notifications, etc
