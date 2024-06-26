@@ -12,6 +12,8 @@ fzf
 fzy
 git 
 imagemagick
+luajit
+luarocks
 make
 neovim
 pandoc
@@ -22,8 +24,8 @@ sqlite3
 tmux
 tree
 vim
-zsh
 xclip
+zsh
 "
 
 DEBIAN_PACKAGES="
@@ -34,6 +36,8 @@ etherwake
 fd-find
 fortunes-debian-hints
 info
+libgraphicsmagick1-dev
+libmagickwand-dev
 net-tools
 texinfo
 wakeonlan
