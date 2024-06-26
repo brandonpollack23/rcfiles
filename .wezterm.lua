@@ -22,12 +22,40 @@ local config = wezterm.config_builder()
 -- Appearance
 config.color_scheme = 'Vs Code Dark+ (Gogh)'
 config.use_fancy_tab_bar = false
-config.hide_tab_bar_if_only_one_tab = true
+config.tab_bar_at_bottom = true
 config.enable_scroll_bar = true
-config.colors = {
-  scrollbar_thumb = '#AAAAAA'
-}
 config.enable_kitty_graphics = true
+config.colors = {
+  scrollbar_thumb = '#AAAAAA',
+
+  tab_bar = {
+    background = '#FF0000',
+    active_tab = {
+      bg_color = '#FFBB00',
+      fg_color = '#000000',
+      underline = 'Single',
+      italic = true,
+    },
+    inactive_tab = {
+      bg_color = '#FF0000',
+      fg_color = '#FFFFFF',
+    },
+    inactive_tab_hover = {
+      bg_color = '#AA0000',
+      fg_color = '#FFFFFF',
+      italic = true
+    },
+    new_tab = {
+      bg_color = '#FF0000',
+      fg_color = '#FFFFFF',
+    },
+    new_tab_hover = {
+      bg_color = '#AA0000',
+      fg_color = '#FFFFFF',
+      italic = true
+    },
+  }
+}
 
 -- Hyperlinks
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
