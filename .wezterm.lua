@@ -153,49 +153,49 @@ config.keys = {
   -- Domains (like sessions)
   {
     key = 'a', --attach to domains (usually populated from sshconfig)
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|DOMAINS" }
   },
   {
     key = 'd',
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.DetachDomain('CurrentPaneDomain')
   },
   -- Tabs/Workspaces
   {
     key = ',',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = prompt_tab_title()
   },
   {
     key = ';',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = prompt_workspace_title()
   },
   {
     key = 't',
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|ALT',
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|TABS" }
   },
   {
     key = 'c', -- Create a new workspace with a random name.
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.SwitchToWorkspace {}
   },
   {
     key = 'z',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|WORKSPACES" }
   },
   {
     key = 'x',
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|ALT',
     action = kill_wokspace()
   },
   -- Panes
   {
     key = 'x',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action { CloseCurrentPane = { confirm = true } },
   },
   {
@@ -251,33 +251,33 @@ config.keys = {
   -- Scrolling/Movement
   {
     key = 'u',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action { ScrollByPage = -1 },
   },
   {
     key = 'd',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action { ScrollByPage = 1 },
   },
   {
     key = 'j',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
   {
     key = 'j',
-    mods = 'SUPER',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
   -- Tabs
   {
     key = ']',
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|ALT',
     action = wezterm.action { ActivateTabRelative = 1 },
   },
   {
     key = '[',
-    mods = 'SUPER|SHIFT',
+    mods = 'CTRL|ALT',
     action = wezterm.action { ActivateTabRelative = 1 },
   },
   -- Command Palette
