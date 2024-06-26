@@ -232,6 +232,8 @@ alias :q="exit"
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 
+alias cati='wezterm imgcat'
+
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"
 
