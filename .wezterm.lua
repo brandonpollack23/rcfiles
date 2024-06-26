@@ -6,6 +6,7 @@
 -- Tab prefix is Super-Shift {/} or number
 --
 -- TODO:
+-- Set tab title quick bind that doesnt require a prompt (right now it is wezterm cli set-tab-title)
 -- scrolling like in tmux (vim bindings)
 -- searching like in tmux (vim bindigs)
 -- copying while moving like in tmux
