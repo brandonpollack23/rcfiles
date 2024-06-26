@@ -26,18 +26,17 @@ return {
             return
           end
 
-          vim.notify(
-            'Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
-          term:send(' export HISTCONTROL=ignorespace', false)
-          term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
+          -- vim.notify(
+          --   'Remember to prefix twice <C-a> C<C-a> to send to tmux in nvim if already running in tmux')
+          -- term:send(' export HISTCONTROL=ignorespace', false)
+          -- term:send(' tmux new-session -A -s ' .. sessionNamePrefix .. term.id, false)
+          -- TODO wezterm session saving of terminal.
           term:send(' export NVIM=' .. vim.v.servername)
         end,
         on_open = function(term)
           vim.cmd('startinsert')
         end,
         on_close = function(term)
-          -- Cancel current command with interrupt then detach tmux
-          -- term:send(' tmux detach', false)
         end,
         float_opts = {
           -- The border key is *almost* the same as 'nvim_open_win'

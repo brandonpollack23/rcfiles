@@ -12,6 +12,8 @@ fzf
 fzy
 git 
 imagemagick
+luajit
+luarocks
 make
 neovim
 pandoc
@@ -22,8 +24,8 @@ sqlite3
 tmux
 tree
 vim
-zsh
 xclip
+zsh
 "
 
 DEBIAN_PACKAGES="
@@ -34,6 +36,8 @@ etherwake
 fd-find
 fortunes-debian-hints
 info
+libgraphicsmagick1-dev
+libmagickwand-dev
 net-tools
 texinfo
 wakeonlan
@@ -45,6 +49,11 @@ bitwarden
 bitwarden-cli
 fd
 neovide
+"
+
+MANJARO_ONLY_PACKAGES="
+libpamac-flatpack-plugin
+libpamac-snap-plugin
 "
 
 AUR_ARCH_PACKAGES="
@@ -72,6 +81,11 @@ function get_platform_packages() {
       echo "$DEBIAN_PACKAGES"
     elif [[ -f /etc/arch-release ]]; then
       echo "$ARCH_PACKAGES"
+
+      # Also manjaro packages if needed.
+      if [ -x "$(command -v pamac)" ]; then
+        echo "$MANJARO_ONLY_PACKAGES"
+      fi
     fi
     exit 1
   else
@@ -241,20 +255,21 @@ function setup_home_dir() {
   mkdir -p "$HOME/.config"
   mkdir -p "$HOME/.local"
 
-  ln -sfn "$RCFILES_DIR/.zshrc" "$HOME/.zshrc"
-  ln -sfn "$RCFILES_DIR/zsh-plugins" "$HOME/zsh-plugins"
-  ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
-  ln -sfn "$RCFILES_DIR/nix-zsh-completions" "$HOME/nix-zsh-completions"
-  ln -sfn "$RCFILES_DIR/.oh-my-zsh" "$HOME/.oh-my-zsh"
-  ln -sfn "$RCFILES_DIR/.vimrc" "$HOME/.vimrc"
-  ln -sfn "$RCFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-  ln -sfn "$RCFILES_DIR/.tmux" "$HOME/.tmux"
-  ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-  ln -sfn "$RCFILES_DIR/.vim/pack" "$HOME/.vim/pack"
-  ln -sfn "$RCFILES_DIR/.vim/colors" "$HOME/.vim/colors"
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
-  ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
+  ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
+  ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+  ln -sfn "$RCFILES_DIR/.oh-my-zsh" "$HOME/.oh-my-zsh"
+  ln -sfn "$RCFILES_DIR/.tmux" "$HOME/.tmux"
+  ln -sfn "$RCFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+  ln -sfn "$RCFILES_DIR/.vim/colors" "$HOME/.vim/colors"
+  ln -sfn "$RCFILES_DIR/.vim/pack" "$HOME/.vim/pack"
+  ln -sfn "$RCFILES_DIR/.vimrc" "$HOME/.vimrc"
+  ln -sfn "$RCFILES_DIR/.wezterm.lua" "$HOME/.wezterm.lua"
+  ln -sfn "$RCFILES_DIR/.zshrc" "$HOME/.zshrc"
+  ln -sfn "$RCFILES_DIR/nix-zsh-completions" "$HOME/nix-zsh-completions"
+  ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
+  ln -sfn "$RCFILES_DIR/zsh-plugins" "$HOME/zsh-plugins"
 }
 
 # Debugging enabled

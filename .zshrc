@@ -156,6 +156,31 @@ export FZF_BASE=$(which fzf)
 
 source $ZSH/oh-my-zsh.sh
 
+################### Extra self managed plugins ###############################
+
+# Syntax highlighting
+source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# ZFS
+source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
+# Alias reminding
+source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
+# better cd
+#source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
+# better history search
+source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+# Better brew for mac
+if [[ "$OSTYPE" =~ darwin* ]]; then
+    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
+fi
+
+################### Extra self managed Plugin configurations ###############################
+# History search
+bindkey '^p' history-substring-search-up
+bindkey '^n' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+
 #################### User configuration ###############################
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
@@ -169,8 +194,8 @@ function emoji_status_prompt() {
         echo 😡
     fi
 }
-local JST_DATE=$(TZ=Asia/Tokyo date "+%X (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${JST_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
+local UTC_DATE=$(TZ=UTC date "+%X (%Z)")
+PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${UTC_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
@@ -206,6 +231,8 @@ alias :q="exit"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
+
+alias cati='wezterm imgcat'
 
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"
@@ -251,37 +278,13 @@ alias -g G='| rg'
 alias -g L='| bat'
 alias -g LL='2>&1 | bat'
 
-# Override date to print both EST and JST
+# Override date to print many dates
 function dates() {
-    echo "CTZ: $(date)\n"
+    echo "UTC: $(TZ=UTC date)\n"
     echo "JST: $(TZ=Asia/Tokyo date)\n"
     echo "PST: $(TZ=America/Los_Angeles date)\n"
     echo "EST: $(TZ=America/New_York date)"
 }
-
-################### Extra self managed plugins ###############################
-
-# Syntax highlighting
-source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# ZFS
-source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
-# Alias reminding
-source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
-# better cd
-#source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
-# better history search
-source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-# Better brew for mac
-if [[ "$OSTYPE" =~ darwin* ]]; then
-    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
-fi
-
-################### Extra self managed Plugin configurations ###############################
-# History search
-bindkey '^p' history-substring-search-up
-bindkey '^n' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
 
 # Git aliases
 # Print a pretty git log up to each local branches tracking branch
@@ -347,3 +350,4 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
