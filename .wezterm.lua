@@ -83,6 +83,9 @@ table.insert(config.hyperlink_rules, {
   format = 'https://www.github.com/$1/$3',
 })
 
+-- Configure SSH Domains from the ~/.ssh/config file
+wezterm.default_ssh_domains()
+
 -- Custom functions
 local function prompt_tab_title()
   return wezterm.action.PromptInputLine {
