@@ -5,13 +5,6 @@
 -- Searching for text is done with C-S-F or Super-F
 -- Tab prefix is Super-Shift {/} or number
 --
--- TODO:
--- scrolling like in tmux (vim bindings)
--- searching like in tmux (vim bindigs)
--- copying while moving like in tmux
--- Naming tabs
--- Learn how to work iwth panes (rearrange, resize, etc)
---
 -- Setting up ssh/sessions
 
 local wezterm = require('wezterm')
@@ -136,6 +129,11 @@ config.keys = {
   },
   -- Panes
   {
+    key = 'x',
+    mods = 'SUPER',
+    action = wezterm.action { CloseCurrentPane = { confirm = true } },
+  },
+  {
     key = '|',
     mods = 'CTRL|ALT|SHIFT',
     action = wezterm.action { SplitHorizontal = { domain = "CurrentPaneDomain" } },
@@ -164,6 +162,26 @@ config.keys = {
     key = 'j',
     mods = 'CTRL|SHIFT',
     action = wezterm.action { ActivatePaneDirection = "Down" },
+  },
+  {
+    key = 'h',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.AdjustPaneSize { 'Left', 5 }
+  },
+  {
+    key = 'l',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.AdjustPaneSize { 'Right', 5 }
+  },
+  {
+    key = 'k',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.AdjustPaneSize { 'Up', 5 }
+  },
+  {
+    key = 'j',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.AdjustPaneSize { 'Down', 5 }
   },
   -- Scrolling/Movement
   {
