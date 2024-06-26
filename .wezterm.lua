@@ -114,6 +114,37 @@ local function prompt_workspace_title()
   }
 end
 
+-- TODO(wez/wezterm#3658) Until wezterm implements this itself, I use the CLI to do this.
+local function kill_wokspace(workspace)
+  return wezterm.action.PromptInputLine {
+    description = wezterm.format {
+      { Attribute = { Intensity = 'Bold' } },
+      { Text = 'Are you sure you want to kill this workspace? (y or Esc to cancel)' },
+    },
+    action = wezterm.action_callback(function(window, pane, line)
+      if line == 'y' then
+        workspace = workspace or window:get_active_workspace()
+        local success, stdout = wezterm.run_child_process({ "wezterm", "cli", "list", "--format=json" })
+
+        if success then
+          local json = wezterm.json_parse(stdout)
+          if not json then
+            return
+          end
+
+          local workspace_panes = u.filter(json, function(p)
+            return p.workspace == workspace
+          end)
+
+          for _, p in ipairs(workspace_panes) do
+            wezterm.run_child_process({ "wezterm", "cli", "kill-pane", "--pane-id=" .. p.pane_id })
+          end
+        end
+      end
+    end)
+  }
+end
+
 -- Keybindings
 config.keys = {
   -- Tabs/Workspaces
@@ -141,6 +172,11 @@ config.keys = {
     key = 'z',
     mods = 'SUPER',
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|WORKSPACES" }
+  },
+  {
+    key = 'x',
+    mods = 'SUPER|SHIFT',
+    action = kill_wokspace()
   },
   -- Panes
   {
