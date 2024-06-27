@@ -21,6 +21,7 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 config.window_close_confirmation = 'AlwaysPrompt'
+config.skip_close_confirmation_for_processes_named = {}
 
 -- Appearance
 config.color_scheme = 'Vs Code Dark+ (Gogh)'
