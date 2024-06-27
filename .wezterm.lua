@@ -222,7 +222,7 @@ config.keys = {
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|DOMAINS" }
   },
   {
-    key = 'D',
+    key = 'd',
     mods = 'CTRL|SHIFT',
     action = wezterm.action.DetachDomain('CurrentPaneDomain')
   },
