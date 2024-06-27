@@ -4,8 +4,7 @@
 -- To copy or navigate enter copy mode which is C-S-x and uses vim motions.  y to yank.
 -- Searching for text is done with C-S-F or Super-F
 -- Tab prefix is Super-Shift {/} or number
---
--- Setting up ssh/sessions
+-- Ctrl-G closes launcher menu (like emacs)
 
 local wezterm = require('wezterm')
 
@@ -89,7 +88,10 @@ table.insert(config.hyperlink_rules, {
 })
 
 -- Configure SSH Domains from the ~/.ssh/config file
-wezterm.default_ssh_domains()
+config.ssh_domains = wezterm.default_ssh_domains()
+for _, dom in ipairs(config.ssh_domains) do
+  dom.assume_shell = 'Posix'
+end
 
 -- Custom functions
 local function prompt_tab_title()
