@@ -10,11 +10,10 @@ local wezterm = require('wezterm')
 
 local config = wezterm.config_builder()
 
+-- use my alias wezconl to connect.
 config.unix_domains = {
   { name = 'local_wez_domain' }
 }
-
-config.default_gui_startup_args = { 'connect', 'local_wez_domain' }
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   -- Windows, set domain to Manjaro.
@@ -172,6 +171,47 @@ local function kill_workspace(workspace)
     end)
   }
 end
+
+local function select_domain_action(pane)
+  local domains = wezterm.mux.all_domains()
+  local domain_names = {}
+  for _, domain in ipairs(domains) do
+    if domain:name() ~= pane:get_domain_name() then
+      -- Skip the current domain
+      table.insert(domain_names, { label = domain:name() })
+    end
+  end
+
+  return wezterm.action.InputSelector {
+    action = wezterm.action_callback(function(window, pane, id, label)
+      if not id and not label then
+        wezterm.log_info('cancelled domain selection')
+      else
+        wezterm.log_info('selected domain', label)
+        for _, domain in ipairs(domains) do
+          if domain:name() == label then
+            wezterm.log_info('Attaching to domain', domain:name())
+            domain:attach()
+            return
+          end
+        end
+        wezterm.log_error('No domain found with name', label)
+      end
+    end),
+    title = 'Choose Domain',
+    choices = domain_names,
+    fuzzy = true,
+  }
+end
+
+wezterm.on('augment-command-palette', function(window, pane)
+  return {
+    {
+      brief = 'Attach to a domain',
+      action = select_domain_action(pane),
+    },
+  }
+end)
 
 -- Keybindings
 config.keys = {
