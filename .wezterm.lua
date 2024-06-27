@@ -20,6 +20,8 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.default_domain = 'WSL:Manjaro'
 end
 
+config.window_close_confirmation = 'AlwaysPrompt'
+
 -- Appearance
 config.color_scheme = 'Vs Code Dark+ (Gogh)'
 config.use_fancy_tab_bar = false
