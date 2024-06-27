@@ -10,6 +10,12 @@ local wezterm = require('wezterm')
 
 local config = wezterm.config_builder()
 
+config.unix_domains = {
+  { name = 'default_unix_domain' }
+}
+
+config.default_gui_startup_args = { 'connect', 'default_unix_domain' }
+
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   -- Windows, set domain to Manjaro.
   config.default_domain = 'WSL:Manjaro'
@@ -125,7 +131,7 @@ local function prompt_workspace_title()
 end
 
 -- TODO(wez/wezterm#3658) Until wezterm implements this itself, I use the CLI to do this.
-local function kill_wokspace(workspace)
+local function kill_workspace(workspace)
   return wezterm.action.PromptInputLine {
     description = wezterm.format {
       { Attribute = { Intensity = 'Bold' } },
@@ -164,7 +170,7 @@ config.keys = {
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|DOMAINS" }
   },
   {
-    key = 'd',
+    key = 'D',
     mods = 'CTRL|SHIFT',
     action = wezterm.action.DetachDomain('CurrentPaneDomain')
   },
@@ -197,7 +203,7 @@ config.keys = {
   {
     key = 'x',
     mods = 'CTRL|ALT',
-    action = kill_wokspace()
+    action = kill_workspace()
   },
   -- Panes
   {
