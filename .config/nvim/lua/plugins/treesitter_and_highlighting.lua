@@ -26,6 +26,8 @@ return {
           'jsonc',
           'kotlin',
           'lua',
+          'markdown',
+          'markdown_inline',
           'python',
           'rust',
           'typescript',

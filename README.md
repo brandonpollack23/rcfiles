@@ -1,3 +1,5 @@
+![Hand of Zeus](hand_of_zeus.png)
+
 # Initialize system prefs
 
 ## What do

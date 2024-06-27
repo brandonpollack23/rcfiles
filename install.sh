@@ -322,6 +322,7 @@ cargo binstall --no-confirm git-delta
 if [[ -x "$(command -v fd)" ]]; then
   cargo binstall --no-confirm fd-find
 fi
+cargo binstall tree-sitter-cli
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
 # Install python stuff and rye
