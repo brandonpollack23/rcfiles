@@ -1,4 +1,4 @@
-![Hand of Zeus](hand_of_zeus.png)
+![Hand of Zeus](hand_of_zeus.png "My Logo")
 
 # Initialize system prefs
 
