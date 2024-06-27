@@ -25,7 +25,9 @@ fi
 
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 fpath+=$HOME/zsh-my-completions
-source $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh
+if [[ -f $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh ]]; then
+    source $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh
+fi
 fpath+=$HOME/nix-zsh-completions
 autoload -Uz compinit && compinit
 # If you come from bash you might have to change your $PATH.
@@ -330,7 +332,9 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 prompt_nix_shell_setup
 
 # Python/Rye stuff
-source "$HOME/.rye/env"
+if [[ -f $HOME/.rye/env ]]; then
+  source "$HOME/.rye/env"
+fi
 
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
