@@ -169,12 +169,12 @@ config.keys = {
   -- Tabs/Workspaces
   {
     key = ',',
-    mods = 'CTRL|SHIFT',
+    mods = 'CTRL|ALT',
     action = prompt_tab_title()
   },
   {
     key = ';',
-    mods = 'CTRL|SHIFT',
+    mods = 'CTRL|ALT',
     action = prompt_workspace_title()
   },
   {
@@ -275,7 +275,7 @@ config.keys = {
     action = wezterm.action.ScrollByLine(1),
   },
   {
-    key = '[',
+    key = '{',
     mods = 'CTRL|SHIFT',
     action = wezterm.action.ActivateCopyMode,
   },
