@@ -11,10 +11,10 @@ local wezterm = require('wezterm')
 local config = wezterm.config_builder()
 
 config.unix_domains = {
-  { name = 'default_unix_domain' }
+  { name = 'local_wez_domain' }
 }
 
-config.default_gui_startup_args = { 'connect', 'default_unix_domain' }
+config.default_gui_startup_args = { 'connect', 'local_wez_domain' }
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   -- Windows, set domain to Manjaro.
@@ -58,6 +58,18 @@ config.colors = {
     },
   }
 }
+
+-- Window name format
+local function window_title(tab, pane)
+  local title = tab.active_pane.title
+  if title and #title > 0 then
+    title = '[' .. pane.domain_name .. ']' .. ' - ' .. title
+    return title
+  else
+    return "BLARG"
+  end
+end
+wezterm.on('format-window-title', window_title)
 
 -- Tab name format
 local function tab_title(tab_info)

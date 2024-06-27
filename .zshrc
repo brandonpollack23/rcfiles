@@ -234,7 +234,11 @@ alias :q="exit"
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 
+# wezterm stuff
+# For a new domain elsewhere (like tmux) use the --config option and set the domain
+#  `wezterm --config 'ssh_domains={{name='adhoc', ..}' connect adhoc`
 alias cati='wezterm imgcat'
+alias wezcon='wezterm connect'
 
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"
