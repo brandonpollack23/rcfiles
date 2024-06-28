@@ -1,7 +1,10 @@
 -- TODO:
--- TODO plugins
 -- undotree
 -- todo highlighting
+
+-- Tips
+-- :help slow-startup if its slow
+-- :help trojan-horse to learn about exrc
 
 vim.g.mapleader = ','
 
@@ -55,6 +58,8 @@ require('which-key').register({
 }, { prefix = '<leader>' })
 
 -- Global options
+-- Enable project local .nvim.lua, .exrc, or .nvimrc
+vim.o.exrc = true
 -- Disable netrw (default file picker) at startup
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

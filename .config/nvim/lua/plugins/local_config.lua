@@ -1,4 +1,5 @@
 return {
+  -- Project local settings for debuggers etc.
   -- Imports vscode settings.json coc settings and nlsp and has its own .neoconf.json
   {
     'folke/neoconf.nvim',
@@ -20,4 +21,6 @@ return {
       }
     end
   },
+
+  -- exrc is secure in neovim, no need for a plugin, just enable it.
 }

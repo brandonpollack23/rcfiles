@@ -101,7 +101,9 @@ return {
       --   }
       -- }
 
-      require('persistent-breakpoints')
+      require('persistent-breakpoints').setup({
+        load_breakpoints_event = { 'BufReadPost' }
+      })
       local persistentBreakpoints = require('persistent-breakpoints.api')
       local wk = require('which-key')
       wk.register({
