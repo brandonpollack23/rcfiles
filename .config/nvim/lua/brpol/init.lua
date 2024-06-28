@@ -36,11 +36,23 @@ require('lazy').setup('plugins')
 require('brpol.vscode_theme')
 require('brpol.lsp')
 
+-- Custom commands
+require('brpol.commands')
+
 -- Key remaps
 require('brpol.remap')
 
--- Custom commands
-require('brpol.commands')
+-- Command to execute current buffer in lua
+-- TODO organize this under commands and remap>
+local function execute_current_buffer()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local code = table.concat(lines, '\n')
+  load(code)()
+end
+
+require('which-key').register({
+  l = { execute_current_buffer, 'Source current buffer' },
+}, { prefix = '<leader>' })
 
 -- Global options
 -- Disable netrw (default file picker) at startup
