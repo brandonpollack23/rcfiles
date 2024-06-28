@@ -293,9 +293,12 @@ return {
       local copilot = require('copilot')
       copilot.setup({
         panel = {
-          open = '<C-l>',
+          auto_refresh = true,
+          keymap = {
+            open = '<C-l>',
+          }
         },
-        suggest = {
+        suggestion = {
           auto_trigger = true,
           keymap = {
             -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.

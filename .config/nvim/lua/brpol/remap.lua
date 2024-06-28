@@ -107,7 +107,7 @@ local function tab_complete()
   if luasnip.expand_or_jumpable() then
     return luasnip.jump(1)
   elseif suggestion.is_visible() then
-    return suggestion.accept(modifier)
+    return suggestion.accept()
   end
 end
 
