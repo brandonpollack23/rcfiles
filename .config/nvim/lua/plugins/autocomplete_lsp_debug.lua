@@ -201,9 +201,21 @@ return {
     config = function()
       require('luasnip.loaders.from_vscode').lazy_load()
       -- require('brpol.snippets.first_snippet')
+      require('brpol.snippets.date')
       require('telescope').load_extension('luasnip')
 
       -- Tab is set up to balance between all its uses in remap.lua
+      local luasnip = require('luasnip')
+      require('which-key').register({
+          ['<M-n>'] = {
+            function() if luasnip.choice_active() then return luasnip.change_choice(1) end end,
+            'Next snippet choice' },
+          ['<M-p>'] = {
+            function() if luasnip.choice_active() then return luasnip.change_choice(-1) end end,
+            'Previous snippet choice' },
+        },
+        { mode = 'i' }
+      )
     end
   },
   -- Causing bugs in unity
