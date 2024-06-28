@@ -9,8 +9,9 @@ luasnip.add_snippets('lua', {
   s('hello', {
     i(0),
     t("print('Hello, "),
-    i(1),
+    i(1, 'cruel'), -- defaults can be done by passing as strings.
     t(' '),
-    i(2),
+    i(2, 'world'),
+    t('!')
   }),
 })

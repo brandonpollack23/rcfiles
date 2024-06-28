@@ -198,7 +198,7 @@ return {
     dependencies = { 'rafamadriz/friendly-snippets', 'saadparwaiz1/cmp_luasnip', 'benfowler/telescope-luasnip.nvim' },
     config = function()
       require('luasnip.loaders.from_vscode').lazy_load()
-      require('brpol.snippets.first_snippet')
+      -- require('brpol.snippets.first_snippet')
       require('telescope').load_extension('luasnip')
 
       -- Tab is set up to balance between all its uses in remap.lua
