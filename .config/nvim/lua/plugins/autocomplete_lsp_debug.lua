@@ -331,6 +331,7 @@ return {
 
       -- Copilot colors
       vim.cmd('hi CopilotSuggestion guifg=Gray')
+      vim.cmd('hi CopilotAnnotation guifg=Gray')
     end
   },
   {
