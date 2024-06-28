@@ -25,7 +25,7 @@ luasnip.add_snippets('lua', {
     t('<'), i(1), t('>'),
     t('</'), rep(1), t('>')
   }),
-  s('format_example', {
+  s('format_example',
     -- Curlies are where things go, like rust, Double curly is escaped curly.
     fmt([[
 \begin{{{}}}
@@ -33,5 +33,5 @@ luasnip.add_snippets('lua', {
 \end{{{}}}
     ]], { i(1), i(2), rep(1)
     })
-  })
+  )
 })
