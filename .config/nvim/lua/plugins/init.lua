@@ -110,14 +110,13 @@ return {
             selector = 'textarea',
             takeover = 'never',
           },
-          ['stackoverflow.com'] = { takeover = 'always' },
-          ['github.com'] = { takeover = 'always' },
         }
       }
       vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
     end,
   },
 
+  -- Preview Markdown files
   {
     'toppair/peek.nvim',
     event = { 'VeryLazy' },

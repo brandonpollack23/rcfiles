@@ -198,7 +198,10 @@ return {
     dependencies = { 'rafamadriz/friendly-snippets', 'saadparwaiz1/cmp_luasnip', 'benfowler/telescope-luasnip.nvim' },
     config = function()
       require('luasnip.loaders.from_vscode').lazy_load()
+      require('brpol.snippets.first_snippet')
       require('telescope').load_extension('luasnip')
+
+      -- Tab is set up to balance between all its uses in remap.lua
     end
   },
   -- Causing bugs in unity
@@ -282,53 +285,59 @@ return {
 
   -- Github copilot
   {
-    'github/copilot.vim',
+    'zbirenbaum/copilot.lua',
     build = function()
-      vim.cmd('Copilot setup')
+      vim.cmd('Copilot auth')
     end,
     config = function()
-      CopilotEnabled = true
-      local function toggle_copilot()
-        CopilotEnabled = not CopilotEnabled
-        if CopilotEnabled then
+      local copilot = require('copilot')
+      copilot.setup({
+        panel = {
+          open = '<C-l>',
+        },
+        suggest = {
+          auto_trigger = true,
+          keymap = {
+            -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.
+            accept = nil,
+            accept_word = '<M-Right>',
+            next = '<M-]>',
+            prev = '<M-[>',
+            dismiss = '<C-]>',
+          },
+          filetypes = {
+            ['*'] = true,
+          }
+        }
+      })
+
+      local copilotEnabled = true
+      local function copilot_toggle()
+        copilotEnabled = not copilotEnabled
+        if copilotEnabled then
           vim.cmd('Copilot enable')
-          vim.notify('Copilot enabled')
         else
           vim.cmd('Copilot disable')
-          vim.notify('Copilot disabled')
         end
       end
-
       require('which-key').register({
           c = {
             name = 'Github Copilot Operations',
-            T = { toggle_copilot, 'Toggle Copilot' },
-            l = { ':vert rightb Copilot panel<cr>', 'List Suggestions' },
-            s = { ':<Plug>(copilot-suggest)<cr>', 'Suggest' },
-            d = { ':<Plug>(copilot-dismiss)<cr>', 'Dismiss' },
-            n = { ':<Plug>(copilot-next)<cr>', 'Next Suggestion' },
-            p = { ':<Plug>(copilot-previous)<cr>', 'Previous Suggestion' },
+            T = { copilot_toggle, 'Toggle Copilot' },
           },
         },
         { prefix = '<leader>' }
       )
 
-      -- Add keybinding for insert mode for suggestion panel
-      require('which-key').register(
-        {
-          ['<C-l>'] = { function() vim.cmd('vert rightb Copilot panel') end, 'List suggestions' },
-          ['<C-]>'] = { ':<Plug>(copilot-next)<cr>', 'Next Suggestion' },
-          ['<C-[>'] = { ':<Plug>(copilot-previous)<cr>', 'Previous Suggestion' },
-        },
-        { mode = 'i' }
-      )
+      -- Copilot colors
+      vim.cmd('hi CopilotSuggestion guifg=Gray')
     end
   },
   {
     'CopilotC-Nvim/CopilotChat.nvim',
     dependencies = {
-      { 'github/copilot.vim' },    -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
+      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
     },
     opts = {
       window = {

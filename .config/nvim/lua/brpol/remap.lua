@@ -98,3 +98,24 @@ vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })
 
 -- Disable capital Q it is annoying and I don't understand it
 vim.keymap.set('n', 'Q', '<nop>')
+
+-- Setup <Tab> and <S-Tab> to work with luasnip and copilot
+local luasnip = require('luasnip')
+local suggestion = require('copilot.suggestion')
+
+local function tab_complete()
+  if luasnip.expand_or_jumpable() then
+    return luasnip.jump(1)
+  elseif suggestion.is_visible() then
+    return suggestion.accept(modifier)
+  end
+end
+
+local function shift_tab_complete()
+  if luasnip.jumpable(-1) then
+    return luasnip.jump(-1)
+  end
+end
+
+vim.keymap.set({ 'i', 's' }, '<Tab>', tab_complete, { silent = true })
+vim.keymap.set({ 'i', 's' }, '<S-Tab>', shift_tab_complete, { silent = true })
