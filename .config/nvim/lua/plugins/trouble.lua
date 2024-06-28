@@ -41,6 +41,11 @@ return {
         '<leader>xq',
         '<cmd>Trouble telescope toggle<cr>', -- Used for things added to 'quickfix' from telescope (it isnt quickfix anymore its just for telescope results) (telescope instead of quickfix)
         desc = 'Quickfix List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List qflist (Trouble)',
       }
     },
     opts = {
