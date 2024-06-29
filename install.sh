@@ -49,6 +49,7 @@ bitwarden
 bitwarden-cli
 fd
 neovide
+kio-gdrive
 "
 
 MANJARO_ONLY_PACKAGES="
