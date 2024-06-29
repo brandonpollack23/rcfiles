@@ -48,6 +48,7 @@ alacritty
 bitwarden
 bitwarden-cli
 fd
+github-cli
 neovide
 kio-gdrive
 "
