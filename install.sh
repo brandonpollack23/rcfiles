@@ -7,6 +7,8 @@ coreutils
 cowsay
 curl
 deno
+fcitx5
+fcitx5-mozc
 fd
 fzf
 fzy
