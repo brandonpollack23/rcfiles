@@ -217,6 +217,7 @@ wezterm.on('augment-command-palette', function(window, pane)
 end)
 
 -- Keybindings
+config.leader = { key = 'a', mods = 'CTRL' }
 config.keys = {
   -- Domains (like sessions)
   {
@@ -272,8 +273,18 @@ config.keys = {
     action = wezterm.action { SplitHorizontal = { domain = "CurrentPaneDomain" } },
   },
   {
-    key = '"',
+    key = '\\',
+    mods = 'LEADER',
+    action = wezterm.action { SplitHorizontal = { domain = "CurrentPaneDomain" } },
+  },
+  {
+    key = "'",
     mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action { SplitVertical = { domain = "CurrentPaneDomain" } },
+  },
+  {
+    key = "'",
+    mods = 'LEADER',
     action = wezterm.action { SplitVertical = { domain = "CurrentPaneDomain" } },
   },
   {
@@ -298,6 +309,26 @@ config.keys = {
   },
   {
     key = 'h',
+    mods = 'LEADER',
+    action = wezterm.action { ActivatePaneDirection = "Left" },
+  },
+  {
+    key = 'l',
+    mods = 'LEADER',
+    action = wezterm.action { ActivatePaneDirection = "Right" },
+  },
+  {
+    key = 'k',
+    mods = 'LEADER',
+    action = wezterm.action { ActivatePaneDirection = "Up" },
+  },
+  {
+    key = 'j',
+    mods = 'LEADER',
+    action = wezterm.action { ActivatePaneDirection = "Down" },
+  },
+  {
+    key = 'h',
     mods = 'CTRL|ALT|SHIFT',
     action = wezterm.action.AdjustPaneSize { 'Left', 5 }
   },
@@ -314,6 +345,26 @@ config.keys = {
   {
     key = 'j',
     mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.AdjustPaneSize { 'Down', 5 }
+  },
+  {
+    key = 'h',
+    mods = 'LEADER|ALT',
+    action = wezterm.action.AdjustPaneSize { 'Left', 5 }
+  },
+  {
+    key = 'l',
+    mods = 'LEADER|ALT',
+    action = wezterm.action.AdjustPaneSize { 'Right', 5 }
+  },
+  {
+    key = 'k',
+    mods = 'LEADER|ALT',
+    action = wezterm.action.AdjustPaneSize { 'Up', 5 }
+  },
+  {
+    key = 'j',
+    mods = 'LEADER|ALT',
     action = wezterm.action.AdjustPaneSize { 'Down', 5 }
   },
   -- Scrolling/Movement
