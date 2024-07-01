@@ -51,6 +51,12 @@ require('mason-lspconfig').setup({
   handlers = {
     lsp_zero.default_setup,
 
+    ['clangd'] = function()
+      lspconfig.clangd.setup {
+        cmd = { 'clangd', '--pch-storage=memory' },
+      }
+    end,
+
     -- Lua config
     ['lua_ls'] = function()
       lspconfig.lua_ls.setup {
