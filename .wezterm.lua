@@ -154,7 +154,8 @@ local function kill_workspace(workspace)
     action = wezterm.action_callback(function(window, pane, line)
       if line == 'y' then
         workspace = workspace or window:get_active_workspace()
-        local success, stdout = wezterm.run_child_process({ "wezterm", "cli", "list", "--format=json" })
+        local success, stdout = wezterm.run_child_process({ "wezterm", "cli", "list",
+          "--format=json" })
 
         if success then
           local json = wezterm.json_parse(stdout)
@@ -167,7 +168,8 @@ local function kill_workspace(workspace)
           end)
 
           for _, p in ipairs(workspace_panes) do
-            wezterm.run_child_process({ "wezterm", "cli", "kill-pane", "--pane-id=" .. p.pane_id })
+            wezterm.run_child_process({ "wezterm", "cli", "kill-pane", "--pane-id=" ..
+            p.pane_id })
           end
         end
       end
@@ -193,8 +195,10 @@ local function select_domain_action(pane)
         wezterm.log_info('selected domain', label)
         for _, domain in ipairs(domains) do
           if domain:name() == label then
-            wezterm.log_info('Attaching to domain', domain:name())
-            domain:attach()
+            wezterm.log_info('Window ', window:window_id(), ' Attaching to domain ', domain:name())
+            wezterm.mux.spawn_window({
+              domain = { DomainName = domain:name() },
+            })
             return
           end
         end
@@ -409,6 +413,12 @@ config.keys = {
     key = 'p',
     mods = 'CTRL|SHIFT',
     action = wezterm.action.ActivateCommandPalette,
+  },
+  -- GUI Window Controls
+  {
+    key = 'f',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.ToggleFullScreen,
   },
 }
 
