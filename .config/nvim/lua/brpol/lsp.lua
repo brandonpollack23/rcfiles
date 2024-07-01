@@ -16,6 +16,7 @@ lsp_zero.set_sign_icons({
 
 local ensure_installed_lsps = {
   'bashls',
+  'clangd',
   'elixirls',
   'eslint',
   'gopls',
