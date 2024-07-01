@@ -9,6 +9,13 @@
 local wezterm = require('wezterm')
 
 local config = wezterm.config_builder()
+-- Only run if wezterm.local.lua exists
+-- To have one, put it in $HOME/.config/wezterm/local_wezterm.lua
+local ok, local_wezterm = pcall(require, 'local_wezterm')
+if ok then
+  wezterm.log_info('Loaded local_wezterm.lua')
+  local_wezterm.load(config)
+end
 
 -- use my alias wezconl to connect.
 config.unix_domains = {
