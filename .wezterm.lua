@@ -259,7 +259,7 @@ config.keys = {
     action = wezterm.action.ShowLauncherArgs { flags = "FUZZY|TABS" }
   },
   {
-    key = 'c', -- Create a new workspace with a random name.
+    key = 'q', -- Create a new workspace with a random name.
     mods = 'CTRL|SHIFT',
     action = wezterm.action.SwitchToWorkspace {}
   },
@@ -392,12 +392,12 @@ config.keys = {
   },
   {
     key = 'j',
-    mods = 'CTRL|SHIFT',
-    action = wezterm.action.ScrollByLine(1),
+    mods = 'ALT|SHIFT',
+    action = wezterm.action.ScrollByLine(-1),
   },
   {
-    key = 'j',
-    mods = 'CTRL|SHIFT',
+    key = 'k',
+    mods = 'ALT|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
   {
