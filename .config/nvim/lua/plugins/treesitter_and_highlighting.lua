@@ -50,6 +50,15 @@ return {
           -- Using this option may slow down your editor, and you may see some duplicate highlights.
           -- Instead of true it can also be a list of languages
           additional_vim_regex_highlighting = false,
+
+          -- disable = function(lang, buf)
+          --   local max_filesize = 100 * 1024 -- 100 KB
+          --   local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          --   if ok and stats and stats.size > max_filesize then
+          --     vim.notify('File too large, disabling TreeSitter...', vim.log.levels.WARN)
+          --     return true
+          --   end
+          -- end,
         },
 
         incremental_selection = {
@@ -57,7 +66,14 @@ return {
           keymaps = {
             node_incremental = 'u',
             node_decremental = 'i',
-          }
+          },
+          -- disable = function(lang, buf)
+          --   local max_filesize = 100 * 1024 -- 100 KB
+          --   local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          --   if ok and stats and stats.size > max_filesize then
+          --     return true
+          --   end
+          -- end,
         },
 
         textobjects = {
@@ -140,6 +156,14 @@ return {
               ['[d'] = '@conditional.outer',
             }
           },
+
+          -- disable = function(lang, buf)
+          --   local max_filesize = 100 * 1024 -- 100 KB
+          --   local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          --   if ok and stats and stats.size > max_filesize then
+          --     return true
+          --   end
+          -- end,
         },
       })
       --
@@ -191,7 +215,7 @@ return {
         under_cursor = true,
         -- large_file_cutoff: number of lines at which to use large_file_config
         -- The `under_cursor` option is disabled when this cutoff is hit
-        large_file_cutoff = nil,
+        large_file_cutoff = 2500,
         -- large_file_config: config to use for large files (based on large_file_cutoff).
         -- Supports the same keys passed to .configure
         -- If nil, vim-illuminate will be disabled for large files.
@@ -201,7 +225,7 @@ return {
         -- should_enable: a callback that overrides all other settings to
         -- enable/disable illumination. This will be called a lot so don't do
         -- anything expensive in it.
-        should_enable = function(bufnr) return true end,
+        should_enable = nil,
         -- case_insensitive_regex: sets regex case sensitivity
         case_insensitive_regex = false,
       })
