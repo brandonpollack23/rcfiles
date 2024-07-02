@@ -417,16 +417,6 @@ config.keys = {
     action = wezterm.action { ActivateTabRelative = -1 },
   },
   {
-    key = 'h',
-    mods = 'LEADER',
-    action = wezterm.action { ActivateTabRelative = -1 },
-  },
-  {
-    key = 'l',
-    mods = 'LEADER',
-    action = wezterm.action { ActivateTabRelative = 1 },
-  },
-  {
     key = 'H',
     mods = 'LEADER',
     action = wezterm.action { MoveTabRelative = -1 },
