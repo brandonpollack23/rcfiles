@@ -315,7 +315,7 @@ config.keys = {
     action = wezterm.action { ActivatePaneDirection = "Up" },
   },
   {
-    key = 'j',
+    key = 'J',
     mods = 'CTRL|SHIFT',
     action = wezterm.action { ActivatePaneDirection = "Down" },
   },
@@ -381,22 +381,22 @@ config.keys = {
   },
   -- Scrolling/Movement
   {
-    key = 'u',
+    key = 'U',
     mods = 'CTRL|SHIFT',
     action = wezterm.action { ScrollByPage = -1 },
   },
   {
-    key = 'd',
+    key = 'D',
     mods = 'CTRL|SHIFT',
     action = wezterm.action { ScrollByPage = 1 },
   },
   {
-    key = 'j',
+    key = 'J',
     mods = 'ALT|SHIFT',
     action = wezterm.action.ScrollByLine(-1),
   },
   {
-    key = 'k',
+    key = 'K',
     mods = 'ALT|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
