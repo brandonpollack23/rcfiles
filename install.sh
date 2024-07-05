@@ -336,8 +336,6 @@ if [[ "$XDG_CURRENT_DESKTOP" -eq "KDE" ]]; then
   konsave -i $RCFILES_DIR/kde_konsave_profile.knsv
   konsave -a kde_konsave_profile
 fi
-cd "${RCFILES_DIR}/.config/nvim" && rye sync
-popd
 
 # Install asdf, erlang, and elixir
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0

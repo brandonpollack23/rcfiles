@@ -206,14 +206,14 @@ return {
       wk.register({
           h = {
             name = 'Jupyter Notebook Molten',
-            e = { ':MoltenEvaluate<CR>', 'Evaluate cell' },
+            e = { ':MoltenEvaluateLine<CR>', 'Evaluate cell' },
             E = { ':MoltenReevaluateCell<CR>', 'Reevaluate cell' },
             os = { ':noautocmd MoltenEnterOutput<CR>', 'Open output window' },
-            v = { ':<C-u>MoltenEvaluateVisual<CR>gv', 'Evaluate visual selection' },
             h = { ':MoltenHideOutput<CR>', 'Hide output' },
             d = { ':MoltenDelete<CR>', 'Delete cell' },
             n = { ':MoltenNext<CR>', 'Next cell' },
             N = { ':MoltenPrev<CR>', 'Previous cell' },
+            i = { ':MoltenInit<CR>', 'Initialize molten' },
           }
         },
         { prefix = '<leader>', silent = true })
@@ -223,7 +223,7 @@ return {
             v = { ':<C-u>MoltenEvaluateVisual<CR>gv', 'Evaluate visual selection' },
           }
         },
-        { mode = 'x', prefix = '<leader>', silent = true })
+        { mode = 'v', prefix = '<leader>', silent = true })
     end,
   },
   -- Converting between ipynb and plain ju.py files
