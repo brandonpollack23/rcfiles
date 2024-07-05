@@ -344,4 +344,8 @@ return {
     end
   },
 
+  {
+    'willothy/wezterm.nvim',
+    config = true
+  }
 }

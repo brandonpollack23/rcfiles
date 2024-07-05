@@ -93,6 +93,10 @@ return {
               ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class region' },
               -- You can also use captures from other query groups like `locals.scm`
               ['as'] = { query = '@scope', query_group = 'locals', desc = 'Select language scope' },
+
+              -- python jupyter cell boundaries
+              ['aj'] = { query = '@cell.outer', desc = 'Select outer cell' },
+              ['ij'] = { query = '@cell.inner', desc = 'Select inner part of a cell region' },
             },
             -- You can choose the select mode (default is charwise 'v')
             --
@@ -133,6 +137,9 @@ return {
               -- Below example nvim-treesitter's `locals.scm` and `folds.scm`. They also provide highlights.scm and indent.scm.
               [']s'] = { query = '@scope', query_group = 'locals', desc = 'Next scope' },
               [']z'] = { query = '@fold', query_group = 'folds', desc = 'Next fold' },
+
+              -- Python jupyter cell boundaries
+              [']j'] = '@cell.boundary',
             },
             goto_next_end = {
               [']M'] = '@function.outer',
@@ -141,6 +148,8 @@ return {
             goto_previous_start = {
               ['[m'] = '@function.outer',
               ['[['] = '@class.outer',
+
+              ['[j'] = '@cell.boundary',
             },
             goto_previous_end = {
               ['[M'] = '@function.outer',

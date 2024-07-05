@@ -8,6 +8,10 @@
 
 vim.g.mapleader = ','
 
+-- Rye setup
+vim.g.python_host_prog = vim.fn.expand('$HOME/.config/nvim/.venv/bin/python')
+vim.g.python3_host_prog = vim.fn.expand('$HOME/.config/nvim/.venv/bin/python3')
+
 -- Setup neovide gui preferences
 vim.g.neovide_cursor_animation_length = 0.0
 vim.g.neovide_cursor_trail_size = 0.0
