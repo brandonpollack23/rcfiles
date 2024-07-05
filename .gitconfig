@@ -82,3 +82,5 @@
 
 ; local stuff
 [includeIf "gitdir:~/.gitconfig.local"]
+[init]
+	defaultBranch = master
