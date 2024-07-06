@@ -238,7 +238,7 @@ return {
 
       local wk = require('which-key')
       wk.register({
-          r = {
+          R = {
             name = 'Refactors',
             e = { ':Refactor extract<CR>', 'Extract function' },
             f = { ':Refactor extract_to_file<CR>', 'Extract function to file' },
@@ -251,7 +251,7 @@ return {
         })
 
       local sharedBindings = {
-        r = {
+        R = {
           name = 'Refactors',
           r = { function() require('refactoring').select_refactor() end, 'Select refactor' },
           i = { ':Refactor inline_var<CR>', 'Inline variable' },
@@ -270,7 +270,7 @@ return {
         })
 
       wk.register({
-          r = {
+          R = {
             name = 'Refactors',
             I = { ':Refactor inline_func<CR>', 'Inline function' },
             b = { ':Refactor extract_block<CR>', 'Extract block' },

@@ -192,6 +192,33 @@ require('mason-lspconfig').setup({
           ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
         }
       }
+    end,
+
+    ['basedpyright'] = function()
+      lspconfig.pyright.setup {
+        -- cmd = { 'rye run basedpyright' },
+        settings = {
+          pyright = {
+            autoImportCompletion = true,
+            disableLanguageServices = false,
+            disableOrganizeImports = false,
+            disableTaggedHints = false,
+          },
+
+          python = {
+            -- these two are set up for rye
+            pythonPath = './.venv/bin/python',
+
+            analysis = {
+              autoImportCompletions = true,
+              autoSearchPaths = true,
+              diagnosticMode = 'openFilesOnly',
+              useLibraryCodeForTypes = true,
+              typeCheckingMode = 'standard'
+            }
+          }
+        }
+      }
     end
   },
 })

@@ -178,59 +178,58 @@ return {
 
   -- Python and Jupyter
   -- Jupyter notebook evalation
-  {
-    'benlubas/molten-nvim',
-    version = '^1.0.0', -- use version <2.0.0 to avoid breaking changes
-    dependencies = {
-      '3rd/image.nvim',
-      'willothy/wezterm.nvim'
-    },
-    build = ':UpdateRemotePlugins',
-    init = function()
-      -- these are examples, not defaults. Please see the readme
-      vim.g.molten_image_provider = 'image.nvim'
-      vim.g.molten_output_win_max_height = 20
-      -- vim.g.molten_auto_open_output = false
-      -- vim.g.molten_image_provider = "image.nvim"
-
-      vim.g.molten_wrap_output = true
-
-      -- Output as virtual text. Allows outputs to always be shown, works with images, but can
-      -- be buggy with longer images
-      vim.g.molten_virt_text_output = true
-
-      -- this will make it so the output shows up below the \`\`\` cell delimiter
-      vim.g.molten_virt_lines_off_by_1 = true
-
-      local wk = require('which-key')
-      wk.register({
-          h = {
-            name = 'Jupyter Notebook Molten',
-            e = { ':MoltenEvaluateLine<CR>', 'Evaluate cell' },
-            E = { ':MoltenReevaluateCell<CR>', 'Reevaluate cell' },
-            os = { ':noautocmd MoltenEnterOutput<CR>', 'Open output window' },
-            h = { ':MoltenHideOutput<CR>', 'Hide output' },
-            d = { ':MoltenDelete<CR>', 'Delete cell' },
-            n = { ':MoltenNext<CR>', 'Next cell' },
-            N = { ':MoltenPrev<CR>', 'Previous cell' },
-            i = { ':MoltenInit<CR>', 'Initialize molten' },
-          }
-        },
-        { prefix = '<leader>', silent = true })
-      wk.register({
-          h = {
-            name = 'Jupyter Notebook Molten',
-            v = { ':<C-u>MoltenEvaluateVisual<CR>gv', 'Evaluate visual selection' },
-          }
-        },
-        { mode = 'v', prefix = '<leader>', silent = true })
-    end,
-  },
-  -- Converting between ipynb and plain ju.py files
-  {
-    'GCBallesteros/jupytext.nvim',
-    config = true,
-    -- Depending on your nvim distro or config you may need to make the loading not lazy
-    lazy = false,
-  },
+  -- {
+  --   'benlubas/molten-nvim',
+  --   version = '^1.0.0', -- use version <2.0.0 to avoid breaking changes
+  --   dependencies = {
+  --     '3rd/image.nvim',
+  --     'willothy/wezterm.nvim'
+  --   },
+  --   build = ':UpdateRemotePlugins',
+  --   init = function()
+  --     -- these are examples, not defaults. Please see the readme
+  --     vim.g.molten_image_provider = 'wezterm'
+  --     vim.g.molten_output_win_max_height = 20
+  --     vim.g.molten_auto_open_output = false
+  --
+  --     vim.g.molten_wrap_output = true
+  --
+  --     -- Output as virtual text. Allows outputs to always be shown, works with images, but can
+  --     -- be buggy with longer images
+  --     vim.g.molten_virt_text_output = true
+  --
+  --     -- this will make it so the output shows up below the \`\`\` cell delimiter
+  --     vim.g.molten_virt_lines_off_by_1 = true
+  --
+  --     local wk = require('which-key')
+  --     wk.register({
+  --         h = {
+  --           name = 'Jupyter Notebook Molten',
+  --           e = { ':MoltenEvaluateLine<CR>', 'Evaluate cell' },
+  --           E = { ':MoltenReevaluateCell<CR>', 'Reevaluate cell' },
+  --           os = { ':noautocmd MoltenEnterOutput<CR>', 'Open output window' },
+  --           h = { ':MoltenHideOutput<CR>', 'Hide output' },
+  --           d = { ':MoltenDelete<CR>', 'Delete cell' },
+  --           n = { ':MoltenNext<CR>', 'Next cell' },
+  --           N = { ':MoltenPrev<CR>', 'Previous cell' },
+  --           i = { ':MoltenInit<CR>', 'Initialize molten' },
+  --         }
+  --       },
+  --       { prefix = '<leader>', silent = true })
+  --     wk.register({
+  --         h = {
+  --           name = 'Jupyter Notebook Molten',
+  --           v = { ':<C-u>MoltenEvaluateVisual<CR>gv', 'Evaluate visual selection' },
+  --         }
+  --       },
+  --       { mode = 'v', prefix = '<leader>', silent = true })
+  --   end,
+  -- },
+  -- -- Converting between ipynb and plain ju.py files
+  -- {
+  --   'GCBallesteros/jupytext.nvim',
+  --   config = true,
+  --   -- Depending on your nvim distro or config you may need to make the loading not lazy
+  --   lazy = false,
+  -- },
 }
