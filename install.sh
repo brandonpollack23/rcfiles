@@ -10,9 +10,11 @@ deno
 fcitx5
 fcitx5-mozc
 fd
+firefox
 fzf
 fzy
 git 
+geckodriver
 imagemagick
 luajit
 luarocks

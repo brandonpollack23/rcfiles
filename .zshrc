@@ -339,6 +339,20 @@ prompt_nix_shell_setup
 if [[ -f $HOME/.rye/env ]]; then
   source "$HOME/.rye/env"
 fi
+function rye_activate() {
+  source "$HOME/.venv/bin/activate"
+}
+function rye_deactivate() {
+  # if we are in a virtualenv deactivate it
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    deactivate
+  fi
+}
+function rye_pytorch_setup() {
+  rye add torch torchvision torchaudio matplotlib pillow
+  rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium
+}
+
 
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then

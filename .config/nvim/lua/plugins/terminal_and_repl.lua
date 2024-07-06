@@ -212,27 +212,30 @@ return {
       }
 
       -- iron also has a list of commands, see :h iron-commands for all available commands
+
       local wk = require('which-key')
       wk.register({
         r = {
           name = 'Repl',
-          s = { '<cmd>IronRepl<cr>', 'Start repl' },
+          s = { function()
+            vim.cmd('IronRepl')
+
+            wk.register({
+              ['<space>'] = {
+                name = 'Iron Prefix',
+                r = { iron.send_line, 'Send current line' },
+                l = { iron.send_line, 'Send current line' },
+                m = { iron.send_motion, 'Send motion' },
+                f = { iron.send_file, 'Send file' },
+                c = { iron.send_until_cursor, 'Send until cursor' },
+              }
+            })
+          end, 'Start repl' },
           R = { '<cmd>IronRestart<cr>', 'Restart repl' },
           f = { '<cmd>IronFocus<cr>', 'Focus repl' },
           h = { '<cmd>IronHide<cr>', 'Hide repl' },
         }
       }, { prefix = '<leader>' })
-
-      wk.register({
-        ['<space>'] = {
-          name = 'Iron Prefix',
-          r = { iron.send_line, 'Send current line' },
-          l = { iron.send_line, 'Send current line' },
-          m = { iron.send_motion, 'Send motion' },
-          f = { iron.send_file, 'Send file' },
-          c = { iron.send_until_cursor, 'Send until cursor' },
-        }
-      })
     end
   }
 }

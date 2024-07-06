@@ -177,6 +177,88 @@ return {
   },
 
   -- Python and Jupyter
+  -- Jupyter notebook sync
+  {
+    'kiyoon/jupynium.nvim',
+    build = 'rye install .',
+    config = function()
+      local jupynium = require('jupynium')
+      jupynium.setup({
+        jupyter_command = { 'rye', 'run', 'jupyter', },
+        jupynium_file_pattern = { '*.ju.*', '*.py' }
+      })
+
+      -- To sync a Jupynium file to an existing notebook,
+      -- manually open the file in the browser,
+      -- and :JupyniumStartSync 2 to sync to the 2nd tab (count from 1).
+      local wk = require('which-key')
+      local function setup_jupyter_keys()
+        wk.register({
+            h = {
+              name = 'Jupyter Notebook',
+              a = {
+                function()
+                  local file_path = vim.fn.expand('%:t')
+                  local basename = vim.fn.fnamemodify(file_path, ':r')
+                  -- if the file still ends in .ju, remove it
+                  if string.sub(basename, -3) == '.ju' then
+                    basename = string.sub(basename, 1, -4)
+                  end
+                  vim.notify('Starting sync for ' .. basename)
+                  vim.cmd({ cmd = 'JupyniumStartSync', args = { basename } })
+                end,
+                'Attach and open document'
+              },
+              s = {
+                function()
+                  vim.cmd('JupyniumStartAndAttachToServer')
+                end,
+                'Start jupynium server'
+              },
+              S = { function() vim.cmd('JupyniumStopSync') end, 'Stop sync' },
+              r = { function() vim.cmd('JupyniumKernelRestart') end, 'Restart sync' },
+              i = { function() vim.cmd('JupyniumKernelInterrupt') end, 'Interrupt' },
+            },
+          },
+          { prefix = '<leader>', silent = true })
+        -- wk.register({
+        --   ['<space>'] = {
+        --     x = { function() vim.cmd('JupyniumExecuteSelectedCells') end, 'Jupyter Execute selected cells' },
+        --     c = { function() vim.cmd('JupyniumClearSelectedCellsOutputs') end, 'Jupyter Clear selected cells' },
+        --     k = { function() vim.cmd('JupyniumKernelHover') end, 'Jupyter Inspect a variable/hover' },
+        --   }
+        -- })
+        -- wk.register({
+        --   ['<space>'] = {
+        --     x = { function() vim.cmd('JupyniumExecuteSelectedCells') end, 'Jupyter Execute selected cells' },
+        --     c = { function() vim.cmd('JupyniumClearSelectedCellsOutputs') end, 'Jupyter Clear selected cells' },
+        --   }
+        -- }, { mode = 'v' })
+      end
+
+      -- Textobjects use [j and ]j for navigating cells. <space>jj to go to current sep,
+      -- vaj,vij, etc for selecting cells
+      vim.api.nvim_create_autocmd('BufEnter', {
+        pattern = '*.ju.*',
+        callback = function()
+          setup_jupyter_keys()
+        end,
+      })
+
+      wk.register({
+          v = {
+            j = {
+              function()
+                vim.cmd('JupyniumStartAndAttachToServer')
+                setup_jupyter_keys()
+              end,
+              'Start Jupynium Server'
+            }
+          }
+        },
+        { prefix = '<leader>' })
+    end,
+  },
   -- Jupyter notebook evalation
   -- {
   --   'benlubas/molten-nvim',

@@ -16,6 +16,7 @@ lsp_zero.set_sign_icons({
 
 local ensure_installed_lsps = {
   'bashls',
+  'basedpyright', -- python and types
   'clangd',
   'elixirls',
   'eslint',
@@ -25,6 +26,7 @@ local ensure_installed_lsps = {
   'omnisharp_mono',
   'lua_ls',
   -- 'nextls', -- another elixir language server
+  'ruff', -- python linter (fast)
   'rust_analyzer',
   'tsserver',
   'zls',
@@ -286,6 +288,7 @@ cmp.setup({
   sources = {
     { name = 'luasnip' },
     { name = 'nvim_lsp' },
+    { name = 'jupynium' },
     { name = 'path' },
     { name = 'buffer' },
   },
