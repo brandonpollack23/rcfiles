@@ -227,8 +227,8 @@ return {
               i = { function() vim.cmd('JupyniumKernelInterrupt') end, 'Interrupt' },
               d = { function()
                 -- Insert "display(" at the beginning of the line and ")" at the end
-                vim.cmd('normal! Idisplay("')
-                vim.cmd('normal! A")')
+                vim.cmd('normal! Idisplay(')
+                vim.cmd('normal! A)')
                 -- Insert newline and enter normal mode
                 vim.cmd('normal! o')
               end, 'Make line a display command' }
