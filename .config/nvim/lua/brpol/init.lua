@@ -89,6 +89,9 @@ vim.o.wildmode = 'longest:full,full'
 vim.o.wildmenu = true
 vim.o.wildignorecase = true
 
+-- Language overrides
+vim.g.python_recommended_style = 0
+
 -- Tab options
 vim.o.expandtab = true
 vim.o.shiftwidth = 2
