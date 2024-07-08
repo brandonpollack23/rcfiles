@@ -185,7 +185,8 @@ return {
       local jupynium = require('jupynium')
       jupynium.setup({
         jupyter_command = { 'rye', 'run', 'jupyter', },
-        jupynium_file_pattern = { '*.ju.*', '*.py' }
+        jupynium_file_pattern = { '*.ju.*', '*.py' },
+        auto_close_tab = false,
       })
 
       -- To sync a Jupynium file to an existing notebook,
@@ -204,8 +205,14 @@ return {
                   if string.sub(basename, -3) == '.ju' then
                     basename = string.sub(basename, 1, -4)
                   end
-                  vim.notify('Starting sync for ' .. basename)
-                  vim.cmd({ cmd = 'JupyniumStartSync', args = { basename } })
+                  -- Read number input before and if there is one use that instead of basename.
+                  local count = vim.api.nvim_get_vvar('count')
+                  if count == 0 then
+                    vim.notify('Starting sync for ' .. basename)
+                    vim.cmd({ cmd = 'JupyniumStartSync', args = { basename } })
+                  else
+                    vim.cmd({ cmd = 'JupyniumStartSync', args = { count } })
+                  end
                 end,
                 'Attach and open document'
               },
