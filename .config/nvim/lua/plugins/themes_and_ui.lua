@@ -199,8 +199,10 @@ return {
       vim.cmd('hi IblWhitespace guifg=#333333')
       vim.cmd('hi IblScope guifg=#3F3F3F')
 
-      vim.g.indent_blankline_filetype_exclude = { 'help', 'dashboard' }
-      require('ibl').setup()
+      require('ibl').setup(
+        {
+          exclude = { filetypes = { 'help', 'dashboard' } },
+        })
     end
   },
   {
