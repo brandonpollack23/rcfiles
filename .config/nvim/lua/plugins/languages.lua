@@ -228,6 +228,13 @@ return {
             },
           },
           { prefix = '<leader>', silent = true })
+        wk.register({
+          ['<space>'] = {
+            p = { ':JupyniumScrollUp<CR>', 'Scroll browser page up' },
+            n = { ':JupyniumScrollDown<CR>', 'Scroll browser page down' },
+          }
+        })
+
         -- wk.register({
         --   ['<space>'] = {
         --     x = { function() vim.cmd('JupyniumExecuteSelectedCells') end, 'Jupyter Execute selected cells' },
