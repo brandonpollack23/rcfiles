@@ -349,7 +349,7 @@ function rye_deactivate() {
   fi
 }
 function rye_pytorch_setup() {
-  rye add torch torchvision torchaudio matplotlib pillow
+  rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime
   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium
 }
 

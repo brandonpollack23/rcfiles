@@ -18,6 +18,7 @@ local ensure_installed_lsps = {
   'bashls',
   'basedpyright', -- python and types
   'clangd',
+  'debugpy',
   'elixirls',
   'eslint',
   'gopls',
@@ -216,7 +217,7 @@ require('mason-lspconfig').setup({
           },
         }
       }
-    end
+    end,
   },
 })
 require('mason-nvim-dap').setup({
@@ -234,7 +235,33 @@ require('mason-nvim-dap').setup({
   },
 
   -- See mason-nvim-dap advanced configuration for an example on how to override default handlers/adapter setup
-  handlers = {}
+  handlers = {
+    function(config)
+      -- all sources with no handler get passed here
+
+      -- Keep original functionality
+      require('mason-nvim-dap').default_setup(config)
+    end,
+    python = function(config)
+      -- Run `rye version` and if it returns 0, then we know we're in a rye project
+      -- local exit_code = vim.system({ 'rye', 'version' }):wait().code
+      -- if exit_code == 0 then
+      --   command = { 'rye', 'run', 'python3' }
+      -- else
+      --   command = '/usr/bin/python3',
+      -- end
+
+      config.adapters = {
+        type = 'executable',
+        command = 'python3',
+        args = {
+          '-m',
+          'debugpy.adapter',
+        },
+      }
+      require('mason-nvim-dap').default_setup(config) -- don't forget this!
+    end,
+  },
 })
 
 local cmp = require('cmp')
