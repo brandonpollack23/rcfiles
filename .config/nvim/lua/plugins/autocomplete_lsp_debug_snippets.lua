@@ -199,6 +199,14 @@ return {
       require('luasnip.loaders.from_vscode').lazy_load()
       -- require('brpol.snippets.first_snippet')
       require('brpol.snippets.date')
+
+      vim.api.nvim_create_autocmd('BufEnter', {
+        pattern = { '*.py' },
+        callback = function()
+          require('brpol.snippets.jupytext')
+        end
+      }
+      )
       require('telescope').load_extension('luasnip')
 
       -- Tab is set up to balance between all its uses in remap.lua
