@@ -225,6 +225,13 @@ return {
               S = { function() vim.cmd('JupyniumStopSync') end, 'Stop sync' },
               r = { function() vim.cmd('JupyniumKernelRestart') end, 'Restart sync' },
               i = { function() vim.cmd('JupyniumKernelInterrupt') end, 'Interrupt' },
+              d = { function()
+                -- Insert "display(" at the beginning of the line and ")" at the end
+                vim.cmd('normal! Idisplay("')
+                vim.cmd('normal! A")')
+                -- Insert newline and enter normal mode
+                vim.cmd('normal! o')
+              end, 'Make line a display command' }
             },
           },
           { prefix = '<leader>', silent = true })
