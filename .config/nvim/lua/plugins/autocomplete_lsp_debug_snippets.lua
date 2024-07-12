@@ -204,6 +204,7 @@ return {
         pattern = { '*.py' },
         callback = function()
           require('brpol.snippets.jupytext')
+          require('brpol.snippets.python')
         end
       }
       )

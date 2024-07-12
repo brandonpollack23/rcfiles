@@ -18,7 +18,6 @@ local ensure_installed_lsps = {
   'bashls',
   'basedpyright', -- python and types
   'clangd',
-  'debugpy',
   'elixirls',
   'eslint',
   'gopls',
