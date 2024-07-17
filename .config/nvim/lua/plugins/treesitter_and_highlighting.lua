@@ -65,7 +65,7 @@ return {
           enable = true,
           keymaps = {
             node_incremental = 'u',
-            node_decremental = 'i',
+            node_decremental = 'U',
           },
           -- disable = function(lang, buf)
           --   local max_filesize = 100 * 1024 -- 100 KB

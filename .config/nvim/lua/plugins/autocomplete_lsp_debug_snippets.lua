@@ -319,6 +319,7 @@ return {
           }
         },
         suggestion = {
+          enabled = false,
           auto_trigger = true,
           keymap = {
             -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.
@@ -329,12 +330,13 @@ return {
             dismiss = '<C-]>',
           },
           filetypes = {
-            ['*'] = true,
+            ['*'] = false, -- disabled by default
           }
         }
       })
 
-      local copilotEnabled = true
+      vim.cmd('Copilot disable')
+      local copilotEnabled = false
       local function copilot_toggle()
         copilotEnabled = not copilotEnabled
         if copilotEnabled then
