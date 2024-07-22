@@ -199,6 +199,7 @@ return {
       require('luasnip.loaders.from_vscode').lazy_load()
       -- require('brpol.snippets.first_snippet')
       require('brpol.snippets.date')
+      require('luasnip.loaders.from_vscode').lazy_load({ paths = { '../brpol/snippets/vscode_style' } })
 
       vim.api.nvim_create_autocmd('BufEnter', {
         pattern = { '*.py' },

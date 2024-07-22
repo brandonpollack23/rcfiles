@@ -349,7 +349,8 @@ function rye_deactivate() {
   fi
 }
 function rye_pytorch_setup() {
-  rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime
+  # mlxtend is for plotting confusion matrix
+  rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime pdbplus pandas mlxtend torchmetrics
   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
 }
 
