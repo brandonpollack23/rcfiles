@@ -29,6 +29,7 @@ local ensure_installed_lsps = {
   'ruff', -- python linter (fast)
   'rust_analyzer',
   'tsserver',
+  'taplo',
   'zls',
 }
 
