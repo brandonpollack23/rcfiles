@@ -280,6 +280,13 @@ return {
         { prefix = '<leader>' })
     end,
   },
+  -- Tailwind CSS
+  {
+    'luckasRanarison/tailwind-tools.nvim',
+    config = function()
+      require('tailwind-tools').setup({})
+    end
+  }
   -- Jupyter notebook evalation
   -- {
   --   'benlubas/molten-nvim',

@@ -30,6 +30,7 @@ return {
           'markdown_inline',
           'python',
           'rust',
+          'tsx',
           'typescript',
           'vim',
           'vimdoc',

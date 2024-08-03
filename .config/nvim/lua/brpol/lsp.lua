@@ -30,6 +30,7 @@ local ensure_installed_lsps = {
   'rust_analyzer',
   'tsserver',
   'taplo',
+  'tailwindcss-language-server',
   'zls',
 }
 
