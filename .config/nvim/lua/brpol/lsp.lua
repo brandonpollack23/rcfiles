@@ -133,7 +133,7 @@ require('mason-lspconfig').setup({
               unusedparams = true,
             },
             staticcheck = true,
-            gofumpt = false,
+            gofumpt = true,
             codelenses = {
               generate = true,
               regenerate_cgo = true,

@@ -391,12 +391,12 @@ config.keys = {
     action = wezterm.action { ScrollByPage = 1 },
   },
   {
-    key = 'J',
+    key = 'K',
     mods = 'ALT|SHIFT',
     action = wezterm.action.ScrollByLine(1),
   },
   {
-    key = 'K',
+    key = 'J',
     mods = 'ALT|SHIFT',
     action = wezterm.action.ScrollByLine(-1),
   },
