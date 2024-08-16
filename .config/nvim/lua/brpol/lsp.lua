@@ -30,7 +30,7 @@ local ensure_installed_lsps = {
   'rust_analyzer',
   'tsserver',
   'taplo',
-  'tailwindcss-language-server',
+  'tailwindcss',
   'zls',
 }
 
@@ -58,6 +58,7 @@ require('mason-lspconfig').setup({
     ['clangd'] = function()
       lspconfig.clangd.setup {
         cmd = { 'clangd', '--pch-storage=memory' },
+        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' }, -- exclude "proto". })
       }
     end,
 
