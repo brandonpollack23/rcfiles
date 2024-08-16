@@ -7,8 +7,51 @@ return {
         current_line_blame = true,
         current_line_blame_opts = {
           virt_text_pos = 'right_align',
-          delay = 50,
+          delay = 250,
+          virt_text_priority = 1000,
         },
+        current_line_blame_formatter = function(name, blame_info, opts)
+          if blame_info.author == name then
+            blame_info.author = 'You'
+          end
+          local row = vim.api.nvim_win_get_cursor(0)[1]
+          local len = #vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+          -- Iterate over extmarks to find virtual text and add their lengths
+          local extmarks = vim.api.nvim_buf_get_extmarks(0, -1, { row, 0 }, { row, -1 }, { details = true })
+          for _, extmark in ipairs(extmarks) do
+            local details = extmark[4]
+            if details and details.virt_text then
+              for _, chunk in ipairs(details.virt_text) do
+                local text = chunk[1]
+                len = len + #text
+              end
+            end
+          end
+
+          local text
+          if len > 80 then
+            -- truncate text on long lines.
+            text = ''
+          elseif blame_info.author == 'Not Committed Yet' then
+            text = blame_info.author
+          else
+            local date_time
+
+            if opts ~= nil and opts.relative_time then
+              date_time = require('gitsigns.util').get_relative_time(tonumber(blame_info['author_time']))
+            else
+              date_time = os.date('%Y-%m-%d', tonumber(blame_info['author_time']))
+            end
+
+            text = string.format('%s, %s - %s', blame_info.author, date_time, blame_info.summary)
+          end
+
+          if text ~= '' then
+            text = ' ' .. text
+          end
+
+          return { { text, 'GitSignsCurrentLineBlame' } }
+        end,
         on_attach = function(bufnr)
           local wk = require('which-key')
 
