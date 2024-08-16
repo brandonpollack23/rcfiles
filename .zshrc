@@ -36,7 +36,7 @@ autoload -Uz compinit && compinit
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH:$HOME/.local/scripts"
+export PATH="$HOME/bin:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH:$HOME/.local/scripts"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
@@ -234,6 +234,9 @@ alias :q="exit"
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
 
+# pulumi aliases
+alias pctl=pulumictl
+
 # wezterm stuff
 # For a new domain elsewhere (like tmux) use the --config option and set the domain
 #  `wezterm --config 'ssh_domains={{name='adhoc', ..}' connect adhoc`
@@ -310,6 +313,8 @@ function gitsync() {
 alias gamc='git am --continue'
 alias gama='git am --abort'
 alias gamd='git am --show-current-patch=diff'
+alias grbi='git rebase -i --update-refs --autosquash'
+alias gfu='git commit --fixup'
 
 function qemu-kill() {
     ps aux G qemu-system-x86_64 | grep -v grep | head -n 1 | awk '{print $2}' | xargs kill -9
@@ -354,7 +359,6 @@ function rye_pytorch_setup() {
   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
 }
 
-
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
     echo "Sourcing vulkan sdk"
@@ -374,3 +378,6 @@ else
     echo "Welcome to $HOST!"
 fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# add Pulumi to the PATH
+export PATH=$PATH:/home/brpol/.pulumi/bin
