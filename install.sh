@@ -14,7 +14,9 @@ firefox
 fzf
 fzy
 git 
+git-absorb
 geckodriver
+gum
 imagemagick
 luajit
 luarocks
