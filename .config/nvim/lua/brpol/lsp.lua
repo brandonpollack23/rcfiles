@@ -16,7 +16,6 @@ lsp_zero.set_sign_icons({
 
 local ensure_installed_lsps = {
   'bashls',
-  'basedpyright', -- python and types
   'clangd',
   'elixirls',
   'eslint',
@@ -103,6 +102,7 @@ require('mason-lspconfig').setup({
 
     ['gopls'] = function()
       lspconfig.gopls.setup {
+        cmd_env = { GOFUMPT_SPLIT_LONG_LINES = 'on' },
         on_init = function()
           vim.api.nvim_create_autocmd('BufWritePre', {
             pattern = '*.go',
@@ -134,7 +134,7 @@ require('mason-lspconfig').setup({
               unusedparams = true,
             },
             staticcheck = true,
-            gofumpt = true,
+            -- gofumpt = true, -- provided by golangci_lint ls
             codelenses = {
               generate = true,
               regenerate_cgo = true,
@@ -164,10 +164,10 @@ require('mason-lspconfig').setup({
           command = {
             vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint'),
             'run',
-            '--enable-all',
+            -- '--enable-all',
             '--out-format', 'json',
-            '--issues-exit-code=1',
-            '--disable', 'deadcode,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,gofumpt,golint,gomnd,ifshort,interfacer,maligned,nlreturn,nonamedreturns,nosnakecase,scopelint,structcheck,varcheck,varnamelen,wsl'
+            -- '--issues-exit-code=1',
+            -- '--disable', 'deadcode,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,golint,gomnd,ifshort,interfacer,maligned,nlreturn,nonamedreturns,nosnakecase,scopelint,structcheck,varcheck,varnamelen,wsl'
           },
         }
       }
@@ -199,11 +199,11 @@ require('mason-lspconfig').setup({
       }
     end,
 
-    ['basedpyright'] = function()
-      lspconfig.basedpyright.setup {
+    ['pyright'] = function()
+      lspconfig.pyright.setup {
         -- cmd = { 'rye run basedpyright' },
         settings = {
-          basedpyright = {
+          pyright = {
             autoImportCompletion = true,
             disableLanguageServices = false,
             disableOrganizeImports = false,

@@ -299,9 +299,9 @@ function dates() {
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from
 function gitxl() {
-    local upstream=$1
-    local branches=$(git branch | tr -d '*' | awk '{print "'"$upstream"^\!' " $1}' | tr '\n' ' ')
-    echo $branches | xargs git --no-pager log --pretty=oneline --graph --abbrev-commit --decorate
+  local base=${1:-"origin/master"}
+  git log --graph --oneline --decorate --simplify-by-decoration \
+    --boundary master..${base} $(git for-each-ref --format="%(refname:short)" refs/heads/) $@
 }
 function gitsync() {
     local branches=$(git branch | tr -d '*' | sed 's/^ *//g' | sed 's/\n/ /g')
@@ -320,8 +320,10 @@ function qemu-kill() {
     ps aux G qemu-system-x86_64 | grep -v grep | head -n 1 | awk '{print $2}' | xargs kill -9
 }
 
+# Golang stuff
 # Go bin path
 export PATH=$PATH:$HOME/bin/go/bin
+export GOFUMPT_SPLIT_LONG_LINES="on"
 
 # Node Version Manager nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
