@@ -338,6 +338,10 @@ fi
 cargo binstall tree-sitter-cli
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
+# Install go etc
+curl -sSf https://raw.githubusercontent.com/owenthereal/goup/master/install.sh | sh --skip-prompt
+go install github.com/iOliverNguyen/git-pr@latest # git pr
+
 # Install python stuff and rye
 curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
 if [[ "$XDG_CURRENT_DESKTOP" -eq "KDE" ]]; then
