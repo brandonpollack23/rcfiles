@@ -236,6 +236,7 @@ alias gpf="gp -f"
 alias gbli="git branchless init"
 alias git='git-branchless wrap --'
 alias g='git-branchless wrap --'
+alias gd="git difftool --tool 'branchless' --dir-diff"
 alias gsl='git sl --reverse'
 alias gitsl='git sl --reverse'
 alias gxl='git sl --reverse'
