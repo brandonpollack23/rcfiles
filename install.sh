@@ -54,6 +54,7 @@ alacritty
 bitwarden
 bitwarden-cli
 fd
+git-branchless
 github-cli
 neovide
 kio-gdrive
@@ -330,6 +331,9 @@ cargo binstall --no-confirm bat
 cargo binstall --no-confirm git-delta
 if [[ -x "$(command -v fd)" ]]; then
   cargo binstall --no-confirm fd-find
+fi
+if [[ -x "$(command -v git-branchless)" ]]; then
+  cargo binstall --no-confirm git-branchless
 fi
 cargo binstall tree-sitter-cli
 cargo install --git https://github.com/neovide/neovide # NVim gui

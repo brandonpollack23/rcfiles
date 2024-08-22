@@ -84,3 +84,5 @@
 [includeIf "gitdir:~/.gitconfig.local"]
 [init]
 	defaultBranch = master
+[branchless "test"]
+	jobs = 0

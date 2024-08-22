@@ -233,6 +233,13 @@ alias :q="exit"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
+alias gbli="git branchless init"
+alias git='git-branchless wrap --'
+alias g='git-branchless wrap --'
+alias gsl='git sl --reverse'
+alias gitsl='git sl --reverse'
+alias gxl='git sl --reverse'
+alias gitxl='git sl --reverse'
 
 # pulumi aliases
 alias pctl=pulumictl
@@ -298,7 +305,7 @@ function dates() {
 # Git aliases
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from
-function gitxl() {
+function gitrawxl() {
   local base=${1:-"origin/master"}
   git log --graph --oneline --decorate --simplify-by-decoration \
     --boundary master..${base} $(git for-each-ref --format="%(refname:short)" refs/heads/) $@
