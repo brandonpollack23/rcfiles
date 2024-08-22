@@ -278,6 +278,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/nix-zsh-completions" "$HOME/nix-zsh-completions"
   ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
   ln -sfn "$RCFILES_DIR/zsh-plugins" "$HOME/zsh-plugins"
+  ln -sfn "$RCFILES_DIR/.golangci.yml" "$HOME/.golangci.yml"
 }
 
 # Debugging enabled

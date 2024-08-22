@@ -372,14 +372,7 @@ return {
               cmd = { vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint-langserver') },
               root_dir = lspconfig.util.root_pattern('go.work', 'go.mod', '.git', '.golangci.yml', '.golangci.yaml', '.golangci.toml', '.golangci.json'),
               init_options = {
-                command = {
-                  vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint'),
-                  'run',
-                  '--enable-all',
-                  '--out-format', 'json',
-                  -- '--issues-exit-code=1',
-                  '--disable', 'deadcode,depguard,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,golint,gomnd,ifshort,interfacer,maligned,nlreturn,nonamedreturns,nosnakecase,revive,scopelint,structcheck,varcheck,varnamelen,wsl'
-                },
+                command = { 'golangci-lint', 'run', '--out-format', 'json' }
               }
             }
           end,
