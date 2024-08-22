@@ -33,6 +33,9 @@ local ensure_installed_lsps = {
   'zls',
 }
 
+-- needed for non mapped lsps in mason-lspconfig
+local ensure_installed_mason = { 'golangci-lint' }
+
 -- Add lsps not supported on windows
 if vim.fn.has('win32') ~= 1 then
   table.insert(ensure_installed_lsps, 'elp')
@@ -42,6 +45,12 @@ end
 -- to learn how to use mason.nvim with lsp-zero
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
 require('mason').setup()
+for _, p in pairs(ensure_installed_mason) do
+  local pkg = require('mason-registry').get_package(p)
+  if not pkg:is_installed() then
+    pkg:install()
+  end
+end
 require('mason-lspconfig').setup({
   -- Anything you always want installed add to this list, otherwise you need to use Mason to install.
   -- Everything is enabled by the lsp_zero.default_setup below, but you can customize them as I have done with lua_ls if necessary.
