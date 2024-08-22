@@ -283,6 +283,7 @@ return {
   -- Tailwind CSS
   {
     'luckasRanarison/tailwind-tools.nvim',
+    dependencies = { 'VonHeikemen/lsp-zero.nvim' },
     config = function()
       require('tailwind-tools').setup({})
     end

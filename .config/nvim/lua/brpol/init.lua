@@ -37,7 +37,6 @@ require('lazy').setup('plugins')
 
 -- Individual Plugin Setup
 require('brpol.vscode_theme')
-require('brpol.lsp')
 
 -- Custom commands
 require('brpol.commands')
