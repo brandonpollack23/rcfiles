@@ -175,7 +175,7 @@ return {
     end
   },
   { 'jay-babu/mason-nvim-dap.nvim' },
-  { 'VonHeikemen/lsp-zero.nvim',   branch = 'v3.x' },
+  { 'VonHeikemen/lsp-zero.nvim',   branch = 'v4.x' },
   { 'neovim/nvim-lspconfig' },
   { 'hrsh7th/nvim-cmp' },
   { 'hrsh7th/cmp-nvim-lsp' },

@@ -1,6 +1,19 @@
 local lsp_zero = require('lsp-zero')
 local lspconfig = require('lspconfig')
 
+local lsp_attach = function(client, bufnr)
+  -- see :help lsp-zero-keybindings
+  -- to learn the available actions
+  lsp_zero.default_keymaps({buffer = bufnr})
+end
+
+lsp_zero.extend_lspconfig({
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  lsp_attach = lsp_attach,
+  float_border = 'rounded',
+  sign_text = true,
+})
+
 lsp_zero.on_attach(function(client, bufnr)
   -- see :help lsp-zero-keybindings
   -- to learn the available actions
@@ -277,7 +290,7 @@ require('mason-nvim-dap').setup({
 
 local cmp = require('cmp')
 local cmp_select = { behaviour = cmp.SelectBehavior.Select }
-local cmp_mappings = lsp_zero.defaults.cmp_mappings({
+local cmp_mappings = {
   ['<C-Space>'] = cmp.mapping.complete(),
   ['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-j>'] = cmp.mapping.select_next_item(cmp_select),
@@ -313,11 +326,11 @@ local cmp_mappings = lsp_zero.defaults.cmp_mappings({
   --     fallback()
   --   end
   -- end, { 'i', 's' }),
-})
+}
 
 cmp.setup({
   window = {},
-  mapping = cmp_mappings,
+  mapping = cmp.mapping.preset.insert(cmp_mappings),
   sources = {
     { name = 'luasnip' },
     { name = 'nvim_lsp' },
@@ -325,10 +338,6 @@ cmp.setup({
     { name = 'path' },
     { name = 'buffer' },
   },
-})
-
-lsp_zero.set_preferences({
-  sign_icons = {}
 })
 
 -- Use LSP for these things if it exists, otherwise use vim's built in
