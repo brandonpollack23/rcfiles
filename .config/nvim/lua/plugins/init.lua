@@ -159,7 +159,7 @@ return {
   },
 
   {
-    url = 'https://git.sr.ht/~reggie/licenses.nvim',
+    url = 'https://git.sr.ht/~ashie/licenses.nvim',
     config = function()
       require('licenses').setup({
         copyright_holder = 'Brandon Pollack',

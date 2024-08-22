@@ -29,7 +29,7 @@
   "iron.nvim": { "branch": "master", "commit": "e6b78ec1bc56eab63b3a9112d348b3d79836b672" },
   "jupynium.nvim": { "branch": "master", "commit": "828052ece86a5470f97247f6621e8a577154ee41" },
   "lazy.nvim": { "branch": "main", "commit": "077102c5bfc578693f12377846d427f49bc50076" },
-  "licenses.nvim": { "branch": "master", "commit": "097c69f66505479b1f3fc3a051f4f9528abcb345" },
+  "licenses.nvim": { "branch": "master", "commit": "7587f9d83be3307a1ddad54636ba8f124e69bc19" },
   "lsp-progress.nvim": { "branch": "main", "commit": "d5f4d28efe75ce636bfbe271eb45f39689765aab" },
   "lsp-zero.nvim": { "branch": "v3.x", "commit": "56db3d5ce5476b183783160e6045f7337ba12b83" },
   "lsp_signature.nvim": { "branch": "master", "commit": "a38da0a61c172bb59e34befc12efe48359884793" },
