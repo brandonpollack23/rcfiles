@@ -375,10 +375,10 @@ return {
                 command = {
                   vim.fn.expand('$HOME/.local/share/nvim/mason/bin/golangci-lint'),
                   'run',
-                  -- '--enable-all',
+                  '--enable-all',
                   '--out-format', 'json',
                   -- '--issues-exit-code=1',
-                  -- '--disable', 'deadcode,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,golint,gomnd,ifshort,interfacer,maligned,nlreturn,nonamedreturns,nosnakecase,scopelint,structcheck,varcheck,varnamelen,wsl'
+                  '--disable', 'deadcode,depguard,exhaustivestruct,forbidigo,funlen,gochecknoglobals,godox,golint,gomnd,ifshort,interfacer,maligned,nlreturn,nonamedreturns,nosnakecase,revive,scopelint,structcheck,varcheck,varnamelen,wsl'
                 },
               }
             }
