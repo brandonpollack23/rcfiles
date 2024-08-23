@@ -131,6 +131,7 @@ plugins=(
     git
     git-extras
     gitignore
+    golang
     gradle
     lein
     npm
