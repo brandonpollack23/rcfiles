@@ -21,7 +21,9 @@ imagemagick
 luajit
 luarocks
 make
+maven
 neovim
+jdk-openjdk
 pandoc
 ripgrep
 ruby

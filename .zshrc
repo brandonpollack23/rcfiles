@@ -36,7 +36,7 @@ autoload -Uz compinit && compinit
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$HOME/bin:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin:$PATH:$HOME/.local/scripts"
+export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/.pulumi/bin:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
@@ -391,6 +391,3 @@ else
     echo "Welcome to $HOST!"
 fi
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# add Pulumi to the PATH
-export PATH=$PATH:/home/brpol/.pulumi/bin
