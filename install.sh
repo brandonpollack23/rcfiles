@@ -16,6 +16,7 @@ fzy
 git 
 git-absorb
 geckodriver
+gource
 gum
 imagemagick
 luajit
