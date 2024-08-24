@@ -1,78 +1,79 @@
 #!/bin/bash
 
-PACKAGES="
-bat
-cmake
-coreutils
-cowsay
-curl
-deno
-fcitx5
-fcitx5-mozc
-fd
-firefox
-fzf
-fzy
-git 
-git-absorb
-geckodriver
-gource
-gum
-imagemagick
-luajit
-luarocks
-make
-maven
-neovim
-jdk-openjdk
-pandoc
-ripgrep
-ruby
-shellcheck
-sqlite3
-tmux
-tree
-vim
-xclip
-zsh
-"
+# Define an array to hold the package names
+PACKAGES=(
+  bat          # A clone of cat(1) with syntax highlighting and Git integration
+  cmake        # Cross-platform open-source make system
+  coreutils    # Basic file, shell, and text manipulation utilities
+  cowsay       # Configurable talking cow (or other character) in terminal
+  curl         # Command line tool for transferring data with URLs
+  deno         # A secure runtime for JavaScript and TypeScript
+  fcitx5       # Input method framework
+  fcitx5-mozc  # Mozc engine for Fcitx5, typically used for Japanese input
+  fd           # A simple, fast and user-friendly alternative to find
+  firefox      # Popular open-source web browser
+  fzf          # General-purpose command-line fuzzy finder
+  fzy          # A better fuzzy finder for the command line
+  git          # Version control system
+  git-absorb   # Automatically fix up commits with the knowledge of Git history
+  geckodriver  # WebDriver for Firefox
+  gource       # Visualize Git repositories as a tree
+  gum          # A tool for making fancy terminal scripts
+  imagemagick  # Software suite to create, edit, compose, or convert images
+  luajit       # Just-In-Time Compiler (JIT) for the Lua programming language
+  luarocks     # Package manager for Lua modules
+  make         # Utility for directing compilation
+  maven        # Build automation tool used primarily for Java projects
+  neovim       # Hyperextensible Vim-based text editor
+  jdk-openjdk  # OpenJDK Development Kit
+  pandoc       # Universal document converter
+  ripgrep      # Recursively searches directories for a regex pattern
+  ruby         # Dynamic, open source programming language
+  shellcheck   # Static analysis tool for shell scripts
+  sqlite3      # Command line interface for SQLite databases
+  tmux         # Terminal multiplexer
+  tree         # Display directories as trees
+  vim          # Highly configurable text editor
+  xclip        # Command line interface to the X clipboard
+  zsh          # Powerful shell with scripting language
+)
 
-DEBIAN_PACKAGES="
-apt-file
-debian-handbook
-devscripts
-etherwake
-fd-find
-fortunes-debian-hints
-info
-libgraphicsmagick1-dev
-libmagickwand-dev
-net-tools
-texinfo
-wakeonlan
-"
+DEBIAN_PACKAGES=(
+  apt-file                  # Search for files within Debian packages
+  debian-handbook           # Comprehensive guide to Debian system administration
+  devscripts                # Scripts to assist with Debian packaging
+  etherwake                 # Tool for sending Wake-On-LAN packets
+  fd-find                   # A simple, fast and user-friendly alternative to find
+  fortunes-debian-hints     # Collection of Debian-related fortune cookies
+  info                      # Read Info documents
+  libgraphicsmagick1-dev    # Development files for the GraphicsMagick library
+  libmagickwand-dev         # Development files for the ImageMagick Wand API
+  net-tools                 # Networking utilities like ifconfig and netstat
+  texinfo                   # GNU documentation system for on-line information and printed output
+  wakeonlan                 # Send Wake-On-LAN magic packets
+)
 
-ARCH_PACKAGES="
-alacritty
-bitwarden
-bitwarden-cli
-fd
-git-branchless
-github-cli
-neovide
-kio-gdrive
-"
+ARCH_PACKAGES=(
+  alacritty       # A fast, cross-platform, OpenGL terminal emulator
+  bitwarden       # Secure, open source password manager for all of your devices
+  bitwarden-cli   # Command-line interface for Bitwarden
+  fd              # A simple, fast and user-friendly alternative to find
+  git-branchless  # Perform branchless version control operations with Git
+  github-cli      # GitHub’s official command line tool
+  neovide         # Neovim client in a fully featured graphical user interface
+  kio-gdrive      # KIO slave for Google Drive integration with KDE
+)
 
-MANJARO_ONLY_PACKAGES="
-libpamac-flatpack-plugin
-libpamac-snap-plugin
-"
+MANJARO_ONLY_PACKAGES=(
+  libpamac-flatpak-plugin  # Flatpak plugin for Pamac, the package manager for Manjaro
+  libpamac-snap-plugin     # Snap plugin for Pamac, the package manager for Manjaro
+)
 
-AUR_ARCH_PACKAGES="
-google-chrome
-neovim-nightly
-obsidian
-"
+AUR_ARCH_PACKAGES=(
+  google-chrome    # The popular web browser from Google
+  neovim-nightly   # Latest nightly build of Neovim
+  obsidian         # Powerful knowledge base on top of a local folder of plain text Markdown files
+)
 
 ask_confirmation() {
   read -p "You are running this script as root. Are you sure you want to continue? (yes/no): " response
