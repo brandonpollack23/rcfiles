@@ -70,7 +70,7 @@ linters-settings:
 
   forbidigo:
     forbid:
-      - p: ^print.*$
+      - p: ^print\(.*\)$
         msg: Use fmt.* family of print functions.
 
   funlen:
