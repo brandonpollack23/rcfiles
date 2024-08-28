@@ -46,9 +46,7 @@ return {
       -- I default to using the vscode json format because it's more common and can be configured per project without another dependency.
       -- For handling inputs, or multiple platforms in launch.json, see dap.txt or the docs on vscode launch.json
       require('dap.ext.vscode').load_launchjs(nil,
-        {
-          delve = { 'go', },
-        }
+        {}
       )
 
       -- Add configurations for certain languages
