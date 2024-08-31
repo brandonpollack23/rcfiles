@@ -53,6 +53,11 @@ wk.register({
         require('plenary.profile').stop()
         vim.notify('Stopped profiling')
       end, 'Stop Profiling' },
+    },
+    ['%'] = { function()
+      vim.cmd('let @+ = expand("%:p")')
+      vim.notify(vim.fn.expand('%:p'))
+    end, 'Show full path to file and copy to system clipboard'
     }
   },
   { prefix = '<leader>' }
