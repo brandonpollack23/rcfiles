@@ -662,7 +662,9 @@ return {
     'L3MON4D3/LuaSnip',
     dependencies = { 'rafamadriz/friendly-snippets', 'saadparwaiz1/cmp_luasnip', 'benfowler/telescope-luasnip.nvim' },
     config = function()
-      require('luasnip.loaders.from_vscode').lazy_load()
+      require('luasnip.loaders.from_vscode').lazy_load({
+        exclude = { 'go' },
+      })
       -- require('brpol.snippets.first_snippet')
       require('brpol.snippets.date')
       require('luasnip.loaders.from_vscode').lazy_load({ paths = { '../brpol/snippets/vscode_style' } })
