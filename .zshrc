@@ -247,8 +247,9 @@ alias gitsl='git sl --reverse'
 alias gxl='git sl --reverse'
 alias gitxl='git sl --reverse'
 
-# pulumi aliases
+# pulumi aliases and env
 alias pctl=pulumictl
+export AWS_DEFAULT_PROFILE="pulumi-dev-sandbox"
 
 # wezterm stuff
 # For a new domain elsewhere (like tmux) use the --config option and set the domain
