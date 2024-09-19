@@ -119,6 +119,8 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    aws
+    azure
     catimg
     colorize
     command-not-found
@@ -127,7 +129,7 @@ plugins=(
     docker-compose
     emoji
     fzf
-    # gcloud
+    gcloud
     git
     git-extras
     gitignore
