@@ -21,6 +21,21 @@
 -- I use <leader>h for language specific stuff.
 
 return {
+  -- LSP output panel
+  {
+    'mhanberg/output-panel.nvim',
+    config = function()
+      require('output_panel').setup()
+
+      local wk = require('which-key')
+      wk.add({
+          { 'vP', ':OutputPanel<cr>', desc = 'Toggle LSP Output Panel' },
+        },
+        { prefix = '<leader>' }
+      )
+    end
+  },
+
   -- Elixir
   {
     'elixir-tools/elixir-tools.nvim',
@@ -86,7 +101,8 @@ return {
               c = { ':GoCmt<cr>', 'Add Doc comment' },
               d = { ':GoCheat ', 'Lookup cheat docs for function' },
 
-              i = { ':GoImpl', 'Generate interface implementation' },
+              i = { ':GoImplements', 'Get implementations of interface' },
+              I = { ':GoImpl', 'Generate interface implementation' },
               e = { ':GoEnum ', 'Generate enum' },
 
               r = { ':GoGenReturn<cr>', 'Generate a return value (ie iferr)' },
@@ -124,6 +140,7 @@ return {
               c = 'which_key_ignore',
               d = 'which_key_ignore',
 
+              I = 'which_key_ignore',
               i = 'which_key_ignore',
               e = 'which_key_ignore',
 

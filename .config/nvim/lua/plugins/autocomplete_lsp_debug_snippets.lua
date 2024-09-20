@@ -342,6 +342,7 @@ return {
                   analyses = {
                     unusedparams = true,
                   },
+                  buildFlags = { '-tags=all' },
                   staticcheck = true,
                   -- gofumpt = true, -- provided by golangci_lint ls
                   codelenses = {
