@@ -182,6 +182,7 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'williamboman/mason.nvim',
       'folke/neoconf.nvim', -- neoconf wants to be set up before any LSPs
+      'L3MON4D3/LuaSnip',
     },
     config = function()
       local cmp_nvim_lsp = require('cmp_nvim_lsp')
@@ -490,25 +491,27 @@ return {
           select = false,
         }),
 
-        -- ['<Tab>'] = cmp.mapping(function(fallback)
-        --   if cmp.visible() then
-        --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-        --   elseif luasnip.expand_or_jumpable() then
-        --     luasnip.expand_or_jump()
-        --   else
-        --     fallback()
-        --   end
-        -- end, { 'i', 's' }),
-        --
-        -- ['<S-Tab>'] = cmp.mapping(function(fallback)
-        --   if cmp.visible() then
-        --     cmp.select_prev_item()
-        --   elseif luasnip.jumpable(-1) then
-        --     luasnip.jump(-1)
-        --   else
-        --     fallback()
-        --   end
-        -- end, { 'i', 's' }),
+        ['<Tab>'] = cmp.mapping(function(fallback)
+          local luasnip = require('luasnip')
+
+          if cmp.visible() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+
+        ['<S-Tab>'] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
       }
 
       cmp.setup({
