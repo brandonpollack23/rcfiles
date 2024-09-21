@@ -794,7 +794,7 @@ return {
           }
         },
         suggestion = {
-          enabled = false,
+          enabled = true,
           auto_trigger = true,
           keymap = {
             -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.
@@ -810,8 +810,8 @@ return {
         }
       })
 
-      vim.cmd('Copilot disable')
-      local copilotEnabled = false
+      vim.cmd('Copilot enable')
+      local copilotEnabled = true
       local function copilot_toggle()
         copilotEnabled = not copilotEnabled
         if copilotEnabled then
@@ -873,11 +873,14 @@ return {
             e = { ':CopilotChatExplain<cr>', 'CopilotChat - Explain code' },
             gt = { ':CopilotChatTests<cr>', 'CopilotChat - Generate tests' },
             f = { ':CopilotChatFixDiagnostic<cr>', 'CopilotChat - Fix diagnostic', },
-            R = { ':CopilotChatReset<cr>', 'CopilotChat - Reset chat history and clear buffer', }
+            R = { ':CopilotChatReset<cr>', 'CopilotChat - Reset chat history and clear buffer' },
+            o = { ':CopilotChatOpen<cr>', 'Open CopilotChat' },
+            x = { ':CopilotChatClose<cr>', 'Close CopilotChat' },
+            d = { ':CopilotChatFixDocs<cr>', 'CopilotChat generate documentation' },
           }
         },
         {
-          mode = 'n',
+          mode = { 'n', 'x' },
           prefix = '<leader>',
           silent = true,
           noremap = true,
