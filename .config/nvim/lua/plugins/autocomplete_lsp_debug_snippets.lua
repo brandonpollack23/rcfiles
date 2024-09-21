@@ -224,6 +224,7 @@ return {
         'eslint',
         'gopls',
         'golangci_lint_ls',
+        'htmx',
         'jsonls',
         'omnisharp_mono',
         'lua_ls',
@@ -233,6 +234,7 @@ return {
         'tsserver',
         'taplo',
         'tailwindcss',
+        'tmpl',
         'zls',
       }
 
