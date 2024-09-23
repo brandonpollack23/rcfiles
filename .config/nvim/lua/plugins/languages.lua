@@ -101,7 +101,7 @@ return {
               c = { ':GoCmt<cr>', 'Add Doc comment' },
               d = { ':GoCheat ', 'Lookup cheat docs for function' },
 
-              i = { ':GoImplements', 'Get implementations of interface' },
+              i = { ':GoImplements<cr>', 'Get implementations of interface' },
               I = { ':GoImpl', 'Generate interface implementation' },
               e = { ':GoEnum ', 'Generate enum' },
 

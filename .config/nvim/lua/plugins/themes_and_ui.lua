@@ -46,10 +46,12 @@ return {
       'linrongbin16/lsp-progress.nvim',
       'Mofiqul/vscode.nvim',
       'AndreM222/copilot-lualine',
-      'folke/noice.nvim'
+      'folke/noice.nvim',
+      'f-person/git-blame.nvim',
     },
     cond = not vim.g.started_by_firenvim,
     config = function()
+      local git_blame = require('gitblame')
       require('lualine').setup {
         options = {
           icons_enabled = true,
@@ -81,7 +83,7 @@ return {
               end
             end,
             'filename',
-            require('lsp-progress').progress,
+            { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
           },
           lualine_x = {
             'copilot',

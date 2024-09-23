@@ -45,9 +45,7 @@ return {
       -- Debug Configurations
       -- I default to using the vscode json format because it's more common and can be configured per project without another dependency.
       -- For handling inputs, or multiple platforms in launch.json, see dap.txt or the docs on vscode launch.json
-      require('dap.ext.vscode').load_launchjs(nil,
-        {}
-      )
+      require('dap.ext.vscode').load_launchjs(nil, {})
 
       -- Add configurations for certain languages
 
@@ -232,10 +230,10 @@ return {
         -- 'nextls', -- another elixir language server
         'ruff', -- python linter (fast)
         'rust_analyzer',
-        'tsserver',
+        'ts_ls',
         'taplo',
         'tailwindcss',
-        'tmpl',
+        'templ',
         'zls',
       }
 
@@ -435,6 +433,7 @@ return {
           'cppdbg',
           'delve',
           'elixir',
+          'go',
           'javadbg',
           'javatest',
           'js',
@@ -471,6 +470,13 @@ return {
           end,
         },
       })
+
+      -- map go to delve
+      local dap = require('dap')
+      dap.adapters.go = {}
+      for k, v in pairs(dap.adapters.delve) do
+        dap.adapters.go[k] = v
+      end
 
       local cmp = require('cmp')
       local cmp_select = { behaviour = cmp.SelectBehavior.Select }

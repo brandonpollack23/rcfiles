@@ -101,11 +101,15 @@ vim.keymap.set('n', 'Q', '<nop>')
 -- Setup <Tab> and <S-Tab> to work with luasnip and copilot
 local luasnip = require('luasnip')
 local suggestion = require('copilot.suggestion')
+local cmp = require('cmp')
 
 local function tab_complete()
+  -- convert suggstion.is_visible() to a string to see if it is true or false
   if luasnip.expand_or_jumpable() then
     return luasnip.jump(1)
   elseif suggestion.is_visible() then
+    -- Dismiss cmp suggestion
+    cmp.close()
     return suggestion.accept()
   end
 end
