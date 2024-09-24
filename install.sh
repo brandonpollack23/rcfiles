@@ -70,6 +70,7 @@ MANJARO_ONLY_PACKAGES=(
 )
 
 AUR_ARCH_PACKAGES=(
+  changie          # changelog generator used by pulumi
   google-chrome    # The popular web browser from Google
   neovim-nightly   # Latest nightly build of Neovim
   obsidian         # Powerful knowledge base on top of a local folder of plain text Markdown files

@@ -97,7 +97,7 @@ return {
       require('conform').setup({
         formatters_by_ft = {
           python = { 'black', 'isort' },
-          javascript = { { 'prettierd', 'prettier' } },
+          javascript = { 'prettierd', 'prettier' },
         },
         -- format_on_save = {
         --   timeout_ms = 5000,

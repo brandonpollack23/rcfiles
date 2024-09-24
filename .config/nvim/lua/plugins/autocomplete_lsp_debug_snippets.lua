@@ -478,6 +478,7 @@ return {
         dap.adapters.go[k] = v
       end
 
+      local copilot = require('copilot.suggestion')
       local cmp = require('cmp')
       local cmp_select = { behaviour = cmp.SelectBehavior.Select }
       local cmp_mappings = {
@@ -504,6 +505,8 @@ return {
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
+          elseif copilot.is_visible() then
+            copilot.accept()
           else
             fallback()
           end
@@ -804,11 +807,11 @@ return {
           auto_trigger = true,
           keymap = {
             -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.
-            accept = nil,
+            accept = '<M-a>',
             accept_word = '<M-Right>',
             next = '<M-]>',
             prev = '<M-[>',
-            dismiss = '<C-]>',
+            dismiss = '<M-d>',
           },
           filetypes = {
             ['*'] = false, -- disabled by default
