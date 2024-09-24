@@ -38,8 +38,8 @@
   cmd = nvim -c 'DiffviewOpen'
   trustExitCode = true
 
-[difftool "branchless"]
-  cmd = git-branchless difftool --read-only --dir-diff $LOCAL $REMOTE
+; [difftool "branchless"]
+;   cmd = git-branchless difftool --read-only --dir-diff $LOCAL $REMOTE
 
 [diff]
   colorMoved = default
