@@ -243,6 +243,7 @@ alias g-brancless='git-branchless'
 alias g-b='git-branchless'
 # alias gd="git difftool --tool 'branchless' --dir-diff"
 alias gsl='git sl --reverse'
+alias gsw='git-branchless switch -i'
 alias gitsl='git sl --reverse'
 alias gxl='git sl --reverse'
 alias gitxl='git sl --reverse'
