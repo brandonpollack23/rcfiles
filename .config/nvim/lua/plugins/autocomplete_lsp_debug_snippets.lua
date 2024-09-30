@@ -333,7 +333,7 @@ return {
                         end
                       end
                     end
-                    vim.lsp.buf.format({ async = false })
+                    -- vim.lsp.buf.format({ async = false })
                   end
                 })
               end,
