@@ -117,6 +117,10 @@ return {
         local hunks = require('gitsigns').get_hunks()
         local format = require('conform').format
 
+        if hunks == nil then
+          return
+        end
+
         for i = #hunks, 1, -1 do
           local remaining = timeout_ms - (uv.hrtime() / 1e6 - start)
           if remaining < 0 then
