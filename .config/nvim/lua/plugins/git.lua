@@ -111,10 +111,10 @@ return {
       date_format = '%m-%d-%Y %H:%M:%S', -- template for the date, check Date format section for more options
       virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
     },
-    config = function()
+    config = function(opts)
       vim.g.gitblame_schedule_event = 'CursorHold'
       vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text, I use lualine
-      require('git-blame').setup()
+      require('gitblame').setup(opts)
     end
   },
   {
