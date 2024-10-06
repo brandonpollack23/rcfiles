@@ -98,7 +98,7 @@ return {
         formatters_by_ft = {
           python = { 'black', 'isort' },
           javascript = { 'prettierd', 'prettier' },
-          go =  { 'gofumpt', '-w' },
+          go = { 'gofumpt -w' },
         },
         default_format_opts = {
           lsp_format = "fallback",

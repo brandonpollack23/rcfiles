@@ -79,7 +79,7 @@ wk.register({
 )
 
 wk.register({
-    y = { '<\"+y', 'yank into system clipboard' },
+    y = { '"+y', 'yank into system clipboard' },
   },
   { mode = 'v', prefix = '<leader>' }
 )

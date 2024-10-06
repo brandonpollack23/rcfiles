@@ -260,7 +260,7 @@ return {
         -- Everything is enabled by the lsp_zero.default_setup below, but you can customize them as I have done with lua_ls if necessary.
         -- Each of their docs are in lspconfig or their own docs.
         ensure_installed = ensure_installed_lsps,
-        automatic_installation = true,
+        automatic_installation = false,
         handlers = {
           lsp_zero.default_setup,
 
@@ -426,6 +426,26 @@ return {
           end,
         },
       })
+
+      -- Haskell toolchain is finicky so I should use the installed version and warn if i go into a haskell file and it isn't set up.
+      lspconfig['hls'].setup({
+        -- settings = {
+          -- haskell = {
+          --   -- formattingProvider = "ormolu"
+          -- }
+          -- }
+      })
+      vim.api.nvim_create_autocmd('BufEnter', {
+        pattern = { '*.hs' },
+        callback = function()
+          if vim.fn.executable('haskell-language-server-wrapper') ~= 1 then
+            vim.notify(
+              'Haskell Language Server (hls) is not installed. Please install it with `gchup install haskell-language-server`',
+              vim.log.levels.WARN)
+          end
+        end
+      })
+
       require('mason-nvim-dap').setup({
         ensure_installed = {
           'bash',

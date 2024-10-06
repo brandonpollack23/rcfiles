@@ -36,7 +36,7 @@ autoload -Uz compinit && compinit
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/go/bin:$HOME/.pulumi/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/go/bin:$HOME/.pulumi/bin:$HOME/.ghcup/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi

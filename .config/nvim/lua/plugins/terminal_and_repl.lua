@@ -184,11 +184,14 @@ return {
               -- Can be a table or a function that
               -- returns a table (see below)
               command = { 'zsh' }
+            },
+            haskell = {
+              command = { 'stack', 'repl' }
             }
           },
           -- How the repl window will be displayed
           -- See below for more information
-          repl_open_cmd = require('iron.view').bottom(30),
+          repl_open_cmd = require('iron.view').bottom(20),
         },
         -- Iron doesn't set keymaps by default anymore.
         -- You can set them here or manually add keymaps to the functions in iron.core
