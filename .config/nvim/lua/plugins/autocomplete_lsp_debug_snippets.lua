@@ -429,6 +429,7 @@ return {
 
       -- Haskell toolchain is finicky so I should use the installed version and warn if i go into a haskell file and it isn't set up.
       lspconfig['hls'].setup({
+        cmd = { 'stack', 'exec', 'haskell-language-server-wrapper', '--', '--lsp' },
         -- settings = {
           -- haskell = {
           --   -- formattingProvider = "ormolu"
