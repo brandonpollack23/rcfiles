@@ -118,6 +118,7 @@ return {
         local format = require('conform').format
 
         if hunks == nil then
+          format()
           return
         end
 

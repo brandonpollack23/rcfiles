@@ -186,7 +186,7 @@ return {
               command = { 'zsh' }
             },
             haskell = {
-              command = { 'stack', 'repl' }
+              command = { 'stack', 'ghci' }
             }
           },
           -- How the repl window will be displayed
