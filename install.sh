@@ -60,8 +60,10 @@ ARCH_PACKAGES=(
   fd              # A simple, fast and user-friendly alternative to find
   git-branchless  # Perform branchless version control operations with Git
   github-cli      # GitHub’s official command line tool
-  neovide         # Neovim client in a fully featured graphical user interface
   kio-gdrive      # KIO slave for Google Drive integration with KDE
+  neovide         # Neovim client in a fully featured graphical user interface
+  tlp             # Advanced power management tool for Linux
+  tlpui           # Graphical user interface for TLP
 )
 
 MANJARO_ONLY_PACKAGES=(
