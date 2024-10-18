@@ -64,6 +64,15 @@ ARCH_PACKAGES=(
   neovide         # Neovim client in a fully featured graphical user interface
   tlp             # Advanced power management tool for Linux
   tlpui           # Graphical user interface for TLP
+
+  # Erlang stuff
+  fop             # XSL-FO print formatter for Erlang
+  glu             # Mesa OpenGL utility library (needed for erlang)
+  libpng          # Library for manipulating PNG images (needed for erlang)
+  libxslt         # XML stylesheet language transformation library (needed for erlang)
+  mesa            # Open-source implementation of the OpenGL specification (needed for erlang)
+  unixodbc        # Open Database Connectivity standard for Erlang
+  wxwidgets-gtk3  # C++ library for writing GUI applications (needed for erlang)
 )
 
 MANJARO_ONLY_PACKAGES=(
@@ -362,13 +371,20 @@ git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
 . "$HOME/.asdf/asdf.sh"
 asdf plugin add erlang
 asdf plugin add elixir
+asdf plugin add gleam
+asdf plugin-add rebar https://github.com/Stratus3D/asdf-rebar.git
 # Install elixir and erlang from source and set them as global
-asdf install erlang ref:OTP-26.2.1
-asdf global erlang ref:OTP-26.2.1
+asdf install erlang ref:OTP-27.1.2
+asdf global erlang ref:OTP-27.1.2
 asdf reshim
-# Set them as global
-asdf install elixir ref:v1.17.0
+asdf install rebar 3.24.0
+asdf global rebar 3.240
+asdf reshim
+asdf install elixir ref:v1.17
 asdf global elixir ref:v1.17
+asdf reshim
+asdf install gleam ref:v1.5.1
+asdf global gleam ref:v1.5.1
 asdf reshim
 
 setup_home_dir

@@ -98,7 +98,7 @@ return {
         formatters_by_ft = {
           python = { 'black', 'isort' },
           javascript = { 'prettierd', 'prettier' },
-          go = { 'gofumpt -w' },
+          go = { 'gofumpt' },
         },
         default_format_opts = {
           lsp_format = "fallback",
@@ -117,15 +117,17 @@ return {
         local hunks = require('gitsigns').get_hunks()
         local format = require('conform').format
 
-        if hunks == nil then
+        if hunks == nil or #hunks == 0 then
+          vim.notify('No hunks to format', vim.log.levels.INFO)
           format()
           return
         end
 
+        vim.notify('Formatting ' .. #hunks .. ' hunks', vim.log.levels.INFO)
         for i = #hunks, 1, -1 do
           local remaining = timeout_ms - (uv.hrtime() / 1e6 - start)
           if remaining < 0 then
-            vim.notify('Timed out formatting diffs', 'error')
+            vim.notify('Timed out formatting diffs', vim.log.levels.ERROR)
             return
           end
 
@@ -143,7 +145,7 @@ return {
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = '*',
         callback = function(args)
-          vim.notify('Formatting diffs with conform and custom fn', 'info')
+          vim.notify('Formatting diffs with conform and custom fn', vim.log.levels.INFO)
           format_modified(5000)
         end,
       })
