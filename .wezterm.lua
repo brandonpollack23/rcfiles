@@ -28,6 +28,10 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.default_domain = 'WSL:Manjaro'
 end
 
+-- disable ligatures
+config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
+
+-- Window features
 config.window_close_confirmation = 'AlwaysPrompt'
 config.skip_close_confirmation_for_processes_named = {}
 
