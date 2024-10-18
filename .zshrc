@@ -136,7 +136,9 @@ plugins=(
     golang
     gradle
     lein
+    mix
     npm
+    rebar
     repo
     rust
     sudo
