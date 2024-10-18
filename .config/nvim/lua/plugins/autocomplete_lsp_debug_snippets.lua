@@ -447,6 +447,10 @@ return {
         end
       })
 
+      -- Gleam setup
+      lspconfig.gleam.setup({})
+
+      -- Setup debugging
       require('mason-nvim-dap').setup({
         ensure_installed = {
           'bash',
@@ -462,6 +466,7 @@ return {
           'python',
         },
 
+        automatic_installation = false,
         -- See mason-nvim-dap advanced configuration for an example on how to override default handlers/adapter setup
         handlers = {
           function(config)
