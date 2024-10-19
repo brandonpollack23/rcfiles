@@ -81,6 +81,7 @@ MANJARO_ONLY_PACKAGES=(
 )
 
 AUR_ARCH_PACKAGES=(
+  bazelisk-bin     # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
   changie          # changelog generator used by pulumi
   google-chrome    # The popular web browser from Google
   neovim-nightly   # Latest nightly build of Neovim
