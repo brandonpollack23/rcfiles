@@ -52,14 +52,17 @@ return {
 
       elixir.setup {
         nextls = {
-          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls')
-        },
-
-        credo = {
-          version = '0.3.0',
+          enable = false,
+          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
+          experimental = {
+            completions = {
+              enable = true -- control if completions are enabled. defaults to false
+            }
+          }
         },
 
         elixirls = {
+          enable = true,
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
             fetchDeps = true,
@@ -70,7 +73,7 @@ return {
           },
           on_attach = function()
             wk.register({
-                e = {
+                h = {
                   name = 'Elixir Code Actions',
                   f = { ':ElixirFromPipe<cr>', 'Convert to standard function from pipe' },
                   p = { ':ElixirToPipe<cr>', 'Convert to pipe from standard function' },

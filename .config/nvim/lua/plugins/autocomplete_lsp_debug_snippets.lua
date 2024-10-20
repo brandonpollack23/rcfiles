@@ -431,10 +431,10 @@ return {
       lspconfig['hls'].setup({
         cmd = { 'stack', 'exec', 'haskell-language-server-wrapper', '--', '--lsp' },
         -- settings = {
-          -- haskell = {
-          --   -- formattingProvider = "ormolu"
-          -- }
-          -- }
+        -- haskell = {
+        --   -- formattingProvider = "ormolu"
+        -- }
+        -- }
       })
       vim.api.nvim_create_autocmd('BufEnter', {
         pattern = { '*.hs' },

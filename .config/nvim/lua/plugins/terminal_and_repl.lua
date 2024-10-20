@@ -187,6 +187,9 @@ return {
             },
             haskell = {
               command = { 'stack', 'ghci' }
+            },
+            elixir = {
+              command = { 'iex', '-S', 'mix' }
             }
           },
           -- How the repl window will be displayed
