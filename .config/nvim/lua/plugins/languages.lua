@@ -52,7 +52,7 @@ return {
 
       elixir.setup {
         nextls = {
-          enable = false,
+          -- enable = false,
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
           experimental = {
             completions = {
@@ -62,10 +62,10 @@ return {
         },
 
         elixirls = {
-          enable = true,
+          -- enable = true,
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
-            fetchDeps = true,
+            fetchDeps = false,
             enableTestLenses = true,
             suggestSpecs = true,
             dialyzerEnabled = true,

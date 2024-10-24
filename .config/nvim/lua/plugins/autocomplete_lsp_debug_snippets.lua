@@ -529,10 +529,10 @@ return {
 
           if cmp.visible() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-          elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
           elseif copilot.is_visible() then
             copilot.accept()
+          elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
           else
             fallback()
           end
