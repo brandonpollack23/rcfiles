@@ -389,6 +389,11 @@ asdf install gleam ref:v1.5.1
 asdf global gleam ref:v1.5.1
 asdf reshim
 
+yes | mix archive.install hex mix_templates
+yes | mix archive.install hex mix_generator
+mix do local.rebar --force, local.hex --force
+mix escript.install hex livebook
+
 setup_home_dir
 
 # Setup shell
