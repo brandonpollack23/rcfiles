@@ -391,8 +391,11 @@ asdf reshim
 
 yes | mix archive.install hex mix_templates
 yes | mix archive.install hex mix_generator
+yes | mix template.install hex gen_template_template
+yes | mix template.install hex bpollack_elixir_template
 mix do local.rebar --force, local.hex --force
 mix escript.install hex livebook
+
 
 setup_home_dir
 

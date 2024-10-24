@@ -378,6 +378,9 @@ function rye_pytorch_setup() {
   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
 }
 
+# Elixir stuff
+alias mixnew="mix gen bpollack_elixir_template"
+
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
     echo "Sourcing vulkan sdk"
