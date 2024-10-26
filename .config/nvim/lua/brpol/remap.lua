@@ -13,7 +13,7 @@ wk.register({
       t = { '<cmd>Telescope<cr>', 'Telescope' },
 
       f = { '<cmd>Telescope find_files<cr>', 'Find File' },
-      g = { '<cmd>Telescope live_grep<cr>', 'Live Grep' },
+      g = { '<cmd>Telescope live_grep_args<cr>', 'Live Grep' },
       G = { function()
         local d = vim.fn.input('Grep dir> ', vim.fn.expand('%:p'), 'dir')
         telescopeBuiltin.live_grep({ cwd = d })

@@ -15,6 +15,12 @@ return {
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
       -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
       { 'nvim-telescope/telescope-fzy-native.nvim' },
+      {
+        'nvim-telescope/telescope-live-grep-args.nvim',
+        -- This will not install any breaking changes.
+        -- For major updates, this must be adjusted manually.
+        version = '^1.0.0',
+      },
     },
     config = function()
       local extensions = require('telescope').extensions
@@ -62,6 +68,8 @@ return {
       })
 
       require('telescope').load_extension('smart_open')
+      -- Can be used to rg with arguments (so advanced regex, -t, --no-ignore, etc), just put the query in quotes.
+      require('telescope').load_extension('live_grep_args')
     end,
   },
   {
@@ -99,19 +107,21 @@ return {
     'LukasPietzschmann/telescope-tabs',
     event = 'VeryLazy',
     config = function()
+      require('telescope').load_extension('telescope-tabs')
       local tt = require('telescope-tabs')
 
       tt.setup()
 
-      require('which-key').register({
-          b = {
+      require('which-key').add({
+        {
+          '<leader>b',
+          {
             name = 'Buffers/Tabs',
-            t = { tt.list_tabs, 'Switch tabs (as in workspaces)' },
-            T = { tt.go_to_previous, 'Go to previous tab' },
+            { 't', tt.list_tabs,      desc = 'Switch tabs (as in workspaces)' },
+            { 'T', tt.go_to_previous, desc = 'Go to previous tab' }
           }
-        },
-        { prefix = '<leader>' }
-      )
+        }
+      })
     end
   },
 }
