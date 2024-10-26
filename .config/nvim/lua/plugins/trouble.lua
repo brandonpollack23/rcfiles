@@ -8,12 +8,12 @@ return {
         desc = 'Trouble',
       },
       {
-        '<leader>xx',
+        '<leader>xX',
         '<cmd>Trouble diagnostics toggle<cr>',
         desc = 'Diagnostics (Trouble)',
       },
       {
-        '<leader>xX',
+        '<leader>xx',
         '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
         desc = 'Buffer Diagnostics (Trouble)',
       },
@@ -34,12 +34,12 @@ return {
       },
       {
         '<leader>xc',
-        '<cmd>Trouble quickfix toggle<cr>',
-        desc = 'Quickfix List (Trouble)',
+        '<cmd>Trouble lsp_command toggle<cr>',
+        desc = 'Trouble LSP Commands (Trouble)',
       },
       {
         '<leader>xq',
-        '<cmd>Trouble telescope toggle<cr>', -- Used for things added to 'quickfix' from telescope (it isnt quickfix anymore its just for telescope results) (telescope instead of quickfix)
+        '<cmd>Trouble qflist toggle<cr>',
         desc = 'Quickfix List (Trouble)',
       },
       {
