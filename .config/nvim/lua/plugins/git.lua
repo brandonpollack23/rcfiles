@@ -123,6 +123,12 @@ return {
     lazy = false,
     config = function()
       require('blame').setup {}
+      require('which-key').register({
+        ['<leader>g'] = {
+          name = 'Git',
+          b = { ':BlameToggle<cr>', 'Toggle Blame' },
+        }
+      })
     end,
   },
   {
