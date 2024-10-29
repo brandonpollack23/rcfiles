@@ -142,13 +142,14 @@ return {
           end
         end
       end
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        pattern = '*',
-        callback = function(args)
-          vim.notify('Formatting diffs with conform and custom fn', vim.log.levels.INFO)
-          format_modified(5000)
-        end,
-      })
+      -- Disable format on save, do it manually with <leader>vf until it is better
+      -- vim.api.nvim_create_autocmd('BufWritePre', {
+      --   pattern = '*',
+      --   callback = function(args)
+      --     vim.notify('Formatting diffs with conform and custom fn', vim.log.levels.INFO)
+      --     format_modified(5000)
+      --   end,
+      -- })
 
       require('which-key').register({
           v = {

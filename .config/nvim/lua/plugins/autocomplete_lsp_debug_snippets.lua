@@ -271,6 +271,46 @@ return {
             }
           end,
 
+          ['rust_analyzer'] = function()
+            lspconfig.rust_analyzer.setup({
+              settings = {
+                ['rust-analyzer'] = {
+                  cargo = {
+                    features = { 'all' },
+                  },
+                  rustfmt = {
+                    extraArgs = { '+nightly' },
+                  },
+                  check = {
+                    command = 'clippy',
+                  },
+                  checkOnSave = true,
+                  inlayHints = {
+                    closureReturnTypeHints = {
+                      enable = 'always',
+                    }
+                  },
+                  workspace = {
+                    symbol = {
+                      search = {
+                        scope = 'workspace_and_dependencies',
+                      }
+                    }
+                  },
+                  semanticHighlighting = {
+                    operator = {
+                      specialization = {
+                        enable = true,
+                      },
+                    },
+                    punctuation = {
+                      enable = true,
+                    },
+                  }
+                },
+              },
+            })
+          end,
           -- Lua config
           ['lua_ls'] = function()
             lspconfig.lua_ls.setup {
