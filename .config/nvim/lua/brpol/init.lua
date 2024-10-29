@@ -92,6 +92,8 @@ vim.o.wildignorecase = true
 vim.g.python_recommended_style = 0
 
 -- Tab options
+-- disable rust recomended style and use my own and rustfmt
+vim.g.rust_recommended_style = false
 vim.o.expandtab = true
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2

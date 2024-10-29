@@ -275,15 +275,15 @@ return {
             lspconfig.rust_analyzer.setup({
               settings = {
                 ['rust-analyzer'] = {
-                  cargo = {
-                    features = { 'all' },
-                  },
+                  -- cargo = {
+                  --   features = { 'all' },
+                  -- },
                   rustfmt = {
                     extraArgs = { '+nightly' },
                   },
-                  check = {
-                    command = 'clippy',
-                  },
+                  -- check = {
+                  --   command = 'clippy',
+                  -- },
                   checkOnSave = true,
                   inlayHints = {
                     closureReturnTypeHints = {
@@ -294,7 +294,7 @@ return {
                     symbol = {
                       search = {
                         scope = 'workspace_and_dependencies',
-                      }
+                      },
                     }
                   },
                   semanticHighlighting = {
