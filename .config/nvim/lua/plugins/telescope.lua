@@ -114,14 +114,10 @@ return {
 
       require('which-key').add({
         {
-          '<leader>b',
-          {
-            name = 'Buffers/Tabs',
-            { 't', tt.list_tabs,      desc = 'Switch tabs (as in workspaces)' },
-            { 'T', tt.go_to_previous, desc = 'Go to previous tab' }
-          }
-        }
-      })
-    end
-  },
-}
+          '<leader>b', group = 'Buffers/Tabs', },
+          { '<leader>bt', tt.list_tabs,      desc = 'Switch tabs (as in workspaces)' },
+          { '<leader>bT', tt.go_to_previous, desc = 'Go to previous tab' }
+        })
+      end
+    },
+  }
