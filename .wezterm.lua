@@ -397,12 +397,12 @@ config.keys = {
   {
     key = 'K',
     mods = 'ALT|SHIFT',
-    action = wezterm.action.ScrollByLine(1),
+    action = wezterm.action.ScrollByLine(-1),
   },
   {
     key = 'J',
     mods = 'ALT|SHIFT',
-    action = wezterm.action.ScrollByLine(-1),
+    action = wezterm.action.ScrollByLine(1),
   },
   {
     key = '{',

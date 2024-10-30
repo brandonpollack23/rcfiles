@@ -47,7 +47,7 @@ wk.register({
         local log = vim.fn.expand('$HOME/tmp/profile.log')
         require('plenary.profile').start(log, { flame = true })
         vim.notify('Started profiling to ' ..
-          log .. '\nStop with <leader>QS and use inferno-flamegraph to turn into a flamegraph')
+          log .. '\nStop with <leader>QS and use inferno-flamegraph to turn into a flamegraph') -- https://github.com/nvim-lua/plenary.nvim?tab=readme-ov-file#plenaryprofile
       end, 'Start Profiling' },
       S = { function()
         require('plenary.profile').stop()
