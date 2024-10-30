@@ -42,12 +42,13 @@ return {
   {
     'nvim-lualine/lualine.nvim',
     dependencies = {
-      'nvim-tree/nvim-web-devicons',
-      'linrongbin16/lsp-progress.nvim',
-      'Mofiqul/vscode.nvim',
       'AndreM222/copilot-lualine',
-      'folke/noice.nvim',
+      'Mofiqul/vscode.nvim',
+      'arkav/lualine-lsp-progress',
       'f-person/git-blame.nvim',
+      'folke/noice.nvim',
+      'linrongbin16/lsp-progress.nvim',
+      'nvim-tree/nvim-web-devicons',
     },
     cond = not vim.g.started_by_firenvim,
     config = function()
@@ -75,15 +76,12 @@ return {
           lualine_a = { 'mode' },
           lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
-            function()
-              if require('noice').api.statusline.mode.has() then
-                return require('noice').api.statusline.mode.get()
-              else
-                return ''
-              end
-            end,
+            -- function()
+              -- TODO noice
+            -- end,
             'filename',
             { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
+            'lsp_progress',
           },
           lualine_x = {
             'copilot',
