@@ -185,7 +185,7 @@ return {
         luasnip = true,
         trouble = true,
         gofmt = 'gofumpt',
-        max_line_len = 80,
+        -- max_line_len = 80,
       })
     end,
     event = { 'CmdlineEnter' },
