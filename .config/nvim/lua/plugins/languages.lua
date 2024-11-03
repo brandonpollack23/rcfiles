@@ -52,17 +52,17 @@ return {
 
       elixir.setup {
         nextls = {
-          -- enable = false,
-          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
-          experimental = {
-            completions = {
-              enable = true -- control if completions are enabled. defaults to false
-            }
-          }
+          enable = false,
+          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
+          -- experimental = {
+          --   completions = {
+          --     enable = true -- control if completions are enabled. defaults to false
+          --   }
+          -- }
         },
 
         elixirls = {
-          -- enable = true,
+          enable = true,
           cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
             fetchDeps = false,

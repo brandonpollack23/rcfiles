@@ -418,7 +418,7 @@ return {
             }
           end,
 
-          ['elixirls'] = function()
+          -- ['elixirls'] = function()
             -- Currently configured by elixir-tools.nvim in plugins/init.lua
             -- lspconfig.elixirls.setup {
             --   settings = {
@@ -431,7 +431,7 @@ return {
             --     },
             --   },
             -- }
-          end,
+          -- end,
 
           ['omnisharp_mono'] = function()
             lspconfig.omnisharp_mono.setup {
@@ -555,14 +555,17 @@ return {
         ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
         ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
 
-        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+        ['<C-y>'] = cmp.mapping.confirm({
+          behavior = cmp.ConfirmBehavior.Insert,
+          select = true,
+        }),
 
         ['<C-e>'] = cmp.mapping.close(),
         ['<C-u>'] = cmp.mapping.scroll_docs(-4),
         ['<C-d>'] = cmp.mapping.scroll_docs(4),
         ['<CR>'] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = false,
+          behavior = cmp.ConfirmBehavior.Insert,
+          select = true,
         }),
 
         ['<Tab>'] = cmp.mapping(function(fallback)
@@ -594,10 +597,10 @@ return {
         window = {},
         mapping = cmp.mapping.preset.insert(cmp_mappings),
         sources = {
-          { name = 'luasnip' },
           { name = 'nvim_lsp' },
-          { name = 'jupynium' },
+          { name = 'luasnip' },
           { name = 'path' },
+          { name = 'jupynium' },
           { name = 'buffer' },
         },
       })
