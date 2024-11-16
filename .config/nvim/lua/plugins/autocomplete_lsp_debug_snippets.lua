@@ -491,6 +491,9 @@ return {
       -- Gleam setup
       lspconfig.gleam.setup({})
 
+      -- godot gdscript
+      lspconfig.gdscript.setup({})
+
       -- Setup debugging
       require('mason-nvim-dap').setup({
         ensure_installed = {
