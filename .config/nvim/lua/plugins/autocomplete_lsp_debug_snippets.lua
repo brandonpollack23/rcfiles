@@ -493,6 +493,17 @@ return {
 
       -- godot gdscript
       lspconfig.gdscript.setup({})
+      -- local gd_port = os.getenv('GDSCRIPT_LSP_PORT') or '6005'
+      -- local godot_lsp_cmd = vim.lsp.rpc.connect('127.0.0.1', tonumber(gd_port))
+      -- local pipe = '/tmp/godot.pipe' -- I use /tmp/godot.pipe
+      -- vim.lsp.start({
+      --   name = 'Godot LSP',
+      --   cmd = godot_lsp_cmd,
+      --   root_dir = vim.fs.dirname(vim.fs.find({ 'project.godot', '.git' }, { upward = true })[1]),
+      --   on_attach = function(client, bufnr)
+      --     vim.api.nvim_command('echo serverstart("' .. pipe .. '")')
+      --   end
+      -- })
 
       -- Setup debugging
       require('mason-nvim-dap').setup({
