@@ -225,11 +225,12 @@ return {
         'golangci_lint_ls',
         'htmx',
         'jsonls',
-        'omnisharp_mono',
+        -- 'omnisharp_mono', replaced in languages.lua
         'lua_ls',
         -- 'nextls', -- another elixir language server
         'ruff', -- python linter (fast)
         'rust_analyzer',
+        'roslyn', -- csharp
         'ts_ls',
         'taplo',
         'tailwindcss',
@@ -248,7 +249,12 @@ return {
       -- Browse and install more with :Mason
       -- to learn how to use mason.nvim with lsp-zero
       -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
-      mason.setup()
+      mason.setup({
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry', -- for roslyn csharp c#
+        }
+      })
       for _, p in pairs(ensure_installed_mason) do
         local pkg = mason_registry.get_package(p)
         if not pkg:is_installed() then
@@ -419,30 +425,30 @@ return {
           end,
 
           -- ['elixirls'] = function()
-            -- Currently configured by elixir-tools.nvim in plugins/init.lua
-            -- lspconfig.elixirls.setup {
-            --   settings = {
-            --     elixirLS = {
-            --       dialyzerEnabled = true,
-            --       fetchDeps = true,
-            --       incrementalDialyzer = true,
-            --       suggestSpecs = true,
-            --       enableTestLenses = true,
-            --     },
-            --   },
-            -- }
+          -- Currently configured by elixir-tools.nvim in plugins/init.lua
+          -- lspconfig.elixirls.setup {
+          --   settings = {
+          --     elixirLS = {
+          --       dialyzerEnabled = true,
+          --       fetchDeps = true,
+          --       incrementalDialyzer = true,
+          --       suggestSpecs = true,
+          --       enableTestLenses = true,
+          --     },
+          --   },
+          -- }
           -- end,
 
-          ['omnisharp_mono'] = function()
-            lspconfig.omnisharp_mono.setup {
-              handlers = {
-                ['textDocument/definition'] = require('omnisharp_extended').handler,
-                ['textDocument/typeDefinition'] = require('omnisharp_extended').type_definition_handler,
-                ['textDocument/references'] = require('omnisharp_extended').references_handler,
-                ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
-              }
-            }
-          end,
+          -- ['omnisharp_mono'] = function()
+          --   lspconfig.omnisharp_mono.setup {
+          --     handlers = {
+          --       ['textDocument/definition'] = require('omnisharp_extended').handler,
+          --       ['textDocument/typeDefinition'] = require('omnisharp_extended').type_definition_handler,
+          --       ['textDocument/references'] = require('omnisharp_extended').references_handler,
+          --       ['textDocument/implementation'] = require('omnisharp_extended').implementation_handler,
+          --     }
+          --   }
+          -- end,
 
           ['pyright'] = function()
             lspconfig.pyright.setup {
