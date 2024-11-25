@@ -69,6 +69,7 @@ return {
           python = { 'black', 'isort' },
           javascript = { 'prettierd', 'prettier' },
           go = { 'gofumpt' },
+          cs = { 'csharpier' },
         },
         default_format_opts = {
           lsp_format = "fallback",

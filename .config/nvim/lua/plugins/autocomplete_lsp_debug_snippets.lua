@@ -168,6 +168,21 @@ return {
     end
   },
   {
+    'williamboman/mason.nvim',
+    config = function ()
+      -- Browse and install more with :Mason
+      -- to learn how to use mason.nvim with lsp-zero
+      -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
+      require('mason').setup({
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry', -- for roslyn csharp c#
+        }
+      })
+      
+    end
+  },
+  {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v4.x',
     dependencies = {
@@ -186,7 +201,6 @@ return {
       local cmp_nvim_lsp = require('cmp_nvim_lsp')
       local lsp_zero = require('lsp-zero')
       local lspconfig = require('lspconfig')
-      local mason = require('mason')
       local mason_lspconfig = require('mason-lspconfig')
       local mason_registry = require('mason-registry')
 
@@ -246,15 +260,6 @@ return {
         table.insert(ensure_installed_lsps, 'elp')
       end
 
-      -- Browse and install more with :Mason
-      -- to learn how to use mason.nvim with lsp-zero
-      -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
-      mason.setup({
-        registries = {
-          'github:mason-org/mason-registry',
-          'github:Crashdummyy/mason-registry', -- for roslyn csharp c#
-        }
-      })
       for _, p in pairs(ensure_installed_mason) do
         local pkg = mason_registry.get_package(p)
         if not pkg:is_installed() then
