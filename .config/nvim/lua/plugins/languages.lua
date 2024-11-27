@@ -316,6 +316,10 @@ return {
     opts = {
       config = {
         settings = {
+          ['csharp|background_analysis'] = {
+            dotnet_compiler_diagnostics_scope = 'fullSolution',
+            dotnet_analyzer_diagnostics_scope = 'fullSolution',
+          },
           ['csharp|completion'] = {
             dotnet_show_completion_items_from_unimported_namespaces = true,
             dotnet_show_name_completion_suggestions = true,
