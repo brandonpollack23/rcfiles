@@ -12,7 +12,7 @@ wk.register({
       ['<Space>'] = { '<cmd>Telescope resume<cr>', 'Registers' },
       t = { '<cmd>Telescope<cr>', 'Telescope' },
 
-      f = { '<cmd>Telescope find_files<cr>', 'Find File' },
+      f = { function () telescopeBuiltin.find_files({ follow = true }) end, 'Find File' },
       g = { '<cmd>Telescope live_grep_args<cr>', 'Live Grep' },
       G = { function()
         local d = vim.fn.input('Grep dir> ', vim.fn.expand('%:p'), 'dir')
