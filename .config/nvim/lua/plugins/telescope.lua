@@ -25,8 +25,8 @@ return {
     config = function()
       local extensions = require('telescope').extensions
 
-      vim.keymap.set('n', '<C-p>', function() extensions.smart_open.smart_open({ cwd_only = true }) end,
-        {})
+      vim.keymap.set('n', '<C-p>',
+        function() extensions.smart_open.smart_open({ cwd_only = true, follow_symlinks = true }) end, {})
 
       -- Hack to make Ctrl-C work to close
       vim.api.nvim_create_autocmd('FileType', {
@@ -115,9 +115,9 @@ return {
       require('which-key').add({
         {
           '<leader>b', group = 'Buffers/Tabs', },
-          { '<leader>bt', tt.list_tabs,      desc = 'Switch tabs (as in workspaces)' },
-          { '<leader>bT', tt.go_to_previous, desc = 'Go to previous tab' }
-        })
-      end
-    },
-  }
+        { '<leader>bt', tt.list_tabs,      desc = 'Switch tabs (as in workspaces)' },
+        { '<leader>bT', tt.go_to_previous, desc = 'Go to previous tab' }
+      })
+    end
+  },
+}

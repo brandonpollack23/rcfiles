@@ -244,7 +244,7 @@ return {
         -- 'nextls', -- another elixir language server
         'ruff', -- python linter (fast)
         'rust_analyzer',
-        'roslyn', -- csharp
+        -- 'roslyn', -- csharp
         'ts_ls',
         'taplo',
         'tailwindcss',
