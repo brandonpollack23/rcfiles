@@ -182,11 +182,39 @@ return {
       })
 
       require('go').setup({
+        lsp_cfg = {
+          settings = {
+            gopls = {
+              analyses = {
+                unusedparams = true,
+              },
+              buildFlags = { '-tags=all' },
+              staticcheck = true,
+              -- gofumpt = true, -- provided by golangci_lint ls
+              codelenses = {
+                generate = true,
+                regenerate_cgo = true,
+                tidy = true,
+                upgrade_dependency = true,
+              },
+              hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+              }
+            },
+          },
+        },
         luasnip = true,
         trouble = true,
         gofmt = 'gofumpt',
         -- max_line_len = 80,
       })
+
     end,
     event = { 'CmdlineEnter' },
     ft = { 'go', 'gomod' },
