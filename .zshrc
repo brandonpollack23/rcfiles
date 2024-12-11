@@ -340,7 +340,7 @@ function qemu-kill() {
 # Golang stuff
 # Go bin path
 export PATH=$PATH:$HOME/bin/go/bin
-export GOFUMPT_SPLIT_LONG_LINES="on"
+# export GOFUMPT_SPLIT_LONG_LINES="on"
 
 # Node Version Manager nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
