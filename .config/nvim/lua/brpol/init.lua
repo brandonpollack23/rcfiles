@@ -110,8 +110,8 @@ local function is_wsl()
   -- Attempt to identify WSL by checking for the existence of a specific file or environment variable
   -- This checks for the presence of "/proc/version" containing "Microsoft" or "WSL"
   local ok, proc_version = pcall(vim.fn.readfile, '/proc/version')
-  if not ok or type(proc_version) ~= 'string' then
-    return
+  if not ok then
+    return false
   end
 
   if string.find(table.concat(proc_version), 'Microsoft') or string.find(table.concat(proc_version), 'WSL') then
@@ -143,4 +143,19 @@ for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) d
         end
         return default_diagnostic_handler(err, result, context, config)
     end
+end
+
+if is_wsl() then
+  vim.g.clipboard = {
+    name = 'wslclip',
+    copy = {
+      ['+'] = 'clip.exe',
+      ['*'] = 'clip.exe',
+    },
+    paste = {
+      ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    },
+    cache_enabled = 0,
+  }
 end
