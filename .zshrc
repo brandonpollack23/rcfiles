@@ -359,24 +359,24 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # Nix stuff
 prompt_nix_shell_setup
 
-# Python/Rye stuff
-if [[ -f $HOME/.rye/env ]]; then
-  source "$HOME/.rye/env"
-fi
-function rye_activate() {
-  source "$HOME/.venv/bin/activate"
-}
-function rye_deactivate() {
-  # if we are in a virtualenv deactivate it
-  if [[ -n "$VIRTUAL_ENV" ]]; then
-    deactivate
-  fi
-}
-function rye_pytorch_setup() {
-  # mlxtend is for plotting confusion matrix
-  rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime pdbplus pandas mlxtend torchmetrics
-  rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
-}
+# # Python/Rye stuff
+# if [[ -f $HOME/.rye/env ]]; then
+#   source "$HOME/.rye/env"
+# fi
+# function rye_activate() {
+#   source "$HOME/.venv/bin/activate"
+# }
+# function rye_deactivate() {
+#   # if we are in a virtualenv deactivate it
+#   if [[ -n "$VIRTUAL_ENV" ]]; then
+#     deactivate
+#   fi
+# }
+# function rye_pytorch_setup() {
+#   # mlxtend is for plotting confusion matrix
+#   rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime pdbplus pandas mlxtend torchmetrics
+#   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
+# }
 
 # Elixir stuff
 alias mixnew="mix gen bpollack_elixir_template"
