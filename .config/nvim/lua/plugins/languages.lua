@@ -325,15 +325,6 @@ return {
         { prefix = '<leader>' })
     end,
   },
-  -- Tailwind CSS
-  {
-    'luckasRanarison/tailwind-tools.nvim',
-    dependencies = { 'VonHeikemen/lsp-zero.nvim' },
-    config = function()
-      require('tailwind-tools').setup({})
-    end
-  },
-
   -- CSharp C#
   {
     'seblj/roslyn.nvim',
