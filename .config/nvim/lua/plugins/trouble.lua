@@ -52,7 +52,20 @@ return {
       focus = true,
     }, -- for default options, refer to the configuration section for custom setup.
     config = function()
-      require('trouble').setup()
+      require('trouble').setup({
+        modes = {
+          symbols = {
+            win = {
+              size = .3,
+            }
+          },
+          lsp = {
+            win = {
+              size = .3,
+            }
+          }
+        }
+      })
 
       local open_with_trouble = require('trouble.sources.telescope').open
 

@@ -335,7 +335,7 @@ return {
                   -- Make the server aware of Neovim runtime files
                   workspace = {
                     checkThirdParty = 'Ask',
-                    -- None of this is needed because neodev handles it
+                    -- None of this is needed because lazydev handles it
                     --
                     -- library = {
                     --   vim.env.VIMRUNTIME
