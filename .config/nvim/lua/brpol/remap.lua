@@ -28,6 +28,9 @@ wk.register({
       s = { ':Telescope lsp_dynamic_workspace_symbols<cr>', 'LSP References' },
       S = { ':Telescope luasnip<cr>', 'Search snippets' }
     },
+    g = {
+      f = { '<cmd>Telescope git_status<cr>', 'Git Changed Files' },
+    },
     k = {
       name = 'Colors',
       m = { vscode_theme.toggleDarkMode, 'Toggle Dark Mode' }
