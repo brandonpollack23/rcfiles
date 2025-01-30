@@ -25,7 +25,7 @@ return {
   {
     'mhanberg/output-panel.nvim',
     config = function()
-      require('output_panel').setup()
+      require('output_panel').setup({})
 
       local wk = require('which-key')
       wk.add({
@@ -51,19 +51,19 @@ return {
       local wk = require('which-key')
 
       elixir.setup {
-        nextls = {
-          enable = false,
+        -- nextls = {
+          -- enable = false,
           -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
           -- experimental = {
           --   completions = {
           --     enable = true -- control if completions are enabled. defaults to false
           --   }
           -- }
-        },
+        -- },
 
         elixirls = {
           enable = true,
-          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
+          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
             fetchDeps = false,
             enableTestLenses = true,
@@ -334,6 +334,7 @@ return {
     build = ":UpdateRemotePlugins",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
+      'VonHeikemen/lsp-zero.nvim',
       "nvim-telescope/telescope.nvim", -- optional
       "neovim/nvim-lspconfig", -- optional
     },
