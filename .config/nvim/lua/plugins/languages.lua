@@ -325,6 +325,21 @@ return {
         { prefix = '<leader>' })
     end,
   },
+  
+  -- Tailwind CSS
+  -- tailwind-tools.lua
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    name = "tailwind-tools",
+    build = ":UpdateRemotePlugins",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-telescope/telescope.nvim", -- optional
+      "neovim/nvim-lspconfig", -- optional
+    },
+    opts = {} -- your configuration
+  },
+
   -- CSharp C#
   {
     'seblj/roslyn.nvim',
@@ -363,7 +378,29 @@ return {
         },
       },
     }
-  }
+  },
+  -- Typescript
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {
+      settings = {
+        tsserver_file_preferences = {
+          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
+          includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          includeInlayVariableTypeHints = true,
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+          includeInlayPropertyDeclarationTypeHints = true,
+          includeInlayFunctionLikeReturnTypeHints = true,
+          includeInlayEnumMemberValueHints = true,
+        },
+      },
+
+      expose_as_code_actions = "all",
+      code_lens = "all",
+    }
+  },
   -- Jupyter notebook evalation
   -- {
   --   'benlubas/molten-nvim',

@@ -46,7 +46,7 @@ return {
       'Mofiqul/vscode.nvim',
       'arkav/lualine-lsp-progress',
       'f-person/git-blame.nvim',
-      'folke/noice.nvim',
+      -- 'folke/noice.nvim',
       'linrongbin16/lsp-progress.nvim',
       'nvim-tree/nvim-web-devicons',
     },

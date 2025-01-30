@@ -245,7 +245,6 @@ return {
         'ruff', -- python linter (fast)
         'rust_analyzer',
         -- 'roslyn', -- csharp
-        'ts_ls',
         'taplo',
         'tailwindcss',
         'templ',
@@ -357,39 +356,6 @@ return {
                   settings = {
                     Lua = {
                     }
-                  }
-                }
-              end,
-
-              -- Typescript Javascript
-              ['ts_ls'] = function ()
-                lspconfig.tsserver.setup {
-                  settings = {
-                    typescript = {
-                      inlayHints = {
-                        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                        includeInlayVariableTypeHints = true,
-                        includeInlayFunctionParameterTypeHints = true,
-                        includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                        includeInlayPropertyDeclarationTypeHints = true,
-                        includeInlayFunctionLikeReturnTypeHints = true,
-                        includeInlayEnumMemberValueHints = true,
-                      },
-                    },
-                    javascript = {
-                      inlayHints = {
-                        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
-                        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                        includeInlayVariableTypeHints = true,
-
-                        includeInlayFunctionParameterTypeHints = true,
-                        includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                        includeInlayPropertyDeclarationTypeHints = true,
-                        includeInlayFunctionLikeReturnTypeHints = true,
-                        includeInlayEnumMemberValueHints = true,
-                      },
-                    },
                   }
                 }
               end,
