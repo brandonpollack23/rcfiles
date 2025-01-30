@@ -211,7 +211,7 @@ return {
         },
         luasnip = true,
         trouble = true,
-        gofmt = 'gofumpt',
+        -- gofmt = 'gofumpt',
         -- max_line_len = 80,
       })
 
