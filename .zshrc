@@ -238,10 +238,10 @@ alias :q="exit"
 # git (commit) amend  no edit
 alias gammend="gca --amend --no-edit"
 alias gpf="gp -f"
+alias gitraw=$(which git)
+function git() { git-branchless wrap -- "$@" }
 alias gbli="git branchless init"
-alias git='git-branchless wrap --'
-alias g='git-branchless wrap --'
-alias g-brancless='git-branchless'
+alias g='git'
 alias g-b='git-branchless'
 # alias gd="git difftool --tool 'branchless' --dir-diff"
 alias gsl='git sl --reverse'
