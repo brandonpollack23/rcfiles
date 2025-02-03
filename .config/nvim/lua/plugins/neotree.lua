@@ -321,7 +321,7 @@ return {
       -- Define the key mappings
       wk.add({
         { 'leader>d',   group = 'Neotree' },
-        { '<leader>dd', ':Neotree toggle show<cr>',               desc = 'Toggle Neotree' },
+        { '<leader>dd', ':Neotree toggle<cr>',               desc = 'Toggle Neotree' },
         { '<leader>db', ':Neotree toggle show buffers right<cr>', desc = 'Show Buffers Right' },
         { '<leader>df', ':Neotree reveal<cr>',                    desc = 'Reveal in Neotree' },
         { '<leader>dg', ':Neotree float git_status<cr>',          desc = 'Git Status in Float' },
