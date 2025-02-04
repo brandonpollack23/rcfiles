@@ -30,13 +30,11 @@ if [[ -f $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh ]]; then
 fi
 fpath+=$HOME/nix-zsh-completions
 autoload -Uz compinit && compinit
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/go/bin:$HOME/.pulumi/bin:$HOME/.ghcup/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/.pulumi/bin:$HOME/.ghcup/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
 if ! [[ "$OSTYPE" =~ darwin* ]]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
@@ -339,7 +337,7 @@ function qemu-kill() {
 
 # Golang stuff
 # Go bin path
-export PATH=$PATH:$HOME/bin/go/bin
+export PATH=$HOME/go/bin:$PATH
 # export GOFUMPT_SPLIT_LONG_LINES="on"
 
 # Node Version Manager nvm
