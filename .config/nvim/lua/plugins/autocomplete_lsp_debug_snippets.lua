@@ -745,7 +745,7 @@ return {
             c = { ':CopilotChatInline<cr>', 'CopilotChat - Chat with current buffer' },
             e = { ':CopilotChatExplain<cr>', 'CopilotChat - Explain code' },
             gt = { ':CopilotChatTests<cr>', 'CopilotChat - Generate tests' },
-            f = { ':CopilotChatFixDiagnostic<cr>', 'CopilotChat - Fix diagnostic', },
+            f = { ':CopilotChatFix<cr>', 'CopilotChat - Fix diagnostic', },
             R = { ':CopilotChatReset<cr>', 'CopilotChat - Reset chat history and clear buffer' },
             o = { ':CopilotChatOpen<cr>', 'Open CopilotChat' },
             x = { ':CopilotChatClose<cr>', 'Close CopilotChat' },
