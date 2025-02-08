@@ -28,7 +28,6 @@ local function get_go_main_files()
   return main_files
 end
 
--- TODO set nvim-dap back up with persistent-breakpoints and nvim-dap-ui and mason dap
 return {
   {
     'williamboman/mason.nvim',
@@ -39,7 +38,7 @@ return {
       require('mason').setup({
         registries = {
           'github:mason-org/mason-registry',
-          'github:Crashdummyy/mason-registry',             -- for roslyn csharp c#
+          'github:Crashdummyy/mason-registry', -- for roslyn csharp c#
         }
       })
     end
@@ -55,7 +54,7 @@ return {
       'neovim/nvim-lspconfig',
       'williamboman/mason-lspconfig.nvim',
       'williamboman/mason.nvim',
-      'folke/neoconf.nvim',             -- neoconf wants to be set up before any LSPs
+      'folke/neoconf.nvim', -- neoconf wants to be set up before any LSPs
       'L3MON4D3/LuaSnip',
     },
     config = function()
@@ -94,7 +93,7 @@ return {
       local ensure_installed_lsps = {
         'bashls',
         'clangd',
-        -- 'elixirls', -- handled by elixir-tools
+        'elixirls', -- handled by elixir-tools, used for debugging
         'eslint',
         'gopls',
         'golangci_lint_ls',
@@ -103,7 +102,7 @@ return {
         -- 'omnisharp_mono', replaced in languages.lua
         'lua_ls',
         -- 'nextls', -- another elixir language server
-        'ruff',             -- python linter (fast)
+        'ruff', -- python linter (fast)
         'rust_analyzer',
         -- 'roslyn', -- csharp
         'taplo',
@@ -138,7 +137,7 @@ return {
           ['clangd'] = function()
             lspconfig.clangd.setup {
               cmd = { 'clangd', '--pch-storage=memory' },
-              filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },             -- exclude "proto"
+              filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' }, -- exclude "proto"
             }
           end,
 
@@ -310,6 +309,10 @@ return {
               }
             }
           end,
+
+          ['elixirls'] = function()
+            -- handled by elixir-tools, mason is used for debugging only.
+          end
         },
       })
 
@@ -678,7 +681,7 @@ return {
             dismiss = '<M-d>',
           },
           filetypes = {
-            ['*'] = false,                                                   -- disabled by default
+            ['*'] = false, -- disabled by default
           }
         }
       })
@@ -710,8 +713,8 @@ return {
   {
     'CopilotC-Nvim/CopilotChat.nvim',
     dependencies = {
-      { 'zbirenbaum/copilot.lua' },                                                 -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' },                                                  -- for curl, log wrapper
+      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
     },
     opts = {
       window = {

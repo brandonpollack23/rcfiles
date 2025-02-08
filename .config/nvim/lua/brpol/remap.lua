@@ -35,8 +35,6 @@ wk.register({
       name = 'Colors',
       m = { vscode_theme.toggleDarkMode, 'Toggle Dark Mode' }
     },
-    -- quick replace word
-    s = { [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], 'Replace word in file' },
     ['?'] = {
       name = 'Show Mappings (WhichKey)',
       n = { ":WhichKey '' n<cr>", 'normal mode' },
