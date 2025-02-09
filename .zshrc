@@ -117,6 +117,7 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    asdf
     aws
     azure
     catimg
@@ -377,7 +378,7 @@ prompt_nix_shell_setup
 # }
 
 # Elixir stuff
-alias mixnew="mix gen bpollack_elixir_template"
+# alias mixnew="mix gen bpollack_elixir_template"
 
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
