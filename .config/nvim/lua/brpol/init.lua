@@ -7,6 +7,7 @@
 -- :help trojan-horse to learn about exrc
 
 vim.g.mapleader = ','
+vim.g.maplocalleader = '<'
 
 -- Setup neovide gui preferences
 vim.g.neovide_cursor_animation_length = 0.0

@@ -165,4 +165,21 @@ return {
       require('gitignore')
     end,
   },
+  -- Github/octo.nvim
+  {
+    'pwntester/octo.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      -- OR 'ibhagwan/fzf-lua',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require 'octo'.setup({
+        use_local_fs = false,            -- use local files on right side of reviews
+        default_merge_method = 'commit', -- default merge method which should be used for both `Octo pr merge` and merging from picker, could be `commit`, `rebase` or `squash`
+        default_delete_branch = true,    -- whether to delete branch when merging pull request with either `Octo pr merge` or from picker (can be overridden with `delete`/`nodelete` argument to `Octo pr merge`)
+      })
+    end
+  }
 }
