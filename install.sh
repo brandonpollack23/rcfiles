@@ -2,6 +2,7 @@
 
 # Define an array to hold the package names
 PACKAGES=(
+  asciinema    # Record and share terminal sessions
   bat          # A clone of cat(1) with syntax highlighting and Git integration
   cmake        # Cross-platform open-source make system
   coreutils    # Basic file, shell, and text manipulation utilities
