@@ -726,7 +726,9 @@ return {
       local chat = require('CopilotChat')
       local select = require('CopilotChat.select')
 
-      chat.setup()
+      chat.setup({
+        model = 'claude-3.5-sonnet',
+      })
 
       vim.api.nvim_create_user_command('CopilotChatInline', function(args)
         chat.ask(args.args, {
