@@ -48,7 +48,7 @@ return {
       }
       dap.configurations.elixir = {
         {
-          type = 'elixir', -- Must match the adapter name set in dap.adapters
+          type = 'mix_task', -- Must match the adapter name set in dap.adapters
           name = 'Global Setting: Debug Mix Test (Current File)',
           request = 'launch',
           task = 'test',
@@ -61,7 +61,7 @@ return {
           }
         },
         {
-          type = 'elixir',
+          type = 'mix_task',
           name = 'Global Setting: Debug Phoenix',
           request = 'launch',
           task = 'phx.server',
