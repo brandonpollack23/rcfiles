@@ -248,6 +248,7 @@ alias gsw='git-branchless switch -i'
 alias gitsl='git sl --reverse'
 alias gxl='git sl --reverse'
 alias gitxl='git sl --reverse'
+source ./.zshrc.githubcopilot
 
 # pulumi aliases and env
 alias pctl=pulumictl
