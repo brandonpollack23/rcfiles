@@ -30,6 +30,9 @@ wk.register({
     },
     g = {
       f = { '<cmd>Telescope git_status<cr>', 'Git Changed Files' },
+      l = { '<cmd>Telescope git_commits<cr>', 'Git Directory Log' },
+      L = { '<cmd>Telescope git_bcommits<cr>', 'Git Buffer Log' },
+      B = { '<cmd>Telescope git_branches<cr>', 'Git Buffer Log' },
     },
     k = {
       name = 'Colors',
