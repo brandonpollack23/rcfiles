@@ -421,6 +421,16 @@ config.keys = {
     action = wezterm.action { ActivateTabRelative = -1 },
   },
   {
+    key = '[',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.ShowTabNavigator,
+  },
+  {
+    key = ']',
+    mods = 'CTRL|ALT|SHIFT',
+    action = wezterm.action.ShowTabNavigator,
+  },
+  {
     key = 'H',
     mods = 'LEADER',
     action = wezterm.action { MoveTabRelative = -1 },
