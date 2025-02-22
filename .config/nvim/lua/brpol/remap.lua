@@ -45,7 +45,7 @@ wk.register({
       i = { ":WhichKey '' i<cr>", 'insert mode' },
     },
     y = { '<\"+y', 'yank into system clipboard' },
-    Y = { '<\"+Y', 'yank line into system clipboard' },
+    Y = { '<\"+y', 'yank line into system clipboard' },
     Q = {
       name = 'Profiling and debugging vim itself',
       s = { function()
