@@ -339,7 +339,12 @@ return {
       "nvim-telescope/telescope.nvim", -- optional
       "neovim/nvim-lspconfig", -- optional
     },
-    opts = {} -- your configuration
+    opts = {
+      conceal = {
+        enabled = true,
+        min_length = 60,
+      },
+    },
   },
 
   -- CSharp C#
