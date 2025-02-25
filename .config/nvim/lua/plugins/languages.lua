@@ -66,7 +66,7 @@ return {
           enable = true,
           -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
-            fetchDeps = false,
+            fetchDeps = true,
             enableTestLenses = true,
             suggestSpecs = true,
             dialyzerEnabled = true,
