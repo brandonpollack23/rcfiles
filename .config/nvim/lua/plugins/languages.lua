@@ -52,17 +52,17 @@ return {
 
       elixir.setup {
         -- nextls = {
-          -- enable = false,
-          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
-          -- experimental = {
-          --   completions = {
-          --     enable = true -- control if completions are enabled. defaults to false
-          --   }
-          -- }
+        -- enable = false,
+        -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
+        -- experimental = {
+        --   completions = {
+        --     enable = true -- control if completions are enabled. defaults to false
+        --   }
+        -- }
         -- },
 
         elixirls = {
-          repo = "elixir-lsp/elixir-ls",
+          repo = 'elixir-lsp/elixir-ls',
           enable = true,
           -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
@@ -87,7 +87,14 @@ return {
       }
     end,
   },
-
+  {
+    'synic/refactorex.nvim',
+    ft = 'elixir',
+    opts = {
+      auto_update = true,
+      pin_version = nil,
+    },
+  },
   -- golang
   {
     'ray-x/go.nvim',
@@ -215,7 +222,6 @@ return {
         -- gofmt = 'gofumpt',
         -- max_line_len = 80,
       })
-
     end,
     event = { 'CmdlineEnter' },
     ft = { 'go', 'gomod' },
@@ -326,25 +332,29 @@ return {
         { prefix = '<leader>' })
     end,
   },
-  
+
   -- Tailwind CSS
   -- tailwind-tools.lua
   {
-    "luckasRanarison/tailwind-tools.nvim",
-    name = "tailwind-tools",
-    build = ":UpdateRemotePlugins",
+    'luckasRanarison/tailwind-tools.nvim',
+    name = 'tailwind-tools',
+    build = ':UpdateRemotePlugins',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
+      'nvim-treesitter/nvim-treesitter',
       'VonHeikemen/lsp-zero.nvim',
-      "nvim-telescope/telescope.nvim", -- optional
-      "neovim/nvim-lspconfig", -- optional
+      'nvim-telescope/telescope.nvim', -- optional
+      'neovim/nvim-lspconfig',         -- optional
     },
+<<<<<<< Updated upstream
     opts = {
       conceal = {
         enabled = true,
         min_length = 60,
       },
     },
+=======
+    opts = {}                          -- your configuration
+>>>>>>> Stashed changes
   },
 
   -- CSharp C#
@@ -388,12 +398,12 @@ return {
   },
   -- Typescript
   {
-    "pmizio/typescript-tools.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {
       settings = {
         tsserver_file_preferences = {
-          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all'
+          includeInlayParameterNameHints = 'all', -- 'none' | 'literals' | 'all'
           includeInlayParameterNameHintsWhenArgumentMatchesName = false,
           includeInlayVariableTypeHints = true,
           includeInlayFunctionParameterTypeHints = true,
@@ -404,8 +414,8 @@ return {
         },
       },
 
-      expose_as_code_actions = "all",
-      code_lens = "all",
+      expose_as_code_actions = 'all',
+      code_lens = 'all',
     }
   },
   -- Jupyter notebook evalation
