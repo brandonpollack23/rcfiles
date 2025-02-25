@@ -345,16 +345,12 @@ return {
       'nvim-telescope/telescope.nvim', -- optional
       'neovim/nvim-lspconfig',         -- optional
     },
-<<<<<<< Updated upstream
     opts = {
       conceal = {
         enabled = true,
         min_length = 60,
       },
     },
-=======
-    opts = {}                          -- your configuration
->>>>>>> Stashed changes
   },
 
   -- CSharp C#
