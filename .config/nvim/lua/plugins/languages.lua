@@ -346,6 +346,11 @@ return {
       'neovim/nvim-lspconfig',         -- optional
     },
     opts = {
+      settings = {
+        includeLanguages = {
+          elixir = 'phoenix-heex',
+        },
+      },
       conceal = {
         enabled = true,
         min_length = 60,
