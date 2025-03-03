@@ -25,6 +25,7 @@ PACKAGES=(
   luarocks     # Package manager for Lua modules
   make         # Utility for directing compilation
   maven        # Build automation tool used primarily for Java projects
+  mise         # A fast alternative to direnv, asdf, etc in rust
   neovim       # Hyperextensible Vim-based text editor
   jdk-openjdk  # OpenJDK Development Kit
   pandoc       # Universal document converter
@@ -370,27 +371,9 @@ if [[ "$XDG_CURRENT_DESKTOP" -eq "KDE" ]]; then
   konsave -a kde_konsave_profile
 fi
 
-# Install asdf, erlang, and elixir
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-. "$HOME/.asdf/asdf.sh"
-asdf plugin add erlang
-asdf plugin add elixir
-asdf plugin add gleam
-asdf plugin-add rebar https://github.com/Stratus3D/asdf-rebar.git
-# Install elixir and erlang from source and set them as global
-asdf install erlang ref:OTP-27.1.2
-asdf global erlang ref:OTP-27.1.2
-asdf reshim
-asdf install rebar 3.24.0
-asdf global rebar 3.240
-asdf reshim
-asdf install elixir ref:v1.17
-asdf global elixir ref:v1.17
-asdf reshim
-asdf install gleam ref:v1.5.1
-asdf global gleam ref:v1.5.1
-asdf reshim
-
+# Erlang/Elixira setup
+mise use --global elixir@1.18.2-otp-27
+mise use --global erlang@27.2.4
 yes | mix archive.install hex mix_templates
 yes | mix archive.install hex mix_generator
 yes | mix template.install hex gen_template_template

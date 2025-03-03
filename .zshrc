@@ -136,6 +136,7 @@ plugins=(
     gradle
     lein
     mix
+    mise
     npm
     rebar
     repo
@@ -345,6 +346,7 @@ export PATH=$HOME/go/bin:$PATH
 # Node Version Manager nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Nix
 if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
@@ -355,6 +357,9 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 
 # asdf setup if it exists
 [[ -f ~/.asdf/asdf.sh ]] && . ~/.asdf/asdf.sh || true
+
+# mise setup
+eval "$(mise activate zsh)"
 
 # Nix stuff
 prompt_nix_shell_setup
@@ -399,4 +404,3 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
