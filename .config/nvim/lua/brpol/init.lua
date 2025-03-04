@@ -68,6 +68,13 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 vim.o.spell = true
+-- disable spell on terminals
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
 vim.o.number = true
 vim.o.backupdir = vim.fn.expand('$HOME/.vim/backupdir') -- Backup and swap dirs
 vim.o.directory = vim.fn.expand('$HOME/.vim/swapdir')
