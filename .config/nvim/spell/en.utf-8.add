@@ -29,3 +29,11 @@ trojan
 exrc
 neovide
 gui
+struct
+middlewares
+rootDirectory
+inheritdoc
+netrw
+nvim
+lua
+nvimrc
