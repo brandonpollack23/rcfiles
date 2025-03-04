@@ -72,6 +72,10 @@ wk.register({
     J = { 'mzJ`z', 'join lines (preserve cursor)' },
     n = { 'nzzzv', 'next search result' },
     N = { 'Nzzzv', 'previous search result' },
+    z = {
+      n = { ':normal! ]s<cr>', 'Next Misspelled Word' },
+      N = { ':normal! [s<cr>', 'Previous Misspelled Word' },
+    },
   },
   { mode = 'n' }
 )

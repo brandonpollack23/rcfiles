@@ -67,6 +67,7 @@ vim.g.loaded_netrwPlugin = 1
 -- Enable 24 bit color
 vim.opt.termguicolors = true
 
+vim.o.spell = true
 vim.o.number = true
 vim.o.backupdir = vim.fn.expand('$HOME/.vim/backupdir') -- Backup and swap dirs
 vim.o.directory = vim.fn.expand('$HOME/.vim/swapdir')
