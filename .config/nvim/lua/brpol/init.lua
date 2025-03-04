@@ -75,6 +75,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.spell = false
   end,
 })
+-- Set spell cap to not highlight
+vim.o.spellcapcheck = ''
+
+
 vim.o.number = true
 vim.o.backupdir = vim.fn.expand('$HOME/.vim/backupdir') -- Backup and swap dirs
 vim.o.directory = vim.fn.expand('$HOME/.vim/swapdir')
