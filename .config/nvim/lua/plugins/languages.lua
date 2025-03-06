@@ -232,11 +232,11 @@ return {
   -- Jupyter notebook sync
   {
     'kiyoon/jupynium.nvim',
-    build = 'rye install .',
+    build = 'uv install .',
     config = function()
       local jupynium = require('jupynium')
       jupynium.setup({
-        jupyter_command = { 'rye', 'run', 'jupyter', },
+        jupyter_command = { 'uv', 'run', 'jupyter', },
         jupynium_file_pattern = { '*.ju.*', '*.py' },
         auto_close_tab = false,
       })
