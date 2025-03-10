@@ -62,3 +62,4 @@ ctx
 serde
 json
 passwordless
+bool
