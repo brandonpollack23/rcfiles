@@ -3,7 +3,6 @@ return {
     'nvim-treesitter/nvim-treesitter', -- Better syntax highlighting etc
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
-      'uncenter/tree-sitter-tera'
     },
     build = function()
       require('nvim-treesitter.install').update({ with_sync = true })()
