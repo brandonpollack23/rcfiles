@@ -3,6 +3,7 @@ return {
   -- Imports vscode settings.json coc settings and nlsp and has its own .neoconf.json
   {
     'folke/neoconf.nvim',
+    priority = 52, -- load before other plugins that use lspconfig
     config = function()
       require('neoconf').setup()
     end,

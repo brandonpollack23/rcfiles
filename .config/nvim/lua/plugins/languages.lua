@@ -400,7 +400,7 @@ return {
   -- Typescript
   {
     'pmizio/typescript-tools.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig', 'VonHeikemen/lsp-zero.nvim' },
     opts = {
       settings = {
         tsserver_file_preferences = {

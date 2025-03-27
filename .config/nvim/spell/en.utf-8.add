@@ -63,3 +63,8 @@ serde
 json
 passwordless
 bool
+pulumi
+RPC
+variadic
+PCL
+lspconfig
