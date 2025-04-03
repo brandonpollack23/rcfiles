@@ -728,17 +728,13 @@ return {
       if vim.fn.isdirectory(copilot_instructions_dir) then
         for _, filePath in ipairs(vim.fn.readdir(copilot_instructions_dir)) do
           local lines = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/prompt.md')
-          local prompt_contents = table.concat(lines, '\n') ..
-          require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
+          local prompt_contents = table.concat(lines, '\n') .. require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
           local description_contents = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/description.md')
           prompts[filePath] = {
             system_prompt = prompt_contents,
             description = description_contents,
           }
         end
-
-        vim.notify('Found copilot instructions directory, loading prompts: ' .. vim.inspect(prompts), vim.log.levels
-        .INFO)
       end
 
       chat.setup({
