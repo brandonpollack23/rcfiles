@@ -147,6 +147,7 @@ return {
             ['C'] = 'close_node',
             -- ['C'] = 'close_all_subnodes',
             ['z'] = 'close_all_nodes',
+            ['Z'] = 'expand_all_nodes',
             --["Z"] = "expand_all_nodes",
             ['a'] = {
               'add',
@@ -236,11 +237,12 @@ return {
               ['<bs>'] = 'navigate_up',
               ['.'] = 'set_root',
               ['H'] = 'toggle_hidden',
-              ['/'] = 'fuzzy_finder',
+              ['/'] = 'noop',
+              ['f'] = 'fuzzy_finder',
+              ['F'] = 'filter_on_submit',
               ['D'] = 'fuzzy_finder_directory',
               ['#'] = 'fuzzy_sorter', -- fuzzy sorting using the fzy algorithm
               -- ["D"] = "fuzzy_sorter_directory",
-              ['f'] = 'filter_on_submit',
               ['<c-x>'] = 'clear_filter',
               ['[g'] = 'prev_git_modified',
               [']g'] = 'next_git_modified',
@@ -321,7 +323,7 @@ return {
       -- Define the key mappings
       wk.add({
         { 'leader>d',   group = 'Neotree' },
-        { '<leader>dd', ':Neotree toggle<cr>',               desc = 'Toggle Neotree' },
+        { '<leader>dd', ':Neotree toggle<cr>',                    desc = 'Toggle Neotree' },
         { '<leader>db', ':Neotree toggle show buffers right<cr>', desc = 'Show Buffers Right' },
         { '<leader>df', ':Neotree reveal<cr>',                    desc = 'Reveal in Neotree' },
         { '<leader>dg', ':Neotree float git_status<cr>',          desc = 'Git Status in Float' },
