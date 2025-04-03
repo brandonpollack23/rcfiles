@@ -717,18 +717,36 @@ return {
       { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
     },
     branch = 'main',
-    opts = {
-      window = {
-        layout = 'float'
-      }
-    },
     -- TODO copy paste this and put it in it's own file: https://github.com/jellydn/lazy-nvim-ide/blob/main/lua/plugins/extras/copilot-chat-v2.lua
     config = function()
       local chat = require('CopilotChat')
       local select = require('CopilotChat.select')
 
+      -- if the working directory has a .vscode/copilot_instructions directory add each file as a new prompt directory.
+      local prompts = {}
+      local copilot_instructions_dir = './.vscode/copilot_instructions/'
+      if vim.fn.isdirectory(copilot_instructions_dir) then
+        for _, filePath in ipairs(vim.fn.readdir(copilot_instructions_dir)) do
+          local lines = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/prompt.md')
+          local prompt_contents = table.concat(lines, '\n') ..
+          require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
+          local description_contents = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/description.md')
+          prompts[filePath] = {
+            system_prompt = prompt_contents,
+            description = description_contents,
+          }
+        end
+
+        vim.notify('Found copilot instructions directory, loading prompts: ' .. vim.inspect(prompts), vim.log.levels
+        .INFO)
+      end
+
       chat.setup({
-        -- model = 'claude-3.5-sonnet',
+        model = 'claude-3.7-sonnet',
+        prompts = prompts,
+        -- window = {
+        --   layout = 'float'
+        -- }
       })
 
       vim.api.nvim_create_user_command('CopilotChatInline', function(args)
