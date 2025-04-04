@@ -346,9 +346,11 @@ return {
       'neovim/nvim-lspconfig',         -- optional
     },
     opts = {
-      settings = {
-        includeLanguages = {
-          elixir = 'phoenix-heex',
+      server = {
+        settings = {
+          experimental = {
+            classRegex = { 'class\\s*:\\s*\"([^\"]*)' }
+          },
         },
       },
       conceal = {
