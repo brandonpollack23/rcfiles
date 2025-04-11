@@ -208,6 +208,7 @@ return {
       if vim.fn.has('win32') ~= 1 and vim.fn.has('win64') ~= 1 then
         require('image').setup({
           backend = 'kitty',
+          processor = "magick_rock",
           integrations = {
             markdown = {
               enabled = true,
@@ -262,7 +263,10 @@ return {
       'hrsh7th/nvim-cmp',
     },
     config = function()
-      notify = require('notify')
+      local notify = require('notify')
+      notify.setup({
+        background_colour = '#000000',
+      })
       -- notify.setup({
       --     -- render = 'compact',
       --     timeout = 4000,

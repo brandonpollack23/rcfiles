@@ -34,7 +34,14 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>', {})
 
-require('lazy').setup('plugins')
+require('lazy').setup({
+  rocks = {
+    hererocks = true,
+  },
+  spec = {
+    import = 'plugins'
+  }
+})
 
 -- Individual Plugin Setup
 require('brpol.vscode_theme')
@@ -69,8 +76,8 @@ vim.opt.termguicolors = true
 
 vim.o.spell = true
 -- disable spell on terminals
-vim.api.nvim_create_autocmd("TermOpen", {
-  pattern = "*",
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = '*',
   callback = function()
     vim.opt_local.spell = false
   end,
@@ -149,13 +156,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- TODO REMOVE RUST WORKAROUND ON ARCH
 for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) do
-    local default_diagnostic_handler = vim.lsp.handlers[method]
-    vim.lsp.handlers[method] = function(err, result, context, config)
-        if err ~= nil and err.code == -32802 then
-            return
-        end
-        return default_diagnostic_handler(err, result, context, config)
+  local default_diagnostic_handler = vim.lsp.handlers[method]
+  vim.lsp.handlers[method] = function(err, result, context, config)
+    if err ~= nil and err.code == -32802 then
+      return
     end
+    return default_diagnostic_handler(err, result, context, config)
+  end
 end
 
 if is_wsl() then
