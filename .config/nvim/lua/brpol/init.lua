@@ -36,6 +36,7 @@ vim.api.nvim_set_keymap('n', '<C-c><C-c>', '<Cmd>call firenvim#focus_page()<CR>'
 
 require('lazy').setup({
   rocks = {
+    enabled = true,
     hererocks = true,
   },
   spec = {
