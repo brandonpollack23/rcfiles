@@ -17,6 +17,8 @@ return {
         { '<space>I', ':MoltenInfo<CR>', desc = 'Show info jupyter state' },
         { '<space>n', ':MoltenNext<CR>', desc = 'Next cell' },
         { '<space>p', ':MoltenPrev<CR>', desc = 'Prev cell' },
+        { '<space>e', ':<C-u>MoltenEvaluateOperator<CR>', desc = 'Molten Evaluate' },
+        { '<space>v', ':MoltenEvaluateVisual<CR>', desc = 'Molten Evaluate Selection', mode = 'v',  },
         { '<space>x', ':MoltenReevaluateCell<CR>', desc = '(Re)Evaluate Cell' },
         { '<space>h', ':MoltenHideOutput<CR>', desc = 'Hide output window' },
         { '<space>H', ':MoltenShow<CR>', desc = 'Show output window' },

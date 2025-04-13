@@ -15,6 +15,31 @@ vim.g.neovide_cursor_trail_size = 0.0
 vim.g.neovide_scroll_animation_length = 0.0
 
 -- set neovim python env to use ~/.config/nvim/.venv
+-- First if the venv does not exist, create it:
+if not vim.loop.fs_stat(os.getenv('HOME') .. '/.config/nvim/.venv') then
+  -- Notify the user:
+  vim.notify('Creating virtual environment for python plugins in nvim and instally necessary deps', vim.log.levels.INFO)
+  vim.fn.system({
+    'python3',
+    '-m',
+    'venv',
+    os.getenv('HOME') .. '/.config/nvim/.venv'
+  })
+
+  -- Then install the required packages for image.nvim
+  vim.fn.system({
+    os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3',
+    '-m',
+    'pip',
+    'install',
+    'pynvim',
+    'jupyter_client',
+    'cairosvg',
+    'pnglatex',
+    'plotly',
+    'pyperclip',
+  })
+end
 vim.g.python3_host_prog = os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3'
 
 if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
