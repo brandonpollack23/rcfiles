@@ -738,7 +738,7 @@ return {
       end
 
       chat.setup({
-        model = 'claude-3.7-sonnet',
+        model = 'gemini-2.5-pro',
         prompts = prompts,
         -- window = {
         --   layout = 'float'
