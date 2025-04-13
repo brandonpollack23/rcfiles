@@ -45,6 +45,7 @@
   "mason-nvim-dap.nvim": { "branch": "main", "commit": "4c2cdc69d69fe00c15ae8648f7e954d99e5de3ea" },
   "mason.nvim": { "branch": "main", "commit": "fc98833b6da5de5a9c5b1446ac541577059555be" },
   "mini.icons": { "branch": "main", "commit": "397ed3807e96b59709ef3292f0a3e253d5c1dc0a" },
+  "molten-nvim": { "branch": "main", "commit": "a286aa914d9a154bc359131aab788b5a077a5a99" },
   "neo-tree.nvim": { "branch": "v3.x", "commit": "9b5d67119c46e3262ffe1508fe6d8540b79ad75d" },
   "neoconf.nvim": { "branch": "main", "commit": "565963636da4952f125419096c3a23349495cf97" },
   "neoscroll.nvim": { "branch": "master", "commit": "f957373912e88579e26fdaea4735450ff2ef5c9c" },

@@ -14,6 +14,9 @@ vim.g.neovide_cursor_animation_length = 0.0
 vim.g.neovide_cursor_trail_size = 0.0
 vim.g.neovide_scroll_animation_length = 0.0
 
+-- set neovim python env to use ~/.config/nvim/.venv
+vim.g.python3_host_prog = os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3'
+
 if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
   require('brpol.windows')
 end
