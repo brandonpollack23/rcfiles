@@ -23,10 +23,11 @@ config.unix_domains = {
   { name = 'local_wez_domain' }
 }
 
--- if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 --   -- Windows, set domain to Manjaro.
 --   config.default_domain = 'WSL:Manjaro'
--- end
+  config.default_prog = { 'C:\\Program Files\\Git\\bin\\bash.exe' }
+end
 
 -- disable ligatures
 config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
