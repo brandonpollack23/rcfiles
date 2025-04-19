@@ -19,26 +19,10 @@ vim.g.neovide_scroll_animation_length = 0.0
 if not vim.loop.fs_stat(os.getenv('HOME') .. '/.config/nvim/.venv') then
   -- Notify the user:
   vim.notify('Creating virtual environment for python plugins in nvim and instally necessary deps', vim.log.levels.INFO)
-  vim.fn.system({
-    'python3',
-    '-m',
-    'venv',
-    os.getenv('HOME') .. '/.config/nvim/.venv'
-  })
+  os.execute('uv venv ' .. os.getenv('HOME') .. '/.config/nvim/.venv')
 
-  -- Then install the required packages for image.nvim
-  vim.fn.system({
-    os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3',
-    '-m',
-    'pip',
-    'install',
-    'pynvim',
-    'jupyter_client',
-    'cairosvg',
-    'pnglatex',
-    'plotly',
-    'pyperclip',
-  })
+  -- Then install the required packages for image.nvim and jupyter:
+  os.execute('uv pip install pynvim jupyter_client cairosvg pnglatex plotly pyperclip --python=$HOME/.config/nvim/.venv/bin/python')
 end
 vim.g.python3_host_prog = os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3'
 
