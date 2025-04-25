@@ -244,7 +244,7 @@ return {
       server = {
         settings = {
           experimental = {
-            classRegex = { 'class\\s*:\\s*\"([^\"]*)' }
+            classRegex = { 'class(Name)?\\s*:\\s*\"([^\"]*)' }
           },
         },
       },
