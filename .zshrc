@@ -120,6 +120,7 @@ plugins=(
     asdf
     aws
     azure
+    bun
     catimg
     colorize
     command-not-found
@@ -144,6 +145,7 @@ plugins=(
     sudo
     systemd
     tmux
+    yarn
 )
 
 if [[ "$VIM" == "" ]]; then
