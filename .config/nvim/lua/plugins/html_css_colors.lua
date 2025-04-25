@@ -2,9 +2,10 @@ return {
   {
     'uga-rosa/ccc.nvim',
     config = function()
+      -- colors picker and highlight
       require('ccc').setup({
         highlighter = {
-          auto_enable = true,
+          auto_enable = false,
           lsp = true,
         }
       })
