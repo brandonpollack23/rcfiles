@@ -68,16 +68,19 @@ return {
         formatters_by_ft = {
           python = { 'black', 'isort' },
           javascript = { 'prettierd', 'prettier' },
+          javascriptreact = { 'prettierd', 'prettier' },
+          typescript = { 'prettierd', 'prettier' },
+          typescriptreact = { 'prettierd', 'prettier' },
           go = { 'gofumpt' },
           cs = { 'csharpier' },
         },
         default_format_opts = {
-          lsp_format = "fallback",
+          lsp_format = 'fallback',
         },
-        -- format_on_save = {
-        --   timeout_ms = 5000,
-        --   lsp_fallback = true,
-        -- },
+        format_on_save = {
+          timeout_ms = 5000,
+          lsp_fallback = true,
+        },
       })
 
       -- Only format diffs on save to prevent noisy git history:
