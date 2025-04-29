@@ -260,7 +260,7 @@ export AWS_DEFAULT_PROFILE="pulumi-dev-sandbox"
 # wezterm stuff
 # For a new domain elsewhere (like tmux) use the --config option and set the domain
 #  `wezterm --config 'ssh_domains={{name='adhoc', ..}' connect adhoc`
-alias cati='wezterm imgcat'
+alias cati='chafa'
 alias wezconl='wezterm connect local_wez_domain'
 
 # Used for neovim workspaces.

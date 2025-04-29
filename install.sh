@@ -4,6 +4,7 @@
 PACKAGES=(
   asciinema    # Record and share terminal sessions
   bat          # A clone of cat(1) with syntax highlighting and Git integration
+  chafa        # An Image display program that will use the best way to display an image
   cmake        # Cross-platform open-source make system
   coreutils    # Basic file, shell, and text manipulation utilities
   cowsay       # Configurable talking cow (or other character) in terminal
@@ -285,6 +286,7 @@ function setup_home_dir() {
   mkdir -p "$HOME/.local"
 
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+  ln -sfn "$RCFILES_DIR/.config/ghostty" "$HOME/.config/ghostty"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
   ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
