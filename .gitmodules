@@ -67,3 +67,12 @@
 [submodule "nix-zsh-completions"]
 	path = nix-zsh-completions
 	url = git@github.com:nix-community/nix-zsh-completions.git
+[submodule ".tmux/plugins/tmux-autoreload"]
+	path = .tmux/plugins/tmux-autoreload
+	url = https://git::@github.com/b0o/tmux-autoreload
+[submodule ".tmux/plugins/tmux-fingers"]
+	path = .tmux/plugins/tmux-fingers
+	url = https://git::@github.com/Morantron/tmux-fingers
+[submodule ".tmux/plugins/tmux-yank"]
+	path = .tmux/plugins/tmux-yank
+	url = https://git::@github.com/tmux-plugins/tmux-yank
