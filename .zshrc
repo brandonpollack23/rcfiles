@@ -257,11 +257,8 @@ source ./.zshrc.githubcopilot
 alias pctl=pulumictl
 export AWS_DEFAULT_PROFILE="pulumi-dev-sandbox"
 
-# wezterm stuff
-# For a new domain elsewhere (like tmux) use the --config option and set the domain
-#  `wezterm --config 'ssh_domains={{name='adhoc', ..}' connect adhoc`
-alias cati='chafa'
-alias wezconl='wezterm connect local_wez_domain'
+export UNDERLYING_TERM=$(tmux display-message -p "#{client_termname}")
+alias cati='TERM=$UNDERLYING_TERM chafa'
 
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"
