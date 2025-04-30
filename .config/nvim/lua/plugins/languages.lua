@@ -249,8 +249,8 @@ return {
         },
       },
       conceal = {
-        enabled = true,
-        min_length = 60,
+        enabled = false,
+        min_length = 80,
       },
     },
   },
