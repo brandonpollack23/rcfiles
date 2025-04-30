@@ -36,6 +36,7 @@ PACKAGES=(
   sqlite3      # Command line interface for SQLite databases
   tmux         # Terminal multiplexer
   tree         # Display directories as trees
+  ts-node      # TypeScript execution environment for Node.js
   vim          # Highly configurable text editor
   xclip        # Command line interface to the X clipboard
   zsh          # Powerful shell with scripting language

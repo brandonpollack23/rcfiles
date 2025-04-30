@@ -178,7 +178,7 @@ return {
           -- Your repl definitions come here
           repl_definition = {
             python = {
-              command = { 'python3' }
+              command = { 'uv' }
             },
             sh = {
               -- Can be a table or a function that
@@ -190,7 +190,13 @@ return {
             },
             elixir = {
               command = { 'iex', '-S', 'mix' }
-            }
+            },
+            rust = {
+              command = { 'evxcr' }
+            },
+            typescript = {
+              command = { 'ts-node' }
+            },
           },
           -- How the repl window will be displayed
           -- See below for more information
@@ -199,8 +205,21 @@ return {
         -- Iron doesn't set keymaps by default anymore.
         -- You can set them here or manually add keymaps to the functions in iron.core
         keymaps = {
-          visual_send = '<space>r',
+          toggle_repl = '<space>rr', -- toggles the repl open and closed.
+          -- If repl_open_command is a table as above, then the following keymaps are
+          -- available
+          -- toggle_repl_with_cmd_1 = "<space>rv",
+          -- toggle_repl_with_cmd_2 = "<space>rh",
+          restart_repl = '<space>rR', -- calls `IronRestart` to restart the repl
+          send_motion = '<space>sc',
+          visual_send = '<space>sc',
+          send_file = '<space>sf',
+          send_line = '<space>sl',
+          send_paragraph = '<space>sp',
+          send_until_cursor = '<space>su',
           send_mark = '<space>sm',
+          send_code_block = '<space>sb',
+          send_code_block_and_move = '<space>sn',
           mark_motion = '<space>mc',
           mark_visual = '<space>mc',
           remove_mark = '<space>md',
@@ -217,31 +236,12 @@ return {
         ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
       }
 
-      -- iron also has a list of commands, see :h iron-commands for all available commands
-
       local wk = require('which-key')
-      wk.register({
-        r = {
-          name = 'Repl',
-          s = { function()
-            vim.cmd('IronRepl')
-
-            wk.register({
-              ['<space>'] = {
-                name = 'Iron Prefix',
-                r = { iron.send_line, 'Send current line' },
-                l = { iron.send_line, 'Send current line' },
-                m = { iron.send_motion, 'Send motion' },
-                f = { iron.send_file, 'Send file' },
-                c = { iron.send_until_cursor, 'Send until cursor' },
-              }
-            })
-          end, 'Start repl' },
-          R = { '<cmd>IronRestart<cr>', 'Restart repl' },
-          f = { '<cmd>IronFocus<cr>', 'Focus repl' },
-          h = { '<cmd>IronHide<cr>', 'Hide repl' },
-        }
-      }, { prefix = '<leader>' })
+      wk.add({
+        { '<space>',  group = 'Repl/Jupyter' },
+        { '<space>r', group = 'Repl' },
+        { '<space>s', group = 'Send to Repl' },
+      })
     end
   }
 }
