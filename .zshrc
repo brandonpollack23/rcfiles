@@ -203,7 +203,7 @@ function emoji_status_prompt() {
         echo 😡
     fi
 }
-local UTC_DATE=$(TZ=UTC date "+%X (%Z)")
+local UTC_DATE=$(TZ=UTC date "+%H:%M (%Z)")
 PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${UTC_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
 %{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["

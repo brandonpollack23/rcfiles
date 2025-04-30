@@ -87,9 +87,13 @@ MANJARO_ONLY_PACKAGES=(
 AUR_ARCH_PACKAGES=(
   bazelisk-bin     # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
   changie          # changelog generator used by pulumi
-  google-chrome    # The popular web browser from Google
   neovim-nightly   # Latest nightly build of Neovim
   obsidian         # Powerful knowledge base on top of a local folder of plain text Markdown files
+  tmux-mem-cpu-load
+)
+
+BREW_PACKAGES=(
+  tmux-mem-cpu-load
 )
 
 ask_confirmation() {
@@ -108,15 +112,19 @@ ask_confirmation() {
 function get_platform_packages() {
   if [[ "$OSTYPE" =~ linux* ]]; then
     if [[ -f /etc/debian_version ]]; then
-      echo "$DEBIAN_PACKAGES"
+      echo "${DEBIAN_PACKAGES[@]}"
     elif [[ -f /etc/arch-release ]]; then
-      echo "$ARCH_PACKAGES"
+      echo "${ARCH_PACKAGES[@]}"
 
       # Also manjaro packages if needed.
       if [ -x "$(command -v pamac)" ]; then
-        echo "$MANJARO_ONLY_PACKAGES"
+        echo "${MANJARO_ONLY_PACKAGES[@]}"
       fi
     fi
+    exit 1
+  elif [[ "$OSTYPE" =~ darwin* ]]; then
+    # MacOS specific packages
+    echo "${BREW_PACKAGES[@]}"
     exit 1
   else
     echo "Error: Unknown OS: $OSTYPE" >&2
@@ -127,7 +135,7 @@ function get_platform_packages() {
 function get_aur_packages() {
   if [[ "$OSTYPE" =~ linux* ]]; then
     if [[ -f /etc/arch-release ]]; then
-      echo "$AUR_ARCH_PACKAGES"
+      echo "${AUR_ARCH_PACKAGES[@]}"
     fi
     exit 1
   else
@@ -247,7 +255,7 @@ function handle_linux_setup() {
 
   FAILED_PACKAGES=""
   # Install all the packages
-  for package in $PACKAGES; do
+  for package in "${PACKAGES[@]}"; do
     echo "Installing $package"
     $INSTALL_COMMAND "$package"
     # If there was an error let the user know
@@ -333,16 +341,19 @@ fi
 
 RCFILES_DIR="$(dirname "$(realpath "$0")")"
 
-# Install node version manager and latest node version
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-nvm install node
+# Nodejs
+mise use -g node@latest
+mise use -g deno@latest
+mise use -g bun@latest
+mise use -g pnpm@latest
+mise use -g yarn@latest
 
 # Install Nix package manager
 echo "Installing nix package manager..."
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # Install golang
-curl https://raw.githubusercontent.com/canha/golang-tools-install-script/master/goinstall.sh | bash
+mise use -g go@latest
 
 # Install rust etc
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -361,19 +372,10 @@ fi
 cargo binstall tree-sitter-cli
 cargo install --git https://github.com/neovide/neovide # NVim gui
 
-# Install go etc
-curl -sSf https://raw.githubusercontent.com/owenthereal/goup/master/install.sh | sh --skip-prompt
-go install github.com/iOliverNguyen/git-pr@latest # git pr
+# Install python stuff and uv
+mise use -g uv@latest
 
-# Install python stuff and rye
-curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
-if [[ "$XDG_CURRENT_DESKTOP" -eq "KDE" ]]; then
-  rye install konsave
-  konsave -i $RCFILES_DIR/kde_konsave_profile.knsv
-  konsave -a kde_konsave_profile
-fi
-
-# Erlang/Elixira setup
+# Erlang/Elixir setup
 mise use --global elixir@1.18.2-otp-27
 mise use --global erlang@27.2.4
 yes | mix archive.install hex mix_templates
