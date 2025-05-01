@@ -253,6 +253,12 @@ alias gxl='git sl --reverse'
 alias gitxl='git sl --reverse'
 source ./.zshrc.githubcopilot
 
+# ls aliases
+alias ls="eza --git"
+alias ll="eza -l --git"
+alias la="eza -la --git"
+alias tree="eza -T --git"
+
 # pulumi aliases and env
 alias pctl=pulumictl
 export AWS_DEFAULT_PROFILE="pulumi-dev-sandbox"

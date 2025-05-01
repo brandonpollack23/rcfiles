@@ -10,6 +10,7 @@ PACKAGES=(
   cowsay       # Configurable talking cow (or other character) in terminal
   curl         # Command line tool for transferring data with URLs
   deno         # A secure runtime for JavaScript and TypeScript
+  eza          # A replacement for ls with more features
   fcitx5       # Input method framework
   fcitx5-mozc  # Mozc engine for Fcitx5, typically used for Japanese input
   fd           # A simple, fast and user-friendly alternative to find
