@@ -47,6 +47,9 @@ return {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v4.x',
     dependencies = {
+      'L3MON4D3/LuaSnip',
+      'b0o/SchemaStore.nvim',
+      'folke/neoconf.nvim', -- neoconf wants to be set up before any LSPs
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
@@ -54,8 +57,6 @@ return {
       'neovim/nvim-lspconfig',
       'williamboman/mason-lspconfig.nvim',
       'williamboman/mason.nvim',
-      'folke/neoconf.nvim', -- neoconf wants to be set up before any LSPs
-      'L3MON4D3/LuaSnip',
     },
     config = function()
       local cmp_nvim_lsp = require('cmp_nvim_lsp')
@@ -312,6 +313,17 @@ return {
 
           ['elixirls'] = function()
             -- handled by elixir-tools, mason is used for debugging only.
+          end,
+
+          ['jsonls'] = function()
+            lspconfig.jsonls.setup {
+              settings = {
+                json = {
+                  schemas = require('schemastore').json.schemas(),
+                  validate = { enable = true },
+                },
+              },
+            }
           end
         },
       })
@@ -728,7 +740,8 @@ return {
       if vim.fn.isdirectory(copilot_instructions_dir) then
         for _, filePath in ipairs(vim.fn.readdir(copilot_instructions_dir)) do
           local lines = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/prompt.md')
-          local prompt_contents = table.concat(lines, '\n') .. require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
+          local prompt_contents = table.concat(lines, '\n') ..
+              require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
           local description_contents = vim.fn.readfile(copilot_instructions_dir .. filePath .. '/description.md')
           prompts[filePath] = {
             system_prompt = prompt_contents,
