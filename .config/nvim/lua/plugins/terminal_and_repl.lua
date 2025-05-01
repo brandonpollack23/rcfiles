@@ -195,7 +195,10 @@ return {
               command = { 'evxcr' }
             },
             typescript = {
-              command = { 'ts-node' }
+              command = { 'ts-node' },
+            },
+            javascript = {
+              command = { 'node' }
             },
           },
           -- How the repl window will be displayed
