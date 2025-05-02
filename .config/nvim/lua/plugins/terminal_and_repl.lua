@@ -195,9 +195,12 @@ return {
               command = { 'evxcr' }
             },
             typescript = {
-              command = { 'ts-node' },
+              command = { 'tsx' },
             },
-            javascript = {
+            typescriptreact = {
+              command = { 'tsx' },
+            },
+            javascriptreact = {
               command = { 'node' }
             },
           },
