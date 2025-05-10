@@ -310,10 +310,21 @@ return {
           includeInlayFunctionLikeReturnTypeHints = true,
           includeInlayEnumMemberValueHints = true,
         },
+        compilerOtions = {
+          implicitProjectConfiguration = {
+            checkJs = true,
+          },
+        },
       },
 
       expose_as_code_actions = 'all',
       code_lens = 'all',
     }
+  },
+  -- MDX Markdown
+  {
+    'davidmh/mdx.nvim',
+    config = true,
+    dependencies = { 'nvim-treesitter/nvim-treesitter' }
   },
 }
