@@ -135,6 +135,10 @@ return {
         handlers = {
           lsp_zero.default_setup,
 
+          ['astro-ls'] = function()
+            lspconfig.astro.setup()
+          end,
+
           ['clangd'] = function()
             lspconfig.clangd.setup {
               cmd = { 'clangd', '--pch-storage=memory' },
