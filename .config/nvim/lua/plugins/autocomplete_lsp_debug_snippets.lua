@@ -328,6 +328,10 @@ return {
                 },
               },
             }
+          end,
+
+          ['postgres_lsp'] = function()
+            lspconfig.postgres_lsp.setup {}
           end
         },
       })
