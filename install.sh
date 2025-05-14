@@ -94,10 +94,6 @@ AUR_ARCH_PACKAGES=(
   tmux-mem-cpu-load
 )
 
-BREW_PACKAGES=(
-  tmux-mem-cpu-load
-)
-
 ask_confirmation() {
   read -p "You are running this script as root. Are you sure you want to continue? (yes/no): " response
   case "$response" in
@@ -125,8 +121,6 @@ function get_platform_packages() {
     fi
     exit 1
   elif [[ "$OSTYPE" =~ darwin* ]]; then
-    # MacOS specific packages
-    echo "${BREW_PACKAGES[@]}"
     exit 1
   else
     echo "Error: Unknown OS: $OSTYPE" >&2
