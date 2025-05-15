@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RCFILES_DIR="$(dirname "$(realpath "$0")")"
+
 # Define an array to hold the package names
 PACKAGES=(
   asciinema    # Record and share terminal sessions
@@ -334,8 +336,6 @@ else
   echo "Error: Unknown OS: $OSTYPE" >&2
   exit 1
 fi
-
-RCFILES_DIR="$(dirname "$(realpath "$0")")"
 
 # Nodejs
 mise use -g node@latest
