@@ -17,8 +17,8 @@ return {
       end
       url_open.setup({})
 
-      require('which-key').register({
-        gx = { '<cmd>URLOpenUnderCursor<cr>', 'Open URL under cursor' },
+      require('which-key').add({
+        { "gx", "<cmd>URLOpenUnderCursor<cr>", desc = "Open URL under cursor" },
       })
     end,
   },
@@ -43,13 +43,11 @@ return {
     config = function()
       require('icon-picker').setup({ disable_legacy_commands = true })
 
-      require('which-key').register({
-        i = {
-          name = 'Insert Stuff',
-          e = { '<cmd>IconPickerNormal<cr>', 'Emoji Picker' },
-          E = { '<cmd>IconPickerYank<cr>', 'Emoji Picker into register' }
-        }
-      }, { prefix = '<leader>' })
+      require('which-key').add({
+        { "<leader>i", group = "Insert Stuff" },
+        { "<leader>ie", "<cmd>IconPickerNormal<cr>", desc = "Emoji Picker" },
+        { "<leader>iE", "<cmd>IconPickerYank<cr>", desc = "Emoji Picker into register" },
+      })
       -- TODO try to use which key for this like so: [C-i] = {}
       -- vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', { remap = false })
     end
@@ -149,14 +147,10 @@ return {
         desc = 'Re-enable autoformat-on-save',
       })
 
-      require('which-key').register({
-          v = {
-            name = 'LSP/IDE Operations',
-            f = { require('conform').format, 'Format File' },
-          }
-        },
-        { prefix = '<leader>' }
-      )
+      require('which-key').add({
+        { "<leader>v", group = "LSP/IDE Operations" },
+        { "<leader>vf", require('conform').format, desc = "Format File" },
+      })
     end
   },
 

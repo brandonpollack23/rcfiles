@@ -73,9 +73,9 @@ local function execute_current_buffer()
   load(code)()
 end
 
-require('which-key').register({
-  l = { execute_current_buffer, 'Source current buffer' },
-}, { prefix = '<leader>' })
+require('which-key').add({
+  { "<leader>l", execute_current_buffer, desc = "Source current buffer" },
+})
 
 -- Global options
 -- Enable project local .nvim.lua, .exrc, or .nvimrc

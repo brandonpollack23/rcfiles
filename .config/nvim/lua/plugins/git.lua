@@ -55,42 +55,31 @@ return {
         on_attach = function(bufnr)
           local wk = require('which-key')
 
-          wk.register(
-            {
-              g = {
-                n = { gs.next_hunk, 'Next git hunk' },
-                N = { gs.prev_hunk, 'Prev git hunk' },
-                R = { gs.reset_buffer, 'Reset buffer' },
-                h = {
-                  name = 'hunk operations',
-                  p = { gs.preview_hunk, 'Preview hunk' },
-                  s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
-                  d = { gs.diffthis, 'Diff against index' },
-                  D = { function() gs.diffthis('~') end, 'Diff against last commit' },
-                  r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
-                },
-              }
-            },
-            { prefix = '<leader>' }
-          )
-          wk.register(
-            {
-              g = {
-                n = { gs.next_hunk, 'Next git hunk' },
-                N = { gs.prev_hunk, 'Prev git hunk' },
-                R = { gs.reset_buffer, 'Reset buffer' },
-                h = {
-                  name = 'hunk operations',
-                  p = { gs.preview_hunk, 'Preview hunk' },
-                  s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage hunk' },
-                  d = { gs.diffthis, 'Diff against index' },
-                  D = { function() gs.diffthis('~') end, 'Diff against last commit' },
-                  r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset hunk' },
-                },
-              }
-            },
-            { mode = 'x', prefix = '<leader>' }
-          )
+          wk.add({
+            -- Normal mode git operations
+            { "<leader>g", group = "Git" },
+            { "<leader>gn", gs.next_hunk, desc = "Next git hunk" },
+            { "<leader>gN", gs.prev_hunk, desc = "Prev git hunk" },
+            { "<leader>gR", gs.reset_buffer, desc = "Reset buffer" },
+            { "<leader>gh", group = "hunk operations" },
+            { "<leader>ghp", gs.preview_hunk, desc = "Preview hunk" },
+            { "<leader>ghs", function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Stage hunk" },
+            { "<leader>ghd", gs.diffthis, desc = "Diff against index" },
+            { "<leader>ghD", function() gs.diffthis('~') end, desc = "Diff against last commit" },
+            { "<leader>ghr", function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Reset hunk" },
+            
+            -- Visual mode git operations
+            { "<leader>g", group = "Git", mode = "x" },
+            { "<leader>gn", gs.next_hunk, desc = "Next git hunk", mode = "x" },
+            { "<leader>gN", gs.prev_hunk, desc = "Prev git hunk", mode = "x" },
+            { "<leader>gR", gs.reset_buffer, desc = "Reset buffer", mode = "x" },
+            { "<leader>gh", group = "hunk operations", mode = "x" },
+            { "<leader>ghp", gs.preview_hunk, desc = "Preview hunk", mode = "x" },
+            { "<leader>ghs", function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Stage hunk", mode = "x" },
+            { "<leader>ghd", gs.diffthis, desc = "Diff against index", mode = "x" },
+            { "<leader>ghD", function() gs.diffthis('~') end, desc = "Diff against last commit", mode = "x" },
+            { "<leader>ghr", function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Reset hunk", mode = "x" },
+          })
         end
       }
     end
@@ -123,11 +112,9 @@ return {
     lazy = false,
     config = function()
       require('blame').setup {}
-      require('which-key').register({
-        ['<leader>g'] = {
-          name = 'Git',
-          b = { ':BlameToggle<cr>', 'Toggle Blame' },
-        }
+      require('which-key').add({
+        { "<leader>g", group = "Git" },
+        { "<leader>gb", ":BlameToggle<cr>", desc = "Toggle Blame" },
       })
     end,
   },
@@ -135,27 +122,17 @@ return {
     'sindrets/diffview.nvim',
     config = function()
       require('diffview').setup()
-      require('which-key').register({
-          g = {
-            name = 'Git',
-            d = { ':DiffviewOpen<cr>', 'Open Diffview' },
-            D = { ':DiffviewClose<cr>', 'Close Diffview' },
-            R = { ':DiffviewRefresh<cr>', 'Refresh Diffview' },
-            h = { ':DiffviewFileHistory<cr>', 'File History' },
-          }
-        },
-        { prefix = '<leader>' }
-      )
-
-      require('which-key').register(
-        {
-          g = {
-            name = 'Git',
-            h = { ":'<,'>DiffviewFileHistory<cr>", 'File History (selection)' },
-          }
-        },
-        { prefix = '<leader>', mode = 'v' }
-      )
+      require('which-key').add({
+        { "<leader>g", group = "Git" },
+        { "<leader>gd", ":DiffviewOpen<cr>", desc = "Open Diffview" },
+        { "<leader>gD", ":DiffviewClose<cr>", desc = "Close Diffview" },
+        { "<leader>gR", ":DiffviewRefresh<cr>", desc = "Refresh Diffview" },
+        { "<leader>gh", ":DiffviewFileHistory<cr>", desc = "File History" },
+        
+        -- Visual mode diffview
+        { "<leader>g", group = "Git", mode = "v" },
+        { "<leader>gh", ":'<,'>DiffviewFileHistory<cr>", desc = "File History (selection)", mode = "v" },
+      })
     end
   },
   {

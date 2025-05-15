@@ -96,15 +96,30 @@ return {
         end, 'Easymotion T' },
       }
 
-      wk.register {
-        bindings,
-        { mode = 'n' }
-      }
+      wk.add({
+        { "<leader><leader>w", function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, desc = "Easymotion w" },
+        { "<leader><leader>e", function() hop.hint_words({ direction = directions.AFTER_CURSOR, hint_position = positions.END }) end, desc = "Easymotion e" },
+        { "<leader><leader>b", function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, desc = "Easymotion b" },
+        { "<leader><leader>j", function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, desc = "Easymotion j" },
+        { "<leader><leader>k", function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, desc = "Easymotion k" },
+        { "<leader><leader>f", function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, desc = "Easymotion f" },
+        { "<leader><leader>F", function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, desc = "Easymotion F" },
+        { "<leader><leader>t", function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, desc = "Easymotion t" },
+        { "<leader><leader>T", function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, desc = "Easymotion T" },
+      })
 
-      for bind, fd in pairs(bindings) do
-        local f = fd[1]
-        vim.keymap.set('v', bind, f, { noremap = true })
-      end
+      -- Add visual mode bindings
+      wk.add({
+        { "<leader><leader>w", function() hop.hint_words({ direction = directions.AFTER_CURSOR }) end, desc = "Easymotion w", mode = "v" },
+        { "<leader><leader>e", function() hop.hint_words({ direction = directions.AFTER_CURSOR, hint_position = positions.END }) end, desc = "Easymotion e", mode = "v" },
+        { "<leader><leader>b", function() hop.hint_words({ direction = directions.BEFORE_CURSOR }) end, desc = "Easymotion b", mode = "v" },
+        { "<leader><leader>j", function() hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR }) end, desc = "Easymotion j", mode = "v" },
+        { "<leader><leader>k", function() hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR }) end, desc = "Easymotion k", mode = "v" },
+        { "<leader><leader>f", function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true }) end, desc = "Easymotion f", mode = "v" },
+        { "<leader><leader>F", function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true }) end, desc = "Easymotion F", mode = "v" },
+        { "<leader><leader>t", function() hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 }) end, desc = "Easymotion t", mode = "v" },
+        { "<leader><leader>T", function() hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 }) end, desc = "Easymotion T", mode = "v" },
+      })
 
       -- Color configuration
       vim.cmd('hi HopNextKey guifg=White')
@@ -133,14 +148,9 @@ return {
         flash_duration = 300,
       }
 
-      require('which-key').register(
-        {
-          ['<leader>W'] = { ':WindowPick<cr>', 'Pick a window' },
-        },
-        {
-          prefix = '<leader>',
-        }
-      )
+      require('which-key').add({
+        { "<leader>W", ":WindowPick<cr>", desc = "Pick a window" },
+      })
     end
   },
 

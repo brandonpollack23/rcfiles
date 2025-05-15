@@ -40,18 +40,15 @@ return {
 
     config = function()
       local workspaces = require('workspaces')
-      workspaces.sync_dirs()
+      -- Suppress sync message by redirecting output
+      vim.cmd('silent! lua require("workspaces").sync_dirs()')
 
-      require('which-key').register({
-          w = {
-            name = 'Workspaces and sessons',
-            w = { ':Telescope workspaces<cr>', 'Open Workspaces (fuzzy)' },
-            a = { ':WorkspacesAdd<cr>', 'Add current directory to workspaces' },
-            l = { ':SessionsLoad<cr>', 'Load default session for workspace' },
-          }
-        },
-        { prefix = '<leader>' }
-      )
+      require('which-key').add({
+        { "<leader>w", group = "Workspaces and sessons" },
+        { "<leader>ww", ":Telescope workspaces<cr>", desc = "Open Workspaces (fuzzy)" },
+        { "<leader>wa", ":WorkspacesAdd<cr>", desc = "Add current directory to workspaces" },
+        { "<leader>wl", ":SessionsLoad<cr>", desc = "Load default session for workspace" },
+      })
 
       workspaces.setup({
         hooks = {

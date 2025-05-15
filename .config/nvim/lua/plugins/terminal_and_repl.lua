@@ -52,48 +52,35 @@ return {
       }
 
       local wk = require('which-key')
-      wk.register({
-        ['<C-\\>'] = { ':ToggleTerm<cr>', 'Toggle Terminal, takes a prefix for term #' },
-      }, {})
-      wk.register(
-        {
-          t = {
-            name = 'Terminals',
-            t = { ':ToggleTerm<cr>', 'Toggle Terminal' },
-            s = { ':TermSelect<cr>', 'Select from list of open terminals' },
-            n = {
-              function()
-                local term = require('toggleterm.terminal')
-                    .get_last_focused()
-                -- check a terminal exists
-                if not term then
-                  vim.notify('No terminal to rename')
-                  return
-                end
-
-                local name = vim.fn.input('Set name of a terminal: ')
-                vim.cmd('ToggleTermSetName ' .. name)
-              end,
-              'Set terminal name'
-            },
-            e = { ':ToggleTermSendCurrentLine<cr>', 'Execute current line in terminal' },
-          }
+      
+      -- Normal mode mappings
+      wk.add({
+        { "<C-\\>", ":ToggleTerm<cr>", desc = "Toggle Terminal, takes a prefix for term #" },
+        
+        -- Leader key terminal group
+        { "<leader>t", group = "Terminals" },
+        { "<leader>tt", ":ToggleTerm<cr>", desc = "Toggle Terminal" },
+        { "<leader>ts", ":TermSelect<cr>", desc = "Select from list of open terminals" },
+        { "<leader>tn", function()
+            local term = require('toggleterm.terminal').get_last_focused()
+            -- check a terminal exists
+            if not term then
+              vim.notify('No terminal to rename')
+              return
+            end
+            local name = vim.fn.input('Set name of a terminal: ')
+            vim.cmd('ToggleTermSetName ' .. name)
+          end, 
+          desc = "Set terminal name" 
         },
-        { prefix = '<leader>' }
-      )
-
-      wk.register(
-        {
-          t = {
-            name = 'Terminals',
-            e = { ':ToggleTermSendVisualSelection<cr>', 'Execute current selection in terminal' },
-          },
-        },
-        {
-          prefix = '<leader>',
-          mode = 'v',
-        }
-      )
+        { "<leader>te", ":ToggleTermSendCurrentLine<cr>", desc = "Execute current line in terminal" },
+      })
+      
+      -- Visual mode mappings
+      wk.add({
+        { "<leader>t", group = "Terminals", mode = "v" },
+        { "<leader>te", ":ToggleTermSendVisualSelection<cr>", desc = "Execute current selection in terminal", mode = "v" },
+      })
 
       -- Return to normal mode from terminal mode to leave terminal open etc
       vim.keymap.set('t', '<C-/>', function() vim.cmd('stopinsert') end, { noremap = true })
