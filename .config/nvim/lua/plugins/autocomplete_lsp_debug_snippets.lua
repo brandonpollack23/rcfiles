@@ -135,7 +135,7 @@ return {
         handlers = {
           lsp_zero.default_setup,
 
-          ['astro-ls'] = function()
+          ['astro'] = function()
             lspconfig.astro.setup()
           end,
 
@@ -329,10 +329,6 @@ return {
               },
             }
           end,
-
-          ['postgres_lsp'] = function()
-            lspconfig.postgres_lsp.setup {}
-          end
         },
       })
 
@@ -361,6 +357,9 @@ return {
 
       -- godot gdscript
       lspconfig.gdscript.setup({})
+
+      -- postgrestools postgres_lsp
+      lspconfig.postgres_lsp.setup({})
 
       local copilot = require('copilot.suggestion')
       local cmp = require('cmp')
