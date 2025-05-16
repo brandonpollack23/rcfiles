@@ -43,8 +43,6 @@ export MANPATH="$HOME/man/":$MANPATH
 #rustup
 source $HOME/.cargo/env
 
-#export EDITOR="emacsclient -t -a ''" # opens in terminal
-#export VISUAL="emacsclient -c -a emacs" # opens in gui mode
 export EDITOR="nvim" # opens in terminal
 export ALTERNATE_EDITOR="vi"
 
@@ -251,7 +249,7 @@ alias gsw='git-branchless switch -i'
 alias gitsl='git sl --reverse'
 alias gxl='git sl --reverse'
 alias gitxl='git sl --reverse'
-source ./.zshrc.githubcopilot
+source ~/.zshrc.githubcopilot
 
 # ls aliases
 alias ls="eza --git"
@@ -402,6 +400,11 @@ if [[ -f $HOME/.zshrc.local ]]; then
     echo "Sourcing zshrc local only file..."
     source $HOME/.zshrc.local
 fi
+# If This is a mac, source any machine specific stuff
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "Sourcing mac zshrc file..."
+    source $HOME/.zshrc.mac
+fi
 
 # Finally, show a welcome message and fortune!
 if [ -x "$(command -v lolcat)" ]; then
@@ -409,3 +412,6 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
+
+# Added by Windsurf
+export PATH="/Users/brpol/.codeium/windsurf/bin:$PATH"

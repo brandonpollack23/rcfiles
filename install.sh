@@ -304,6 +304,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.vimrc" "$HOME/.vimrc"
   ln -sfn "$RCFILES_DIR/.wezterm.lua" "$HOME/.wezterm.lua"
   ln -sfn "$RCFILES_DIR/.zshrc" "$HOME/.zshrc"
+  ln -sfn "$RCFILES_DIR/.zshrc.mac" "$HOME/.zshrc.mac"
   ln -sfn "$RCFILES_DIR/.zshrc.githubcopilot" "$HOME/.zshrc.githubcopilot"
   ln -sfn "$RCFILES_DIR/nix-zsh-completions" "$HOME/nix-zsh-completions"
   ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
