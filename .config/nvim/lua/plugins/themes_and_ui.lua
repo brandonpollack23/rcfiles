@@ -42,7 +42,6 @@ return {
   {
     'nvim-lualine/lualine.nvim',
     dependencies = {
-      'AndreM222/copilot-lualine',
       'Mofiqul/vscode.nvim',
       'arkav/lualine-lsp-progress',
       'f-person/git-blame.nvim',
@@ -80,7 +79,6 @@ return {
             'lsp_progress',
           },
           lualine_x = {
-            'copilot',
             'encoding',
             'fileformat',
             'filetype'
@@ -142,28 +140,28 @@ return {
       local wk = require('which-key')
       wk.add({
         -- Buffer management
-        { "<leader>b", group = "Buffers/Tabs" },
-        { "<leader>bp", ":BufferLineTogglePin<cr>", desc = "Pin Buffer" },
-        { "<leader>bn", ":BufferLineCycleNext<cr>", desc = "Next buffer" },
-        { "<leader>bN", ":BufferLineCyclePrev<cr>", desc = "Previous buffer" },
-        { "<leader>bl", ":BufferLineMoveNext<cr>", desc = "Move Right" },
-        { "<leader>bh", ":BufferLineMovePrev<cr>", desc = "Move Left" },
-        { "<leader>bL", function() require('bufferline').move_to(-1) end, desc = "Move to beginning" },
-        { "<leader>bH", function() require('bufferline').move_to(1) end, desc = "Move to end" },
-        { "<leader>bx", ":bdelete<cr>", desc = "Close Current buffer" },
-        
+        { '<leader>b',   group = 'Buffers/Tabs' },
+        { '<leader>bp',  ':BufferLineTogglePin<cr>',                       desc = 'Pin Buffer' },
+        { '<leader>bn',  ':BufferLineCycleNext<cr>',                       desc = 'Next buffer' },
+        { '<leader>bN',  ':BufferLineCyclePrev<cr>',                       desc = 'Previous buffer' },
+        { '<leader>bl',  ':BufferLineMoveNext<cr>',                        desc = 'Move Right' },
+        { '<leader>bh',  ':BufferLineMovePrev<cr>',                        desc = 'Move Left' },
+        { '<leader>bL',  function() require('bufferline').move_to(-1) end, desc = 'Move to beginning' },
+        { '<leader>bH',  function() require('bufferline').move_to(1) end,  desc = 'Move to end' },
+        { '<leader>bx',  ':bdelete<cr>',                                   desc = 'Close Current buffer' },
+
         -- Close operations subgroup
-        { "<leader>bX", group = "Close" },
-        { "<leader>bXo", ":BufferLineCloseOthers<cr>", desc = "Close other buffers" },
-        { "<leader>bXL", ":BufferLineCloseRight<cr>", desc = "Close all to the right" },
-        { "<leader>bXH", ":BufferLineCloseLeft<cr>", desc = "Close all to the Left" },
-        
+        { '<leader>bX',  group = 'Close' },
+        { '<leader>bXo', ':BufferLineCloseOthers<cr>',                     desc = 'Close other buffers' },
+        { '<leader>bXL', ':BufferLineCloseRight<cr>',                      desc = 'Close all to the right' },
+        { '<leader>bXH', ':BufferLineCloseLeft<cr>',                       desc = 'Close all to the Left' },
+
         -- Buffer picking
-        { "<leader>B", ":BufferLinePick<cr>", desc = "Pick buffer" },
-        
+        { '<leader>B',   ':BufferLinePick<cr>',                            desc = 'Pick buffer' },
+
         -- vim-style buffer navigation
-        { "gt", ":BufferLineCycleNext<cr>", desc = "Next buffer" },
-        { "gT", ":BufferLineCyclePrev<cr>", desc = "Previous buffer" },
+        { 'gt',          ':BufferLineCycleNext<cr>',                       desc = 'Next buffer' },
+        { 'gT',          ':BufferLineCyclePrev<cr>',                       desc = 'Previous buffer' },
       })
     end
   },
@@ -324,9 +322,9 @@ return {
 
       -- Add a keybinding to open noice errors with telescope
       require('which-key').add({
-        { "<leader>n", group = "LSP/IDE Operations" },
-        { "<leader>ne", ":Telescope noice<cr>", desc = "Show messages history" },
-        { "<leader>nd", function() notify.dismiss({ silent = true, pending = true }) end, desc = "Dismiss notifications" },
+        { '<leader>n',  group = 'LSP/IDE Operations' },
+        { '<leader>ne', ':Telescope noice<cr>',                                           desc = 'Show messages history' },
+        { '<leader>nd', function() notify.dismiss({ silent = true, pending = true }) end, desc = 'Dismiss notifications' },
       })
       --
     end

@@ -1,33 +1,3 @@
--- Function that detects if there is a "cmd" directory in the project root and walks the files in there to see if there is a main function in a main package in any go files there and returns the list of them
-local function get_go_main_files()
-  vim.notify(
-    'Searching for main files in cmd directory, if there are more you will need to add them manually to a launch.json or a local nvim configuration',
-    vim.log.levels.TRACE)
-
-  local cmd_dir = './cmd'
-  local main_files = {}
-  if vim.fn.isdirectory(cmd_dir) == 0 then
-    return main_files
-  end
-
-  local files = vim.fn.readdir(cmd_dir)
-  for _, file in ipairs(files) do
-    local full_path = cmd_dir .. '/' .. file
-    vim.notify('Checking file: ' .. full_path, vim.log.levels.TRACE)
-    if vim.fn.isdirectory(full_path) == 0 then
-      local file_contents = vim.fn.readfile(full_path)
-      for _, line in ipairs(file_contents) do
-        if string.match(line, '^%s*func main') then
-          table.insert(main_files, full_path)
-          break
-        end
-      end
-    end
-  end
-
-  return main_files
-end
-
 return {
   {
     'williamboman/mason.nvim',
@@ -361,7 +331,6 @@ return {
       -- postgrestools postgres_lsp
       lspconfig.postgres_lsp.setup({})
 
-      local copilot = require('copilot.suggestion')
       local cmp = require('cmp')
       local cmp_select = { behaviour = cmp.SelectBehavior.Select }
       local cmp_mappings = {
@@ -389,8 +358,6 @@ return {
 
           if cmp.visible() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-          elseif copilot.is_visible() then
-            copilot.accept()
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
           else
@@ -427,37 +394,37 @@ return {
         local telescopeBuiltin = require('telescope.builtin')
 
         wk.add({
-          { "gd", vim.lsp.buf.definition, desc = "Go to definition", buffer = bufnr, remap = false },
-          { "K", vim.lsp.buf.hover, desc = "Hover Information", buffer = bufnr, remap = false },
-          { "[d", vim.diagnostic.goto_next, desc = "Next diagnostic", buffer = bufnr, remap = false },
-          { "]d", vim.diagnostic.goto_prev, desc = "Previous diagnostic", buffer = bufnr, remap = false },
+          { 'gd', vim.lsp.buf.definition,   desc = 'Go to definition',    buffer = bufnr, remap = false },
+          { 'K',  vim.lsp.buf.hover,        desc = 'Hover Information',   buffer = bufnr, remap = false },
+          { '[d', vim.diagnostic.goto_next, desc = 'Next diagnostic',     buffer = bufnr, remap = false },
+          { ']d', vim.diagnostic.goto_prev, desc = 'Previous diagnostic', buffer = bufnr, remap = false },
         })
 
         wk.add({
-          { "<leader>v", group = "LSP/IDE Operations", buffer = bufnr, remap = false },
-          { "<leader>vws", telescopeBuiltin.workspace_symbols, desc = "Workspace symbols", buffer = bufnr, remap = false },
-          { "<leader>vd", vim.diagnostic.open_float, desc = "Open diagnostic floating window", buffer = bufnr, remap = false },
-          { "<leader>vc", vim.lsp.buf.code_action, desc = "Open code actions", buffer = bufnr, remap = false },
-          { "<leader>vr", vim.lsp.buf.rename, desc = "Rename", buffer = bufnr, remap = false },
-          { "<leader>vR", telescopeBuiltin.lsp_references, desc = "Open references", buffer = bufnr, remap = false },
-          { "<leader>vh", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, desc = "Toggle inlay hints", buffer = bufnr, remap = false },
+          { '<leader>v',   group = 'LSP/IDE Operations',                                                  buffer = bufnr,                           remap = false },
+          { '<leader>vws', telescopeBuiltin.workspace_symbols,                                            desc = 'Workspace symbols',               buffer = bufnr, remap = false },
+          { '<leader>vd',  vim.diagnostic.open_float,                                                     desc = 'Open diagnostic floating window', buffer = bufnr, remap = false },
+          { '<leader>vc',  vim.lsp.buf.code_action,                                                       desc = 'Open code actions',               buffer = bufnr, remap = false },
+          { '<leader>vr',  vim.lsp.buf.rename,                                                            desc = 'Rename',                          buffer = bufnr, remap = false },
+          { '<leader>vR',  telescopeBuiltin.lsp_references,                                               desc = 'Open references',                 buffer = bufnr, remap = false },
+          { '<leader>vh',  function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, desc = 'Toggle inlay hints',              buffer = bufnr, remap = false },
         })
 
         wk.add({
-          { "<leader>v", group = "LSP/IDE Operations", mode = "x", buffer = bufnr, remap = false },
-          { "<leader>vc", vim.lsp.buf.code_action, desc = "Open code actions", mode = "x", buffer = bufnr, remap = false },
+          { '<leader>v',  group = 'LSP/IDE Operations', mode = 'x',                 buffer = bufnr, remap = false },
+          { '<leader>vc', vim.lsp.buf.code_action,      desc = 'Open code actions', mode = 'x',     buffer = bufnr, remap = false },
         })
 
         wk.add({
-          { "<C-q>", vim.lsp.buf.hover, desc = "Code hover", mode = "i" },
-          { "<C-.>", vim.lsp.buf.code_action, desc = "Code action", mode = "i" },
-          { "<C-k>", function() vim.lsp.buf.signature_help() end, desc = "Signature help", mode = "i" },
+          { '<C-q>', vim.lsp.buf.hover,                           desc = 'Code hover',     mode = 'i' },
+          { '<C-.>', vim.lsp.buf.code_action,                     desc = 'Code action',    mode = 'i' },
+          { '<C-k>', function() vim.lsp.buf.signature_help() end, desc = 'Signature help', mode = 'i' },
         })
-        
+
         wk.add({
-          { "<C-q>", vim.lsp.buf.hover, desc = "Code hover", mode = "n" },
-          { "<C-.>", vim.lsp.buf.code_action, desc = "Code action", mode = "n" },
-          { "<C-k>", function() vim.lsp.buf.signature_help() end, desc = "Signature help", mode = "n" },
+          { '<C-q>', vim.lsp.buf.hover,                           desc = 'Code hover',     mode = 'n' },
+          { '<C-.>', vim.lsp.buf.code_action,                     desc = 'Code action',    mode = 'n' },
+          { '<C-k>', function() vim.lsp.buf.signature_help() end, desc = 'Signature help', mode = 'n' },
         })
       end)
 
@@ -501,9 +468,9 @@ return {
             })
 
             require('which-key').add({
-              { "<leader>v", group = "LSP/IDE Operations" },
-              { "<leader>vl", vim.lsp.codelens.run, desc = "Display code lens" },
-              { "<leader>vL", vim.lsp.codelens.refresh, desc = "Refresh code lens" },
+              { '<leader>v',  group = 'LSP/IDE Operations' },
+              { '<leader>vl', vim.lsp.codelens.run,        desc = 'Display code lens' },
+              { '<leader>vL', vim.lsp.codelens.refresh,    desc = 'Refresh code lens' },
             })
           end
         end
@@ -566,10 +533,18 @@ return {
       -- Tab is set up to balance between all its uses in remap.lua
       local luasnip = require('luasnip')
       require('which-key').add({
-        { "<M-n>", function() if luasnip.choice_active() then return luasnip.change_choice(1) end end, 
-          desc = "Next snippet choice", mode = "i" },
-        { "<M-p>", function() if luasnip.choice_active() then return luasnip.change_choice(-1) end end, 
-          desc = "Previous snippet choice", mode = "i" },
+        {
+          '<M-n>',
+          function() if luasnip.choice_active() then return luasnip.change_choice(1) end end,
+          desc = 'Next snippet choice',
+          mode = 'i'
+        },
+        {
+          '<M-p>',
+          function() if luasnip.choice_active() then return luasnip.change_choice(-1) end end,
+          desc = 'Previous snippet choice',
+          mode = 'i'
+        },
       })
     end
   },
@@ -595,26 +570,26 @@ return {
       require('telescope').load_extension('refactoring')
 
       local wk = require('which-key')
-      
+
       -- Visual mode refactoring
       wk.add({
-        { "<leader>R", group = "Refactors", mode = "x" },
-        { "<leader>Re", ":Refactor extract<CR>", desc = "Extract function", mode = "x" },
-        { "<leader>Rf", ":Refactor extract_to_file<CR>", desc = "Extract function to file", mode = "x" },
-        { "<leader>Rv", ":Refactor extract_var<CR>", desc = "Extract variable", mode = "x" },
-        { "<leader>Rr", function() require('refactoring').select_refactor() end, desc = "Select refactor", mode = "x" },
-        { "<leader>Ri", ":Refactor inline_var<CR>", desc = "Inline variable", mode = "x" },
-        { "<leader>RB", ":Refactor extract_block_to_file<CR>", desc = "Extract block to file", mode = "x" },
+        { '<leader>R',  group = 'Refactors',                                     mode = 'x' },
+        { '<leader>Re', ':Refactor extract<CR>',                                 desc = 'Extract function',         mode = 'x' },
+        { '<leader>Rf', ':Refactor extract_to_file<CR>',                         desc = 'Extract function to file', mode = 'x' },
+        { '<leader>Rv', ':Refactor extract_var<CR>',                             desc = 'Extract variable',         mode = 'x' },
+        { '<leader>Rr', function() require('refactoring').select_refactor() end, desc = 'Select refactor',          mode = 'x' },
+        { '<leader>Ri', ':Refactor inline_var<CR>',                              desc = 'Inline variable',          mode = 'x' },
+        { '<leader>RB', ':Refactor extract_block_to_file<CR>',                   desc = 'Extract block to file',    mode = 'x' },
       })
-      
+
       -- Normal mode refactoring
       wk.add({
-        { "<leader>R", group = "Refactors", mode = "n" },
-        { "<leader>Rr", function() require('refactoring').select_refactor() end, desc = "Select refactor", mode = "n" },
-        { "<leader>Ri", ":Refactor inline_var<CR>", desc = "Inline variable", mode = "n" },
-        { "<leader>RB", ":Refactor extract_block_to_file<CR>", desc = "Extract block to file", mode = "n" },
-        { "<leader>RI", ":Refactor inline_func<CR>", desc = "Inline function", mode = "n" },
-        { "<leader>Rb", ":Refactor extract_block<CR>", desc = "Extract block", mode = "n" },
+        { '<leader>R',  group = 'Refactors',                                     mode = 'n' },
+        { '<leader>Rr', function() require('refactoring').select_refactor() end, desc = 'Select refactor',       mode = 'n' },
+        { '<leader>Ri', ':Refactor inline_var<CR>',                              desc = 'Inline variable',       mode = 'n' },
+        { '<leader>RB', ':Refactor extract_block_to_file<CR>',                   desc = 'Extract block to file', mode = 'n' },
+        { '<leader>RI', ':Refactor inline_func<CR>',                             desc = 'Inline function',       mode = 'n' },
+        { '<leader>Rb', ':Refactor extract_block<CR>',                           desc = 'Extract block',         mode = 'n' },
       })
     end,
   },
@@ -629,148 +604,25 @@ return {
       require('lsp-file-operations').setup()
     end,
   },
-
-  -- Github copilot
   {
-    'zbirenbaum/copilot.lua',
-    build = function()
-      vim.cmd('Copilot auth')
-    end,
+    'Exafunction/windsurf.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+    },
     config = function()
-      local copilot = require('copilot')
-      copilot.setup({
-        panel = {
-          auto_refresh = true,
-          keymap = {
-            open = '<C-l>',
-          }
-        },
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          keymap = {
-            -- Accept is bound in remap.lua so <Tab> can be used for completion of snippets etc as well.
-            accept = '<M-a>',
-            accept_word = '<M-Right>',
-            next = '<M-]>',
-            prev = '<M-[>',
-            dismiss = '<M-d>',
-          },
-          filetypes = {
-            ['*'] = false, -- disabled by default
-          }
+      require('codeium').setup({
+        virtual_text = {
+          enabled = true
         }
       })
 
-      vim.cmd('Copilot enable')
-      local copilotEnabled = true
-      local function copilot_toggle()
-        copilotEnabled = not copilotEnabled
-        if copilotEnabled then
-          vim.cmd('Copilot enable')
-        else
-          vim.cmd('Copilot disable')
-        end
-      end
-      require('which-key').add({
-        { "<leader>c", group = "Github Copilot Operations" },
-        { "<leader>cT", copilot_toggle, desc = "Toggle Copilot" },
-      })
-
-      -- Copilot colors
-      vim.cmd('hi CopilotSuggestion guifg=Gray')
-      vim.cmd('hi CopilotAnnotation guifg=Gray')
-    end
-  },
-  {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    dependencies = {
-      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
-    },
-    branch = 'main',
-    -- TODO copy paste this and put it in it's own file: https://github.com/jellydn/lazy-nvim-ide/blob/main/lua/plugins/extras/copilot-chat-v2.lua
-    config = function()
-      local chat = require('CopilotChat')
-      local select = require('CopilotChat.select')
-
-      -- if the working directory has a .vscode/copilot_instructions directory add each file as a new prompt directory.
-      local prompts = {}
-      local copilot_instructions_dir = './.vscode/copilot_instructions/'
-      -- Use pcall to suppress error messages when directory doesn't exist
-      local dir_exists, _ = pcall(function() return vim.fn.isdirectory(copilot_instructions_dir) == 1 end)
-      if dir_exists and vim.fn.isdirectory(copilot_instructions_dir) == 1 then
-        for _, filePath in ipairs(vim.fn.readdir(copilot_instructions_dir)) do
-          local ok1, lines = pcall(vim.fn.readfile, copilot_instructions_dir .. filePath .. '/prompt.md')
-          if ok1 then
-            local prompt_contents = table.concat(lines, '\n') ..
-                require('CopilotChat.config.prompts').COPILOT_BASE.system_prompt
-            local ok2, description_contents = pcall(vim.fn.readfile, copilot_instructions_dir .. filePath .. '/description.md')
-            if ok2 then
-              prompts[filePath] = {
-                system_prompt = prompt_contents,
-                description = description_contents,
-              }
-            end
-          end
-        end
-      end
-
-      chat.setup({
-        model = 'gemini-2.5-pro',
-        prompts = prompts,
-        -- window = {
-        --   layout = 'float'
-        -- }
-      })
-
-      vim.api.nvim_create_user_command('CopilotChatInline', function(args)
-        chat.ask(args.args, {
-          selection = select.visual,
-          window = {
-            layout = 'float',
-            relative = 'cursor',
-            width = 1,
-            height = 0.2,
-            row = 1,
-          },
-        })
-      end, { nargs = '*', range = true })
-
       local wk = require('which-key')
-      
-      -- Normal and visual mode bindings
+
       wk.add({
-        mode = { 'n', 'x' },
-        { "<leader>c", group = "Github Copilot Operations", nowait = false, remap = false },
-        { "<leader>cc", ":CopilotChatInline<cr>", desc = "CopilotChat - Chat with current buffer", nowait = false, remap = false },
-        { "<leader>ce", ":CopilotChatExplain<cr>", desc = "CopilotChat - Explain code", nowait = false, remap = false },
-        { "<leader>cgt", ":CopilotChatTests<cr>", desc = "CopilotChat - Generate tests", nowait = false, remap = false },
-        { "<leader>cf", ":CopilotChatFix<cr>", desc = "CopilotChat - Fix diagnostic", nowait = false, remap = false },
-        { "<leader>cR", ":CopilotChatReset<cr>", desc = "CopilotChat - Reset chat history and clear buffer", nowait = false, remap = false },
-        { "<leader>co", ":CopilotChatOpen<cr>", desc = "Open CopilotChat", nowait = false, remap = false },
-        { "<leader>cx", ":CopilotChatClose<cr>", desc = "Close CopilotChat", nowait = false, remap = false },
-        { "<leader>cd", ":CopilotChatFixDocs<cr>", desc = "CopilotChat generate documentation", nowait = false, remap = false },
+        { '<leader>c',  group = 'AI Operations', mode = 'n' },
+        { '<leader>co', ':Codeium Chat<CR>',     desc = 'Codeium Chat', mode = 'n' },
       })
     end
   },
-  -- {
-  --   'supermaven-inc/supermaven-nvim',
-  --   config = function()
-  --     require('supermaven-nvim').setup({
-  --       keymaps = {
-  --         accept_suggestion = '<Tab>',
-  --         clear_suggestion = '<C-]>',
-  --         accept_word = '<C-j>',
-  --       },
-  --       ignore_filetypes = { cpp = true },
-  --       color = {
-  --         suggestion_color = '#808080',
-  --         cterm = 244,
-  --       },
-  --       disable_inline_completion = false, -- disables inline completion for use with cmp
-  --       disable_keymaps = false            -- disables built in keymaps for more manual control
-  --     })
-  --   end,
-  -- },
 }

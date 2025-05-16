@@ -63,7 +63,6 @@ Plugins are organized into functional groups in `lua/plugins/`:
 - `<leader>f`: Find/file operations (Telescope)
 - `<leader>g`: Git operations
 - `<leader>v`: LSP/IDE operations
-- `<leader>c`: GitHub Copilot operations
 - `<leader>R`: Refactoring operations
 - `<leader>%`: Copy full path to clipboard
 
