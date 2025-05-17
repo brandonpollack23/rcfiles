@@ -439,6 +439,10 @@ return {
       ---@type Neominimap.UserConfig
       vim.g.neominimap = {
         auto_enable = true,
+        delay = 1000,
+        click = {
+          enable = true,
+        },
         mark = {
           enable = true,
         },
@@ -446,6 +450,10 @@ return {
           enable = true,
         },
       }
+
+      -- Make the warning highlight slightly less harsh
+      vim.api.nvim_set_hl(0, 'NeominimapWarnLine', { bg = '#303000' })
+      vim.api.nvim_set_hl(0, 'NeominimapInfoLine', { bg = '#235e8f' })
     end,
   },
   {
