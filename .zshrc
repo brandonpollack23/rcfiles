@@ -142,6 +142,7 @@ plugins=(
     rust
     sudo
     systemd
+    taskwarrior
     tmux
     yarn
 )

@@ -6,6 +6,8 @@ return {
     }
   },
 
+  { 'vuciv/golf' },
+
   {
     'sontungexpt/url-open',
     event = 'VeryLazy',
@@ -18,7 +20,7 @@ return {
       url_open.setup({})
 
       require('which-key').add({
-        { "gx", "<cmd>URLOpenUnderCursor<cr>", desc = "Open URL under cursor" },
+        { 'gx', '<cmd>URLOpenUnderCursor<cr>', desc = 'Open URL under cursor' },
       })
     end,
   },
@@ -44,9 +46,9 @@ return {
       require('icon-picker').setup({ disable_legacy_commands = true })
 
       require('which-key').add({
-        { "<leader>i", group = "Insert Stuff" },
-        { "<leader>ie", "<cmd>IconPickerNormal<cr>", desc = "Emoji Picker" },
-        { "<leader>iE", "<cmd>IconPickerYank<cr>", desc = "Emoji Picker into register" },
+        { '<leader>i',  group = 'Insert Stuff' },
+        { '<leader>ie', '<cmd>IconPickerNormal<cr>', desc = 'Emoji Picker' },
+        { '<leader>iE', '<cmd>IconPickerYank<cr>',   desc = 'Emoji Picker into register' },
       })
       -- TODO try to use which key for this like so: [C-i] = {}
       -- vim.keymap.set('i', '<C-i>', '<cmd>IconPickerInsert<cr>', { remap = false })
@@ -148,8 +150,8 @@ return {
       })
 
       require('which-key').add({
-        { "<leader>v", group = "LSP/IDE Operations" },
-        { "<leader>vf", require('conform').format, desc = "Format File" },
+        { '<leader>v',  group = 'LSP/IDE Operations' },
+        { '<leader>vf', require('conform').format,   desc = 'Format File' },
       })
     end
   },
