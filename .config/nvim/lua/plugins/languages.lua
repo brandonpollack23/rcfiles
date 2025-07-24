@@ -87,14 +87,6 @@ return {
       }
     end,
   },
-  {
-    'synic/refactorex.nvim',
-    ft = 'elixir',
-    opts = {
-      auto_update = true,
-      pin_version = nil,
-    },
-  },
   -- golang
   {
     'ray-x/go.nvim',

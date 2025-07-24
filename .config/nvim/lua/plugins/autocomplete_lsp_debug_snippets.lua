@@ -64,7 +64,6 @@ return {
       local ensure_installed_lsps = {
         'bashls',
         'clangd',
-        'elixirls', -- handled by elixir-tools, used for debugging
         'eslint',
         'gopls',
         'golangci_lint_ls',
