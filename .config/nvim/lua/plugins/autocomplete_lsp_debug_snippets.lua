@@ -284,9 +284,9 @@ return {
             }
           end,
 
-          ['elixirls'] = function()
-            -- handled by elixir-tools, mason is used for debugging only.
-          end,
+          -- handled by elixir-tools, mason is used for debugging only.
+          -- ['elixirls'] = function()
+          -- end,
 
           ['jsonls'] = function()
             lspconfig.jsonls.setup {
