@@ -18,6 +18,7 @@ return {
     branch = 'v4.x',
     dependencies = {
       'L3MON4D3/LuaSnip',
+      'PaterJason/cmp-conjure',
       'b0o/SchemaStore.nvim',
       'folke/neoconf.nvim', -- neoconf wants to be set up before any LSPs
       'hrsh7th/cmp-buffer',
@@ -103,6 +104,8 @@ return {
         automatic_installation = false,
         handlers = {
           lsp_zero.default_setup,
+          -- Disable elixirls since it's handled by elixir-tools.nvim
+          elixirls = function() end,
 
           ['astro'] = function()
             lspconfig.astro.setup()
@@ -284,10 +287,6 @@ return {
             }
           end,
 
-          -- handled by elixir-tools, mason is used for debugging only.
-          -- ['elixirls'] = function()
-          -- end,
-
           ['jsonls'] = function()
             lspconfig.jsonls.setup {
               settings = {
@@ -379,6 +378,7 @@ return {
         window = {},
         mapping = cmp.mapping.preset.insert(cmp_mappings),
         sources = {
+          { name = 'conjure' },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },

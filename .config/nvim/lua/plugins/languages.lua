@@ -46,6 +46,10 @@ return {
     version = '*',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
+      -- Completely prevent lspconfig's elixirls from auto-starting
+      local lspconfig = require('lspconfig')
+      lspconfig.elixirls.autostart = false
+
       local elixir = require('elixir')
       local elixirls = require('elixir.elixirls')
       local wk = require('which-key')
@@ -62,7 +66,9 @@ return {
         -- },
 
         elixirls = {
+          repo = 'elixir-lsp/elixir-ls',
           enable = true,
+          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
             fetchDeps = true,
             enableTestLenses = true,
@@ -84,6 +90,13 @@ return {
         }
       }
     end,
+  },
+  {
+    'synic/refactorex.nvim',
+    ft = 'elixir',
+    config = function()
+      require('refactorex').setup({ auto_update = true, pin_version = nil })
+    end
   },
   -- golang
   {
