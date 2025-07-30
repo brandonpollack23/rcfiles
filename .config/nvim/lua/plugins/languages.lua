@@ -68,7 +68,7 @@ return {
         elixirls = {
           repo = 'elixir-lsp/elixir-ls',
           enable = true,
-          cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
+          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
           settings = elixirls.settings {
             fetchDeps = true,
             enableTestLenses = true,

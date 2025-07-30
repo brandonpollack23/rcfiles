@@ -374,8 +374,8 @@ cargo install --git https://github.com/neovide/neovide # NVim gui
 mise use -g uv@latest
 
 # Erlang/Elixir setup
-mise use --global elixir@1.18.2-otp-27
-mise use --global erlang@27.2.4
+mise use --global erlang@28.0.2
+mise use --global elixir@1.18.4-otp-28
 yes | mix archive.install hex mix_templates
 yes | mix archive.install hex mix_generator
 yes | mix template.install hex gen_template_template
