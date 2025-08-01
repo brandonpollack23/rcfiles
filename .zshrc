@@ -387,8 +387,9 @@ prompt_nix_shell_setup
 #   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
 # }
 
-# Elixir stuff
+# Elixir/erlang stuff
 # alias mixnew="mix gen bpollack_elixir_template"
+export ERL_AFLAGS="-kernel shell_history enabled" # enable shell history
 
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
