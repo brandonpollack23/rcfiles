@@ -75,6 +75,7 @@ return {
             suggestSpecs = true,
             dialyzerEnabled = true,
             incrementalDialyzer = true,
+            stdlibSrcDir = vim.fn.expand('$ELIXIR_SRC_DIR'),
           },
           on_attach = function()
             wk.register({

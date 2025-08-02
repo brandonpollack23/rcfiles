@@ -390,6 +390,9 @@ prompt_nix_shell_setup
 # Elixir/erlang stuff
 # alias mixnew="mix gen bpollack_elixir_template"
 export ERL_AFLAGS="-kernel shell_history enabled" # enable shell history
+export PATH="$HOME/.mix/escripts:$PATH"
+# Two directories up from elixir executable
+export ELIXIR_SRC_DIR=$(which elixir | xargs dirname | xargs dirname)
 
 # source vulkan sdk if present
 if [[ -f $HOME/bin/vulkan/setup-env.sh ]]; then
