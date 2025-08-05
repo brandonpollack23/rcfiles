@@ -1,4 +1,6 @@
 #!/bin/zsh
+# To profile uncomment below and the last line of the config
+# zmodload zsh/zprof
 
 # Detect if in chroot (good for prompt and cros development)
 if [[ "$(ls -di /)" != "2 /" ]]; then
@@ -115,11 +117,7 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    asdf
-    aws
-    azure
     bun
-    catimg
     colorize
     command-not-found
     common-aliases
@@ -133,7 +131,6 @@ plugins=(
     gitignore
     golang
     gradle
-    lein
     mix
     mise
     npm
@@ -142,9 +139,7 @@ plugins=(
     rust
     sudo
     systemd
-    taskwarrior
     tmux
-    yarn
 )
 
 if [[ "$VIM" == "" ]]; then
@@ -347,11 +342,6 @@ function qemu-kill() {
 export PATH=$HOME/go/bin:$PATH
 # export GOFUMPT_SPLIT_LONG_LINES="on"
 
-# Node Version Manager nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # Nix
 if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
@@ -420,3 +410,5 @@ fi
 
 # Added by Windsurf
 export PATH="/Users/brpol/.codeium/windsurf/bin:$PATH"
+
+# zprof
