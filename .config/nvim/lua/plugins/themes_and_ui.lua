@@ -74,7 +74,7 @@ return {
           lualine_a = { 'mode' },
           lualine_b = { 'branch', 'diff', 'diagnostics' },
           lualine_c = {
-            'filename',
+            { 'filename',                       path = 1 },
             { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
             'lsp_progress',
           },
