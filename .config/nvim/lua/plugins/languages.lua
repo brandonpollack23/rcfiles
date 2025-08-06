@@ -245,13 +245,6 @@ return {
       'neovim/nvim-lspconfig',         -- optional
     },
     opts = {
-      server = {
-        settings = {
-          experimental = {
-            classRegex = { 'class(Name)?\\s*:\\s*\"([^\"]*)' }
-          },
-        },
-      },
       conceal = {
         enabled = false,
         min_length = 80,
