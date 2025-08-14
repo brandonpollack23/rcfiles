@@ -95,9 +95,10 @@ return {
   {
     'synic/refactorex.nvim',
     ft = 'elixir',
-    config = function()
-      require('refactorex').setup({ auto_update = true, pin_version = nil })
-    end
+    opts = {
+      auto_update = true,
+      pin_version = nil,
+    }
   },
   -- golang
   {
