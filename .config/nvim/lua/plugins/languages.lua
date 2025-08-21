@@ -22,19 +22,19 @@
 
 return {
   -- LSP output panel
-  {
-    'mhanberg/output-panel.nvim',
-    config = function()
-      require('output_panel').setup({})
-
-      local wk = require('which-key')
-      wk.add({
-          { 'vP', ':OutputPanel<cr>', desc = 'Toggle LSP Output Panel' },
-        },
-        { prefix = '<leader>' }
-      )
-    end
-  },
+  -- {
+  --   'mhanberg/output-panel.nvim',
+  --   config = function()
+  --     require('output_panel').setup({})
+  --
+  --     local wk = require('which-key')
+  --     wk.add({
+  --         { 'vP', ':OutputPanel<cr>', desc = 'Toggle LSP Output Panel' },
+  --       },
+  --       { prefix = '<leader>' }
+  --     )
+  --   end
+  -- },
 
   -- Elixir
   {
