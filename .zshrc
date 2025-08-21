@@ -248,10 +248,10 @@ alias gitxl='git sl --reverse'
 source ~/.zshrc.githubcopilot
 
 # ls aliases
-alias ls="eza --git"
-alias ll="eza -l --git"
-alias la="eza -la --git"
-alias tree="eza -T --git"
+alias ls="eza --group-directories-first --git"
+alias ll="eza -l --group-directories-first --git"
+alias la="eza -la --group-directories-first --git"
+alias tree="eza -T --group-directories-first --git"
 
 # pulumi aliases and env
 alias pctl=pulumictl
