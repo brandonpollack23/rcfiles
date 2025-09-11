@@ -36,70 +36,71 @@ return {
   --   end
   -- },
 
+  -- Replaced with expert
   -- Elixir
-  {
-    'elixir-tools/elixir-tools.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'folke/which-key.nvim'
-    },
-    version = '*',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      -- Completely prevent lspconfig's elixirls from auto-starting
-      local lspconfig = require('lspconfig')
-      lspconfig.elixirls.autostart = false
-
-      local elixir = require('elixir')
-      local elixirls = require('elixir.elixirls')
-      local wk = require('which-key')
-
-      elixir.setup {
-        -- nextls = {
-        -- enable = false,
-        -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
-        -- experimental = {
-        --   completions = {
-        --     enable = true -- control if completions are enabled. defaults to false
-        --   }
-        -- }
-        -- },
-
-        elixirls = {
-          repo = 'elixir-lsp/elixir-ls',
-          enable = true,
-          -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
-          settings = elixirls.settings {
-            fetchDeps = true,
-            enableTestLenses = true,
-            suggestSpecs = true,
-            dialyzerEnabled = true,
-            incrementalDialyzer = true,
-            stdlibSrcDir = vim.fn.expand('$ELIXIR_SRC_DIR'),
-          },
-          on_attach = function()
-            wk.register({
-                h = {
-                  name = 'Elixir Code Actions',
-                  f = { ':ElixirFromPipe<cr>', 'Convert to standard function from pipe' },
-                  p = { ':ElixirToPipe<cr>', 'Convert to pipe from standard function' },
-                  m = { ':ElixirExpandMacro<cr>', 'Expand Macro' },
-                }
-              },
-              { prefix = '<leader>' })
-          end
-        }
-      }
-    end,
-  },
-  {
-    'synic/refactorex.nvim',
-    ft = 'elixir',
-    opts = {
-      auto_update = true,
-      pin_version = nil,
-    }
-  },
+  -- {
+  --   'elixir-tools/elixir-tools.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'folke/which-key.nvim'
+  --   },
+  --   version = '*',
+  --   event = { 'BufReadPre', 'BufNewFile' },
+  --   config = function()
+  --     -- Completely prevent lspconfig's elixirls from auto-starting
+  --     local lspconfig = require('lspconfig')
+  --     lspconfig.elixirls.autostart = false
+  --
+  --     local elixir = require('elixir')
+  --     local elixirls = require('elixir.elixirls')
+  --     local wk = require('which-key')
+  --
+  --     elixir.setup {
+  --       -- nextls = {
+  --       -- enable = false,
+  --       -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/nextls'),
+  --       -- experimental = {
+  --       --   completions = {
+  --       --     enable = true -- control if completions are enabled. defaults to false
+  --       --   }
+  --       -- }
+  --       -- },
+  --
+  --       elixirls = {
+  --         repo = 'elixir-lsp/elixir-ls',
+  --         enable = true,
+  --         -- cmd = vim.fn.expand('$HOME/.local/share/nvim/mason/bin/elixir-ls'),
+  --         settings = elixirls.settings {
+  --           fetchDeps = true,
+  --           enableTestLenses = true,
+  --           suggestSpecs = true,
+  --           dialyzerEnabled = true,
+  --           incrementalDialyzer = true,
+  --           stdlibSrcDir = vim.fn.expand('$ELIXIR_SRC_DIR'),
+  --         },
+  --         on_attach = function()
+  --           wk.register({
+  --               h = {
+  --                 name = 'Elixir Code Actions',
+  --                 f = { ':ElixirFromPipe<cr>', 'Convert to standard function from pipe' },
+  --                 p = { ':ElixirToPipe<cr>', 'Convert to pipe from standard function' },
+  --                 m = { ':ElixirExpandMacro<cr>', 'Expand Macro' },
+  --               }
+  --             },
+  --             { prefix = '<leader>' })
+  --         end
+  --       }
+  --     }
+  --   end,
+  -- },
+  -- {
+  --   'synic/refactorex.nvim',
+  --   ft = 'elixir',
+  --   opts = {
+  --     auto_update = true,
+  --     pin_version = nil,
+  --   }
+  -- },
   -- golang
   {
     'ray-x/go.nvim',
