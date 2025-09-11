@@ -117,6 +117,7 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    aws
     bun
     colorize
     command-not-found
@@ -252,10 +253,6 @@ alias ls="eza --group-directories-first --git"
 alias ll="eza -l --group-directories-first --git"
 alias la="eza -la --group-directories-first --git"
 alias tree="eza -T --group-directories-first --git"
-
-# pulumi aliases and env
-alias pctl=pulumictl
-export AWS_DEFAULT_PROFILE="pulumi-dev-sandbox"
 
 export UNDERLYING_TERM=$(tmux display-message -p "#{client_termname}")
 alias cati='TERM=$UNDERLYING_TERM chafa'
