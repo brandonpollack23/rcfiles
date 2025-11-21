@@ -57,28 +57,28 @@ return {
 
           wk.add({
             -- Normal mode git operations
-            { "<leader>g", group = "Git" },
-            { "<leader>gn", gs.next_hunk, desc = "Next git hunk" },
-            { "<leader>gN", gs.prev_hunk, desc = "Prev git hunk" },
-            { "<leader>gR", gs.reset_buffer, desc = "Reset buffer" },
-            { "<leader>gh", group = "hunk operations" },
-            { "<leader>ghp", gs.preview_hunk, desc = "Preview hunk" },
-            { "<leader>ghs", function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Stage hunk" },
-            { "<leader>ghd", gs.diffthis, desc = "Diff against index" },
-            { "<leader>ghD", function() gs.diffthis('~') end, desc = "Diff against last commit" },
-            { "<leader>ghr", function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Reset hunk" },
-            
+            { '<leader>g',   group = 'Git' },
+            { '<leader>gn',  gs.next_hunk,                                                        desc = 'Next git hunk' },
+            { '<leader>gN',  gs.prev_hunk,                                                        desc = 'Prev git hunk' },
+            { '<leader>gR',  gs.reset_buffer,                                                     desc = 'Reset buffer' },
+            { '<leader>gh',  group = 'hunk operations' },
+            { '<leader>ghp', gs.preview_hunk,                                                     desc = 'Preview hunk' },
+            { '<leader>ghs', function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = 'Stage hunk' },
+            { '<leader>ghd', gs.diffthis,                                                         desc = 'Diff against index' },
+            { '<leader>ghD', function() gs.diffthis('~') end,                                     desc = 'Diff against last commit' },
+            { '<leader>ghr', function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = 'Reset hunk' },
+
             -- Visual mode git operations
-            { "<leader>g", group = "Git", mode = "x" },
-            { "<leader>gn", gs.next_hunk, desc = "Next git hunk", mode = "x" },
-            { "<leader>gN", gs.prev_hunk, desc = "Prev git hunk", mode = "x" },
-            { "<leader>gR", gs.reset_buffer, desc = "Reset buffer", mode = "x" },
-            { "<leader>gh", group = "hunk operations", mode = "x" },
-            { "<leader>ghp", gs.preview_hunk, desc = "Preview hunk", mode = "x" },
-            { "<leader>ghs", function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Stage hunk", mode = "x" },
-            { "<leader>ghd", gs.diffthis, desc = "Diff against index", mode = "x" },
-            { "<leader>ghD", function() gs.diffthis('~') end, desc = "Diff against last commit", mode = "x" },
-            { "<leader>ghr", function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = "Reset hunk", mode = "x" },
+            { '<leader>g',   group = 'Git',                                                       mode = 'x' },
+            { '<leader>gn',  gs.next_hunk,                                                        desc = 'Next git hunk',            mode = 'x' },
+            { '<leader>gN',  gs.prev_hunk,                                                        desc = 'Prev git hunk',            mode = 'x' },
+            { '<leader>gR',  gs.reset_buffer,                                                     desc = 'Reset buffer',             mode = 'x' },
+            { '<leader>gh',  group = 'hunk operations',                                           mode = 'x' },
+            { '<leader>ghp', gs.preview_hunk,                                                     desc = 'Preview hunk',             mode = 'x' },
+            { '<leader>ghs', function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = 'Stage hunk',               mode = 'x' },
+            { '<leader>ghd', gs.diffthis,                                                         desc = 'Diff against index',       mode = 'x' },
+            { '<leader>ghD', function() gs.diffthis('~') end,                                     desc = 'Diff against last commit', mode = 'x' },
+            { '<leader>ghr', function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, desc = 'Reset hunk',               mode = 'x' },
           })
         end
       }
@@ -113,8 +113,8 @@ return {
     config = function()
       require('blame').setup {}
       require('which-key').add({
-        { "<leader>g", group = "Git" },
-        { "<leader>gb", ":BlameToggle<cr>", desc = "Toggle Blame" },
+        { '<leader>g',  group = 'Git' },
+        { '<leader>gb', ':BlameToggle<cr>', desc = 'Toggle Blame' },
       })
     end,
   },
@@ -123,15 +123,15 @@ return {
     config = function()
       require('diffview').setup()
       require('which-key').add({
-        { "<leader>g", group = "Git" },
-        { "<leader>gd", ":DiffviewOpen<cr>", desc = "Open Diffview" },
-        { "<leader>gD", ":DiffviewClose<cr>", desc = "Close Diffview" },
-        { "<leader>gR", ":DiffviewRefresh<cr>", desc = "Refresh Diffview" },
-        { "<leader>gh", ":DiffviewFileHistory<cr>", desc = "File History" },
-        
+        { '<leader>g',  group = 'Git' },
+        { '<leader>gd', ':DiffviewOpen<cr>',             desc = 'Open Diffview' },
+        { '<leader>gD', ':DiffviewClose<cr>',            desc = 'Close Diffview' },
+        { '<leader>gR', ':DiffviewRefresh<cr>',          desc = 'Refresh Diffview' },
+        { '<leader>gh', ':DiffviewFileHistory<cr>',      desc = 'File History' },
+
         -- Visual mode diffview
-        { "<leader>g", group = "Git", mode = "v" },
-        { "<leader>gh", ":'<,'>DiffviewFileHistory<cr>", desc = "File History (selection)", mode = "v" },
+        { '<leader>g',  group = 'Git',                   mode = 'v' },
+        { '<leader>gh', ":'<,'>DiffviewFileHistory<cr>", desc = 'File History (selection)', mode = 'v' },
       })
     end
   },
@@ -154,7 +154,7 @@ return {
     config = function()
       require 'octo'.setup({
         use_local_fs = false,            -- use local files on right side of reviews
-        default_merge_method = 'commit', -- default merge method which should be used for both `Octo pr merge` and merging from picker, could be `commit`, `rebase` or `squash`
+        default_merge_method = 'rebase', -- default merge method which should be used for both `Octo pr merge` and merging from picker, could be `commit`, `rebase` or `squash`
         default_delete_branch = true,    -- whether to delete branch when merging pull request with either `Octo pr merge` or from picker (can be overridden with `delete`/`nodelete` argument to `Octo pr merge`)
       })
     end

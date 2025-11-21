@@ -22,7 +22,8 @@ if not vim.loop.fs_stat(os.getenv('HOME') .. '/.config/nvim/.venv') then
   os.execute('uv venv ' .. os.getenv('HOME') .. '/.config/nvim/.venv')
 
   -- Then install the required packages for image.nvim and jupyter:
-  os.execute('uv pip install pynvim jupyter_client cairosvg pnglatex plotly pyperclip --python=$HOME/.config/nvim/.venv/bin/python')
+  os.execute(
+  'uv pip install pynvim jupyter_client cairosvg pnglatex plotly pyperclip --python=$HOME/.config/nvim/.venv/bin/python')
 end
 vim.g.python3_host_prog = os.getenv('HOME') .. '/.config/nvim/.venv/bin/python3'
 
@@ -74,7 +75,7 @@ local function execute_current_buffer()
 end
 
 require('which-key').add({
-  { "<leader>l", execute_current_buffer, desc = "Source current buffer" },
+  { '<leader>l', execute_current_buffer, desc = 'Source current buffer' },
 })
 
 -- Global options
