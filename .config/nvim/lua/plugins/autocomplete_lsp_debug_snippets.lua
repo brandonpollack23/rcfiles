@@ -72,7 +72,6 @@ return {
         'jsonls',
         -- 'omnisharp_mono', replaced in languages.lua
         'lua_ls',
-        -- 'nextls', -- another elixir language server
         'ruff', -- python linter (fast)
         'rust_analyzer',
         -- 'roslyn', -- csharp
@@ -104,9 +103,6 @@ return {
         automatic_installation = false,
         handlers = {
           lsp_zero.default_setup,
-          -- Disable elixirls since it's handled by elixir-tools.nvim
-          elixirls = function() end,
-
           ['astro'] = function()
             lspconfig.astro.setup()
           end,
@@ -297,6 +293,17 @@ return {
               },
             }
           end,
+
+          ['expert'] = function()
+            lspconfig.expert.setup {
+              -- cmd = { '' },
+              root_dir = function(fname)
+                return require('lspconfig').util.root_pattern('mix.exs', '.git')(fname) or vim.loop.cwd()
+              end,
+              filetypes = { 'elixir', 'eelixir', 'heex' },
+              settings = {},
+            }
+          end
         },
       })
 
