@@ -8,6 +8,7 @@ PACKAGES=(
   bat          # A clone of cat(1) with syntax highlighting and Git integration
   chafa        # An Image display program that will use the best way to display an image
   cmake        # Cross-platform open-source make system
+  code         # vscode
   coreutils    # Basic file, shell, and text manipulation utilities
   cowsay       # Configurable talking cow (or other character) in terminal
   curl         # Command line tool for transferring data with URLs
@@ -35,11 +36,11 @@ PACKAGES=(
   pandoc       # Universal document converter
   ripgrep      # Recursively searches directories for a regex pattern
   ruby         # Dynamic, open source programming language
+  rustup       # rust stuff
   shellcheck   # Static analysis tool for shell scripts
   sqlite3      # Command line interface for SQLite databases
   tmux         # Terminal multiplexer
   tree         # Display directories as trees
-  ts-node      # TypeScript execution environment for Node.js
   vim          # Highly configurable text editor
   xclip        # Command line interface to the X clipboard
   zsh          # Powerful shell with scripting language
@@ -354,7 +355,7 @@ sudo sh <(curl -L https://nixos.org/nix/install) --daemon
 mise use -g go@latest
 
 # Install rust etc
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 cargo install cargo-binstall
 cargo install --locked cargo-outdated
