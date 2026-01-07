@@ -294,6 +294,7 @@ function setup_home_dir() {
 
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
   ln -sfn "$RCFILES_DIR/.config/ghostty" "$HOME/.config/ghostty"
+  ln -sfn "$RCFILES_DIR/.config/amp" "$HOME/.config/amp"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
   ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
