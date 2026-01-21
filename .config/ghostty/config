@@ -2,3 +2,5 @@ theme = Dark Modern
 font-feature = -calt, -liga, -dlig
 macos-option-as-alt = true
 copy-on-select = false
+
+keybind = ctrl+shift+j=unbind
