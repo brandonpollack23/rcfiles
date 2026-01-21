@@ -21,6 +21,8 @@ map("n", "<leader>ut", function()
   end
 end, { desc = "Toggle Theme (VSCode/Dayfox)" })
 
+vim.keymap.set("n", "<leader>bp", "<Cmd>BufferLinePick<CR>", { desc = "Buffer Pick" })
+
 -- better up/down
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 -- map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
