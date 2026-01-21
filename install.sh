@@ -4,109 +4,109 @@ RCFILES_DIR="$(dirname "$(realpath "$0")")"
 
 # Define an array to hold the package names
 PACKAGES=(
-  asciinema    # Record and share terminal sessions
-  bat          # A clone of cat(1) with syntax highlighting and Git integration
-  chafa        # An Image display program that will use the best way to display an image
-  cmake        # Cross-platform open-source make system
-  code         # vscode
-  coreutils    # Basic file, shell, and text manipulation utilities
-  cowsay       # Configurable talking cow (or other character) in terminal
-  curl         # Command line tool for transferring data with URLs
-  deno         # A secure runtime for JavaScript and TypeScript
-  eza          # A replacement for ls with more features
-  fcitx5       # Input method framework
-  fcitx5-mozc  # Mozc engine for Fcitx5, typically used for Japanese input
-  fd           # A simple, fast and user-friendly alternative to find
-  firefox      # Popular open-source web browser
-  fzf          # General-purpose command-line fuzzy finder
-  fzy          # A better fuzzy finder for the command line
-  git          # Version control system
-  git-absorb   # Automatically fix up commits with the knowledge of Git history
-  geckodriver  # WebDriver for Firefox
-  gource       # Visualize Git repositories as a tree
-  gum          # A tool for making fancy terminal scripts
-  imagemagick  # Software suite to create, edit, compose, or convert images
-  luajit       # Just-In-Time Compiler (JIT) for the Lua programming language
-  luarocks     # Package manager for Lua modules
-  make         # Utility for directing compilation
-  maven        # Build automation tool used primarily for Java projects
-  mise         # A fast alternative to direnv, asdf, etc in rust
-  neovim       # Hyperextensible Vim-based text editor
-  jdk-openjdk  # OpenJDK Development Kit
-  pandoc       # Universal document converter
-  ripgrep      # Recursively searches directories for a regex pattern
-  ruby         # Dynamic, open source programming language
-  rustup       # rust stuff
-  shellcheck   # Static analysis tool for shell scripts
-  sqlite3      # Command line interface for SQLite databases
-  tmux         # Terminal multiplexer
-  tree         # Display directories as trees
-  vim          # Highly configurable text editor
-  xclip        # Command line interface to the X clipboard
-  zsh          # Powerful shell with scripting language
+  asciinema   # Record and share terminal sessions
+  bat         # A clone of cat(1) with syntax highlighting and Git integration
+  chafa       # An Image display program that will use the best way to display an image
+  cmake       # Cross-platform open-source make system
+  code        # vscode
+  coreutils   # Basic file, shell, and text manipulation utilities
+  cowsay      # Configurable talking cow (or other character) in terminal
+  curl        # Command line tool for transferring data with URLs
+  deno        # A secure runtime for JavaScript and TypeScript
+  eza         # A replacement for ls with more features
+  fcitx5      # Input method framework
+  fcitx5-mozc # Mozc engine for Fcitx5, typically used for Japanese input
+  fd          # A simple, fast and user-friendly alternative to find
+  firefox     # Popular open-source web browser
+  fzf         # General-purpose command-line fuzzy finder
+  fzy         # A better fuzzy finder for the command line
+  git         # Version control system
+  git-absorb  # Automatically fix up commits with the knowledge of Git history
+  geckodriver # WebDriver for Firefox
+  gource      # Visualize Git repositories as a tree
+  gum         # A tool for making fancy terminal scripts
+  imagemagick # Software suite to create, edit, compose, or convert images
+  luajit      # Just-In-Time Compiler (JIT) for the Lua programming language
+  luarocks    # Package manager for Lua modules
+  make        # Utility for directing compilation
+  maven       # Build automation tool used primarily for Java projects
+  mise        # A fast alternative to direnv, asdf, etc in rust
+  neovim      # Hyperextensible Vim-based text editor
+  jdk-openjdk # OpenJDK Development Kit
+  pandoc      # Universal document converter
+  ripgrep     # Recursively searches directories for a regex pattern
+  ruby        # Dynamic, open source programming language
+  rustup      # rust stuff
+  shellcheck  # Static analysis tool for shell scripts
+  sqlite3     # Command line interface for SQLite databases
+  tmux        # Terminal multiplexer
+  tree        # Display directories as trees
+  vim         # Highly configurable text editor
+  xclip       # Command line interface to the X clipboard
+  zsh         # Powerful shell with scripting language
 )
 
 DEBIAN_PACKAGES=(
-  apt-file                  # Search for files within Debian packages
-  debian-handbook           # Comprehensive guide to Debian system administration
-  devscripts                # Scripts to assist with Debian packaging
-  etherwake                 # Tool for sending Wake-On-LAN packets
-  fd-find                   # A simple, fast and user-friendly alternative to find
-  fortunes-debian-hints     # Collection of Debian-related fortune cookies
-  info                      # Read Info documents
-  libgraphicsmagick1-dev    # Development files for the GraphicsMagick library
-  libmagickwand-dev         # Development files for the ImageMagick Wand API
-  net-tools                 # Networking utilities like ifconfig and netstat
-  texinfo                   # GNU documentation system for on-line information and printed output
-  wakeonlan                 # Send Wake-On-LAN magic packets
+  apt-file               # Search for files within Debian packages
+  debian-handbook        # Comprehensive guide to Debian system administration
+  devscripts             # Scripts to assist with Debian packaging
+  etherwake              # Tool for sending Wake-On-LAN packets
+  fd-find                # A simple, fast and user-friendly alternative to find
+  fortunes-debian-hints  # Collection of Debian-related fortune cookies
+  info                   # Read Info documents
+  libgraphicsmagick1-dev # Development files for the GraphicsMagick library
+  libmagickwand-dev      # Development files for the ImageMagick Wand API
+  net-tools              # Networking utilities like ifconfig and netstat
+  texinfo                # GNU documentation system for on-line information and printed output
+  wakeonlan              # Send Wake-On-LAN magic packets
 )
 
 ARCH_PACKAGES=(
-  alacritty       # A fast, cross-platform, OpenGL terminal emulator
-  bitwarden       # Secure, open source password manager for all of your devices
-  bitwarden-cli   # Command-line interface for Bitwarden
-  fd              # A simple, fast and user-friendly alternative to find
-  git-branchless  # Perform branchless version control operations with Git
-  github-cli      # GitHub’s official command line tool
-  inotify-tools   # Command-line utilities for monitoring file system events
-  kio-gdrive      # KIO slave for Google Drive integration with KDE
-  neovide         # Neovim client in a fully featured graphical user interface
-  tlp             # Advanced power management tool for Linux
-  tlpui           # Graphical user interface for TLP
+  alacritty      # A fast, cross-platform, OpenGL terminal emulator
+  bitwarden      # Secure, open source password manager for all of your devices
+  bitwarden-cli  # Command-line interface for Bitwarden
+  fd             # A simple, fast and user-friendly alternative to find
+  git-branchless # Perform branchless version control operations with Git
+  github-cli     # GitHub’s official command line tool
+  inotify-tools  # Command-line utilities for monitoring file system events
+  kio-gdrive     # KIO slave for Google Drive integration with KDE
+  neovide        # Neovim client in a fully featured graphical user interface
+  tlp            # Advanced power management tool for Linux
+  tlpui          # Graphical user interface for TLP
 
   # Erlang stuff
-  fop             # XSL-FO print formatter for Erlang
-  glu             # Mesa OpenGL utility library (needed for erlang)
-  libpng          # Library for manipulating PNG images (needed for erlang)
-  libxslt         # XML stylesheet language transformation library (needed for erlang)
-  mesa            # Open-source implementation of the OpenGL specification (needed for erlang)
-  unixodbc        # Open Database Connectivity standard for Erlang
-  wxwidgets-gtk3  # C++ library for writing GUI applications (needed for erlang)
+  fop            # XSL-FO print formatter for Erlang
+  glu            # Mesa OpenGL utility library (needed for erlang)
+  libpng         # Library for manipulating PNG images (needed for erlang)
+  libxslt        # XML stylesheet language transformation library (needed for erlang)
+  mesa           # Open-source implementation of the OpenGL specification (needed for erlang)
+  unixodbc       # Open Database Connectivity standard for Erlang
+  wxwidgets-gtk3 # C++ library for writing GUI applications (needed for erlang)
 )
 
 MANJARO_ONLY_PACKAGES=(
-  libpamac-flatpak-plugin  # Flatpak plugin for Pamac, the package manager for Manjaro
-  libpamac-snap-plugin     # Snap plugin for Pamac, the package manager for Manjaro
+  libpamac-flatpak-plugin # Flatpak plugin for Pamac, the package manager for Manjaro
+  libpamac-snap-plugin    # Snap plugin for Pamac, the package manager for Manjaro
 )
 
 AUR_ARCH_PACKAGES=(
-  bazelisk-bin     # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
-  changie          # changelog generator used by pulumi
-  neovim-nightly   # Latest nightly build of Neovim
-  obsidian         # Powerful knowledge base on top of a local folder of plain text Markdown files
+  bazelisk-bin   # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
+  changie        # changelog generator used by pulumi
+  neovim-nightly # Latest nightly build of Neovim
+  obsidian       # Powerful knowledge base on top of a local folder of plain text Markdown files
   tmux-mem-cpu-load
 )
 
 ask_confirmation() {
   read -p "You are running this script as root. Are you sure you want to continue? (yes/no): " response
   case "$response" in
-    [yY][eE][sS]|[yY])
-      return 0  # User confirmed to continue
-      ;;
-    *)
-      echo "Exiting the script."
-      exit 1  # User chose not to continue
-      ;;
+  [yY][eE][sS] | [yY])
+    return 0 # User confirmed to continue
+    ;;
+  *)
+    echo "Exiting the script."
+    exit 1 # User chose not to continue
+    ;;
   esac
 }
 
@@ -144,56 +144,56 @@ function get_aur_packages() {
 }
 
 function update_and_get_package_manager() {
-    if [[ "$OSTYPE" =~ linux* ]]; then
-      if [[ -f /etc/debian_version ]]; then
-        echo "Debian based system detected"
-	sudo apt update >&2
-        [ "$EUID" -eq 0 ] && echo "apt install -y" || echo "sudo apt install -y"
-      fi
-      if [[ -f /etc/arch-release ]]; then
-        echo "Arch based OS detected, updating system" >&2
-        if [ -x "$(command -v pamac)" ]; then
-          if [[ "$EUID" -eq 0 ]]; then
-            pamac update >&2
-          else
-            sudo pamac update >&2
-          fi
-
-          if [[ "$EUID" -eq 0 ]]; then
-            echo "pamac install --no-confirm"
-          else
-            echo "sudo pamac install --no-confirm"
-          fi
-        elif [ -x "$(command -v yay)" ]; then
-          if [[ "$EUID" -eq 0 ]]; then
-            yay -Syu >&2
-          else
-            sudo yay -Syu >&2
-          fi
-
-          if [[ "$EUID" -eq 0 ]]; then
-            echo "yay -S --noconfirm"
-          else
-            echo "sudo yay -S --noconfirm"
-          fi
+  if [[ "$OSTYPE" =~ linux* ]]; then
+    if [[ -f /etc/debian_version ]]; then
+      echo "Debian based system detected"
+      sudo apt update >&2
+      [ "$EUID" -eq 0 ] && echo "apt install -y" || echo "sudo apt install -y"
+    fi
+    if [[ -f /etc/arch-release ]]; then
+      echo "Arch based OS detected, updating system" >&2
+      if [ -x "$(command -v pamac)" ]; then
+        if [[ "$EUID" -eq 0 ]]; then
+          pamac update >&2
         else
-          if [[ "$EUID" -eq 0 ]]; then
-            pacman -Syu >&2
-          else
-            sudo pacman -Syu >&2
-          fi
+          sudo pamac update >&2
+        fi
 
-          if [[ "$EUID" -eq 0 ]]; then
-            echo "pacman -S --noconfirm"
-          else
-            echo "sudo pacman -S --noconfirm"
-          fi
+        if [[ "$EUID" -eq 0 ]]; then
+          echo "pamac install --no-confirm"
+        else
+          echo "sudo pamac install --no-confirm"
+        fi
+      elif [ -x "$(command -v yay)" ]; then
+        if [[ "$EUID" -eq 0 ]]; then
+          yay -Syu >&2
+        else
+          sudo yay -Syu >&2
+        fi
+
+        if [[ "$EUID" -eq 0 ]]; then
+          echo "yay -S --noconfirm"
+        else
+          echo "sudo yay -S --noconfirm"
+        fi
+      else
+        if [[ "$EUID" -eq 0 ]]; then
+          pacman -Syu >&2
+        else
+          sudo pacman -Syu >&2
+        fi
+
+        if [[ "$EUID" -eq 0 ]]; then
+          echo "pacman -S --noconfirm"
+        else
+          echo "sudo pacman -S --noconfirm"
         fi
       fi
-    else
-        echo "Error: Unknown OS: $OSTYPE" >&2
-        exit 1
     fi
+  else
+    echo "Error: Unknown OS: $OSTYPE" >&2
+    exit 1
+  fi
 }
 
 function get_aur_install_command() {
@@ -239,9 +239,9 @@ function install_aur_packages() {
 function handle_mac_setup() {
   echo "Package manager is brew--Macintosh, baby!"
   echo "Gotta install it first"
-  if ! command -v brew &> /dev/null; then
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      PATH=/opt/homebrew/bin:$PATH
+  if ! command -v brew &>/dev/null; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    PATH=/opt/homebrew/bin:$PATH
   fi
   # Run brew bundle, this installs all the needed packages (such better than a list)
   brew bundle --file="$RCFILES_DIR/Brewfile"
@@ -295,6 +295,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
   ln -sfn "$RCFILES_DIR/.config/ghostty" "$HOME/.config/ghostty"
   ln -sfn "$RCFILES_DIR/.config/amp" "$HOME/.config/amp"
+  ln -sfn "$RCFILES_DIR/.config/hypr" "$HOME/.config/hypr"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
   ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"
@@ -324,7 +325,7 @@ if [ "$EUID" -eq 0 ]; then
   ask_confirmation
 fi
 
-if [[ -z $HOME ]];then
+if [[ -z $HOME ]]; then
   echo "must have a home directory!"
 fi
 
@@ -385,10 +386,9 @@ yes | mix template.install hex bpollack_elixir_template
 mix do local.rebar --force, local.hex --force
 mix escript.install hex livebook
 
-
 setup_home_dir
 
 # Setup shell
-chsh -s `which zsh` $USER
+chsh -s $(which zsh) $USER
 
 # TODO setup fortunes
