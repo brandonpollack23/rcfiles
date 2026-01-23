@@ -76,3 +76,6 @@
 [submodule ".tmux/plugins/tmux-yank"]
 	path = .tmux/plugins/tmux-yank
 	url = https://git::@github.com/tmux-plugins/tmux-yank
+[submodule ".tmux/plugins/tmux"]
+	path = .tmux/plugins/tmux
+	url = https://git::@github.com/dracula/tmux
