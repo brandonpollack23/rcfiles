@@ -295,7 +295,7 @@ function dates() {
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from
 alias grbi='git rebase -i --update-refs --autosquash'
-alias jj=j
+alias j=jj
 
 # Golang stuff
 # Go bin path
