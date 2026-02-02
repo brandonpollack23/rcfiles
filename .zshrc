@@ -232,21 +232,6 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
-# git (commit) amend  no edit
-alias gammend="gca --amend --no-edit"
-alias gpf="gp -f"
-alias gitraw=$(which git)
-function git() { git-branchless wrap -- "$@" }
-alias gbli="git branchless init"
-alias g='git'
-alias g-b='git-branchless'
-# alias gd="git difftool --tool 'branchless' --dir-diff"
-alias gsl='git sl --reverse'
-alias gsw='git-branchless switch -i'
-alias gitsl='git sl --reverse'
-alias gxl='git sl --reverse'
-alias gitxl='git sl --reverse'
-source ~/.zshrc.githubcopilot
 
 # ls aliases
 alias ls="eza --group-directories-first --git"
@@ -260,9 +245,6 @@ alias cati='TERM=$UNDERLYING_TERM chafa'
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"
 
-# wireguard aliases
-alias wgup="sudo wg-quick up wg0"
-
 # node/js/deno stuff
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
@@ -273,7 +255,7 @@ if [[ -f /etc/debian_version ]]; then
     alias saup="sudo apt upgrade"
     alias sai="sudo apt install"
     alias sar="sudo apt remove"
-    alias as="apt search"
+  alias as="apt search"
     alias asho="apt show"
 elif [ -x "$(command -v pamac)" ]; then
   function display_pkg_build() {
@@ -309,30 +291,11 @@ function dates() {
     echo "EST: $(TZ=America/New_York date)"
 }
 
-# Git aliases
+# vcs (jj and git) aliases
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from
-function gitrawxl() {
-  local base=${1:-"origin/master"}
-  git log --graph --oneline --decorate --simplify-by-decoration \
-    --boundary master..${base} $(git for-each-ref --format="%(refname:short)" refs/heads/) $@
-}
-function gitsync() {
-    local branches=$(git branch | tr -d '*' | sed 's/^ *//g' | sed 's/\n/ /g')
-    for b in $branches; do
-        git checkout $b
-        git rebase
-    done
-}
-alias gamc='git am --continue'
-alias gama='git am --abort'
-alias gamd='git am --show-current-patch=diff'
 alias grbi='git rebase -i --update-refs --autosquash'
-alias gfu='git commit --fixup'
-
-function qemu-kill() {
-    ps aux G qemu-system-x86_64 | grep -v grep | head -n 1 | awk '{print $2}' | xargs kill -9
-}
+alias jj=j
 
 # Golang stuff
 # Go bin path
@@ -354,25 +317,6 @@ eval "$(mise activate zsh)"
 
 # Nix stuff
 prompt_nix_shell_setup
-
-# # Python/Rye stuff
-# if [[ -f $HOME/.rye/env ]]; then
-#   source "$HOME/.rye/env"
-# fi
-# function rye_activate() {
-#   source "$HOME/.venv/bin/activate"
-# }
-# function rye_deactivate() {
-#   # if we are in a virtualenv deactivate it
-#   if [[ -n "$VIRTUAL_ENV" ]]; then
-#     deactivate
-#   fi
-# }
-# function rye_pytorch_setup() {
-#   # mlxtend is for plotting confusion matrix
-#   rye add torch torchvision torchaudio matplotlib pillow onnx onnxruntime pdbplus pandas mlxtend torchmetrics
-#   rye add -d ipython notebook jupyter-console pyqt5 pynvim nbclassic jupynium ipywidgets
-# }
 
 # Elixir/erlang stuff
 # alias mixnew="mix gen bpollack_elixir_template"
@@ -404,8 +348,3 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
-
-# Added by Windsurf
-export PATH="/Users/brpol/.codeium/windsurf/bin:$PATH"
-
-# zprof
