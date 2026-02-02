@@ -296,6 +296,9 @@ function dates() {
 # $1 is the upstream branch youd like to build from
 alias grbi='git rebase -i --update-refs --autosquash'
 alias j=jj
+alias k=jj
+# jujutsu completions
+source <(COMPLETE=zsh jj)
 
 # Golang stuff
 # Go bin path
