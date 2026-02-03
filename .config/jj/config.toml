@@ -3,3 +3,42 @@
 [user]
 name = "Brandon Pollack"
 email = "brandonpollack23@gmail.com"
+
+[ui]
+merge-editor = "nvimdiff"
+
+[merge-tools.nvimdiff]
+program = "nvim"
+merge-args = [
+  "-c",
+  "let g:jj_diffconflicts_marker_length=$marker_length",
+  "-c",
+  "JJDiffConflicts!",
+  "$output",
+  "$base",
+  "$left",
+  "$right",
+]
+merge-tool-edits-conflict-markers = true
+
+[merge-tools.nvim-3col]
+program = "nvim"
+# Opens 3 vertical splits.
+# $output is the file with conflict markers (center).
+# $left and $right are the clean versions of each side.
+merge-args = ["-d", "$left", "$output", "$right"]
+
+[merge-tools.nvim-gitstyle]
+program = "nvim"
+# 1. Opens all 4 files in diff mode (-d)
+# 2. Runs "wincmd J" immediately to move the first file ($output) to the bottom full-width
+merge-args = [
+  "-f",
+  "-d",
+  "$output",
+  "$left",
+  "$base",
+  "$right",
+  "-c",
+  "wincmd J",
+]

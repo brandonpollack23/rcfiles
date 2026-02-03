@@ -132,6 +132,7 @@ plugins=(
     gitignore
     golang
     gradle
+    jj
     mix
     mise
     npm
@@ -152,7 +153,7 @@ if [[ "$VIM" == "" ]]; then
   MODE_INDICATOR='%B%F{red}<<<NORMAL MODE%b%f'
 
   # Key bindings (like normal to insert mode in vi mode)
-  bindkey -M viins 'jj' vi-cmd-mode
+  bindkey -M viins 'jk' vi-cmd-mode
 fi
 
 # fzf setup
@@ -198,13 +199,30 @@ function emoji_status_prompt() {
         echo 😡
     fi
 }
-local UTC_DATE=$(TZ=UTC date "+%H:%M (%Z)")
-PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${UTC_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_prompt_info)\
-%{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
+
+# Setup JJ Theme and git theme
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}*%{$fg[green]%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
+
+ZSH_THEME_JJ_PROMPT_PREFIX="%{$fg[green]%}["
+ZSH_THEME_JJ_PROMPT_SUFFIX="]%{$reset_color%}"
+ZSH_THEME_JJ_PROMPT_DIRTY=" %{$fg[red]%}*%{$fg[green]%}"
+ZSH_THEME_JJ_PROMPT_CLEAN=""
+
+# Wrapper to prioritize JJ over Git if inside a JJ root
+function git_or_jj_prompt() {
+    if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then
+      local jj_status=$(jj_prompt_template 'change_id.shortest(4) ++ if(bookmarks, " " ++ bookmarks.join(", "))')
+      echo "${ZSH_THEME_JJ_PROMPT_PREFIX}${jj_status}${ZSH_THEME_JJ_PROMPT_SUFFIX}"
+    else
+        git_prompt_info
+    fi
+}
+local UTC_DATE=$(TZ=UTC date "+%H:%M (%Z)")
+PROMPT=$'%{$fg_bold[green]%}%n@%M %{$fg[blue]%}%D{[%X (%Z) | ${UTC_DATE}]} %{$reset_color%}%{$fg[white]%}[%~] $(emoji_status_prompt)%{$reset_color%} $(git_or_jj_prompt)\
+%{$fg[green]%}%h%{$fg[blue]%}->%{$fg_bold[blue]%} %#%{$reset_color%} '
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -296,7 +314,6 @@ function dates() {
 # $1 is the upstream branch youd like to build from
 alias grbi='git rebase -i --update-refs --autosquash'
 alias j=jj
-alias k=jj
 # jujutsu completions
 source <(COMPLETE=zsh jj)
 
