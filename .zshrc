@@ -214,10 +214,10 @@ ZSH_THEME_JJ_PROMPT_CLEAN=""
 # Wrapper to prioritize JJ over Git if inside a JJ root
 function git_or_jj_prompt() {
     if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then
-      local jj_status=$(jj_prompt_template 'change_id.shortest(4) ++ if(bookmarks, " " ++ bookmarks.join(", "))')
+      local jj_status=$(jj_prompt_template 'change_id.shortest(4) ++ if(bookmarks, " " ++ bookmarks.join(", "))' 2>/dev/null)
       echo "${ZSH_THEME_JJ_PROMPT_PREFIX}${jj_status}${ZSH_THEME_JJ_PROMPT_SUFFIX}"
     else
-        git_prompt_info
+        _omz_git_prompt_info
     fi
 }
 local UTC_DATE=$(TZ=UTC date "+%H:%M (%Z)")
@@ -368,3 +368,6 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
+
+# bun completions
+[ -s "/opt/homebrew/share/zsh/site-functions/_bun" ] && source "/opt/homebrew/share/zsh/site-functions/_bun"
