@@ -315,6 +315,11 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/zsh-plugins" "$HOME/zsh-plugins"
   ln -sfn "$RCFILES_DIR/.golangci.yml" "$HOME/.golangci.yml"
   ln -sfn "$RCFILES_DIR/.taskrc" "$HOME/.taskrc"
+
+  # Claude Code
+  mkdir -p "$HOME/.claude"
+  ln -sfn "$RCFILES_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
+  ln -sfn "$RCFILES_DIR/.claude/agents" "$HOME/.claude/agents"
 }
 
 # Debugging enabled
