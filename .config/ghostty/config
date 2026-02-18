@@ -2,5 +2,6 @@ theme = Dark Modern
 font-feature = -calt, -liga, -dlig
 macos-option-as-alt = true
 copy-on-select = false
+shell-integration-features = ssh-terminfo
 
 keybind = ctrl+shift+j=unbind
