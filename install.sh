@@ -297,6 +297,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.config/amp" "$HOME/.config/amp"
   ln -sfn "$RCFILES_DIR/.config/hypr" "$HOME/.config/hypr"
   ln -sfn "$RCFILES_DIR/.config/jj" "$HOME/.config/jj"
+  ln -sfn "$RCFILES_DIR/.config/taskwarrior" "$HOME/.taskwarrior"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
   ln -sfn "$RCFILES_DIR/.gitconfig" "$HOME/.gitconfig"

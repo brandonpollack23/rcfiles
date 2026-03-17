@@ -1,0 +1,20 @@
+{
+  "+univalent": {
+    "count": 3
+  },
+  "banking": {
+    "count": 2
+  },
+  "planning": {
+    "count": 1
+  },
+  "+pulumi": {
+    "count": 2
+  },
+  "internal meeting": {
+    "count": 1
+  },
+  "email": {
+    "count": 1
+  }
+}

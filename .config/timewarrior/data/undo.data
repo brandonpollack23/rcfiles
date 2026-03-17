@@ -1,0 +1,83 @@
+txn:
+  type: interval
+  before: 
+  after: {"id":0,"start":"20260224T030000Z","tags":["incorporation","univalent"]}
+txn:
+  type: interval
+  before: {"id":1,"start":"20260224T030000Z","tags":["incorporation","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":1,"start":"20260224T030000Z","end":"20260224T050000Z","tags":["incorporation","univalent"]}
+txn:
+  type: interval
+  before: {"id":1,"start":"20260224T030000Z","end":"20260224T050000Z","tags":["incorporation","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":1,"start":"20260224T040000Z","end":"20260224T050000Z","tags":["incorporation","univalent"]}
+txn:
+  type: interval
+  before: 
+  after: {"id":0,"start":"20260224T052000Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: {"id":1,"start":"20260224T052000Z","tags":["banking","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":1,"start":"20260224T052000Z","end":"20260224T090354Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: {"id":1,"start":"20260224T052000Z","end":"20260224T090354Z","tags":["banking","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":1,"start":"20260224T052000Z","end":"20260224T062500Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: {"id":2,"start":"20260224T040000Z","end":"20260224T050000Z","tags":["incorporation","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["incorporation","univalent"]}
+txn:
+  type: interval
+  before: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["incorporation","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["univalent"]}
+txn:
+  type: interval
+  before: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: 
+  after: {"id":0,"start":"20260224T042000Z","end":"20260224T050000Z","tags":["planning","univalent"]}
+txn:
+  type: interval
+  before: {"id":2,"start":"20260224T042000Z","end":"20260224T050000Z","tags":["planning","univalent"]}
+  after: 
+txn:
+  type: interval
+  before: {"id":2,"start":"20260224T040000Z","end":"20260224T042000Z","tags":["banking","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":2,"start":"20260224T040000Z","end":"20260224T050000Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: {"id":1,"start":"20260224T052000Z","end":"20260224T062500Z","tags":["banking","univalent"]}
+  after: 
+  type: interval
+  before: 
+  after: {"id":1,"start":"20260224T052000Z","end":"20260224T054000Z","tags":["banking","univalent"]}
+txn:
+  type: interval
+  before: 
+  after: {"id":0,"start":"20260224T060000Z","end":"20260224T082500Z","tags":["planning","univalent"]}
