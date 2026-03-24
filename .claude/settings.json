@@ -1,6 +1,14 @@
 {
   "permissions": {
-    "allow": ["Bash(git *)", "WebFetch", "WebSearch", "Grep", "Bash(cargo *)"]
+    "allow": [
+      "Bash(cargo *)",
+      "Bash(find *)",
+      "Bash(git *)",
+      "Bash(tree *)",
+      "Grep",
+      "WebFetch",
+      "WebSearch"
+    ]
   },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
