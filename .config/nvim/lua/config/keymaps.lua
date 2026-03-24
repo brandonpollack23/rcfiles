@@ -7,6 +7,7 @@
 local map = vim.keymap.set
 
 map({ "i" }, "jj", "<Esc>")
+map({ "i" }, "jk", "<Esc>")
 
 -- Toggle between light/dark
 map("n", "<leader>ut", function()
@@ -21,7 +22,7 @@ map("n", "<leader>ut", function()
   end
 end, { desc = "Toggle Theme (VSCode/Dayfox)" })
 
-vim.keymap.set("n", "<leader>bp", "<Cmd>BufferLinePick<CR>", { desc = "Buffer Pick" })
+vim.keymap.set("n", "<leader>bb", "<Cmd>BufferLinePick<CR>", { desc = "Buffer Pick" })
 
 -- better up/down
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })

@@ -2,6 +2,16 @@ local ascii_art = require("ascii_art")
 
 return {
   {
+    "saghen/blink.cmp",
+    optional = true,
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      opts.sources.default = vim.tbl_filter(function(s)
+        return s ~= "supermaven"
+      end, opts.sources.default or {})
+    end,
+  },
+  {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "vscode",
