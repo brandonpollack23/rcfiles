@@ -1,10 +1,8 @@
 return {
   {
     "supermaven-inc/supermaven-nvim",
-    opts = {
-      disable_inline_completion = false,
-    },
-    setup = function()
+    config = function()
+      require("supermaven-nvim").setup({ disable_inline_completion = false })
       vim.api.nvim_set_hl(0, "SupermavenSuggestion", { fg = "#6e6e6e", italic = true })
       require("supermaven-nvim.completion_preview").suggestion_group = "SupermavenSuggestion"
       LazyVim.cmp.actions.ai_accept = function()
