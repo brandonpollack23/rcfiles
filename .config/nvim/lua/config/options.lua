@@ -123,3 +123,6 @@ vim.g.markdown_recommended_style = 0
 
 -- setup exrc
 vim.o.exrc = true
+
+-- Disable nvim 0.11 built-in rust_analyzer (rustaceanvim handles it)
+vim.lsp.enable("rust_analyzer", false)
