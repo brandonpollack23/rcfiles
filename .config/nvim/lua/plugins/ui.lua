@@ -60,4 +60,11 @@ return {
       vim.api.nvim_set_hl(0, "NeominimapInfoLine", { bg = "#235e8f" })
     end,
   },
+  {
+    "akinsho/bufferline.nvim",
+    keys = {
+      { "<leader>bh", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer left" },
+      { "<leader>bl", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer right" },
+    },
+  },
 }

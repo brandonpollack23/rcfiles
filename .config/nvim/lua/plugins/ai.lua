@@ -1,21 +1,33 @@
 return {
-  {
-    "supermaven-inc/supermaven-nvim",
-    config = function()
-      require("supermaven-nvim").setup({ disable_inline_completion = false })
-      vim.api.nvim_set_hl(0, "SupermavenSuggestion", { fg = "#6e6e6e", italic = true })
-      require("supermaven-nvim.completion_preview").suggestion_group = "SupermavenSuggestion"
-      LazyVim.cmp.actions.ai_accept = function()
-        local suggestion = require("supermaven-nvim.completion_preview")
-
-        if suggestion.has_suggestion() then
-          LazyVim.create_undo()
-          vim.schedule(function()
-            suggestion.on_accept_suggestion()
-          end)
-          return true
-        end
-      end
-    end,
-  },
+  -- {
+  --   "supermaven-inc/supermaven-nvim",
+  --   config = function()
+  --     require("supermaven-nvim").setup({ disable_inline_completion = false })
+  --     vim.api.nvim_set_hl(0, "SupermavenSuggestion", { fg = "#6e6e6e", italic = true })
+  --     require("supermaven-nvim.completion_preview").suggestion_group = "SupermavenSuggestion"
+  --     LazyVim.cmp.actions.ai_accept = function()
+  --       local suggestion = require("supermaven-nvim.completion_preview")
+  --
+  --       if suggestion.has_suggestion() then
+  --         LazyVim.create_undo()
+  --         vim.schedule(function()
+  --           suggestion.on_accept_suggestion()
+  --         end)
+  --         return true
+  --       end
+  --     end
+  --   end,
+  -- },
+  -- {
+  --   "Exafunction/codeium.nvim",
+  --   opts = function()
+  --     LazyVim.cmp.actions.ai_accept = function()
+  --       if require("codeium.virtual_text").get_current_completion_item() then
+  --         LazyVim.create_undo()
+  --         vim.api.nvim_input(require("codeium.virtual_text").accept())
+  --         return true
+  --       end
+  --     end
+  --   end,
+  -- },
 }

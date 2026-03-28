@@ -133,8 +133,8 @@ plugins=(
     golang
     gradle
     jj
-    mix
     mise
+    mix-fast
     npm
     rebar
     repo
