@@ -1,4 +1,26 @@
 return {
+  {
+    "folke/trouble.nvim",
+    opts = {
+      modes = {
+        symbols = { -- Configure symbols mode
+          win = {
+            type = "split", -- split window
+            relative = "win", -- relative to current window
+            position = "right", -- right side
+            size = 0.3, -- 30% of the window
+          },
+        },
+      },
+    },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    keys = {
+      { "<leader>bh", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer left" },
+      { "<leader>bl", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer right" },
+    },
+  },
   -- {
   --   "Isrothy/neominimap.nvim",
   --   dependencies = { "lewis6991/gitsigns.nvim", "nvim-treesitter/nvim-treesitter" },
@@ -60,11 +82,4 @@ return {
   --     vim.api.nvim_set_hl(0, "NeominimapInfoLine", { bg = "#235e8f" })
   --   end,
   -- },
-  {
-    "akinsho/bufferline.nvim",
-    keys = {
-      { "<leader>bh", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer left" },
-      { "<leader>bl", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer right" },
-    },
-  },
 }
