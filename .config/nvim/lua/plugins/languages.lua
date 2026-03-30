@@ -4,6 +4,8 @@ return {
     opts = {
       servers = {
         elixirls = {
+          autostart = false,
+          mason = false,
           settings = {
             elixirLS = {
               -- Dialyzer is required for the Workspace Symbol index
