@@ -5,7 +5,7 @@
 	path = .vim/pack/brpol/start/vim-easymotion
 	url = https://github.com/easymotion/vim-easymotion.git
 [submodule "zsh-plugins/zsh-syntax-highlighting"]
-	path = zsh-custom/plugins/zsh-plugins/zsh-syntax-highlighting
+	path = zsh-custom/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule ".vim/pack/brpol/start/nerdtree"]
 	path = .vim/pack/brpol/start/nerdtree
@@ -26,22 +26,22 @@
 	path = .vim/pack/brpol/start/nerdcommenter
 	url = https://github.com/preservim/nerdcommenter.git
 [submodule "zsh-plugins/zsh-completions"]
-	path = zsh-custom/plugins/zsh-plugins/zsh-completions
+	path = zsh-custom/plugins/zsh-completions
 	url = git@github.com:zsh-users/zsh-completions.git
 [submodule "zsh-plugins/zfs-completion"]
-	path = zsh-custom/plugins/zsh-plugins/zfs-completion
+	path = zsh-custom/plugins/zfs-completion
 	url = https://github.com/luoxu34/zfs-completion.git
 [submodule "zsh-plugins/zsh-you-should-use"]
-	path = zsh-custom/plugins/zsh-plugins/zsh-you-should-use
+	path = zsh-custom/plugins/zsh-you-should-use
 	url = https://github.com/MichaelAquilina/zsh-you-should-use.git
 [submodule "zsh-plugins/enhancd"]
-	path = zsh-custom/plugins/zsh-plugins/enhancd
+	path = zsh-custom/plugins/enhancd
 	url = https://github.com/b4b4r07/enhancd.git
 [submodule "zsh-plugins/zsh-history-substring-search"]
-	path = zsh-custom/plugins/zsh-plugins/zsh-history-substring-search
+	path = zsh-custom/plugins/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search
 [submodule "zsh-plugins/omz-homebrew"]
-	path = zsh-custom/plugins/zsh-plugins/omz-homebrew
+	path = zsh-custom/plugins/omz-homebrew
 	url = https://github.com/digitalraven/omz-homebrew.git
 [submodule ".vim/pack/plugins/start/kotlin-vim"]
 	path = .vim/pack/plugins/start/kotlin-vim
@@ -80,5 +80,5 @@
 	path = .tmux/plugins/tmux
 	url = https://git::@github.com/dracula/tmux
 [submodule "zsh-plugins/zsh-autsuggestions"]
-	path = zsh-custom/plugins/zsh-plugins/zsh-autsuggestions
+	path = zsh-custom/plugins/zsh-autsuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
