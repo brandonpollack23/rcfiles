@@ -30,6 +30,7 @@ return {
               dialyzerEnabled = true,
               -- Allows ElixirLS to fetch/compile deps if needed
               fetchDeps = true,
+              suggestSpecs = true,
             },
           },
         },
