@@ -79,3 +79,6 @@
 [submodule ".tmux/plugins/tmux"]
 	path = .tmux/plugins/tmux
 	url = https://git::@github.com/dracula/tmux
+[submodule "zsh-plugins/zsh-autsuggestions"]
+	path = zsh-plugins/zsh-autsuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git

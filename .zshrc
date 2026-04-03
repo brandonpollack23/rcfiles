@@ -27,10 +27,6 @@ fi
 
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 fpath+=$HOME/zsh-my-completions
-if [[ -f $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh ]]; then
-    source $HOME/nix-zsh-completions/nix-zsh-completions.plugin.zsh
-fi
-fpath+=$HOME/nix-zsh-completions
 autoload -Uz compinit && compinit
 
 # Path to your oh-my-zsh installation.
@@ -369,5 +365,4 @@ else
     echo "Welcome to $HOST!"
 fi
 
-# bun completions
-[ -s "/opt/homebrew/share/zsh/site-functions/_bun" ] && source "/opt/homebrew/share/zsh/site-functions/_bun"
+eval "$(zoxide init zsh)"
