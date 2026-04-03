@@ -163,12 +163,15 @@ if [[ "$VIM" == "" ]]; then
 fi
 
 # fzf setup
-export FZF_BASE=$(which fzf)
 export FZF_DEFAULT_OPTS='--bind ctrl-f:page-down,ctrl-b:page-up'
 
 source $ZSH/oh-my-zsh.sh
 
-################### Extra self managed Plugin configurations ###############################
+# Keybinds
+
+# Restore fzf's Tab completion widget — vi-mode plugin's bindkey -v resets it
+bindkey '^I' fzf-completion
+
 # History search
 bindkey '^p' history-substring-search-up
 bindkey '^n' history-substring-search-down
