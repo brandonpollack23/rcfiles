@@ -141,6 +141,7 @@ plugins=(
     tmux
     zfs-completion
     zoxide
+    zsh-autosuggestions
     zsh-history-substring-search
     zsh-syntax-highlighting
     zsh-you-should-use
@@ -353,3 +354,12 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
+
+# Hacker News MOTD
+_hn_output=$(source "$HOME/rcfiles/hacker-news.sh")
+if [[ -n "$_hn_output" ]]; then
+    echo "$_hn_output"
+else
+    echo "⏳ Fetching Hacker News in the background..."
+fi
+unset _hn_output
