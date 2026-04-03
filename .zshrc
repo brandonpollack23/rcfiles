@@ -165,6 +165,9 @@ fi
 # fzf setup
 export FZF_DEFAULT_OPTS='--bind ctrl-f:page-down,ctrl-b:page-up'
 
+# zoxide setup
+export ZOXIDE_CMD_OVERRIDE="cd"
+
 source $ZSH/oh-my-zsh.sh
 
 # Keybinds
