@@ -106,6 +106,7 @@ HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
+export ZSH_CUSTOM=$HOME/zsh-custom
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -138,7 +139,15 @@ plugins=(
     sudo
     systemd
     tmux
+    zfs-completion
+    zoxide
+    zsh-history-substring-search
+    zsh-syntax-highlighting
+    zsh-you-should-use
 )
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  plugins+=(omz-homebrew)
+fi
 
 if [[ "$VIM" == "" ]]; then
   plugins+=vi-mode
@@ -156,23 +165,6 @@ fi
 export FZF_BASE=$(which fzf)
 
 source $ZSH/oh-my-zsh.sh
-
-################### Extra self managed plugins ###############################
-
-# Syntax highlighting
-source $HOME/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# ZFS
-source $HOME/zsh-plugins/zfs-completion/zfs-completion.plugin.zsh
-# Alias reminding
-source $HOME/zsh-plugins/zsh-you-should-use/you-should-use.plugin.zsh
-# better cd
-#source $HOME/zsh-plugins/enhancd/enhancd.plugin.zsh
-# better history search
-source $HOME/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-# Better brew for mac
-if [[ "$OSTYPE" =~ darwin* ]]; then
-    source $HOME/zsh-plugins/omz-homebrew/omz-homebrew.plugin.zsh
-fi
 
 ################### Extra self managed Plugin configurations ###############################
 # History search
@@ -331,9 +323,6 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # mise setup
 eval "$(mise activate zsh)"
 
-# Nix stuff
-prompt_nix_shell_setup
-
 # Elixir/erlang stuff
 # alias mixnew="mix gen bpollack_elixir_template"
 export ERL_AFLAGS="-kernel shell_history enabled" # enable shell history
@@ -364,5 +353,3 @@ if [ -x "$(command -v lolcat)" ]; then
 else
     echo "Welcome to $HOST!"
 fi
-
-eval "$(zoxide init zsh)"

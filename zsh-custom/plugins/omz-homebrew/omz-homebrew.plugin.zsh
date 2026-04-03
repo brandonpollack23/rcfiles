@@ -1,0 +1,6 @@
+alias bl='echo "Formulae\n========" && brew list -1 && echo "\nCasks\n=====" && brew list --cask -1'
+alias bi='brew install'
+alias bci='brew install --cask'
+alias bup='brew update && echo "\nFormulae\n========" && brew outdated && echo "\nCasks\n=====" && brew outdated --cask'
+alias bug='brew upgrade && brew upgrade --cask && brew cleanup'
+alias buddy='brew upgrade --dry-run && brew upgrade --cask --dry-run'
