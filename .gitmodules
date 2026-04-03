@@ -1,30 +1,9 @@
 [submodule ".oh-my-zsh"]
 	path = .oh-my-zsh
 	url = https://github.com/ohmyzsh/ohmyzsh.git
-[submodule ".vim/pack/brpol/start/vim-easymotion"]
-	path = .vim/pack/brpol/start/vim-easymotion
-	url = https://github.com/easymotion/vim-easymotion.git
 [submodule "zsh-plugins/zsh-syntax-highlighting"]
 	path = zsh-custom/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule ".vim/pack/brpol/start/nerdtree"]
-	path = .vim/pack/brpol/start/nerdtree
-	url = https://github.com/preservim/nerdtree.git
-[submodule ".vim/pack/brpol/start/ctrlp.vim"]
-	path = .vim/pack/brpol/start/ctrlp.vim
-	url = https://github.com/kien/ctrlp.vim.git
-[submodule ".vim/pack/brpol/start/vim-airline"]
-	path = .vim/pack/brpol/start/vim-airline
-	url = https://github.com/vim-airline/vim-airline.git
-[submodule ".vim/pack/brpol/start/vim-surround"]
-	path = .vim/pack/brpol/start/vim-surround
-	url = https://github.com/tpope/vim-surround.git
-[submodule ".vim/pack/brpol/start/vim-matchit"]
-	path = .vim/pack/brpol/start/vim-matchit
-	url = https://github.com/adelarsq/vim-matchit.git
-[submodule ".vim/pack/brpol/start/nerdcommenter"]
-	path = .vim/pack/brpol/start/nerdcommenter
-	url = https://github.com/preservim/nerdcommenter.git
 [submodule "zsh-plugins/zsh-completions"]
 	path = zsh-custom/plugins/zsh-completions
 	url = git@github.com:zsh-users/zsh-completions.git
@@ -64,9 +43,6 @@
 [submodule ".tmux/plugins/tmux-easy-motion"]
 	path = .tmux/plugins/tmux-easy-motion
 	url = git@github.com:IngoMeyer441/tmux-easy-motion.git
-[submodule "nix-zsh-completions"]
-	path = nix-zsh-completions
-	url = git@github.com:nix-community/nix-zsh-completions.git
 [submodule ".tmux/plugins/tmux-autoreload"]
 	path = .tmux/plugins/tmux-autoreload
 	url = https://git::@github.com/b0o/tmux-autoreload
