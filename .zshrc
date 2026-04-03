@@ -164,6 +164,7 @@ fi
 
 # fzf setup
 export FZF_BASE=$(which fzf)
+export FZF_DEFAULT_OPTS='--bind ctrl-f:page-down,ctrl-b:page-up'
 
 source $ZSH/oh-my-zsh.sh
 
