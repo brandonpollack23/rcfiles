@@ -169,8 +169,33 @@ source $ZSH/oh-my-zsh.sh
 
 # Keybinds
 
-# Restore fzf's Tab completion widget — vi-mode plugin's bindkey -v resets it
+# Restore fzf widgets — vi-mode plugin's bindkey -v resets them
 bindkey '^I' fzf-completion
+bindkey '^R' fzf-history-widget
+
+# Alt-C: same as fzf default but uses z instead of cd
+fzf-cd-widget() {
+  setopt localoptions pipefail no_aliases 2> /dev/null
+  local dir="$(
+    FZF_DEFAULT_COMMAND=${FZF_ALT_C_COMMAND:-} \
+    FZF_DEFAULT_OPTS=$(__fzf_defaults "--reverse --walker=dir,follow,hidden --scheme=path" "${FZF_ALT_C_OPTS-} +m") \
+    FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd) < /dev/tty)"
+  if [[ -z "$dir" ]]; then
+    zle redisplay
+    return 0
+  fi
+  zle push-line
+  BUFFER="z ${(q)dir:a}"
+  zle accept-line
+  local ret=$?
+  unset dir
+  zle reset-prompt
+  return $ret
+}
+zle -N fzf-cd-widget
+bindkey -M emacs '\ec' fzf-cd-widget
+bindkey -M vicmd '\ec' fzf-cd-widget
+bindkey -M viins '\ec' fzf-cd-widget
 
 # History search
 bindkey '^p' history-substring-search-up
