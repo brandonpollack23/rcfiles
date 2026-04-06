@@ -313,6 +313,20 @@ alias grbi='git rebase -i --update-refs --autosquash'
 alias j=jj
 # jujutsu completions
 source <(COMPLETE=zsh jj)
+# JJ Workspace switcher
+function jjws() {
+  local selection
+  selection=$(jj workspace list -T 'self.name() ++ "\t" ++self.root() ++ "\n"' \
+    | fzf --prompt="workspace> " \
+          --delimiter='\t' \
+          --with-nth=1 \
+          --preview 'jj log -T "builtin_log_comfortable" -R {2}') \
+    || return
+
+  local dir
+  dir=$(echo "$selection" | cut -f2)
+  cd "$dir"
+}
 
 # Golang stuff
 # Go bin path
