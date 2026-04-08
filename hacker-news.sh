@@ -27,11 +27,11 @@ _hn_fetch() {
       kid=$(echo "$item" | jq '.kids[0] // empty')
       if [[ -n "$kid" ]]; then
         comment=$(curl -sf "https://hacker-news.firebaseio.com/v0/item/${kid}.json" |
-          jq -r '.text // empty' | sed 's/<[^>]*>//g')
+          jq -r '.text // empty' | sed 's/<[^>]*>//g' | tr -d '\000-\037')
         comment="${comment:0:100}"
       fi
     elif [[ -n "$text" ]]; then
-      comment=$(echo "$text" | sed 's/<[^>]*>//g' | head -c 100)
+      comment=$(echo "$text" | sed 's/<[^>]*>//g' | tr -d '\000-\037' | head -c 100)
       url=""
     fi
 
@@ -60,11 +60,9 @@ hn() {
     esac
   done
 
-  if [[ ! -f "$_hn_cache" ]]; then
-    (_hn_fetch "$count" &)
+  if [[ ! -f "$_hn_cache" ]] || _hn_stale "$max_age"; then
+    (_hn_fetch "$count" >/dev/null 2>&1 &) disown
     echo "Fetching Hacker News top $count stories..."
-  elif _hn_stale "$max_age"; then
-    (_hn_fetch "$count" &)
   fi
 
   [[ -f "$_hn_cache" ]] || return
