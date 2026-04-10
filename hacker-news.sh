@@ -61,8 +61,9 @@ hn() {
   done
 
   if [[ ! -f "$_hn_cache" ]] || _hn_stale "$max_age"; then
-    (_hn_fetch "$count" >/dev/null 2>&1 &) disown
+    { _hn_fetch "$count" >/dev/null 2>&1 & } 2>/dev/null
     echo "Fetching Hacker News top $count stories..."
+    return
   fi
 
   [[ -f "$_hn_cache" ]] || return
