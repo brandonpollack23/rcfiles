@@ -37,6 +37,34 @@ return {
           filetypes = { "prolog" },
           root_markers = { "pack.pl", ".git" },
         },
+        tailwindcss = {
+          root_markers = {
+            "assets/tailwind.config.js",
+            "tailwind.config.js",
+            "tailwind.config.cjs",
+            "tailwind.config.ts",
+            "mix.exs",
+            ".git",
+          },
+          filetypes = {
+            "html",
+            "css",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "heex",
+            "elixir",
+            "eelixir",
+          },
+          init_options = {
+            userLanguages = {
+              heex = "html",
+              elixir = "html",
+              eelixir = "html",
+            },
+          },
+        },
         elixirls = {
           mason = false,
           settings = {

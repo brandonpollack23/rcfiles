@@ -1,5 +1,5 @@
 return {
-  "rafikdraoui/jj-diffconflicts",
+"rafikdraoui/jj-diffconflicts",
   {
     "gitsigns.nvim",
     opts = {
