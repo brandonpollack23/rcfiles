@@ -2,3 +2,9 @@
 Brewfile.lock.json
 .tmux/resurrect/**
 .config/jj/repos/
+.config/herdr/sessions/
+.config/herdr/*.sock
+.config/herdr/*.log
+.config/herdr/.plugins.lock
+.config/herdr/config.toml.bak
+.config/herdr/config.toml.claude-bak-*
