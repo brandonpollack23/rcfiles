@@ -21,22 +21,22 @@ return {
     opts = {
       codelens = { enabled = true },
       servers = {
-        prolog_ls = {
-          -- nvim-lspconfig already knows the default cmd, but explicit is safer:
-          cmd = {
-            "swipl",
-            "-g",
-            "use_module(library(lsp_server)).",
-            "-g",
-            "lsp_server:main",
-            "-t",
-            "halt",
-            "--",
-            "stdio",
-          },
-          filetypes = { "prolog" },
-          root_markers = { "pack.pl", ".git" },
-        },
+        -- prolog = {
+        --   -- nvim-lspconfig already knows the default cmd, but explicit is safer:
+        --   cmd = {
+        --     "swipl",
+        --     "-g",
+        --     "use_module(library(lsp_server)).",
+        --     "-g",
+        --     "lsp_server:main",
+        --     "-t",
+        --     "halt",
+        --     "--",
+        --     "stdio",
+        --   },
+        --   root_markers = { "pack.pl", ".git" },
+        --   filetypes = { "prolog" },
+        -- },
         tailwindcss = {
           root_markers = {
             "assets/tailwind.config.js",
