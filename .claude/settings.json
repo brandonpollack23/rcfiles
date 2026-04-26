@@ -18,5 +18,8 @@
     "linear@claude-plugins-official": true
   },
   "effortLevel": "low",
-  "voiceEnabled": true
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "voiceEnabled": true,
+  "awaySummaryEnabled": false
 }
