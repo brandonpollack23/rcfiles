@@ -5,9 +5,10 @@ name = "Brandon Pollack"
 email = "brandonpollack23@gmail.com"
 
 [ui]
-merge-editor = "nvimdiff"
+merge-editor = "diffconflicts"
+diff-formatter = ["difft", "--color=always", "$left", "$right"]
 
-[merge-tools.nvimdiff]
+[merge-tools.diffconflicts]
 program = "nvim"
 merge-args = [
   "-c",
@@ -19,7 +20,6 @@ merge-args = [
   "$left",
   "$right",
 ]
-merge-tool-edits-conflict-markers = true
 
 [merge-tools.nvim-3col]
 program = "nvim"
@@ -42,3 +42,5 @@ merge-args = [
   "-c",
   "wincmd J",
 ]
+
+merge-tool-edits-conflict-markers = true
