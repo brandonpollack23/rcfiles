@@ -20,6 +20,7 @@ merge-args = [
   "$left",
   "$right",
 ]
+merge-tool-edits-conflict-markers = true
 
 [merge-tools.nvim-3col]
 program = "nvim"
@@ -42,5 +43,3 @@ merge-args = [
   "-c",
   "wincmd J",
 ]
-
-merge-tool-edits-conflict-markers = true
