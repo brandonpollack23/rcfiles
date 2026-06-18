@@ -5,3 +5,4 @@ copy-on-select = false
 shell-integration-features = ssh-terminfo
 
 keybind = ctrl+shift+j=unbind
+keybind = ctrl+shift+k=unbind
