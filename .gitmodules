@@ -58,3 +58,6 @@
 [submodule "zsh-custom/plugins/zsh-autosuggestions"]
 	path = zsh-custom/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "zsh-custom/plugins/nix-zsh-completions"]
+	path = zsh-custom/plugins/nix-zsh-completions
+	url = git@github.com:nix-community/nix-zsh-completions.git

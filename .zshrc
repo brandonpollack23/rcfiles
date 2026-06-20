@@ -132,6 +132,7 @@ plugins=(
     jj
     mise
     mix-fast
+    nix-zsh-completions
     npm
     rebar
     repo
