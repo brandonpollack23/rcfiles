@@ -1,3 +1,4 @@
 *.swp
 Brewfile.lock.json
 .tmux/resurrect/**
+.config/jj/repos/
