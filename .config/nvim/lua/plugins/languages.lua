@@ -21,6 +21,10 @@ return {
     opts = {
       codelens = { enabled = true },
       servers = {
+        nixd = {
+          -- Use the nixd already on PATH (/usr/bin/nixd) instead of Mason.
+          mason = false,
+        },
         -- prolog = {
         --   -- nvim-lspconfig already knows the default cmd, but explicit is safer:
         --   cmd = {

@@ -89,3 +89,5 @@
 	defaultBranch = master
 [branchless "test"]
 	jobs = 0
+[safe]
+	directory = /home/brpol/src/learn_nix/mnt/vm_nixos/home/brpol/nixos

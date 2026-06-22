@@ -43,3 +43,6 @@ merge-args = [
   "-c",
   "wincmd J",
 ]
+
+[aliases]
+mr = ["util", "exec", "--", "jj-vine"]
