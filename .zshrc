@@ -27,7 +27,6 @@ fi
 
 fpath=($HOME/zsh-plugins/zsh-completions/src $fpath)
 fpath+=$HOME/zsh-my-completions
-autoload -Uz compinit && compinit
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -123,6 +122,7 @@ plugins=(
     docker-compose
     emoji
     fzf
+    fzf-tab
     gcloud
     git
     git-extras
@@ -173,8 +173,9 @@ source $ZSH/oh-my-zsh.sh
 
 # Keybinds
 
-# Restore fzf widgets — vi-mode plugin's bindkey -v resets them
-bindkey '^I' fzf-completion
+# vi-mode resets keymaps, so restore fzf-tab after all plugins have loaded.
+bindkey -M emacs '^I' fzf-tab-complete
+bindkey -M viins '^I' fzf-tab-complete
 bindkey '^R' fzf-history-widget
 
 # History search
@@ -187,6 +188,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 #################### User configuration ###############################
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # This is my modified candy theme
 function emoji_status_prompt() {
@@ -386,3 +388,15 @@ else
     echo "⏳ Fetching Hacker News in the background..."
 fi
 unset _hn_output
+
+# new prompt starship
+
+eval "$(starship init zsh)"
+
+# Hook to pass the current history event number to Starship
+update_starship_histcmd() {
+  export STARSHIP_HISTCMD="$HISTCMD"
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd update_starship_histcmd
