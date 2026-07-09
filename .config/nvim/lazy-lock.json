@@ -11,6 +11,7 @@
   "crates.nvim": { "branch": "main", "commit": "694357861ec9ebf12475ddcdd04ea45a0923c32d" },
   "datastar.nvim": { "branch": "master", "commit": "6357daa9445b2b12e430849897a6bf3eca56b58d" },
   "dial.nvim": { "branch": "master", "commit": "f2634758455cfa52a8acea6f142dcd6271a1bf57" },
+  "diffchar.vim": { "branch": "master", "commit": "14fc3fc79356d6b80462df8dbc8934f293145b9a" },
   "diffview-plus.nvim": { "branch": "main", "commit": "1c095f26f268871a6ef06e5cc90f92573c725f95" },
   "flash.nvim": { "branch": "main", "commit": "fcea7ff883235d9024dc41e638f164a450c14ca2" },
   "friendly-snippets": { "branch": "main", "commit": "6cd7280adead7f586db6fccbd15d2cac7e2188b9" },

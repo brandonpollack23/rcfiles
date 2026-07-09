@@ -5,7 +5,7 @@ name = "Brandon Pollack"
 email = "brandonpollack23@gmail.com"
 
 [ui]
-merge-editor = "nvim-3col"
+merge-editor = "diffview"
 diff-formatter = ["difft", "--color=always", "$left", "$right"]
 
 [merge-tools.diffconflicts]
@@ -21,6 +21,12 @@ merge-args = [
   "$right",
 ]
 merge-tool-edits-conflict-markers = true
+
+[merge-tools.diffview]
+program = "nvim"
+merge-args = ["-c", "DiffviewMergeFiles $output $base $left $right"]
+merge-tool-edits-conflict-markers = true
+conflict-marker-style = "git"
 
 [merge-tools.nvim-3col]
 program = "nvim"

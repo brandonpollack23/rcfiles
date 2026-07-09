@@ -29,32 +29,48 @@ return {
     --     "DiffviewDiffFiles",
     --     "DiffviewLog",
     -- },
+    -- diffchar.vim gives character-level diff precision, pairs with enhanced_diff_hl below
+    dependencies = { "rickhowe/diffchar.vim" },
+    opts = {
+      enhanced_diff_hl = true,
+      diffopt = { algorithm = "histogram" },
+      view = {
+        merge_tool = {
+          layout = "diff4_mixed",
+          disable_diagnostics = true,
+          winbar_info = true,
+        },
+        cycle_layouts = {
+          merge_tool = { "diff4_mixed", "diff3_mixed", "diff3_horizontal", "diff1_plain" },
+        },
+      },
+    },
     keys = {
       -- Toggle diffview open/close
-      { "<leader>dv", "<cmd>DiffviewToggle<cr>", desc = "Toggle Diffview" },
+      { "<leader>zv", "<cmd>DiffviewToggle<cr>", desc = "Toggle Diffview" },
 
       -- Diff working directory
-      { "<leader>do", "<cmd>DiffviewOpen<cr>", desc = "Diffview open" },
-      { "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "Diffview close" },
+      { "<leader>zo", "<cmd>DiffviewOpen<cr>", desc = "Diffview open" },
+      { "<leader>zc", "<cmd>DiffviewClose<cr>", desc = "Diffview close" },
 
       -- File history
-      { "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history (current file)" },
-      { "<leader>dH", "<cmd>DiffviewFileHistory<cr>", desc = "File history (repo)" },
+      { "<leader>zh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history (current file)" },
+      { "<leader>zH", "<cmd>DiffviewFileHistory<cr>", desc = "File history (repo)" },
 
       -- Visual mode: history for selection
       {
-        "<leader>dh",
+        "<leader>zh",
         "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>",
         mode = "v",
         desc = "Range history",
       },
 
       -- Single line history
-      { "<leader>dl", "<cmd>.DiffviewFileHistory --follow<CR>", desc = "Line history" },
+      { "<leader>zl", "<cmd>.DiffviewFileHistory --follow<CR>", desc = "Line history" },
 
       -- Diff against main/master branch (useful before merging)
       {
-        "<leader>dm",
+        "<leader>zm",
         function()
           -- Try main first, fall back to master
           local result = vim.fn.systemlist({ "git", "rev-parse", "--verify", "main" })
@@ -63,6 +79,15 @@ return {
           vim.cmd("DiffviewOpen " .. branch)
         end,
         desc = "Diff against main/master",
+      },
+    },
+  },
+  {
+    "folke/which-key.nvim",
+    optional = true,
+    opts = {
+      spec = {
+        { "<leader>z", group = "Diffview (vcs)" },
       },
     },
   },
