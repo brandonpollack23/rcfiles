@@ -7,7 +7,7 @@ return {
           prepend_args = function(_, ctx)
             local filetype = vim.bo[ctx.buf].filetype
             if filetype == "markdown" or filetype == "markdown.mdx" then
-              return { "--print-width", "100", "--prose-wrap", "always" }
+              return { "--print-width", "80", "--prose-wrap", "always" }
             end
             return {}
           end,
