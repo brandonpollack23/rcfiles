@@ -16,7 +16,16 @@
     "github@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
     "linear@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": true
+    "chrome-devtools-mcp@claude-plugins-official": true,
+    "gws@gws-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "gws-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/WadeWarren/gws-claude-plugin.git"
+      }
+    }
   },
   "effortLevel": "high",
   "awaySummaryEnabled": false,
