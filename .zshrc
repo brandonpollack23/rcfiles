@@ -116,7 +116,6 @@ plugins=(
     aws
     bun
     colorize
-    command-not-found
     common-aliases
     docker
     docker-compose
@@ -346,6 +345,9 @@ if [ -e /home/brpol/.nix-profile/etc/profile.d/nix.sh ]; then . /home/brpol/.nix
 # asdf setup if it exists
 [[ -f ~/.asdf/asdf.sh ]] && . ~/.asdf/asdf.sh || true
 
+# press f to pay respects
+eval "$(pay-respects zsh --alias)"
+
 # mise setup
 eval "$(mise activate zsh)"
 
@@ -373,7 +375,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     source $HOME/.zshrc.mac
 fi
 
-# Finally, show a welcome message and fortune!
+# show a welcome message and fortune!
 if [ -x "$(command -v lolcat)" ]; then
     echo "Welcome to $HOST!" | lolcat
 else

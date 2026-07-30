@@ -114,4 +114,6 @@ return {
       },
     },
   },
+  -- hex completion for deps in elixir
+  { "dbernheisel/hex-cmp" },
 }
