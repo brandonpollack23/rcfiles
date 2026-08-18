@@ -8,6 +8,15 @@ email = "brandonpollack23@gmail.com"
 merge-editor = "diffview"
 diff-formatter = ["difft", "--color=always", "$left", "$right"]
 
+[ui.movement]
+edit = true
+
+[remotes.origin]
+auto-track-bookmarks = "main|master|brandon/*"
+
+[remotes.upstream]
+auto-track-bookmarks = "main|master"
+
 [merge-tools.diffconflicts]
 program = "nvim"
 merge-args = [
