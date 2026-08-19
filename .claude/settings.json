@@ -38,5 +38,38 @@
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(mix ash_postgres.drop:*) in this repo — destructive DB drop, not covered by default Declared Dependencies/Toolchain Bootstrap allow",
+      "Writes to ulp_application/config/prod.exs — production config file"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: univalent-cc (GitHub org; from git remote github.com:univalent-cc/univalent_legal_platform.git)",
+      "**Cloud provider(s)**: Cloudflare (CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN referenced as CI secret names; pages/ dir uses Cloudflare Pages)",
+      "**Repository visibility**: private (univalent-cc/univalent_legal_platform, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: CI secret names referenced: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN, GITHUB_TOKEN (names only, not values); local secrets in .env (gitignored) and ulp_application/lib/ulp/secrets.ex",
+      "**Default / protected branches**: default branch master; no classic-protection rules listed (rulesets not queryable here — do not assume unprotected)",
+      "**CI/CD deploy targets**: Cloudflare Pages (pages/ site), via .github/workflows",
+      "**Network posture**: None configured",
+      "**Source control**: this repo (univalent-cc/univalent_legal_platform) and its origin remote only",
+      "**Trusted internal domains**: docs.univalent.cc (referenced in README as the project's own docs site)",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: SWI-Prolog bridge server (prolog_server/, local dev at ULP_PROLOG_HOST/PORT); Notion integration (ULP_NOTION_API_KEY, referenced in .env.example)",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: .env, .env.example, ulp_application/config/prod.exs, ulp_application/lib/ulp/secrets.ex — credentials and legal-provider/PII-adjacent config; share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (e.g. ulp_application/config/prod.exs)",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (Elixir/Phoenix + SWI-Prolog legal platform monorepo)",
+      "**Trusted repo**: /home/brpol/src/univalent_legal_platform/univalent_legal_platform (working directory) and its origin remote github.com:univalent-cc/univalent_legal_platform.git — private repo, so confidential material is fine here but secrets/sensitive personal data are never cleared by visibility alone",
+      "**Org-specific CLIs**: mise (task runner, monorepo mode), mix (Elixir/Ash), jj (Jujutsu VCS, heavily used)",
+      "routine under this repo's working tree is standard dev activity (mix, mise, jj, psql against local dev db)"
+    ]
+  },
   "voiceEnabled": true
 }
