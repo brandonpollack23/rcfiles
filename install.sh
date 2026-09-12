@@ -26,6 +26,7 @@ PACKAGES=(
   gource      # Visualize Git repositories as a tree
   gum         # A tool for making fancy terminal scripts
   imagemagick # Software suite to create, edit, compose, or convert images
+  jq          # JSON processor used to preserve local Claude Code settings during setup
   luajit      # Just-In-Time Compiler (JIT) for the Lua programming language
   luarocks    # Package manager for Lua modules
   make        # Utility for directing compilation
@@ -319,7 +320,21 @@ function setup_home_dir() {
 
   # Claude Code
   mkdir -p "$HOME/.claude"
-  ln -sfn "$RCFILES_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
+  claude_shared_settings="$RCFILES_DIR/.claude/settings.json"
+  claude_local_settings="$HOME/.claude/settings.json"
+  claude_settings_link="$HOME/.claude/settings.shared.json"
+
+  # Claude Code writes the selected model and other machine-specific state to
+  # settings.json. Migrate the old symlink once, preserving only local fields.
+  if [[ -L "$claude_local_settings" && "$(realpath "$claude_local_settings")" == "$claude_shared_settings" ]]; then
+    jq '{model, modelSettings, skipAutoPermissionPrompt, hooks, autoMode} | with_entries(select(.value != null))' \
+      "$claude_local_settings" > "$claude_local_settings.tmp"
+    mv "$claude_local_settings.tmp" "$claude_local_settings"
+  elif [[ ! -e "$claude_local_settings" ]]; then
+    printf '{}\n' > "$claude_local_settings"
+  fi
+
+  ln -sfn "$claude_shared_settings" "$claude_settings_link"
   ln -sfn "$RCFILES_DIR/.claude/agents" "$HOME/.claude/agents"
 }
 

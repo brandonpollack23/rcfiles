@@ -375,6 +375,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     source $HOME/.zshrc.mac
 fi
 
+# AI stuff
+#
+# Claude Code persists the selected model and machine-specific settings here.
+# Load the tracked shared layer separately so those writes stay local.
+alias claude='command claude --settings "$HOME/.claude/settings.shared.json"'
+
+
 # show a welcome message and fortune!
 if [ -x "$(command -v lolcat)" ]; then
     echo "Welcome to $HOST!" | lolcat

@@ -10,20 +10,6 @@
       "WebSearch"
     ]
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/brpol/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
@@ -50,44 +36,5 @@
   },
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "autoMode": {
-    "allow": [
-      "$defaults",
-      "Bash(mix test:*) in /Users/brpol/src/univalent_legal_platform",
-      "Bash(mix ash.codegen:*) in /Users/brpol/src/univalent_legal_platform",
-      "Bash(jj st) in /Users/brpol/src/univalent_legal_platform"
-    ],
-    "soft_deny": [
-      "$defaults",
-      "Bash(mix ash_postgres.drop:*) in /Users/brpol/src/univalent_legal_platform",
-      "Bash(jj bookmark move -B master:*)  in /Users/brpol/src/univalent_legal_platform"
-    ],
-    "environment": [
-      "### Org-wide",
-      "**Organization**: univalent-cc (GitHub org; repo remote is github.com:univalent-cc/univalent_legal_platform.git)",
-      "**Cloud provider(s)**: Cloudflare (Cloudflare Pages for `pages/`, CI secrets CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN)",
-      "**Repository visibility**: private (univalent-cc/univalent_legal_platform, confirmed via gh)",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: CI secrets referenced: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN, GITHUB_TOKEN; app-level secrets handled via `ulp_application/lib/ulp/secrets.ex` and `ULP_LEGAL_KNOWLEDGE_KEY`/`.env`",
-      "**Default / protected branches**: master (default); no classic protected branches listed, rulesets not queryable — treat master as sensitive to force-push/history-rewrite regardless",
-      "**CI/CD deploy targets**: Cloudflare Pages (`pages/` — Astro + Cloudflare Pages docs site), via GitHub Actions (.github/workflows)",
-      "**Network posture**: None configured",
-      "**Source control**: The trusted repo (univalent_legal_platform) and its origin remote (github.com:univalent-cc/univalent_legal_platform.git) only",
-      "**Trusted internal domains**: docs.univalent.cc",
-      "**Trusted cloud buckets**: None configured",
-      "**Key internal services**: SWI-Prolog bridge server (`prolog_server/`, localhost:7870 by default); local Ollama; ngrok tunnel used in dev (`mise run dev`)",
-      "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: `.env`, `.env.example`, `ulp_application/config/prod.exs`, `ulp_application/lib/ulp/secrets.ex` — credentials and legal-provider data; share only with audiences cleared at the [named+specifics] bar",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (e.g. `ulp_application/config/prod.exs`-driven production config, production Notion IDs)",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development (Elixir/Phoenix + Ash Framework + Prolog bridge monorepo)",
-      "**Trusted repo**: /Users/brpol/src/univalent_legal_platform (private repo; origin github.com:univalent-cc/univalent_legal_platform.git) — private visibility permits confidential material but not secrets/credentials",
-      "**Org-specific CLIs**: mix (Elixir/Ash), jj (Jujutsu VCS, used heavily in shell history), mise (toolchain/task runner)",
-      "routine under /Users/brpol/src/univalent_legal_platform/ prefix qualifier applies to mix, jj, and mise invocations"
-    ]
-  },
   "voiceEnabled": true
 }
