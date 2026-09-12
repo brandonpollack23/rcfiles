@@ -70,3 +70,7 @@ stack-marks = [
   "-T",
   "bookmarks.map(|b| b.name()).join(\"\\n\") ++ \"\\n\"",
 ]
+stack = ["log", "-r", "stack()"]
+
+[revset-aliases]
+"stack()" = "trunk()..@ | @.."
