@@ -3,6 +3,7 @@
 ## Features
 
 - mozc and indicator
+- emoji picker
 - unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
@@ -14,7 +15,8 @@
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
   whenever and unminimize (special workspace(s))
-- Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` / `open`)
+- Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
+  `open`)
 - ungroup command that keeps the current focus as master
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - popup for sound/mute

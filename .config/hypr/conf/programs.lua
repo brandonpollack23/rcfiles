@@ -9,5 +9,6 @@ return {
 	idle = "hypridle",
 	session = "hypr-persist",
 	wallpaper = "awww-daemon",
+	input_ime = "fcitx5 -d",
 	browser = "google-chrome-stable",
 }
