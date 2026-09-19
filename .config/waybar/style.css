@@ -26,7 +26,7 @@ window#waybar {
   padding: 3px;
 }
 
-#workspaces button {
+#workspaces label {
   color: #7f849c;
   background: transparent;
   border-radius: 9px;
@@ -38,12 +38,12 @@ window#waybar {
 }
 
 /* Workspace contains one or more windows. */
-#workspaces button:not(.empty) {
+#workspaces label:not(.empty) {
   color: #cdd6f4;
 }
 
 /* The workspace you are currently using. */
-#workspaces button.active {
+#workspaces label.active {
   color: #11111b;
   background: #b4befe;
   padding-left: 14px;
@@ -51,18 +51,18 @@ window#waybar {
 }
 
 /* Visible on another monitor. */
-#workspaces button.visible:not(.active) {
+#workspaces label.visible:not(.active) {
   color: #b4befe;
   background: rgba(180, 190, 254, 0.15);
 }
 
 /* A window is requesting attention. */
-#workspaces button.urgent {
+#workspaces label.urgent {
   color: #11111b;
   background: #f38ba8;
 }
 
-#workspaces button:hover {
+#workspaces label:hover:not(.active):not(.urgent) {
   color: #cdd6f4;
   background: rgba(205, 214, 244, 0.12);
 }

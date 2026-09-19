@@ -300,6 +300,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.config/jj" "$HOME/.config/jj"
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
   ln -sfn "$RCFILES_DIR/.config/waybar" "$HOME/.config/waybar"
+  ln -sfn "$RCFILES_DIR/.config/swaync" "$HOME/.config/swaync"
   ln -sfn "$RCFILES_DIR/.config/taskwarrior" "$HOME/.taskwarrior"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
@@ -317,6 +318,11 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.zshrc.githubcopilot" "$HOME/.zshrc.githubcopilot"
   ln -sfn "$RCFILES_DIR/.zshrc.mac" "$HOME/.zshrc.mac"
   ln -sfn "$RCFILES_DIR/zsh-my-completions" "$HOME/zsh-my-completions"
+
+  # Hyprland starts swaync itself; stop D-Bus from activating a second copy via systemd.
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user mask swaync.service >/dev/null 2>&1 || true
+  fi
   ln -sfn "$RCFILES_DIR/zsh-custom" "$HOME/zsh-custom"
 
   # Claude Code

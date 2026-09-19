@@ -14,6 +14,7 @@ poweroff|󰐥  Shut down'
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
 restart-waybar|󰑓  Restart waybar
+reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-audio|󰑓  Restart audio (PipeWire)
 update|󰚰  Update system (paru)
@@ -50,8 +51,12 @@ restart-waybar)
 	pkill -x waybar
 	setsid -f waybar >/dev/null 2>&1
 	;;
+reload-swaync) swaync-client -R && swaync-client -rs ;;
 restart-swaync)
+	# Wait for the old daemon to release its D-Bus name, or the new one exits
+	# with "already running".
 	pkill -x swaync
+	while pgrep -x swaync >/dev/null; do sleep 0.1; done
 	setsid -f swaync >/dev/null 2>&1
 	;;
 restart-audio) systemctl --user restart wireplumber pipewire pipewire-pulse ;;

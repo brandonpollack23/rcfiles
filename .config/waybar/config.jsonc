@@ -1,6 +1,9 @@
 {
   "reload_style_on_change": true,
 
+  // Defines group/workspaces and its custom/wsN buttons.
+  "include": ["~/.config/waybar/workspaces.jsonc"],
+
   "layer": "top",
   "position": "bottom",
   "height": 38,
@@ -15,37 +18,11 @@
   "modules-center": ["group/app"],
 
   "modules-right": [
-    "hyprland/workspaces",
+    "group/workspaces",
     "custom/hidden",
     "group/status",
     "clock",
   ],
-
-  "hyprland/workspaces": {
-    // "format": "{icon}",
-
-    // "format-icons": {
-    //   "1": "1  Dev",
-    //   "2": "2  Web",
-    //   "3": "3  Chat",
-    //   "4": "4  Media",
-    //   "5": "5  Files",
-    //   "6": "6  Misc",
-    //   "special": "󱂬  Special",
-    // },
-
-    // "persistent-workspaces": {
-    //   "*": [1, 2, 3, 4, 5, 6],
-    // },
-
-    // special:Hidden gets its own pill (custom/hidden).
-    "show-special": false,
-    "sort-by-number": true,
-    "on-click": "activate",
-
-    "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
-    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
-  },
 
   "custom/launcher": {
     "format": "󰣇",

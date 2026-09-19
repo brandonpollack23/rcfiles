@@ -23,8 +23,20 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh`, `scripts/workspace-menu.sh` and `scripts/system.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M`, `SUPER+SHIFT+R` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 | `waybar` | desktop bar, autostarted; `custom/grouplock` module shows the group lock icon (`conf/wm.lua`) | `hyprland.lua` |
-| `swaync` | notification center, autostarted | `hyprland.lua` |
+| `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
+
+## Notification center (`~/.config/swaync`)
+
+Buttons in the control center (`SUPER+N`) grid, set in `swaync/config.json`.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `networkmanager` | `nmcli` | Wi-Fi toggle |
+| `bluez-utils` | `bluetoothctl` | Bluetooth toggle |
+| `pavucontrol` | audio mixer | Audio button |
+| `nm-connection-editor` | network settings | Network button |
+| `blueman` | `blueman-manager` | Devices button |
 
 ## System menu (`scripts/system.sh`)
 
@@ -62,6 +74,6 @@ into the config.
 ```sh
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
   hyprlauncher hyprlock waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
-  systemd util-linux grep
+  systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman
 paru -S --needed google-chrome
 ```
