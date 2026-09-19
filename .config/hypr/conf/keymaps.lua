@@ -2,6 +2,7 @@ local programs = require("conf.programs")
 local wm = require("conf.wm")
 local helpers = require("conf.bind_helpers")
 local theme = require("conf.theme")
+local workspaces = require("conf.workspaces")
 
 local bind, bindExec, bindLayout = helpers.bind, helpers.bindExec, helpers.bindLayout
 
@@ -132,6 +133,14 @@ bind(
 	hl.dsp.focus({ workspace = "e-1" }),
 	{ description = "Previous workspace", command = "focus workspace e-1" }
 )
+
+-- Reorder workspaces: swap the active one with its neighbour, see conf/workspaces.lua
+bind(mainMod .. " + CTRL + SHIFT + right", function()
+	workspaces.shift(1)
+end, { description = "Move workspace right", command = "workspaces.shift 1" })
+bind(mainMod .. " + CTRL + SHIFT + left", function()
+	workspaces.shift(-1)
+end, { description = "Move workspace left", command = "workspaces.shift -1" })
 
 -- Master layout, see https://wiki.hypr.land/configuring/layouts/master-layout/
 bindLayout(mainMod .. " + Return", "swapwithmaster", "Promote window to master")
