@@ -9,6 +9,7 @@ Arch/AUR. Keep this in sync with the config (see `AGENTS.md`).
 | --- | --- | --- |
 | `hyprland` (>= 0.56, Lua config) | compositor, `hyprctl`, Lua stubs in `/usr/share/hypr/stubs` | everything; `hyprctl eval` is the callback for the close-others dialog (`conf/wm.lua`); stubs are referenced by `.luarc.json` |
 | `zenity` | `zenity` | close-others confirmation dialog (`conf/wm.lua`) |
+| `coreutils` | `ls`, `mkdir` | listing `conf/themes/` and creating `$XDG_STATE_HOME/hypr` (`conf/theme.lua`) |
 
 ## Programs (`conf/programs.lua`)
 
@@ -18,7 +19,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | --- | --- | --- |
 | `ghostty` | terminal | `SUPER+T` |
 | `nautilus` | file manager | `SUPER+E` |
-| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh` | `SUPER+R`, `SUPER+/` |
+| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh` and `scripts/theme-select.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
@@ -40,7 +41,7 @@ Not needed today; install if you uncomment the matching lines.
 ## Install
 
 ```sh
-sudo pacman -S --needed hyprland zenity ghostty nautilus hyprlauncher \
+sudo pacman -S --needed hyprland zenity coreutils ghostty nautilus hyprlauncher \
   wireplumber pipewire playerctl brightnessctl
 paru -S --needed google-chrome
 ```

@@ -1,6 +1,7 @@
 local programs = require("conf.programs")
 local wm = require("conf.wm")
 local helpers = require("conf.bind_helpers")
+local theme = require("conf.theme")
 
 local bind, bindExec, bindLayout = helpers.bind, helpers.bindExec, helpers.bindLayout
 
@@ -57,6 +58,15 @@ bindExec(mainMod .. " + r", programs.menu, { description = "App launcher" })
 bindExec(mainMod .. " + T", programs.terminal, { description = "Terminal" })
 bindExec(mainMod .. " + e", programs.fileManager, { description = "File manager" })
 bindExec(mainMod .. " + slash", "~/.config/hypr/scripts/keybind-search.sh", { description = "Search keybindings" })
+
+-- Theming, see conf/theme.lua
+bindExec(mainMod .. " + F5", "~/.config/hypr/scripts/theme-select.sh", { description = "Pick a theme" })
+bind(mainMod .. " + F6", function()
+	theme.cycle(1)
+end, { description = "Next theme", command = "theme.cycle 1" })
+bind(mainMod .. " + SHIFT + F6", function()
+	theme.cycle(-1)
+end, { description = "Previous theme", command = "theme.cycle -1" })
 
 -- Workspaces
 -- Switch workspaces with mainMod + [0-9]

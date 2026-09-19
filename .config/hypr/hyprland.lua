@@ -13,7 +13,7 @@
 -- - notification dismiss binding
 -- - workspace indicator
 -- - mission control like view
--- - make groups theming better/match easier to read etc
+-- - better group theming/bars alternative
 -- - coding orientation and cycle between layouts on workspaces and save them
 -- - kde phone connect
 -- - hidden workspace stuff to replicate minimizing stuff that i can pull up and view whenever and unminimize (special workspace(s))
@@ -25,6 +25,7 @@ require("conf.input")
 require("conf.keymaps")
 require("conf.rules")
 local programs = require("conf.programs")
+local theme = require("conf.theme")
 
 -- See https://wiki.hypr.land/configuring/core/monitors/
 hl.monitor({
@@ -74,8 +75,8 @@ hl.config({
 		border_size = 2,
 
 		col = {
-			active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
-			inactive_border = "rgba(595959aa)",
+			active_border = theme.gradient("primary", "secondary", 0.93),
+			inactive_border = theme.rgba("border_inactive", 0.67),
 		},
 
 		-- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -99,7 +100,7 @@ hl.config({
 			enabled = true,
 			range = 4,
 			render_power = 3,
-			color = 0xee1a1a1a,
+			color = theme.rgba("background", 0.93),
 		},
 
 		blur = {
@@ -107,6 +108,58 @@ hl.config({
 			size = 3,
 			passes = 1,
 			vibrancy = 0.1696,
+		},
+	},
+})
+
+-- Group tab: `color` darkened toward the background, glowing up from the bottom
+-- edge. The groupbar ignores the angle: it stretches a vertical gradient over
+-- each tab with the stops spaced evenly (max 10). The source orders them bottom
+-- first, but the texture is drawn flipped, so on screen the list runs top-down.
+-- From the bottom, the accent eases over `fade` stops into the tint, which is
+-- `color` mixed `depth` (0..1) of the way to the background.
+local function tabGradient(color, alpha, fade, depth)
+	fade = fade or 6
+	local tint = theme.mix(color, "background", depth or 0.5)
+	local colors = { theme.rgba(color) }
+	for i = 1, 9 do
+		local t = 1 - (1 - math.min(i / fade, 1)) ^ 2 -- ease-out
+		table.insert(colors, 1, theme.rgba(theme.mix(color, tint, t), alpha))
+	end
+	return { colors = colors }
+end
+
+local groupInactive = theme.rgba("border_inactive", 0.67)
+local tabInactive = theme.rgba("surface", 0.8)
+
+hl.config({
+	group = {
+		col = {
+			border_active = theme.gradient("primary", "secondary", 0.93),
+			border_inactive = groupInactive,
+			border_locked_active = theme.gradient("highlight", "error", 0.93),
+			border_locked_inactive = groupInactive,
+		},
+		groupbar = {
+			font_size = 12,
+			height = 22,
+			font_weight_active = "bold",
+			-- filled tabs instead of the thin indicator strip
+			gradients = true,
+			indicator_height = 0,
+			gradient_rounding = 4,
+			rounding = 4,
+
+			col = {
+				active = tabGradient("primary", 0.93),
+				inactive = tabInactive,
+				locked_active = tabGradient("highlight", 0.93),
+				locked_inactive = tabInactive,
+			},
+			text_color = theme.rgba("foreground"),
+			text_color_inactive = theme.rgba("muted"),
+			text_color_locked_active = theme.rgba("foreground"),
+			text_color_locked_inactive = theme.rgba("muted"),
 		},
 	},
 })
