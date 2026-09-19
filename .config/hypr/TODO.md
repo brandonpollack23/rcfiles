@@ -5,7 +5,6 @@
 - configure hyprlock (starter theme in `hyprlock.conf`)
 - steam notifications should come above waybar
 - notification center configuration
-- notification dismiss binding
 - notification/new tab highlights workspace
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel

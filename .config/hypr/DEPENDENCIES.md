@@ -38,6 +38,13 @@ Buttons in the control center (`SUPER+N`) grid, set in `swaync/config.json`.
 | `nm-connection-editor` | network settings | Network button |
 | `blueman` | `blueman-manager` | Devices button |
 
+Vim keys while the control center is open (`conf/notifications.lua`), listed in
+the panel's top label.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `ydotool` | `ydotool`, `ydotoold` (enable `ydotool.service` user unit; needs `/dev/uinput` access) | sends arrow/Enter/Delete keys to the panel from the `notifications` submap |
+
 ## System menu (`scripts/system.sh`)
 
 `SUPER+SHIFT+R`, and the power subset from the waybar power button. Also uses
@@ -74,6 +81,6 @@ into the config.
 ```sh
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
   hyprlauncher hyprlock waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
-  systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman
+  systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool
 paru -S --needed google-chrome
 ```

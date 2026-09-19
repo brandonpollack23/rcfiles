@@ -16,6 +16,7 @@ reload-hyprland|󰑓  Reload Hyprland config
 restart-waybar|󰑓  Restart waybar
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
+restart-ydotool|󰑓  Restart ydotool (notification center keys)
 restart-audio|󰑓  Restart audio (PipeWire)
 update|󰚰  Update system (paru)
 clean|󰃢  Remove unneeded packages (paru)
@@ -59,6 +60,7 @@ restart-swaync)
 	while pgrep -x swaync >/dev/null; do sleep 0.1; done
 	setsid -f swaync >/dev/null 2>&1
 	;;
+restart-ydotool) systemctl --user restart ydotool ;;
 restart-audio) systemctl --user restart wireplumber pipewire pipewire-pulse ;;
 
 update) in_terminal paru -Syu ;;

@@ -22,7 +22,7 @@
   "fit-to-screen": false,
   "relative-timestamps": true,
   "control-center-width": 500,
-  "control-center-height": 840,
+  "control-center-height": 920,
   "notification-window-width": 500,
   "keyboard-shortcuts": true,
   "notification-grouping": true,
@@ -33,6 +33,7 @@
   "text-empty": "No Notifications",
   "script-fail-notify": true,
   "widgets": [
+    "label#keys",
     "title",
     "inhibitors",
     "notifications",
@@ -41,6 +42,10 @@
     "buttons-grid"
   ],
   "widget-config": {
+    "label#keys": {
+      "text": "j/k move · g/G oldest/newest · l/⏎ open · d/x/⌫ dismiss · a dismiss all\n1-9 actions · m do not disturb · h/q/Esc close",
+      "max-lines": 2
+    },
     "notifications": {
       "vexpand": true
     },

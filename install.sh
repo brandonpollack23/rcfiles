@@ -322,6 +322,8 @@ function setup_home_dir() {
   # Hyprland starts swaync itself; stop D-Bus from activating a second copy via systemd.
   if command -v systemctl >/dev/null 2>&1; then
     systemctl --user mask swaync.service >/dev/null 2>&1 || true
+    # ydotoold sends the notification center's vim keys (.config/hypr/conf/notifications.lua).
+    systemctl --user enable --now ydotool.service >/dev/null 2>&1 || true
   fi
   ln -sfn "$RCFILES_DIR/zsh-custom" "$HOME/zsh-custom"
 

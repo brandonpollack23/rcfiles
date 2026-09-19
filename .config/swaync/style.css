@@ -400,6 +400,17 @@ notificationwindow, blankwindow {
   font-size: 1.1rem;
 }
 
+/* Keybinding hints (label#keys), set in config.json and conf/notifications.lua */
+.widget-label.keys {
+  /* Clear the panel's rounded top edge */
+  padding-top: 1.2em;
+}
+
+.widget-label.keys > label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
 /* Mpris widget */
 :root {
   --mpris-album-art-overlay: rgba(0, 0, 0, 0.55);
