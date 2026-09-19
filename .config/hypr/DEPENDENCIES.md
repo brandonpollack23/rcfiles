@@ -30,13 +30,14 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `playerctl` | `playerctl` | play/pause/next/prev keys |
 | `brightnessctl` | `brightnessctl` | brightness keys |
 
-## Referenced only in commented-out config
+## Referenced only in `TODO.md`
 
-Not needed today; install if you uncomment the matching lines.
+Not needed today; install if you paste the matching snippet from `TODO.md` back
+into the config.
 
 - `waybar`, `hyprpaper`, `network-manager-applet` (`nm-applet`): autostart in `hyprland.lua`
 - `hyprshutdown`: exit bind in `conf/keymaps.lua`
-- `hyprpm` (ships with `hyprland`): plugin permission in `hyprland.lua`
+- `grim`, `xdg-desktop-portal-hyprland`, `hyprpm` (ships with `hyprland`): permissions in `hyprland.lua`
 
 ## Install
 

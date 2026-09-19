@@ -13,12 +13,17 @@ Any change that adds, removes, or swaps an external program must update
   inside a shell one-liner
 - entries in `conf/programs.lua`
 - plugins, cursor/icon themes, fonts, and env vars that assume a package
-- commented-out lines: list them under "Referenced only in commented-out
-  config", and move them to the right table when they are uncommented
+- disabled snippets in `TODO.md`: list them under "Referenced only in
+  `TODO.md`", and move them to the right table when they go back into the config
 
 Record the package name (not just the binary), what it provides, and where it is
 used. Resolve the package with `pacman -Qo $(which <binary>)`, and add it to the
 install command at the bottom.
+
+## Disabled config and TODOs
+
+Don't leave commented-out config or TODO comments in the Lua files. Put planned
+work and disabled snippets in `TODO.md`.
 
 ## Gotchas
 

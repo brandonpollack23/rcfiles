@@ -1,24 +1,5 @@
--- This is an example Hyprland Lua config file.
--- Refer to the wiki for more information.
--- https://wiki.hypr.land/configuring/
---
--- TODO:
--- - top bar
--- - replace hyprlauncher with something more like spotlight explore its features?
--- - reboot/logout menu
--- - lock screen (hyprlock?)
--- - fuzzy search keys
--- - which keys like experience
--- - notification center
--- - notification dismiss binding
--- - workspace indicator
--- - mission control like view
--- - better group theming/bars alternative
--- - coding orientation and cycle between layouts on workspaces and save them
--- - kde phone connect
--- - hidden workspace stuff to replicate minimizing stuff that i can pull up and view whenever and unminimize (special workspace(s))
--- - bing wallpapers (link in bar?)
--- - ungroup command and keep current focus as master
+-- Refer to the wiki for more information: https://wiki.hypr.land/configuring/
+-- Planned work and disabled snippets live in TODO.md.
 
 require("conf.animations")
 require("conf.layouts")
@@ -40,31 +21,11 @@ hl.monitor({
 -- See https://wiki.hypr.land/configuring/core/autostart/
 hl.on("hyprland.start", function()
 	hl.exec_cmd(programs.browser)
-	-- hl.exec_cmd("nm-applet")
-	-- hl.exec_cmd("waybar & hyprpaper & " .. programs.browser)
 end)
 
 -- See https://wiki.hypr.land/configuring/core/environment-variables/
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
-
------------------------
------ PERMISSIONS -----
------------------------
-
--- See https://wiki.hypr.land/configuring/core/advanced-configuration/permissions/
--- Please note permission changes here require a Hyprland restart and are not applied on-the-fly
--- for security reasons
-
--- hl.config({
---   ecosystem = {
---     enforce_permissions = true,
---   },
--- })
-
--- hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
--- hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
--- hl.permission("/usr/(bin|local/bin)/hyprpm", "plugin", "allow")
 
 -- Refer to https://wiki.hypr.land/configuring/core/config-options/
 hl.config({

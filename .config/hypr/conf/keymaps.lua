@@ -27,14 +27,12 @@ bind(
 )
 
 -- Closing windows
-local closeWindowBind =
-	bind(mainMod .. " + Q", hl.dsp.window.close(), { description = "Close Window", command = "window.close" })
+bind(mainMod .. " + Q", hl.dsp.window.close(), { description = "Close Window", command = "window.close" })
 bind(
 	mainMod .. " + SHIFT + Q",
 	wm.closeOtherWindows,
 	{ description = "Close all windows except focused group", command = "wm.closeOtherWindows" }
 )
--- closeWindowBind:set_enabled(false)
 
 -- Grouping
 bind(mainMod .. " + G", hl.dsp.group.toggle(), { description = "Toggle window group", command = "group.toggle" })
@@ -63,7 +61,6 @@ bind(
 	hl.dsp.window.resize(),
 	{ mouse = true, description = "Resize window (right mouse)", command = "window.resize" }
 )
--- hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 
 -- Application launches
 bindExec(mainMod .. " + r", programs.menu, { description = "App launcher" })
@@ -148,12 +145,6 @@ bindLayout(mainMod .. " + SHIFT + Return", "focusmaster", "Focus master window")
 bindLayout(mainMod .. " + I", "addmaster", "Add window as a master")
 bindLayout(mainMod .. " + D", "removemaster", "Remove window from masters")
 bindLayout(mainMod .. " + O", "orientationcycle left top right bottom center", "Cycle master orientation")
-
--- Shutdown/logout
--- hl.bind(
--- 	mainMod .. " + M",
--- 	hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")
--- )
 
 -- Multimedia and brightness control control
 

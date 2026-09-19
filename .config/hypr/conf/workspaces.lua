@@ -2,8 +2,6 @@
 -- naming prompts, driven by scripts/workspace-menu.sh. Workspaces are always
 -- addressed by id; the name is only a label. Names are set through the prompts
 -- and are lost when Hyprland destroys the workspace (empty and not visible).
---
--- TODO: once we have restore see if this is compatible and see if worksapces names can be restored accross reboots as well
 local M = {}
 
 -- The picker line that creates a workspace instead of picking one.
