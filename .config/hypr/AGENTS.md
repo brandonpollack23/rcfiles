@@ -25,6 +25,9 @@ install command at the bottom.
 Don't leave commented-out config or TODO comments in the Lua files. Put planned
 work and disabled snippets in `TODO.md`.
 
+When you implement something, check that file if you should update it and remove
+something you've done.
+
 ## Gotchas
 
 - Never block in Lua on a GUI program (`io.popen`, `os.execute`): the compositor
@@ -44,10 +47,10 @@ work and disabled snippets in `TODO.md`.
 - `hyprctl reload config-only && hyprctl configerrors` to load and check.
 - `hyprctl repl '<lua>'` evaluates in the live config state, e.g.
   `hyprctl repl 'return pcall(require("conf.wm").closeOtherWindows)'`.
-- To test binds and submaps, inject real keycodes with `ydotool key <code>:1 <code>:0`
-  (needs `ydotoold`; 28 = Enter, 1 = Escape). Do not use `wtype`: its private
-  keymap makes Hyprland's binds read every key as Escape. `wtype` is fine for
-  sending keys to a client.
+- To test binds and submaps, inject real keycodes with
+  `ydotool key <code>:1 <code>:0` (needs `ydotoold`; 28 = Enter, 1 = Escape). Do
+  not use `wtype`: its private keymap makes Hyprland's binds read every key as
+  Escape. `wtype` is fine for sending keys to a client.
 - Live tests act on the user's real session and focus; use throwaway windows on
   a hidden special workspace where possible.
 - From a shell without `HYPRLAND_INSTANCE_SIGNATURE`, take it from

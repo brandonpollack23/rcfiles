@@ -3,11 +3,8 @@
 ## Features
 
 - top bar
-- replace hyprlauncher with something more like spotlight; explore its features?
 - reboot/logout menu (see [Shutdown/logout bind](#shutdownlogout-bind))
 - lock screen (hyprlock?)
-- fuzzy search keys
-- which-key like experience
 - notification center
 - notification dismiss binding
 - workspace indicator
