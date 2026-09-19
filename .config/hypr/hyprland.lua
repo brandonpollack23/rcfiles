@@ -18,12 +18,14 @@
 -- - kde phone connect
 -- - hidden workspace stuff to replicate minimizing stuff that i can pull up and view whenever and unminimize (special workspace(s))
 -- - bing wallpapers (link in bar?)
+-- - ungroup command and keep current focus as master
 
 require("conf.animations")
 require("conf.layouts")
 require("conf.input")
 require("conf.keymaps")
 require("conf.rules")
+require("conf.workspaces")
 local programs = require("conf.programs")
 local theme = require("conf.theme")
 

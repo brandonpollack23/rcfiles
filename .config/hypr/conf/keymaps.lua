@@ -8,10 +8,22 @@ local bind, bindExec, bindLayout = helpers.bind, helpers.bindExec, helpers.bindL
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Move focus with mainMod + vim motions
-bind(mainMod .. " + h", hl.dsp.focus({ direction = "left" }), { description = "Focus window left", command = "focus left" })
-bind(mainMod .. " + j", hl.dsp.focus({ direction = "down" }), { description = "Focus window down", command = "focus down" })
+bind(
+	mainMod .. " + h",
+	hl.dsp.focus({ direction = "left" }),
+	{ description = "Focus window left", command = "focus left" }
+)
+bind(
+	mainMod .. " + j",
+	hl.dsp.focus({ direction = "down" }),
+	{ description = "Focus window down", command = "focus down" }
+)
 bind(mainMod .. " + k", hl.dsp.focus({ direction = "up" }), { description = "Focus window up", command = "focus up" })
-bind(mainMod .. " + l", hl.dsp.focus({ direction = "right" }), { description = "Focus window right", command = "focus right" })
+bind(
+	mainMod .. " + l",
+	hl.dsp.focus({ direction = "right" }),
+	{ description = "Focus window right", command = "focus right" }
+)
 
 -- Closing windows
 local closeWindowBind =
@@ -24,7 +36,6 @@ bind(
 -- closeWindowBind:set_enabled(false)
 
 -- Grouping
--- TODO ungroup keep current focus as master
 bind(mainMod .. " + G", hl.dsp.group.toggle(), { description = "Toggle window group", command = "group.toggle" })
 bind(mainMod .. " + SHIFT + G", hl.dsp.group.lock_active(), {
 	description = "Toggle whether the active group is 'locked' (new windows dont open in it)",
@@ -68,9 +79,8 @@ bind(mainMod .. " + SHIFT + F6", function()
 	theme.cycle(-1)
 end, { description = "Previous theme", command = "theme.cycle -1" })
 
--- Workspaces
+-- Workspaces, see conf/workspaces.lua
 -- Switch workspaces with mainMod + [0-9]
--- Move active window to a workspace with mainMod + SHIFT + [0-9]
 for i = 1, 10 do
 	local key = i % 10 -- 10 maps to key 0
 	bind(
@@ -78,12 +88,14 @@ for i = 1, 10 do
 		hl.dsp.focus({ workspace = i }),
 		{ description = "Go to workspace " .. i, command = "focus workspace " .. i }
 	)
-	bind(
-		mainMod .. " + SHIFT + " .. key,
-		hl.dsp.window.move({ workspace = i }),
-		{ description = "Move window to workspace " .. i, command = "window.move workspace " .. i }
-	)
 end
+
+local workspaceMenu = "~/.config/hypr/scripts/workspace-menu.sh"
+bindExec(mainMod .. " + W", workspaceMenu .. " focus", { description = "Pick a workspace (or create one)" })
+bindExec(mainMod .. " + SHIFT + W", workspaceMenu .. " new", { description = "Create a named workspace" })
+bindExec(mainMod .. " + M", workspaceMenu .. " move", { description = "Move window to a picked workspace" })
+-- mainMod + "$": binds match the unshifted key, so "dollar" never fires
+bindExec(mainMod .. " + SHIFT + 4", workspaceMenu .. " rename", { description = "Rename workspace" })
 
 -- Example special workspace (scratchpad)
 bind(

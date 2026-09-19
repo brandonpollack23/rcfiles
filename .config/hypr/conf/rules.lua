@@ -60,3 +60,11 @@ hl.window_rule({
 --     border_size = 0,
 --     rounding    = 0,
 -- })
+
+-- Prompts from scripts/ (workspace names, confirmations)
+hl.window_rule({
+	name = "float-zenity",
+	match = { class = "zenity" },
+
+	float = true,
+})

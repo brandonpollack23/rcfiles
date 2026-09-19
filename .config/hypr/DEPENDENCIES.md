@@ -7,8 +7,8 @@ Arch/AUR. Keep this in sync with the config (see `AGENTS.md`).
 
 | Package | Provides | Used by |
 | --- | --- | --- |
-| `hyprland` (>= 0.56, Lua config) | compositor, `hyprctl`, Lua stubs in `/usr/share/hypr/stubs` | everything; `hyprctl eval` is the callback for the close-others dialog (`conf/wm.lua`); stubs are referenced by `.luarc.json` |
-| `zenity` | `zenity` | close-others confirmation dialog (`conf/wm.lua`) |
+| `hyprland` (>= 0.56, Lua config) | compositor, `hyprctl`, Lua stubs in `/usr/share/hypr/stubs` | everything; `hyprctl eval` is the callback for the close-others dialog (`conf/wm.lua`) and the workspace prompts (`scripts/workspace-menu.sh`); stubs are referenced by `.luarc.json` |
+| `zenity` | `zenity` | close-others confirmation dialog (`conf/wm.lua`); workspace name prompts (`scripts/workspace-menu.sh`), floated by a rule in `conf/rules.lua` |
 | `coreutils` | `ls`, `mkdir` | listing `conf/themes/` and creating `$XDG_STATE_HOME/hypr` (`conf/theme.lua`) |
 
 ## Programs (`conf/programs.lua`)
@@ -19,7 +19,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | --- | --- | --- |
 | `ghostty` | terminal | `SUPER+T` |
 | `nautilus` | file manager | `SUPER+E` |
-| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh` and `scripts/theme-select.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5` |
+| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh` and `scripts/workspace-menu.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
