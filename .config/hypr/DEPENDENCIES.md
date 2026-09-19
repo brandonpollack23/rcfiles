@@ -26,6 +26,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
+| `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
 
 ## Bing wallpaper (`scripts/bing-wallpaper.sh`)
@@ -103,6 +104,7 @@ the tables above.
 | `pipewire-pulse` | PulseAudio shim user service | restart audio |
 | `paru` (AUR) | `paru` | update system, remove unneeded packages |
 | `awww` | `awww-daemon` | restart wallpaper daemon |
+| `hypr-persist` (AUR) | `hypr-persist` | restart session daemon, save session now |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -129,5 +131,5 @@ sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
-paru -S --needed google-chrome
+paru -S --needed google-chrome hypr-persist
 ```

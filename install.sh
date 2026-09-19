@@ -97,6 +97,7 @@ MANJARO_ONLY_PACKAGES=(
 AUR_ARCH_PACKAGES=(
   bazelisk-bin   # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
   changie        # changelog generator used by pulumi
+  hypr-persist   # Hyprland session save/restore daemon (.config/hypr/hypr-persist.toml)
   neovim-nightly # Latest nightly build of Neovim
   obsidian       # Powerful knowledge base on top of a local folder of plain text Markdown files
   tmux-mem-cpu-load

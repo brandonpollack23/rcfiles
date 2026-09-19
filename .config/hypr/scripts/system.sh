@@ -18,6 +18,8 @@ reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
 restart-hypridle|󰑓  Restart hypridle (idle dim, lock, screens off)
+restart-hypr-persist|󰑓  Restart hypr-persist (session restore)
+session-save|󰆓  Save session now (hypr-persist)
 restart-audio|󰑓  Restart audio (PipeWire)
 enroll-fingerprint|󰈷  Enroll fingerprint (fprintd)
 update|󰚰  Update system (paru)
@@ -76,6 +78,12 @@ restart-hypridle)
 	while pgrep -x hypridle >/dev/null; do sleep 0.1; done
 	setsid -f hypridle >/dev/null 2>&1
 	;;
+restart-hypr-persist)
+	pkill -x hypr-persist
+	while pgrep -x hypr-persist >/dev/null; do sleep 0.1; done
+	setsid -f hypr-persist >/dev/null 2>&1
+	;;
+session-save) hypr-persist save ;;
 restart-audio) systemctl --user restart wireplumber pipewire pipewire-pulse ;;
 enroll-fingerprint) in_terminal sh -c 'fprintd-enroll && fprintd-verify' ;;
 
