@@ -183,7 +183,6 @@ bindkey '^n' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-
 #################### User configuration ###############################
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
@@ -380,7 +379,6 @@ fi
 # Claude Code persists the selected model and machine-specific settings here.
 # Load the tracked shared layer separately so those writes stay local.
 alias claude='command claude --settings "$HOME/.claude/settings.shared.json"'
-
 
 # show a welcome message and fortune!
 if [ -x "$(command -v lolcat)" ]; then
