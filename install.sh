@@ -69,6 +69,8 @@ ARCH_PACKAGES=(
   fd             # A simple, fast and user-friendly alternative to find
   git-branchless # Perform branchless version control operations with Git
   github-cli     # GitHub’s official command line tool
+  hypridle       # Idle daemon: dim, lock and screens off (.config/hypr/hypridle.conf)
+  hyprlock       # Lock screen (.config/hypr/hyprlock.conf)
   inotify-tools  # Command-line utilities for monitoring file system events
   kio-gdrive     # KIO slave for Google Drive integration with KDE
   neovide        # Neovim client in a fully featured graphical user interface
@@ -275,6 +277,16 @@ function handle_linux_setup() {
     fi
   done
 
+  # fprintd for hyprlock's fingerprint unlock (.config/hypr/hyprlock.conf), only
+  # where there is a reader. Enroll from the SUPER+SHIFT+R menu afterwards.
+  if has_fingerprint_reader; then
+    echo "Fingerprint reader found, installing fprintd"
+    if ! $INSTALL_COMMAND fprintd; then
+      FAILED_PACKAGES="fprintd $FAILED_PACKAGES"
+      echo "Error installing fprintd"
+    fi
+  fi
+
   # If arch do aur packages
   if [[ -f /etc/arch-release ]]; then
     install_aur_packages
@@ -284,6 +296,19 @@ function handle_linux_setup() {
   if [ -n "$FAILED_PACKAGES" ]; then
     echo "Failed to install the following packages: $FAILED_PACKAGES" >&2
   fi
+}
+
+# True if a USB device from a fingerprint reader vendor that libfprint supports
+# is attached: Synaptics, Goodix, Validity, Elan, FPC, Egis, FocalTech, Upek,
+# AuthenTec. Elan also makes touchscreens, so a false positive just installs an
+# unused fprintd.
+function has_fingerprint_reader() {
+  local vendors=" 06cb 27c6 138a 04f3 10a5 1c7a 2808 147e 08ff "
+  local id
+  for id in $(cat /sys/bus/usb/devices/*/idVendor 2>/dev/null); do
+    [[ "$vendors" == *" $id "* ]] && return 0
+  done
+  return 1
 }
 
 function setup_home_dir() {

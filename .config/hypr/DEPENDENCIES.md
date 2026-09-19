@@ -25,6 +25,25 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `waybar` | desktop bar, autostarted; `custom/grouplock` module shows the group lock icon (`conf/wm.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
+| `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
+
+## Lock screen and idle (`hyprlock.conf`, `hypridle.conf`)
+
+`conf/lockscreen.lua` writes the theme colours for `hyprlock.conf` to
+`$XDG_STATE_HOME/hypr/hyprlock.conf` (uses `coreutils` `mkdir`). The dynamic
+labels come from `scripts/lock-info.sh`.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `ttf-jetbrains-mono-nerd` | JetBrainsMono Nerd Font, incl. icons | every `hyprlock.conf` label and the input field |
+| `noto-fonts-emoji` | colour emoji | weather condition icon from wttr.in |
+| `curl` | `curl` | weather (`lock-info.sh weather`, cached in `~/.cache/hyprlock`) |
+| `kmod` | `modinfo` | restart hint after an NVIDIA driver update (`lock-info.sh reboot`) |
+| `procps-ng` | `uptime`, `pidof` | footer (`lock-info.sh footer`); single-instance lock in `hypridle.conf` |
+| `coreutils` | `stat`, `date` | weather cache age, clock date, greeting |
+| `systemd` | `loginctl` | `hypridle.conf` locks before sleep via `lock-session` |
+| `brightnessctl` | `brightnessctl` | dim before locking (`hypridle.conf`); no-op on desktop monitors |
+| `fprintd` (only with a reader) | fingerprint D-Bus service, `fprintd-enroll` | parallel fingerprint unlock (`hyprlock.conf` `auth`); installed by `install.sh` when a reader is found; enroll from the system menu |
 
 ## Notification center (`~/.config/swaync`)
 
@@ -54,7 +73,8 @@ the tables above.
 | Package | Provides | Used by |
 | --- | --- | --- |
 | `systemd` | `systemctl`, `journalctl` | suspend, reboot, shut down, restart audio, failed services, errors since boot |
-| `util-linux` | `setsid` | detaching restarted waybar and swaync from the script |
+| `util-linux` | `setsid` | detaching restarted waybar, swaync and hypridle from the script |
+| `fprintd` | `fprintd-enroll`, `fprintd-verify` | enroll fingerprint |
 | `coreutils`, `grep` | `cut`, `grep` | mapping the picked label back to its action |
 | `pipewire-pulse` | PulseAudio shim user service | restart audio |
 | `paru` (AUR) | `paru` | update system, remove unneeded packages |
@@ -80,7 +100,9 @@ into the config.
 
 ```sh
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
-  hyprlauncher hyprlock waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
-  systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool
+  hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
+  systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
+  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod
+sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome
 ```

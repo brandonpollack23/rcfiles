@@ -17,7 +17,9 @@ restart-waybar|󰑓  Restart waybar
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
+restart-hypridle|󰑓  Restart hypridle (idle dim, lock, screens off)
 restart-audio|󰑓  Restart audio (PipeWire)
+enroll-fingerprint|󰈷  Enroll fingerprint (fprintd)
 update|󰚰  Update system (paru)
 clean|󰃢  Remove unneeded packages (paru)
 failed-units|󰀦  Failed services
@@ -61,7 +63,13 @@ restart-swaync)
 	setsid -f swaync >/dev/null 2>&1
 	;;
 restart-ydotool) systemctl --user restart ydotool ;;
+restart-hypridle)
+	pkill -x hypridle
+	while pgrep -x hypridle >/dev/null; do sleep 0.1; done
+	setsid -f hypridle >/dev/null 2>&1
+	;;
 restart-audio) systemctl --user restart wireplumber pipewire pipewire-pulse ;;
+enroll-fingerprint) in_terminal sh -c 'fprintd-enroll && fprintd-verify' ;;
 
 update) in_terminal paru -Syu ;;
 clean) in_terminal paru -c ;;

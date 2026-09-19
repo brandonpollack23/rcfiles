@@ -2,12 +2,13 @@
 
 ## Features
 
-- configure hyprlock (starter theme in `hyprlock.conf`)
 - steam notifications should come above waybar
 - notification center configuration
 - notification/new tab highlights workspace
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
+- mozc and indicator
+- unified settings app
 - workspace indicator
 - mission control like view
 - better group theming/bars alternative

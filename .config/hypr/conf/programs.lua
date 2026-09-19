@@ -6,5 +6,6 @@ return {
 	desktop_bar = "waybar",
 	notification_center = "swaync",
 	lock = "hyprlock",
+	idle = "hypridle",
 	browser = "google-chrome-stable",
 }
