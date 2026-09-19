@@ -1,0 +1,189 @@
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 0;
+}
+
+window#waybar {
+  background: transparent;
+  color: #cdd6f4;
+}
+
+#workspaces,
+#custom-launcher,
+#custom-power,
+#custom-hidden,
+#app,
+#clock,
+#status {
+  background: rgba(30, 30, 46, 0.94);
+  border: 1px solid rgba(137, 180, 250, 0.2);
+  border-radius: 12px;
+}
+
+#workspaces {
+  padding: 3px;
+}
+
+#workspaces button {
+  color: #7f849c;
+  background: transparent;
+  border-radius: 9px;
+  padding: 3px 10px;
+  margin: 0 1px;
+  box-shadow: none;
+  text-shadow: none;
+  transition: all 150ms ease;
+}
+
+/* Workspace contains one or more windows. */
+#workspaces button:not(.empty) {
+  color: #cdd6f4;
+}
+
+/* The workspace you are currently using. */
+#workspaces button.active {
+  color: #11111b;
+  background: #b4befe;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* Visible on another monitor. */
+#workspaces button.visible:not(.active) {
+  color: #b4befe;
+  background: rgba(180, 190, 254, 0.15);
+}
+
+/* A window is requesting attention. */
+#workspaces button.urgent {
+  color: #11111b;
+  background: #f38ba8;
+}
+
+#workspaces button:hover {
+  color: #cdd6f4;
+  background: rgba(205, 214, 244, 0.12);
+}
+
+#custom-launcher {
+  color: #89b4fa;
+  font-size: 18px;
+  padding: 0 14px 0 12px;
+  transition: all 150ms ease;
+}
+
+#custom-launcher:hover {
+  color: #11111b;
+  background: #89b4fa;
+}
+
+#custom-power {
+  color: #f38ba8;
+  font-size: 16px;
+  padding: 0 13px 0 12px;
+  margin-left: 8px;
+  transition: all 150ms ease;
+}
+
+#custom-power:hover {
+  color: #11111b;
+  background: #f38ba8;
+}
+
+#app {
+  color: #11111b;
+  background: #f5c2e7;
+}
+
+#window {
+  padding: 0 14px;
+}
+
+/* No focused window: hide the empty pill. */
+window#waybar.empty #app {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Sits after the title; the title's padding already spaces it. */
+#custom-grouplock {
+  padding-right: 14px;
+}
+
+/* Right-side pills sit next to each other; space them apart. */
+#custom-hidden,
+#status,
+#clock {
+  margin-left: 8px;
+}
+
+/* The special:Hidden scratchpad, teal to set it apart from the workspaces. */
+#custom-hidden {
+  color: rgba(148, 226, 213, 0.45);
+  border-color: rgba(148, 226, 213, 0.15);
+  padding: 0 14px;
+  transition: all 150ms ease;
+}
+
+#custom-hidden:not(.empty) {
+  color: rgba(148, 226, 213, 0.8);
+}
+
+#custom-hidden.shown {
+  color: #11111b;
+  background: #94e2d5;
+  border-color: #94e2d5;
+}
+
+#clock {
+  padding: 0 16px;
+}
+
+#status {
+  padding: 0 5px;
+}
+
+#mpris,
+#tray,
+#network,
+#bluetooth,
+#pulseaudio,
+#battery,
+#custom-notification {
+  padding: 0 9px;
+}
+
+#mpris {
+  color: #cba6f7;
+}
+
+#network {
+  color: #89b4fa;
+}
+
+#bluetooth {
+  color: #74c7ec;
+}
+
+#pulseaudio {
+  color: #a6e3a1;
+}
+
+#battery {
+  color: #f9e2af;
+}
+
+#battery.warning {
+  color: #fab387;
+}
+
+#battery.critical {
+  color: #f38ba8;
+}
+
+#custom-notification {
+  color: #cba6f7;
+  font-size: 17px;
+}

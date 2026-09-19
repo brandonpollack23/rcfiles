@@ -21,6 +21,8 @@ hl.monitor({
 -- See https://wiki.hypr.land/configuring/core/autostart/
 hl.on("hyprland.start", function()
 	hl.exec_cmd(programs.browser)
+	hl.exec_cmd(programs.desktop_bar)
+	hl.exec_cmd(programs.notification_center)
 end)
 
 -- See https://wiki.hypr.land/configuring/core/environment-variables/
@@ -38,7 +40,7 @@ hl.config({
 		border_size = 2,
 
 		col = {
-			active_border = theme.gradient("primary", "secondary", 0.93),
+			active_border = theme.gradient("primary", "secondary", 0.6),
 			inactive_border = theme.rgba("border_inactive", 0.67),
 		},
 
@@ -98,14 +100,15 @@ local tabInactive = theme.rgba("surface", 0.8)
 hl.config({
 	group = {
 		col = {
-			border_active = theme.gradient("primary", "secondary", 0.93),
+			border_active = theme.gradient("primary", "secondary", 0.6),
 			border_inactive = groupInactive,
-			border_locked_active = theme.gradient("highlight", "error", 0.93),
+			-- locked groups keep their colors; the lock shows in waybar and the tab text
+			border_locked_active = theme.gradient("primary", "secondary", 0.6),
 			border_locked_inactive = groupInactive,
 		},
 		groupbar = {
 			font_size = 12,
-			height = 22,
+			height = 24,
 			font_weight_active = "bold",
 			-- filled tabs instead of the thin indicator strip
 			gradients = true,
@@ -116,11 +119,12 @@ hl.config({
 			col = {
 				active = tabGradient("primary", 0.93),
 				inactive = tabInactive,
-				locked_active = tabGradient("highlight", 0.93),
+				locked_active = tabGradient("primary", 0.93),
 				locked_inactive = tabInactive,
 			},
-			text_color = theme.rgba("foreground"),
-			text_color_inactive = theme.rgba("muted"),
+			-- the groupbar can't draw icons, so unlocked tabs are marked by title color
+			text_color = theme.rgba("warning"),
+			text_color_inactive = theme.rgba("warning", 0.7),
 			text_color_locked_active = theme.rgba("foreground"),
 			text_color_locked_inactive = theme.rgba("muted"),
 		},

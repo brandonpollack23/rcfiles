@@ -4,7 +4,7 @@
 
 - top bar
 - reboot/logout menu (see [Shutdown/logout bind](#shutdownlogout-bind))
-- lock screen (hyprlock?)
+- configure hyprlock (starter theme in `hyprlock.conf`)
 - notification center
 - notification dismiss binding
 - workspace indicator
@@ -17,6 +17,7 @@
 - bing wallpapers (link in bar?)
 - ungroup command that keeps the current focus as master
 - theme the file manager (`nautilus`, `conf/programs.lua`)
+- popup for sound/mute
 - once we have session restore, check that named workspaces
   (`conf/workspaces.lua`) are compatible with it, and whether workspace names
   can be restored across reboots too

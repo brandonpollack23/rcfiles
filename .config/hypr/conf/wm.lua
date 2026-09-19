@@ -83,4 +83,32 @@ function M.cancelCloseOtherWindows()
 	pendingClose = nil
 end
 
+-- Waybar's `custom/grouplock` module re-runs groupLockStatus on this signal.
+local GROUP_LOCK_SIGNAL = 8
+
+-- Waybar JSON for the lock indicator; empty text hides the module.
+function M.groupLockStatus()
+	local active = hl.get_active_window()
+	if active and active.group and active.group.locked then
+		return '{"text":"󰌾","tooltip":"Group locked: new windows open outside it","class":"locked"}'
+	end
+	return '{"text":""}'
+end
+
+function M.refreshGroupLock()
+	hl.exec_cmd(string.format("pkill -RTMIN+%d -x waybar", GROUP_LOCK_SIGNAL))
+end
+
+function M.toggleGroup()
+	hl.dispatch(hl.dsp.group.toggle())
+	M.refreshGroupLock()
+end
+
+function M.toggleGroupLock()
+	hl.dispatch(hl.dsp.group.lock_active())
+	M.refreshGroupLock()
+end
+
+hl.on("window.active", M.refreshGroupLock)
+
 return M

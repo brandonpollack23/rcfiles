@@ -35,10 +35,10 @@ bind(
 )
 
 -- Grouping
-bind(mainMod .. " + G", hl.dsp.group.toggle(), { description = "Toggle window group", command = "group.toggle" })
-bind(mainMod .. " + SHIFT + G", hl.dsp.group.lock_active(), {
+bind(mainMod .. " + G", wm.toggleGroup, { description = "Toggle window group", command = "wm.toggleGroup" })
+bind(mainMod .. " + SHIFT + G", wm.toggleGroupLock, {
 	description = "Toggle whether the active group is 'locked' (new windows dont open in it)",
-	command = "group.lock_active",
+	command = "wm.toggleGroupLock",
 })
 bind("ALT + TAB", hl.dsp.group.next(), { description = "Next window in group", command = "group.next" })
 bind("ALT + SHIFT + TAB", hl.dsp.group.prev(), { description = "Previous window in group", command = "group.prev" })
@@ -66,6 +66,7 @@ bind(
 bindExec(mainMod .. " + r", programs.menu, { description = "App launcher" })
 bindExec(mainMod .. " + T", programs.terminal, { description = "Terminal" })
 bindExec(mainMod .. " + e", programs.fileManager, { description = "File manager" })
+bindExec(mainMod .. " + SHIFT + Escape", "pidof hyprlock || " .. programs.lock, { description = "Lock screen" })
 bindExec(mainMod .. " + slash", "~/.config/hypr/scripts/keybind-search.sh", { description = "Search keybindings" })
 
 -- Theming, see conf/theme.lua
@@ -96,15 +97,16 @@ bindExec(mainMod .. " + M", workspaceMenu .. " move", { description = "Move wind
 bindExec(mainMod .. " + SHIFT + 4", workspaceMenu .. " rename", { description = "Rename workspace" })
 
 -- Example special workspace (scratchpad)
+-- TODO Create more than one hidden workspace by name i can pull up from anywhere
 bind(
 	mainMod .. " + S",
-	hl.dsp.workspace.toggle_special("magic"),
-	{ description = "Toggle scratchpad", command = "workspace.toggle_special magic" }
+	hl.dsp.workspace.toggle_special("Hidden"),
+	{ description = "Toggle scratchpad", command = "workspace.toggle_special Hidden" }
 )
 bind(
 	mainMod .. " + SHIFT + S",
-	hl.dsp.window.move({ workspace = "special:magic" }),
-	{ description = "Move window to scratchpad", command = "window.move workspace special:magic" }
+	hl.dsp.window.move({ workspace = "special:Hidden" }),
+	{ description = "Move window to scratchpad", command = "window.move workspace special:Hidden" }
 )
 
 -- Scroll through existing workspaces with mainMod + scroll

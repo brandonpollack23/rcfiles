@@ -84,9 +84,57 @@ function M.pick(action, line)
 	return true
 end
 
--- Create the lowest free workspace, name it, and go to it.
-function M.create(action, name)
-	local id = nextFreeId()
+-- The placement lines for a new workspace, default first: the end, the start,
+-- then after each existing workspace in id order.
+local END, FIRST = "At the end", "First"
+
+function M.positions()
+	local names, ids = workspaceNames(), {}
+	for id in pairs(names) do
+		if id >= 1 then
+			table.insert(ids, id)
+		end
+	end
+	table.sort(ids)
+
+	local lines = { END, FIRST }
+	for _, id in ipairs(ids) do
+		table.insert(lines, "After " .. label(id, names[id]))
+	end
+	return table.concat(lines, "\n")
+end
+
+local function changeId(workspace, id)
+	hl.dispatch(hl.dsp.workspace.change_id({ workspace = workspace, id = id }))
+end
+
+-- The id a new workspace gets for a placement line, bumping the workspaces
+-- after it up by one to free it. Anything unrecognised (or empty) means the end.
+local function placeAt(position)
+	local after = position == FIRST and 0 or tonumber(position:match("^After (%d+)"))
+	if not after then
+		return nextFreeId()
+	end
+
+	local later = {}
+	for _, workspace in ipairs(hl.get_workspaces()) do
+		if not workspace.special and workspace.id > after then
+			table.insert(later, workspace)
+		end
+	end
+	-- Descending, so each target id is already free.
+	table.sort(later, function(a, b)
+		return a.id > b.id
+	end)
+	for _, workspace in ipairs(later) do
+		changeId(workspace, workspace.id + 1)
+	end
+	return after + 1
+end
+
+-- Create a workspace at `position` (a M.positions line), name it, and go to it.
+function M.create(action, name, position)
+	local id = placeAt(position or END)
 	goTo(action, id)
 	M.rename(id, name)
 end
@@ -104,10 +152,6 @@ end
 function M.active()
 	local workspace = hl.get_active_workspace()
 	return workspace.id .. "\n" .. workspace.name
-end
-
-local function changeId(workspace, id)
-	hl.dispatch(hl.dsp.workspace.change_id({ workspace = workspace, id = id }))
 end
 
 -- Swap the active workspace with the next existing one in id order (`delta` is

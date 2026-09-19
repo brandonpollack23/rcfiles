@@ -2,7 +2,7 @@
 # Workspace picker and naming prompts; the logic lives in conf/workspaces.lua.
 #   focus   pick a workspace (or create one) in hyprlauncher and go there
 #   move    same, but send the active window there
-#   new     name a new workspace and go there
+#   new     name and place a new workspace and go there
 #   rename  rename the active workspace
 ws='require("conf.workspaces")'
 
@@ -11,9 +11,17 @@ ask() {
 	zenity --entry --title "$1" --text "$2" --entry-text "$3"
 }
 
+# The first row is the default; OK with nothing selected also means it.
+place() {
+	hyprctl repl "return $ws.positions()" |
+		zenity --list --title 'New workspace' --text 'Put it:' \
+			--column Position --hide-header
+}
+
 create() {
 	name=$(ask 'New workspace' 'Name:' "$2") || exit 0
-	hyprctl eval "$ws.create('$1', [==[$name]==])" >/dev/null
+	position=$(place) || exit 0
+	hyprctl eval "$ws.create('$1', [==[$name]==], [==[$position]==])" >/dev/null
 }
 
 case $1 in
