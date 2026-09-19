@@ -7,7 +7,6 @@ local function shellQuote(str)
 	return "'" .. str:gsub("'", "'\\''") .. "'"
 end
 
--- TODO make group preserved
 function M.closeOtherWindows()
 	local active = hl.get_active_window()
 	if not active then
@@ -21,11 +20,23 @@ function M.closeOtherWindows()
 		return
 	end
 
+	-- The active window's group survives with it: the other tabs are part of
+	-- what is being kept, not "other windows".
+	local keep, grouped = { [active.address] = true }, 0
+	if active.group then
+		for _, member in pairs(active.group.members) do
+			if not keep[member.address] then
+				keep[member.address] = true
+				grouped = grouped + 1
+			end
+		end
+	end
+
 	-- Snapshot now: the dialog steals focus, and windows opened while it is up
 	-- should survive.
 	local targets, count = {}, 0
 	for _, window in pairs(hl.get_windows({ workspace = workspace })) do
-		if window.address ~= active.address then
+		if not keep[window.address] then
 			targets[window.address] = true
 			count = count + 1
 		end
@@ -43,9 +54,10 @@ function M.closeOtherWindows()
 			[=[if zenity --question --no-markup --title 'Close other windows?' --ok-label Close --cancel-label Cancel --text %s; then hyprctl eval 'require("conf.wm").confirmCloseOtherWindows()'; else hyprctl eval 'require("conf.wm").cancelCloseOtherWindows()'; fi]=],
 			shellQuote(
 				string.format(
-					"Closes %d other window(s) on this workspace.\nKeeps: %s",
+					"Closes %d other window(s) on this workspace.\nKeeps: %s%s",
 					count,
-					active.title ~= "" and active.title or active.class
+					active.title ~= "" and active.title or active.class,
+					grouped > 0 and string.format(" (+%d in its group)", grouped) or ""
 				)
 			)
 		),
