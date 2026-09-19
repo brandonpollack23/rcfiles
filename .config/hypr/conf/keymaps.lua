@@ -1,4 +1,5 @@
 local programs = require("conf.programs")
+local wm = require("conf.wm")
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
@@ -9,10 +10,12 @@ hl.bind(mainMod .. " + k", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + l", hl.dsp.focus({ direction = "right" }))
 
 -- Closing windows
-local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
+local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close(), { description = "Close Window" })
+hl.bind(mainMode .. "+ SHIFT + Q", wm.closeOtherWindows(), { description = "Close all windows except focused group" })
 -- closeWindowBind:set_enabled(false)
 
 -- Grouping
+-- TODO ungroup keep current focus as master
 hl.bind(mainMod .. " + G", hl.dsp.group.toggle(), { description = "Toggle window group" })
 hl.bind(
 	mainMod .. " + SHIFT + G",
