@@ -1,57 +1,10 @@
 local programs = require("conf.programs")
 local wm = require("conf.wm")
+local helpers = require("conf.bind_helpers")
+
+local bind, bindExec, bindLayout = helpers.bind, helpers.bindExec, helpers.bindLayout
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
-
-local M = {}
-
--- `hyprctl binds` reports every Lua bind as an opaque `__lua` handler, so the
--- searchable list (scripts/keybind-search.sh) is recorded here instead.
--- `opts.command` is the searchable command name; it is stripped before hl.bind.
-local entries = {}
-
-local function bind(keys, dispatcher, opts)
-	opts = opts or {}
-	local command = opts.command
-	opts.command = nil
-	table.insert(entries, {
-		keys = keys,
-		command = command or "",
-		description = opts.description or "",
-		dispatcher = dispatcher,
-		runnable = not opts.mouse,
-	})
-	return hl.bind(keys, dispatcher, opts)
-end
-
--- Bind a shell command; the command line doubles as the searchable command name.
-local function bindExec(keys, cmd, opts)
-	opts = opts or {}
-	opts.command = "exec " .. cmd
-	return bind(keys, hl.dsp.exec_cmd(cmd), opts)
-end
-
-local function menuLine(entry)
-	return entry.keys .. "  |  " .. entry.description .. "  |  " .. entry.command
-end
-
--- Newline-separated "keys | description | command" list for a dmenu-style picker.
-function M.menu()
-	local lines = {}
-	for _, entry in ipairs(entries) do
-		table.insert(lines, menuLine(entry))
-	end
-	return table.concat(lines, "\n")
-end
-
--- Run the bind whose menu line was picked.
-function M.run(line)
-	for _, entry in ipairs(entries) do
-		if entry.runnable and menuLine(entry) == line then
-			return hl.dispatch(entry.dispatcher)
-		end
-	end
-end
 
 -- Move focus with mainMod + vim motions
 bind(mainMod .. " + h", hl.dsp.focus({ direction = "left" }), { description = "Focus window left", command = "focus left" })
@@ -159,10 +112,6 @@ bind(
 )
 
 -- Master layout, see https://wiki.hypr.land/configuring/layouts/master-layout/
-local function bindLayout(keys, msg, description)
-	return bind(keys, hl.dsp.layout(msg), { description = description, command = "layout " .. msg })
-end
-
 bindLayout(mainMod .. " + Return", "swapwithmaster", "Promote window to master")
 bindLayout(mainMod .. " + SHIFT + Return", "focusmaster", "Focus master window")
 bindLayout(mainMod .. " + I", "addmaster", "Add window as a master")
@@ -215,5 +164,3 @@ bindExec(
 	"brightnessctl -e4 -n2 set 5%-",
 	{ locked = true, repeating = true, description = "Brightness down" }
 )
-
-return M
