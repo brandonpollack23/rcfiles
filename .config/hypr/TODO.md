@@ -2,15 +2,13 @@
 
 ## Features
 
-- steam notifications should come above waybar
-- notification center configuration
-- notification/new tab highlights workspace
-- can volume open volume control popup panel
-- can bluetooth open bluetooth control popup panel
 - mozc and indicator
 - unified settings app
-- workspace indicator
+- can volume open volume control popup panel
+- can bluetooth open bluetooth control popup panel
+- notification/new tab highlights workspace
 - mission control like view
+- work view (1/4 3/4)
 - better group theming/bars alternative
 - coding orientation, cycle between layouts on workspaces and save them
 - kde phone connect

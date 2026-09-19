@@ -41,3 +41,14 @@ hl.window_rule({
 
 	float = true,
 })
+
+-- Steam (XWayland) places its toasts at the raw screen corner, ignoring the
+-- reserved area, so they end up under waybar (bottom, 38px). Nudge them up.
+hl.window_rule({
+	name = "steam-toasts-above-waybar",
+	match = { class = "^steam$", title = "^notificationtoasts_.*$" },
+
+	float = true,
+	no_focus = true,
+	move = "monitor_w-window_w monitor_h-window_h-38",
+})
