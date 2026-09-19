@@ -20,11 +20,25 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | --- | --- | --- |
 | `ghostty` | terminal | `SUPER+T` |
 | `nautilus` | file manager | `SUPER+E` |
-| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh` and `scripts/workspace-menu.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M` |
+| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh`, `scripts/workspace-menu.sh` and `scripts/system.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M`, `SUPER+SHIFT+R` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 | `waybar` | desktop bar, autostarted; `custom/grouplock` module shows the group lock icon (`conf/wm.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted | `hyprland.lua` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
+
+## System menu (`scripts/system.sh`)
+
+`SUPER+SHIFT+R`, and the power subset from the waybar power button. Also uses
+`hyprlauncher`, `hyprlock`, `waybar`, `swaync`, `ghostty` and `procps-ng` from
+the tables above.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `systemd` | `systemctl`, `journalctl` | suspend, reboot, shut down, restart audio, failed services, errors since boot |
+| `util-linux` | `setsid` | detaching restarted waybar and swaync from the script |
+| `coreutils`, `grep` | `cut`, `grep` | mapping the picked label back to its action |
+| `pipewire-pulse` | PulseAudio shim user service | restart audio |
+| `paru` (AUR) | `paru` | update system, remove unneeded packages |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -47,6 +61,7 @@ into the config.
 
 ```sh
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
-  hyprlauncher hyprlock waybar swaync wireplumber pipewire playerctl brightnessctl
+  hyprlauncher hyprlock waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
+  systemd util-linux grep
 paru -S --needed google-chrome
 ```

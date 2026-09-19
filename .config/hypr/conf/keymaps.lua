@@ -67,6 +67,7 @@ bindExec(mainMod .. " + r", programs.menu, { description = "App launcher" })
 bindExec(mainMod .. " + T", programs.terminal, { description = "Terminal" })
 bindExec(mainMod .. " + e", programs.fileManager, { description = "File manager" })
 bindExec(mainMod .. " + SHIFT + Escape", "pidof hyprlock || " .. programs.lock, { description = "Lock screen" })
+bindExec(mainMod .. " + SHIFT + r", "~/.config/hypr/scripts/system.sh", { description = "System commands (restart, power, maintenance)" })
 bindExec(mainMod .. " + slash", "~/.config/hypr/scripts/keybind-search.sh", { description = "Search keybindings" })
 
 -- Theming, see conf/theme.lua

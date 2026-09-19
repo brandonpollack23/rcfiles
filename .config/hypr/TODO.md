@@ -2,8 +2,6 @@
 
 ## Features
 
-- top bar
-- reboot/logout menu (see [Shutdown/logout bind](#shutdownlogout-bind))
 - configure hyprlock (starter theme in `hyprlock.conf`)
 - notification center
 - notification dismiss binding

@@ -20,6 +20,15 @@ Record the package name (not just the binary), what it provides, and where it is
 used. Resolve the package with `pacman -Qo $(which <binary>)`, and add it to the
 install command at the bottom.
 
+## System commands go in `scripts/system.sh`
+
+Anything the user might need to run by hand, such as restarting a daemon, a
+session or power action, or a maintenance task, goes in the `SUPER+SHIFT+R`
+menu in `scripts/system.sh`: add an `action|label` line to `ALL` (or `POWER`
+for session and power actions) and a matching `case` branch. Use `in_terminal`
+for commands whose output the user needs to read or that prompt. When you add a
+new daemon or program to the config, add its restart or reload here too.
+
 ## Disabled config and TODOs
 
 Don't leave commented-out config or TODO comments in the Lua files. Put planned
