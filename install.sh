@@ -64,6 +64,7 @@ DEBIAN_PACKAGES=(
 
 ARCH_PACKAGES=(
   alacritty      # A fast, cross-platform, OpenGL terminal emulator
+  awww           # Wallpaper daemon for the Bing wallpaper (.config/hypr/scripts/bing-wallpaper.sh)
   bitwarden      # Secure, open source password manager for all of your devices
   bitwarden-cli  # Command-line interface for Bitwarden
   fd             # A simple, fast and user-friendly alternative to find
@@ -72,6 +73,7 @@ ARCH_PACKAGES=(
   hypridle       # Idle daemon: dim, lock and screens off (.config/hypr/hypridle.conf)
   hyprlock       # Lock screen (.config/hypr/hyprlock.conf)
   inotify-tools  # Command-line utilities for monitoring file system events
+  jq             # JSON processor; parses Bing's image metadata (.config/hypr/scripts/bing-wallpaper.sh)
   kio-gdrive     # KIO slave for Google Drive integration with KDE
   neovide        # Neovim client in a fully featured graphical user interface
   tlp            # Advanced power management tool for Linux
@@ -351,6 +353,15 @@ function setup_home_dir() {
     systemctl --user enable --now ydotool.service >/dev/null 2>&1 || true
   fi
   ln -sfn "$RCFILES_DIR/zsh-custom" "$HOME/zsh-custom"
+
+  # User units. Linked one by one: ~/.config/systemd/user also holds local units.
+  mkdir -p "$HOME/.config/systemd/user"
+  for unit in "$RCFILES_DIR"/.config/systemd/user/*; do
+    ln -sfn "$unit" "$HOME/.config/systemd/user/$(basename "$unit")"
+  done
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user daemon-reload >/dev/null 2>&1 || true
+  fi
 
   # Claude Code
   mkdir -p "$HOME/.claude"

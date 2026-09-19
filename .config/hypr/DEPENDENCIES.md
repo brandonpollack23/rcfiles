@@ -26,6 +26,30 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
+| `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
+
+## Bing wallpaper (`scripts/bing-wallpaper.sh`)
+
+`hyprland.lua` runs `bing-wallpaper.sh start` at startup, which imports the
+Wayland environment into the systemd user manager and starts
+`bing-wallpaper.timer` (not enabled) and `bing-wallpaper.service`. The timer
+runs at the frequency saved in `$XDG_STATE_HOME/hypr/bing-wallpaper-frequency`
+(default `daily`; set it from the system menu or with
+`bing-wallpaper.sh frequency <spec>`), applied as a runtime drop-in. The
+units live in `.config/systemd/user/` in rcfiles and are symlinked by
+`install.sh`. The service skips its run when the Hyprland instance it was
+started from is gone. Images and metadata are cached in
+`$XDG_CACHE_HOME/bing-wallpaper` for 30 days. The system menu lists the current
+image as "Bing Wallpaper: <title>" and opens Bing's page about it.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `awww` | `awww` | shows the image, waits for the daemon with `awww query` |
+| `systemd` | `systemctl`, `systemd-analyze`, user service and timer | scheduled `update`, `start`, `refresh`, validating `frequency` |
+| `curl` | `curl` | Bing's image API and the UHD image |
+| `jq` | `jq` | reading the image metadata (title, link) |
+| `xdg-utils` | `xdg-open` | opening the Bing page in the default browser |
+| `coreutils`, `findutils` | `readlink`, `ln`, `basename`, `find` | tracking the current image, deleting old ones |
 
 ## Lock screen and idle (`hyprlock.conf`, `hypridle.conf`)
 
@@ -78,6 +102,7 @@ the tables above.
 | `coreutils`, `grep` | `cut`, `grep` | mapping the picked label back to its action |
 | `pipewire-pulse` | PulseAudio shim user service | restart audio |
 | `paru` (AUR) | `paru` | update system, remove unneeded packages |
+| `awww` | `awww-daemon` | restart wallpaper daemon |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -102,7 +127,7 @@ into the config.
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
-  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod
+  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome
 ```

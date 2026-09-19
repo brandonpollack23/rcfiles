@@ -26,6 +26,8 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd(programs.desktop_bar)
 	hl.exec_cmd(programs.notification_center)
 	hl.exec_cmd(programs.idle)
+	hl.exec_cmd(programs.wallpaper)
+	hl.exec_cmd("~/.config/hypr/scripts/bing-wallpaper.sh start")
 end)
 
 -- See https://wiki.hypr.land/configuring/core/environment-variables/

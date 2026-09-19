@@ -1,0 +1,8 @@
+[Unit]
+Description=Check for a new Bing wallpaper
+
+# Not enabled: Hyprland starts it at login (bing-wallpaper.sh start), which
+# replaces OnCalendar with the frequency saved by `bing-wallpaper.sh frequency`.
+[Timer]
+OnCalendar=daily
+Persistent=true

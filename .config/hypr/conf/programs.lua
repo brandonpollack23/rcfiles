@@ -7,5 +7,6 @@ return {
 	notification_center = "swaync",
 	lock = "hyprlock",
 	idle = "hypridle",
+	wallpaper = "awww-daemon",
 	browser = "google-chrome-stable",
 }

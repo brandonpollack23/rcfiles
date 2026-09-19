@@ -14,7 +14,7 @@
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
   whenever and unminimize (special workspace(s))
-- bing wallpapers (link in bar?)
+- Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` / `open`)
 - ungroup command that keeps the current focus as master
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - popup for sound/mute

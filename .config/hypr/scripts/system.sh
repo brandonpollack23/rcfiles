@@ -23,7 +23,15 @@ enroll-fingerprint|󰈷  Enroll fingerprint (fprintd)
 update|󰚰  Update system (paru)
 clean|󰃢  Remove unneeded packages (paru)
 failed-units|󰀦  Failed services
-journal-errors|󰀦  Errors since boot"
+journal-errors|󰀦  Errors since boot
+restart-awww|󰑓  Restart wallpaper daemon (awww)
+bing-update|󰸉  Refresh Bing wallpaper
+bing-frequency|󰸉  Bing wallpaper update frequency"
+
+# Only listed once the wallpaper script has saved the image's metadata.
+bing_title=$(~/.config/hypr/scripts/bing-wallpaper.sh title)
+test -n "$bing_title" && ALL="$ALL
+bing-open|󰖟  Bing Wallpaper: $bing_title"
 
 # Runs a command in a terminal that stays open so the output can be read.
 in_terminal() {
@@ -75,6 +83,19 @@ update) in_terminal paru -Syu ;;
 clean) in_terminal paru -c ;;
 failed-units) in_terminal systemctl --failed ;;
 journal-errors) in_terminal journalctl -b -p err --no-pager ;;
+
+restart-awww)
+	pkill -x awww-daemon
+	while pgrep -x awww-daemon >/dev/null; do sleep 0.1; done
+	setsid -f awww-daemon >/dev/null 2>&1
+	~/.config/hypr/scripts/bing-wallpaper.sh refresh
+	;;
+bing-update) ~/.config/hypr/scripts/bing-wallpaper.sh refresh ;;
+bing-open) ~/.config/hypr/scripts/bing-wallpaper.sh open ;;
+bing-frequency)
+	frequency=$(printf 'hourly\ndaily\nweekly\n' | hyprlauncher --dmenu)
+	test -n "$frequency" && ~/.config/hypr/scripts/bing-wallpaper.sh frequency "$frequency"
+	;;
 
 *)
 	echo "usage: $0 [power | <action>]" >&2
