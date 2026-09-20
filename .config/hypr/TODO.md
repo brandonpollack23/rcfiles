@@ -6,14 +6,17 @@
   labeled H1, H2, etc
 - named (non default) hidden workspaces should appear in the workspace picker
   for both moving to a workspace and moving a window to a workspace
-- unified settings app
+- make windows stable in master mode when closing (dont jump to opposite side of
+  the screen just leave where they are)
 - better group theming/bars alternative
+- unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
 - notification/new tab highlights workspace
 - mission control like view, super + shift + w, make new workspace super + alt +
   w
-- work view (1/4 3/4)
+- master work/reference view (1/4 3/4)
+- switching between predefined layouts: focus task and work/reference
 - coding orientation, cycle between layouts on workspaces and save them
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
@@ -22,13 +25,14 @@
   workspace(s))
 - Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
   `open`)
+- teamspeak should prefer right side and comms workspace
 - wl freeze to pause games in background and free up gpu
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - popup for sound/mute
 - hyprfocus bounce windows or some other focus indicator
-- once we have session restore, check that named workspaces
-  (`conf/workspaces/`) are compatible with it, and whether workspace names
-  can be restored across reboots too
+- once we have session restore, check that named workspaces (`conf/workspaces/`)
+  are compatible with it, and whether workspace names can be restored across
+  reboots too
 - hyprmoncfg for different monitor setups/arragements that saves
 
 ## Disabled config snippets

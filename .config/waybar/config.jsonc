@@ -1,8 +1,12 @@
 {
   "reload_style_on_change": true,
 
-  // Defines group/workspaces and its custom/wsN buttons.
-  "include": ["~/.config/waybar/workspaces.jsonc"],
+  // Define group/workspaces with its custom/wsN buttons, and group/windows
+  // with its custom/winN buttons.
+  "include": [
+    "~/.config/waybar/workspaces.jsonc",
+    "~/.config/waybar/windows.jsonc",
+  ],
 
   "layer": "top",
   "position": "bottom",
@@ -13,16 +17,16 @@
   "margin-left": 10,
   "margin-right": 10,
 
-  "modules-left": ["custom/launcher", "custom/power", "hyprland/submap"],
-
-  "modules-center": ["group/app"],
-
-  "modules-right": [
-    "group/workspaces",
-    "custom/hidden",
-    "group/status",
+  "modules-left": [
+    "custom/launcher",
+    "custom/power",
+    "hyprland/submap",
     "clock",
   ],
+
+  "modules-center": ["group/windows"],
+
+  "modules-right": ["group/workspaces", "custom/hidden", "group/status"],
 
   "custom/launcher": {
     "format": "󰣇",
@@ -50,40 +54,6 @@
     "exec": "~/.config/waybar/scripts/hidden-workspace.py",
     "return-type": "json",
     "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"Hidden\")'",
-  },
-
-  // Focused window title with the group lock icon in the same pill.
-  "group/app": {
-    "orientation": "horizontal",
-    "modules": ["hyprland/window", "custom/grouplock"],
-  },
-
-  "hyprland/window": {
-    "format": "{class}: {title}",
-    "separate-outputs": true,
-    "max-length": 55,
-    "icon": true,
-    "icon-size": 16,
-
-    // Each rule must match the whole "{class}: {title}" string.
-    "rewrite": {
-      "com\\.mitchellh\\.ghostty: (.*)": "Ghostty: $1",
-      "kitty: (.*)": "Kitty: $1",
-      "org\\.wezfurlong\\.wezterm: (.*)": "WezTerm: $1",
-      "google-chrome(-stable)?: (.*) - Google Chrome": "Google Chrome: $2",
-      "chromium: (.*) - Chromium": "Chromium: $1",
-      "code: (.*)": "VS Code: $1",
-      "dev\\.zed\\.Zed: (.*)": "Zed: $1",
-    },
-  },
-
-  // Lock icon while the focused group is locked; Hyprland sends SIGRTMIN+8 on
-  // focus change and lock toggle (conf/wm/group.lua in the hypr config).
-  "custom/grouplock": {
-    "exec": "hyprctl repl 'return require(\"conf.wm\").groupLockStatus()'",
-    "return-type": "json",
-    "interval": "once",
-    "signal": 8,
   },
 
   // Hover lists every zone in "timezones"; scroll cycles which one is shown.

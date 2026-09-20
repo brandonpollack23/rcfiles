@@ -1,4 +1,4 @@
--- Window groups: the lock indicator, and every action that changes a group.
+-- Window groups: every action that changes one, and telling waybar it happened.
 --
 -- `HL.Group` has `add(window, index)` and `remove(window)`, which act on window
 -- objects rather than on whatever happens to be focused. The dispatchers do not:
@@ -8,29 +8,21 @@
 
 local dialog = require("conf.wm.dialog")
 local history = require("conf.wm.history")
+local taskbar = require("conf.wm.taskbar")
 local windows = require("conf.wm.windows")
 
 local M = {}
 
--- Lock indicator --------------------------------------------------------------
+-- Telling waybar ---------------------------------------------------------------
 
--- Waybar's `custom/grouplock` module re-runs lockStatus on this signal.
-local GROUP_LOCK_SIGNAL = 8
+-- Grouping, ungrouping, reordering tabs and locking all change what waybar's
+-- taskbar should be drawing, and none of them has a Hyprland event behind it.
+-- Every action below calls this once it has made its change.
+M.refreshBar = taskbar.refresh
 
--- Waybar JSON for the lock indicator; empty text hides the module.
-function M.lockStatus()
-	local active = hl.get_active_window()
-	if active and active.group and active.group.locked then
-		return '{"text":"󰌾","tooltip":"Group locked: new windows open outside it","class":"locked"}'
-	end
-	return '{"text":""}'
-end
-
-function M.refreshLock()
-	hl.exec_cmd(string.format("pkill -RTMIN+%d -x waybar", GROUP_LOCK_SIGNAL))
-end
-
-hl.on("window.active", M.refreshLock)
+-- Focus moving between groups changes which entries are filled, and that one
+-- does have an event.
+hl.on("window.active", M.refreshBar)
 
 -- Primitives the history replays with -----------------------------------------
 
@@ -41,7 +33,7 @@ local function detach(address)
 		return false
 	end
 	group:remove(window)
-	M.refreshLock()
+	M.refreshBar()
 	return true
 end
 
@@ -53,7 +45,7 @@ local function attach(address, anchor, index)
 		return false
 	end
 	group:add(window, index)
-	M.refreshLock()
+	M.refreshBar()
 	return true
 end
 
@@ -86,7 +78,7 @@ local function rebuild(addresses)
 	for _, window in ipairs(rest) do
 		group:add(window)
 	end
-	M.refreshLock()
+	M.refreshBar()
 	return true
 end
 
@@ -104,7 +96,7 @@ function M.toggle()
 	local members = group and windows.memberAddresses(group) or nil
 
 	hl.dispatch(hl.dsp.group.toggle())
-	M.refreshLock()
+	M.refreshBar()
 
 	if members and #members > 1 then
 		history.record("dissolve group of " .. #members, function()
@@ -116,7 +108,7 @@ function M.toggle()
 			end
 			hl.dispatch(hl.dsp.focus({ window = window }))
 			hl.dispatch(hl.dsp.group.toggle())
-			M.refreshLock()
+			M.refreshBar()
 			return true
 		end)
 	end
@@ -124,7 +116,7 @@ end
 
 function M.toggleLock()
 	hl.dispatch(hl.dsp.group.lock_active())
-	M.refreshLock()
+	M.refreshBar()
 end
 
 -- Hyprland picks the group to join by direction, so callers (the SUPER + ALT + G
@@ -138,7 +130,7 @@ function M.joinToward(direction)
 	local address = active.address
 
 	hl.dispatch(hl.dsp.window.move({ into_or_create_group = direction }))
-	M.refreshLock()
+	M.refreshBar()
 
 	-- Nothing to record if there was no group that way.
 	local group, index = windows.groupOf(windows.at(address))
@@ -211,7 +203,7 @@ function M.confirmUngroup()
 	local anchor = windows.anchorFor(group, address)
 
 	group:remove(window)
-	M.refreshLock()
+	M.refreshBar()
 	-- The dialog took focus; hand it back to the window that was ungrouped.
 	hl.dispatch(hl.dsp.focus({ window = windows.at(address) }))
 

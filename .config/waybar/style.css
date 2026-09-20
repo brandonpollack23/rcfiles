@@ -15,7 +15,6 @@ window#waybar {
 #custom-power,
 #submap,
 #custom-hidden,
-#app,
 #clock,
 #status {
   background: rgba(30, 30, 46, 0.94);
@@ -111,24 +110,152 @@ window#waybar {
   border-color: #cba6f7;
 }
 
-#app {
+/* The taskbar: every window on the current workspace, left to right in the
+   order they are laid out on screen. It has no pill of its own -- the entries
+   and the group boxes are the only things drawn, straight onto the bar. */
+#windows {
+  background: transparent;
+  border: none;
+  padding: 3px 0;
+  margin: 0 8px;
+}
+
+#windows label {
+  color: #7f849c;
+  /* The taskbar has no pill behind it, so every entry carries the bar's own
+     fill. Same colour the pills on either side use. */
+  background: rgba(30, 30, 46, 0.94);
+  border: 1px solid rgba(137, 180, 250, 0.2);
+  border-radius: 9px;
+  padding: 3px 10px;
+  margin: 0;
+  box-shadow: none;
+  text-shadow: none;
+  transition: all 150ms ease;
+}
+
+/* Tabs of one group touch, so their fills and borders run together into one
+   box; everything else is a tile of its own and gets the gap. Half of it goes
+   on each side, so the two sides of a gap are symmetric and the ends of the
+   bar stay even -- 24px a side is the 48px gap between tiles. */
+#windows label.solo,
+#windows label.gstart,
+#windows label.overflow {
+  margin-left: 256px;
+}
+
+#windows label.solo,
+#windows label.gend,
+#windows label.overflow {
+  margin-right: 256px;
+}
+
+/* A group, drawn as one filled box around its tabs. Waybar groups are fixed at
+   startup and which slots hold a group is not, so the container is drawn
+   rather than nested: one fill across every tab, and a border that only the
+   two ends close off, so nothing divides the tabs from each other. The fill is
+   what the tabs of one group have in common whether or not it is locked --
+   #1e1e2e carrying a little of the accent, so it stays opaque against the
+   wallpaper. */
+#windows label.gstart,
+#windows label.gmid,
+#windows label.gend {
+  color: rgba(137, 180, 250, 0.75);
+  background: rgba(49, 57, 83, 0.94);
+  border-color: rgba(137, 180, 250, 0.4);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-radius: 0;
+}
+
+#windows label.gstart {
+  border-left-color: rgba(137, 180, 250, 0.4);
+  border-radius: 9px 0 0 9px;
+}
+
+#windows label.gend {
+  border-right-color: rgba(137, 180, 250, 0.4);
+  border-radius: 0 9px 9px 0;
+}
+
+/* A locked group: new windows open outside it. The same box in yellow, the
+   colour the submap pill already uses, on every tab rather than only the
+   focused one -- which is what makes a locked group read as locked while you
+   are somewhere else. The lock icon itself rides on the first tab. */
+#windows label.locked {
+  color: rgba(249, 226, 175, 0.8);
+  background: rgba(69, 65, 69, 0.94);
+  border-color: rgba(249, 226, 175, 0.4);
+}
+
+/* The shorthand above closed all four sides, which is right for a locked group
+   of one and wrong for a group with tabs: reopen the inner sides. */
+#windows label.locked.gstart,
+#windows label.locked.gmid,
+#windows label.locked.gend {
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+#windows label.locked.gstart {
+  border-left-color: rgba(249, 226, 175, 0.4);
+}
+
+#windows label.locked.gend {
+  border-right-color: rgba(249, 226, 175, 0.4);
+}
+
+/* The tab its group is currently showing, while the group is not focused. */
+#windows label.shown {
+  color: #cdd6f4;
+}
+
+#windows label.shown.gstart,
+#windows label.shown.gmid,
+#windows label.shown.gend {
+  color: #89b4fa;
+}
+
+#windows label.shown.locked {
+  color: #f9e2af;
+}
+
+/* The window you are typing into: filled, in its group's colour so that being
+   focused never costs the group its shared look. The border matches the fill,
+   which lets the group's outline pass behind the focused tab rather than
+   boxing it off from the tabs beside it. */
+#windows label.active {
   color: #11111b;
   background: #f5c2e7;
+  border-color: #f5c2e7;
+  padding-left: 13px;
+  padding-right: 13px;
 }
 
-#window {
-  padding: 0 14px;
+#windows label.gstart.active,
+#windows label.gmid.active,
+#windows label.gend.active {
+  background: #89b4fa;
+  border-color: #89b4fa;
 }
 
-/* No focused window: hide the empty pill. */
-window#waybar.empty #app {
-  background: transparent;
-  border-color: transparent;
+#windows label.locked.active {
+  background: #f9e2af;
+  border-color: #f9e2af;
 }
 
-/* Sits after the title; the title's padding already spaces it. */
-#custom-grouplock {
-  padding-right: 14px;
+#windows label.floating {
+  font-style: italic;
+}
+
+/* Windows past the last slot. */
+#windows label.overflow {
+  color: #7f849c;
+}
+
+#windows label:hover:not(.active) {
+  color: #cdd6f4;
+  background: rgba(49, 50, 68, 0.94);
 }
 
 /* Right-side pills sit next to each other; space them apart. */
