@@ -95,6 +95,7 @@ hl.config({
 			border_locked_inactive = groupInactive,
 		},
 		groupbar = {
+			enabled = false,
 			font_size = 12,
 			height = 24,
 			font_weight_active = "bold",

@@ -2,9 +2,11 @@
 
 ## Features
 
+- better group theming/bars alternative
 - make windows stable in master mode when closing (dont jump to opposite side of
   the screen just leave where they are)
-- better group theming/bars alternative
+- consolidate the 39 waybar module scripts into one daemon, then decide whether
+  to port it: [plans/waybar-daemon.md](plans/waybar-daemon.md)
 - unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
