@@ -2,18 +2,18 @@
 
 ## Features
 
+- unified settings app
 - named hidden workspaces that current exist should be in the workspace picker
   labeled H1, H2, etc
 - named (non default) hidden workspaces should appear in the workspace picker
   for both moving to a workspace and moving a window to a workspace
-- unified settings app
+- better group theming/bars alternative
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
 - notification/new tab highlights workspace
 - mission control like view, super + shift + w, make new workspace super + alt +
   w
 - work view (1/4 3/4)
-- better group theming/bars alternative
 - coding orientation, cycle between layouts on workspaces and save them
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
@@ -22,7 +22,7 @@
   workspace(s))
 - Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
   `open`)
-- ungroup command that keeps the current focus as master
+- wl freeze to pause games in background and free up gpu
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - popup for sound/mute
 - once we have session restore, check that named workspaces
