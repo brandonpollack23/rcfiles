@@ -2,10 +2,6 @@
 
 ## Features
 
-- named hidden workspaces that current exist should be in the workspace picker
-  labeled H1, H2, etc
-- named (non default) hidden workspaces should appear in the workspace picker
-  for both moving to a workspace and moving a window to a workspace
 - make windows stable in master mode when closing (dont jump to opposite side of
   the screen just leave where they are)
 - better group theming/bars alternative
@@ -20,9 +16,8 @@
 - coding orientation, cycle between layouts on workspaces and save them
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
-- named hidden workspaces (super alt shift w for new hidden workspace, empty
-  ones close except default one, ) whenever and unminimize (special
-  workspace(s))
+- `super + alt + shift + w` for a new hidden workspace, so making one does not
+  have to go through the picker (`conf/workspaces/hidden.lua`)
 - Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
   `open`)
 - teamspeak should prefer right side and comms workspace

@@ -14,7 +14,7 @@ window#waybar {
 #custom-launcher,
 #custom-power,
 #submap,
-#custom-hidden,
+#hidden,
 #clock,
 #status {
   background: rgba(30, 30, 46, 0.94);
@@ -259,28 +259,44 @@ window#waybar {
 }
 
 /* Right-side pills sit next to each other; space them apart. */
-#custom-hidden,
+#hidden,
 #status,
 #clock {
   margin-left: 8px;
 }
 
-/* The special:Hidden scratchpad, teal to set it apart from the workspaces. */
-#custom-hidden {
+/* The hidden workspaces: group/hidden, drawn like #workspaces but teal to set
+   them apart. Every button in it -- the scratchpad included -- carries the
+   .hidden class from scripts/hidden-workspace.py, so new custom/hiddenN slots
+   need no rule of their own. */
+#hidden {
+  border-color: rgba(148, 226, 213, 0.2);
+  padding: 3px;
+}
+
+.hidden {
   color: rgba(148, 226, 213, 0.45);
-  border-color: rgba(148, 226, 213, 0.15);
-  padding: 0 14px;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  padding: 3px 10px;
+  margin: 0 1px;
   transition: all 150ms ease;
 }
 
-#custom-hidden:not(.empty) {
+/* Workspace contains one or more windows. */
+.hidden:not(.empty) {
   color: rgba(148, 226, 213, 0.8);
 }
 
-#custom-hidden.shown {
+/* Open on a monitor. */
+.hidden.shown {
   color: #11111b;
   background: #94e2d5;
-  border-color: #94e2d5;
+}
+
+.hidden:hover:not(.shown) {
+  background: rgba(148, 226, 213, 0.15);
 }
 
 #clock {

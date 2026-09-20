@@ -3,6 +3,14 @@
 // have its own tooltip listing its windows; hyprland/workspaces has no
 // per-workspace tooltip. Buttons for workspaces that don't exist hide
 // themselves.
+//
+// group/hidden below works the same way for the hidden (special) workspaces,
+// which have no ids: custom/hidden is the special:Hidden scratchpad, and slot N
+// of custom/hiddenN is the Nth other one by name, the same ordering
+// conf/workspaces/hidden.lua labels H1, H2, ... in the picker. They are their
+// own group, and so their own pill, rather than more buttons of
+// group/workspaces: they are a separate set of workspaces, reached by toggling
+// rather than by switching, and style.css colours the whole pill to say so.
 {
   "group/workspaces": {
     "orientation": "horizontal",
@@ -188,5 +196,54 @@
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 20 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
+  },
+
+  "group/hidden": {
+    "orientation": "horizontal",
+    "modules": [
+      "custom/hidden",
+      "custom/hidden1",
+      "custom/hidden2",
+      "custom/hidden3",
+      "custom/hidden4",
+      "custom/hidden5",
+    ],
+  },
+
+  // The special:Hidden scratchpad: bright while open, dim otherwise.
+  "custom/hidden": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py",
+    "return-type": "json",
+    "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"Hidden\")'",
+  },
+
+  "custom/hidden1": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py 1",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 1",
+  },
+
+  "custom/hidden2": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py 2",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 2",
+  },
+
+  "custom/hidden3": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py 3",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 3",
+  },
+
+  "custom/hidden4": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py 4",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 4",
+  },
+
+  "custom/hidden5": {
+    "exec": "~/.config/waybar/scripts/hidden-workspace.py 5",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 5",
   },
 }

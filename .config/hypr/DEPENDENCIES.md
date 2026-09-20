@@ -11,6 +11,7 @@ Arch/AUR. Keep this in sync with the config (see `AGENTS.md`).
 | `zenity` | `zenity` | close-others confirmation dialog (`conf/wm/dialog.lua`); workspace name and placement prompts (`scripts/workspace-menu.sh`), floated by a rule in `conf/rules.lua` |
 | `coreutils` | `ls`, `mkdir` | listing `conf/themes/` and creating `$XDG_STATE_HOME/hypr` (`conf/theme/`) |
 | `procps-ng` | `pkill`, `pidof` | signals waybar to refresh the group lock indicator (`conf/wm/group.lua`); single-instance check for the lock bind (`conf/keymaps.lua`) |
+| `python` | `python3` | the waybar workspace buttons: one per workspace id (`~/.config/waybar/scripts/workspace.py`) and one per hidden workspace (`~/.config/waybar/scripts/hidden-workspace.py`) |
 
 ## Programs (`conf/programs.lua`)
 
@@ -20,7 +21,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | --- | --- | --- |
 | `ghostty` | terminal | `SUPER+T` |
 | `nautilus` | file manager | `SUPER+E` |
-| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh`, `scripts/workspace-menu.sh` and `scripts/system.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M`, `SUPER+SHIFT+R` |
+| `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh`, `scripts/workspace-menu.sh` and `scripts/system.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M`, `SUPER+SHIFT+S`, `SUPER+SHIFT+R` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 | `waybar` | desktop bar, autostarted; `custom/grouplock` module shows the group lock icon (`conf/wm/group.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
@@ -127,7 +128,7 @@ into the config.
 ## Install
 
 ```sh
-sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
+sudo pacman -S --needed hyprland zenity coreutils procps-ng python ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard

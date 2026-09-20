@@ -1,8 +1,8 @@
 {
   "reload_style_on_change": true,
 
-  // Define group/workspaces with its custom/wsN buttons, and group/windows
-  // with its custom/winN buttons.
+  // Define group/workspaces with its custom/wsN buttons and group/hidden with
+  // its custom/hiddenN ones, and group/windows with its custom/winN buttons.
   "include": [
     "~/.config/waybar/workspaces.jsonc",
     "~/.config/waybar/windows.jsonc",
@@ -26,7 +26,7 @@
 
   "modules-center": ["group/windows"],
 
-  "modules-right": ["group/workspaces", "custom/hidden", "group/status"],
+  "modules-right": ["group/workspaces", "group/hidden", "group/status"],
 
   "custom/launcher": {
     "format": "󰣇",
@@ -47,13 +47,6 @@
     "format": "󰌌  {}",
     "max-length": 24,
     "tooltip": false,
-  },
-
-  // The special:Hidden scratchpad: bright while open, dim otherwise.
-  "custom/hidden": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py",
-    "return-type": "json",
-    "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"Hidden\")'",
   },
 
   // Hover lists every zone in "timezones"; scroll cycles which one is shown.

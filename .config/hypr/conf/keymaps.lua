@@ -180,17 +180,15 @@ bindExec(mainMod .. " + M", workspaceMenu .. " move", { description = "Move wind
 -- mainMod + "$": binds match the unshifted key, so "dollar" never fires
 bindExec(mainMod .. " + SHIFT + 4", workspaceMenu .. " rename", { description = "Rename workspace" })
 
--- Example special workspace (scratchpad)
--- TODO Create more than one hidden workspace by name i can pull up from anywhere
-bind(
-	mainMod .. " + S",
-	hl.dsp.workspace.toggle_special("Hidden"),
-	{ description = "Toggle scratchpad", command = "workspace.toggle_special Hidden" }
-)
-bind(
+-- The default hidden workspace. The others are named, and are reached through
+-- the picker (conf/workspaces/hidden.lua) and their waybar buttons.
+bind(mainMod .. " + S", function()
+	workspaces.toggleHidden()
+end, { description = "Put away the open hidden workspace, or raise the scratchpad", command = "workspaces.toggleHidden" })
+bindExec(
 	mainMod .. " + SHIFT + S",
-	hl.dsp.window.move({ workspace = "special:Hidden" }),
-	{ description = "Move window to scratchpad", command = "window.move workspace special:Hidden" }
+	workspaceMenu .. " move-hidden",
+	{ description = "Move window to a hidden workspace" }
 )
 
 -- Scroll through existing workspaces with mainMod + scroll
