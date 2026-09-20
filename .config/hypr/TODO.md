@@ -2,7 +2,6 @@
 
 ## Features
 
-- better group theming/bars alternative
 - make windows stable in master mode when closing (dont jump to opposite side of
   the screen just leave where they are)
 - consolidate the 39 waybar module scripts into one daemon, then decide whether
