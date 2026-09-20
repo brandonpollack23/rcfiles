@@ -36,6 +36,7 @@ PACKAGES=(
   jdk-openjdk # OpenJDK Development Kit
   pandoc      # Universal document converter
   ripgrep     # Recursively searches directories for a regex pattern
+  rofimoji    # Emoji/character picker, bound to SUPER+: in the Hyprland config
   ruby        # Dynamic, open source programming language
   rustup      # rust stuff
   shellcheck  # Static analysis tool for shell scripts

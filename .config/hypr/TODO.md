@@ -2,8 +2,6 @@
 
 ## Features
 
-- mozc and indicator
-- emoji picker
 - unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel

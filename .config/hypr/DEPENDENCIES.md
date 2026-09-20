@@ -28,6 +28,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
+| `rofimoji` | emoji picker; runs through `hyprlauncher --dmenu` (`--selector hyprlauncher`), copies with `wl-clipboard` and pastes with `ydotool` (`--typer ydotool`, since the autodetected `wtype` breaks Hyprland's binds) | `SUPER+SHIFT+semicolon` |
 
 ## Bing wallpaper (`scripts/bing-wallpaper.sh`)
 
@@ -87,7 +88,7 @@ the panel's top label.
 
 | Package | Provides | Used by |
 | --- | --- | --- |
-| `ydotool` | `ydotool`, `ydotoold` (enable `ydotool.service` user unit; needs `/dev/uinput` access) | sends arrow/Enter/Delete keys to the panel from the `notifications` submap |
+| `ydotool` | `ydotool`, `ydotoold` (enable `ydotool.service` user unit; needs `/dev/uinput` access) | sends arrow/Enter/Delete keys to the panel from the `notifications` submap; pastes the emoji picked by `rofimoji` |
 
 ## System menu (`scripts/system.sh`)
 
@@ -129,7 +130,7 @@ into the config.
 sudo pacman -S --needed hyprland zenity coreutils procps-ng ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
-  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils
+  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome hypr-persist
 ```

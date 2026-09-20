@@ -67,8 +67,13 @@ bindExec(mainMod .. " + r", programs.menu, { description = "App launcher" })
 bindExec(mainMod .. " + T", programs.terminal, { description = "Terminal" })
 bindExec(mainMod .. " + e", programs.fileManager, { description = "File manager" })
 bindExec(mainMod .. " + SHIFT + Escape", "pidof hyprlock || " .. programs.lock, { description = "Lock screen" })
-bindExec(mainMod .. " + SHIFT + r", "~/.config/hypr/scripts/system.sh", { description = "System commands (restart, power, maintenance)" })
+bindExec(
+	mainMod .. " + SHIFT + r",
+	"~/.config/hypr/scripts/system.sh",
+	{ description = "System commands (restart, power, maintenance)" }
+)
 bindExec(mainMod .. " + slash", "~/.config/hypr/scripts/keybind-search.sh", { description = "Search keybindings" })
+bindExec(mainMod .. " + semicolon", programs.emoji, { description = "Pick an emoji" })
 bindExec(mainMod .. " + N", "swaync-client -t -sw", { description = "Toggle notification center" })
 bindExec(mainMod .. " + SHIFT + N", "swaync-client --hide-all -sw", { description = "Dismiss all notification popups" })
 
