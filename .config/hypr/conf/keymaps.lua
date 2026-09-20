@@ -111,7 +111,7 @@ bind(reorderSubmapKey, hl.dsp.submap("group-reorder"), {
 	command = "submap group-reorder",
 })
 
--- Undo/redo for the group actions above, see conf/wm.lua. Only covers what goes
+-- Undo/redo for the group actions above, see conf/wm/. Only covers what goes
 -- through these binds: Hyprland fires no event for grouping done by mouse.
 bind(mainMod .. " + CTRL + Z", wm.undo, { description = "Undo the last group change", command = "wm.undo" })
 bind(mainMod .. " + CTRL + SHIFT + Z", wm.redo, {
@@ -153,7 +153,7 @@ bindExec(mainMod .. " + semicolon", programs.emoji, { description = "Pick an emo
 bindExec(mainMod .. " + N", "swaync-client -t -sw", { description = "Toggle notification center" })
 bindExec(mainMod .. " + SHIFT + N", "swaync-client --hide-all -sw", { description = "Dismiss all notification popups" })
 
--- Theming, see conf/theme.lua
+-- Theming, see conf/theme/
 bindExec(mainMod .. " + F5", "~/.config/hypr/scripts/theme-select.sh", { description = "Pick a theme" })
 bind(mainMod .. " + F6", function()
 	theme.cycle(1)
@@ -162,7 +162,7 @@ bind(mainMod .. " + SHIFT + F6", function()
 	theme.cycle(-1)
 end, { description = "Previous theme", command = "theme.cycle -1" })
 
--- Workspaces, see conf/workspaces.lua
+-- Workspaces, see conf/workspaces/
 -- Switch workspaces with mainMod + [0-9]
 for i = 1, 10 do
 	local key = i % 10 -- 10 maps to key 0
@@ -217,7 +217,7 @@ bind(
 	{ description = "Previous workspace", command = "focus workspace e-1" }
 )
 
--- Reorder workspaces: swap the active one with its neighbour, see conf/workspaces.lua
+-- Reorder workspaces: swap the active one with its neighbour, see conf/workspaces/
 bind(mainMod .. " + CTRL + SHIFT + right", function()
 	workspaces.shift(1)
 end, { description = "Move workspace right", command = "workspaces.shift 1" })

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Workspace picker and naming prompts; the logic lives in conf/workspaces.lua.
+# Workspace picker and naming prompts; the logic lives in conf/workspaces/.
 #   focus   pick a workspace (or create one) in hyprlauncher and go there
 #   move    same, but send the active window there
 #   new     name and place a new workspace and go there

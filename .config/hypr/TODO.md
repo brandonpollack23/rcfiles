@@ -2,11 +2,11 @@
 
 ## Features
 
-- unified settings app
 - named hidden workspaces that current exist should be in the workspace picker
   labeled H1, H2, etc
 - named (non default) hidden workspaces should appear in the workspace picker
   for both moving to a workspace and moving a window to a workspace
+- unified settings app
 - better group theming/bars alternative
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
@@ -25,8 +25,9 @@
 - wl freeze to pause games in background and free up gpu
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - popup for sound/mute
+- hyprfocus bounce windows or some other focus indicator
 - once we have session restore, check that named workspaces
-  (`conf/workspaces.lua`) are compatible with it, and whether workspace names
+  (`conf/workspaces/`) are compatible with it, and whether workspace names
   can be restored across reboots too
 - hyprmoncfg for different monitor setups/arragements that saves
 

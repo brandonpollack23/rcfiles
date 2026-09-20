@@ -78,7 +78,7 @@
   },
 
   // Lock icon while the focused group is locked; Hyprland sends SIGRTMIN+8 on
-  // focus change and lock toggle (conf/wm.lua in the hypr config).
+  // focus change and lock toggle (conf/wm/group.lua in the hypr config).
   "custom/grouplock": {
     "exec": "hyprctl repl 'return require(\"conf.wm\").groupLockStatus()'",
     "return-type": "json",

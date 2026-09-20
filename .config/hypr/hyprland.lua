@@ -82,23 +82,6 @@ hl.config({
 	},
 })
 
--- Group tab: `color` darkened toward the background, glowing up from the bottom
--- edge. The groupbar ignores the angle: it stretches a vertical gradient over
--- each tab with the stops spaced evenly (max 10). The source orders them bottom
--- first, but the texture is drawn flipped, so on screen the list runs top-down.
--- From the bottom, the accent eases over `fade` stops into the tint, which is
--- `color` mixed `depth` (0..1) of the way to the background.
-local function tabGradient(color, alpha, fade, depth)
-	fade = fade or 6
-	local tint = theme.mix(color, "background", depth or 0.5)
-	local colors = { theme.rgba(color) }
-	for i = 1, 9 do
-		local t = 1 - (1 - math.min(i / fade, 1)) ^ 2 -- ease-out
-		table.insert(colors, 1, theme.rgba(theme.mix(color, tint, t), alpha))
-	end
-	return { colors = colors }
-end
-
 local groupInactive = theme.rgba("border_inactive", 0.67)
 local tabInactive = theme.rgba("surface", 0.8)
 
@@ -122,9 +105,9 @@ hl.config({
 			rounding = 4,
 
 			col = {
-				active = tabGradient("primary", 0.93),
+				active = theme.tabGradient("primary", 0.93),
 				inactive = tabInactive,
-				locked_active = tabGradient("primary", 0.93),
+				locked_active = theme.tabGradient("primary", 0.93),
 				locked_inactive = tabInactive,
 			},
 			-- the groupbar can't draw icons, so unlocked tabs are marked by title color

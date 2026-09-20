@@ -1,5 +1,5 @@
 // Workspace buttons, included from config.jsonc. One custom module per
-// workspace id (ids are compacted to 1..N in conf/workspaces.lua) so each can
+// workspace id (ids are compacted to 1..N in conf/workspaces/order.lua) so each can
 // have its own tooltip listing its windows; hyprland/workspaces has no
 // per-workspace tooltip. Buttons for workspaces that don't exist hide
 // themselves.
