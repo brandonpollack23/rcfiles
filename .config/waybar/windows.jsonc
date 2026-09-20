@@ -1,0 +1,109 @@
+// Taskbar buttons, included from config.jsonc. One custom module per slot --
+// waybar has no module that lists windows, and a single label could not be
+// clicked per window -- the same shape workspaces.jsonc uses. The script fills
+// slots in layout order, so slot N is the Nth window from the left rather than
+// any particular window; clicks come back through it for that reason. Slots
+// past the last window hide themselves, and custom/winmore stands in for any
+// windows past the last slot. Keep SLOTS in windows.py equal to the number of
+// custom/winN modules here.
+{
+  "group/windows": {
+    "orientation": "horizontal",
+    // Explicit: the tabs of a group have to touch for style.css to draw one
+    // box around them, so nothing may sit between two buttons.
+    "spacing": 0,
+    "modules": [
+      "custom/win1",
+      "custom/win2",
+      "custom/win3",
+      "custom/win4",
+      "custom/win5",
+      "custom/win6",
+      "custom/win7",
+      "custom/win8",
+      "custom/win9",
+      "custom/win10",
+      "custom/win11",
+      "custom/win12",
+      "custom/winmore",
+    ],
+  },
+
+  "custom/win1": {
+    "exec": "~/.config/waybar/scripts/windows.py 1",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 1",
+  },
+
+  "custom/win2": {
+    "exec": "~/.config/waybar/scripts/windows.py 2",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 2",
+  },
+
+  "custom/win3": {
+    "exec": "~/.config/waybar/scripts/windows.py 3",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 3",
+  },
+
+  "custom/win4": {
+    "exec": "~/.config/waybar/scripts/windows.py 4",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 4",
+  },
+
+  "custom/win5": {
+    "exec": "~/.config/waybar/scripts/windows.py 5",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 5",
+  },
+
+  "custom/win6": {
+    "exec": "~/.config/waybar/scripts/windows.py 6",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 6",
+  },
+
+  "custom/win7": {
+    "exec": "~/.config/waybar/scripts/windows.py 7",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 7",
+  },
+
+  "custom/win8": {
+    "exec": "~/.config/waybar/scripts/windows.py 8",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 8",
+  },
+
+  "custom/win9": {
+    "exec": "~/.config/waybar/scripts/windows.py 9",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 9",
+  },
+
+  "custom/win10": {
+    "exec": "~/.config/waybar/scripts/windows.py 10",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 10",
+  },
+
+  "custom/win11": {
+    "exec": "~/.config/waybar/scripts/windows.py 11",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 11",
+  },
+
+  "custom/win12": {
+    "exec": "~/.config/waybar/scripts/windows.py 12",
+    "return-type": "json",
+    "on-click": "~/.config/waybar/scripts/windows.py focus 12",
+  },
+
+  // How many windows did not fit; hides itself when they all did.
+  "custom/winmore": {
+    "exec": "~/.config/waybar/scripts/windows.py overflow",
+    "return-type": "json",
+  },
+}
