@@ -29,7 +29,7 @@ import sys
 # Slots must match the number of custom/winN modules in windows.jsonc.
 SLOTS = 12
 ACTIVE_LEN = 34
-IDLE_LEN = 13
+IDLE_LEN = 34
 TOOLTIP_LEN = 90
 OVERFLOW_LIST = 8
 
@@ -189,7 +189,11 @@ def overflow_state(items):
     if len(hidden) > OVERFLOW_LIST:
         lines.append(f"<i>… {len(hidden) - OVERFLOW_LIST} more</i>")
 
-    return {"text": f"+{len(hidden)}", "class": ["overflow"], "tooltip": "\n".join(lines)}
+    return {
+        "text": f"+{len(hidden)}",
+        "class": ["overflow"],
+        "tooltip": "\n".join(lines),
+    }
 
 
 def window_state(items, slot, active, locked):
