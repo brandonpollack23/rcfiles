@@ -42,7 +42,7 @@ hl.config({
 		-- gaps between windows and monitor edges
 		gaps_out = 0,
 
-		border_size = 2,
+		border_size = 3,
 
 		col = {
 			active_border = theme.gradient("primary", "secondary", 0.6),

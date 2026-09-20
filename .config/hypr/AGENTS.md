@@ -61,6 +61,10 @@ something you've done.
   not use `wtype`: its private keymap makes Hyprland's binds read every key as
   Escape. `wtype` is fine for sending keys to a client.
 - Live tests act on the user's real session and focus; use throwaway windows on
-  a hidden special workspace where possible.
+  a hidden special workspace where possible. Make your own named one for it
+  (`special:agenttest`, e.g. `hl.exec_cmd("ghostty", { workspace = "special:agenttest silent" })`)
+  rather than borrowing `special:Hidden`, which is the user's scratchpad. Close
+  every window you opened when you are done, and check nothing of yours is left
+  behind, including dialogs. Leaving test windows around is a bug in the test.
 - From a shell without `HYPRLAND_INSTANCE_SIGNATURE`, take it from
   `hyprctl instances`.

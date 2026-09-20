@@ -2,6 +2,10 @@
 
 ## Features
 
+- named hidden workspaces that current exist should be in the workspace picker
+  labeled H1, H2, etc
+- named (non default) hidden workspaces should appear in the workspace picker
+  for both moving to a workspace and moving a window to a workspace
 - unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
@@ -13,7 +17,9 @@
 - coding orientation, cycle between layouts on workspaces and save them
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
-  whenever and unminimize (special workspace(s))
+- named hidden workspaces (super alt shift w for new hidden workspace, empty
+  ones close except default one, ) whenever and unminimize (special
+  workspace(s))
 - Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
   `open`)
 - ungroup command that keeps the current focus as master
@@ -22,6 +28,7 @@
 - once we have session restore, check that named workspaces
   (`conf/workspaces.lua`) are compatible with it, and whether workspace names
   can be restored across reboots too
+- hyprmoncfg for different monitor setups/arragements that saves
 
 ## Disabled config snippets
 

@@ -111,6 +111,14 @@ bind(reorderSubmapKey, hl.dsp.submap("group-reorder"), {
 	command = "submap group-reorder",
 })
 
+-- Undo/redo for the group actions above, see conf/wm.lua. Only covers what goes
+-- through these binds: Hyprland fires no event for grouping done by mouse.
+bind(mainMod .. " + CTRL + Z", wm.undo, { description = "Undo the last group change", command = "wm.undo" })
+bind(mainMod .. " + CTRL + SHIFT + Z", wm.redo, {
+	description = "Redo the last undone group change",
+	command = "wm.redo",
+})
+
 -- Window manipulation (floating, pseudo, splitting, etc)
 bind(
 	mainMod .. " + v",
