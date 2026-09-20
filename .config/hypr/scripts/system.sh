@@ -14,6 +14,7 @@ poweroff|󰐥  Shut down'
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
 restart-waybar|󰑓  Restart waybar
+restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
@@ -64,6 +65,13 @@ reload-hyprland) hyprctl reload ;;
 restart-waybar)
   pkill -x waybar
   setsid -f waybar >/dev/null 2>&1
+  ;;
+restart-taskbar-daemon)
+  # Waybar does not need restarting with it: the daemon recreates its FIFOs and
+  # each button's restart-interval brings its reader back.
+  pkill -f 'bin/brpol-waybard$'
+  while pgrep -f 'bin/brpol-waybard$' >/dev/null; do sleep 0.1; done
+  setsid -f ~/.config/waybar/brpol-waybard/scripts/launch.sh >/dev/null 2>&1
   ;;
 reload-swaync) swaync-client -R && swaync-client -rs ;;
 restart-swaync)

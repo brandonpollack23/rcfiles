@@ -1,0 +1,26 @@
+[project]
+name = "brpol-waybard"
+version = "0.1.0"
+description = "One daemon behind every waybar taskbar, workspace and hidden-workspace button"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[project.scripts]
+brpol-waybard = "brpol_waybard.__main__:main"
+
+[dependency-groups]
+dev = ["ruff>=0.16"]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "brpol_waybard"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

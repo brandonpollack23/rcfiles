@@ -1,11 +1,14 @@
 // Taskbar buttons, included from config.jsonc. One custom module per slot --
 // waybar has no module that lists windows, and a single label could not be
-// clicked per window -- the same shape workspaces.jsonc uses. The script fills
-// slots in layout order, so slot N is the Nth window from the left rather than
-// any particular window; clicks come back through it for that reason. Slots
-// past the last window hide themselves, and custom/winmore stands in for any
-// windows past the last slot. Keep SLOTS in windows.py equal to the number of
-// custom/winN modules here.
+// clicked per window -- the same shape workspaces.jsonc uses. The slots are
+// filled in layout order, so slot N is the Nth window from the left rather
+// than any particular window; clicks go back through the daemon for that
+// reason. Slots past the last window hide themselves, and custom/winmore
+// stands in for any windows past the last slot.
+//
+// Every module here is `cat` on a FIFO that brpol-waybard writes, not a script
+// of its own: see brpol-waybard/README.md. Keep the number of custom/winN
+// modules equal to SLOTS in brpol-waybard/src/brpol_waybard/windows.py.
 {
   "group/windows": {
     "orientation": "horizontal",
@@ -30,80 +33,119 @@
   },
 
   "custom/win1": {
-    "exec": "~/.config/waybar/scripts/windows.py 1",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win1",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 1",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 1",
   },
 
   "custom/win2": {
-    "exec": "~/.config/waybar/scripts/windows.py 2",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win2",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 2",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 2",
   },
 
   "custom/win3": {
-    "exec": "~/.config/waybar/scripts/windows.py 3",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win3",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 3",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 3",
   },
 
   "custom/win4": {
-    "exec": "~/.config/waybar/scripts/windows.py 4",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win4",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 4",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 4",
   },
 
   "custom/win5": {
-    "exec": "~/.config/waybar/scripts/windows.py 5",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win5",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 5",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 5",
   },
 
   "custom/win6": {
-    "exec": "~/.config/waybar/scripts/windows.py 6",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win6",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 6",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 6",
   },
 
   "custom/win7": {
-    "exec": "~/.config/waybar/scripts/windows.py 7",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win7",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 7",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 7",
   },
 
   "custom/win8": {
-    "exec": "~/.config/waybar/scripts/windows.py 8",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win8",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 8",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 8",
   },
 
   "custom/win9": {
-    "exec": "~/.config/waybar/scripts/windows.py 9",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win9",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 9",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 9",
   },
 
   "custom/win10": {
-    "exec": "~/.config/waybar/scripts/windows.py 10",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win10",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 10",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 10",
   },
 
   "custom/win11": {
-    "exec": "~/.config/waybar/scripts/windows.py 11",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win11",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 11",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 11",
   },
 
   "custom/win12": {
-    "exec": "~/.config/waybar/scripts/windows.py 12",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh win12",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/windows.py focus 12",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh focus 12",
   },
 
   // How many windows did not fit; hides itself when they all did.
   "custom/winmore": {
-    "exec": "~/.config/waybar/scripts/windows.py overflow",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh winmore",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
   },
 }

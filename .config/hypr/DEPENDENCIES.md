@@ -10,8 +10,8 @@ Arch/AUR. Keep this in sync with the config (see `AGENTS.md`).
 | `hyprland` (>= 0.56, Lua config) | compositor, `hyprctl`, Lua stubs in `/usr/share/hypr/stubs` | everything; `hyprctl eval` is the callback for the close-others dialog (`conf/wm/close.lua`) and the workspace prompts (`scripts/workspace-menu.sh`); stubs are referenced by `.luarc.json` |
 | `zenity` | `zenity` | close-others confirmation dialog (`conf/wm/dialog.lua`); workspace name and placement prompts (`scripts/workspace-menu.sh`), floated by a rule in `conf/rules.lua` |
 | `coreutils` | `ls`, `mkdir` | listing `conf/themes/` and creating `$XDG_STATE_HOME/hypr` (`conf/theme/`) |
-| `procps-ng` | `pkill`, `pidof` | signals waybar to refresh the group lock indicator (`conf/wm/group.lua`); single-instance check for the lock bind (`conf/keymaps.lua`) |
-| `python` | `python3` | the waybar workspace buttons: one per workspace id (`~/.config/waybar/scripts/workspace.py`) and one per hidden workspace (`~/.config/waybar/scripts/hidden-workspace.py`) |
+| `procps-ng` | `pkill`, `pidof` | single-instance check for the lock bind (`conf/keymaps.lua`) |
+| `uv` | `uv` | runs the waybar taskbar daemon and manages its pinned Python and locked dependencies (`~/.config/waybar/brpol-waybard/`). Supplies its own interpreter, so this config does not need the `python` package |
 
 ## Programs (`conf/programs.lua`)
 
@@ -23,7 +23,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `nautilus` | file manager | `SUPER+E` |
 | `hyprlauncher` | app launcher; `--dmenu` picker for `scripts/keybind-search.sh`, `scripts/theme-select.sh`, `scripts/workspace-menu.sh` and `scripts/system.sh` | `SUPER+R`, `SUPER+/`, `SUPER+F5`, `SUPER+W`, `SUPER+M`, `SUPER+SHIFT+S`, `SUPER+SHIFT+R` |
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
-| `waybar` | desktop bar, autostarted; `custom/grouplock` module shows the group lock icon (`conf/wm/group.lua`) | `hyprland.lua` |
+| `waybar` | desktop bar, autostarted. Its taskbar, workspace and hidden-workspace buttons are fed by `brpol-waybard`, started just before it (`conf/programs.lua`); the group lock icon it draws comes from there (`conf/wm/group.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
@@ -94,8 +94,8 @@ the panel's top label.
 ## System menu (`scripts/system.sh`)
 
 `SUPER+SHIFT+R`, and the power subset from the waybar power button. Also uses
-`hyprlauncher`, `hyprlock`, `waybar`, `swaync`, `ghostty` and `procps-ng` from
-the tables above.
+`hyprlauncher`, `hyprlock`, `waybar`, `uv`, `swaync`, `ghostty` and `procps-ng`
+from the tables above.
 
 | Package | Provides | Used by |
 | --- | --- | --- |
@@ -128,7 +128,7 @@ into the config.
 ## Install
 
 ```sh
-sudo pacman -S --needed hyprland zenity coreutils procps-ng python ghostty nautilus \
+sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard

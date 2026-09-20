@@ -11,6 +11,10 @@
 // own group, and so their own pill, rather than more buttons of
 // group/workspaces: they are a separate set of workspaces, reached by toggling
 // rather than by switching, and style.css colours the whole pill to say so.
+//
+// Every module here is `cat` on a FIFO that brpol-waybard writes, not a script
+// of its own: see brpol-waybard/README.md. Keep the counts equal to SLOTS in
+// brpol-waybard/src/brpol_waybard/workspaces.py and hidden.py.
 {
   "group/workspaces": {
     "orientation": "horizontal",
@@ -39,160 +43,220 @@
   },
 
   "custom/ws1": {
-    "exec": "~/.config/waybar/scripts/workspace.py 1",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws1",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 1 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws2": {
-    "exec": "~/.config/waybar/scripts/workspace.py 2",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws2",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 2 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws3": {
-    "exec": "~/.config/waybar/scripts/workspace.py 3",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws3",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 3 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws4": {
-    "exec": "~/.config/waybar/scripts/workspace.py 4",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws4",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 4 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws5": {
-    "exec": "~/.config/waybar/scripts/workspace.py 5",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws5",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 5 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws6": {
-    "exec": "~/.config/waybar/scripts/workspace.py 6",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws6",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 6 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws7": {
-    "exec": "~/.config/waybar/scripts/workspace.py 7",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws7",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 7 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws8": {
-    "exec": "~/.config/waybar/scripts/workspace.py 8",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws8",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 8 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws9": {
-    "exec": "~/.config/waybar/scripts/workspace.py 9",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws9",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 9 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws10": {
-    "exec": "~/.config/waybar/scripts/workspace.py 10",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws10",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 10 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws11": {
-    "exec": "~/.config/waybar/scripts/workspace.py 11",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws11",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 11 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws12": {
-    "exec": "~/.config/waybar/scripts/workspace.py 12",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws12",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 12 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws13": {
-    "exec": "~/.config/waybar/scripts/workspace.py 13",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws13",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 13 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws14": {
-    "exec": "~/.config/waybar/scripts/workspace.py 14",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws14",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 14 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws15": {
-    "exec": "~/.config/waybar/scripts/workspace.py 15",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws15",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 15 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws16": {
-    "exec": "~/.config/waybar/scripts/workspace.py 16",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws16",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 16 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws17": {
-    "exec": "~/.config/waybar/scripts/workspace.py 17",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws17",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 17 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws18": {
-    "exec": "~/.config/waybar/scripts/workspace.py 18",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws18",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 18 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws19": {
-    "exec": "~/.config/waybar/scripts/workspace.py 19",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws19",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 19 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
   },
 
   "custom/ws20": {
-    "exec": "~/.config/waybar/scripts/workspace.py 20",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh ws20",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.focus({ workspace = 20 })'",
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
@@ -212,38 +276,56 @@
 
   // The special:Hidden scratchpad: bright while open, dim otherwise.
   "custom/hidden": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden",
     "return-type": "json",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
     "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"Hidden\")'",
   },
 
   "custom/hidden1": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py 1",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden1",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 1",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh toggle 1",
   },
 
   "custom/hidden2": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py 2",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden2",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 2",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh toggle 2",
   },
 
   "custom/hidden3": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py 3",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden3",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 3",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh toggle 3",
   },
 
   "custom/hidden4": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py 4",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden4",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 4",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh toggle 4",
   },
 
   "custom/hidden5": {
-    "exec": "~/.config/waybar/scripts/hidden-workspace.py 5",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh hidden5",
     "return-type": "json",
-    "on-click": "~/.config/waybar/scripts/hidden-workspace.py toggle 5",
+    // The daemon recreates its FIFOs when it restarts; this is what brings the
+    // reader back without restarting waybar too.
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh toggle 5",
   },
 }

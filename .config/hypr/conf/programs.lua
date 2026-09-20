@@ -4,6 +4,9 @@ return {
 	fileManager = "nautilus",
 	menu = "hyprlauncher",
 	desktop_bar = "waybar",
+	-- The one process behind every scripted button in the bar; started just
+	-- before it. See ~/.config/waybar/brpol-waybard/README.md.
+	taskbar_daemon = "~/.config/waybar/brpol-waybard/scripts/launch.sh",
 	notification_center = "swaync",
 	lock = "hyprlock",
 	idle = "hypridle",

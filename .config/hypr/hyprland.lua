@@ -22,6 +22,8 @@ hl.monitor({
 
 -- See https://wiki.hypr.land/configuring/core/autostart/
 hl.on("hyprland.start", function()
+	-- Before the bar: its buttons block on the daemon's FIFOs until it is up.
+	hl.exec_cmd(programs.taskbar_daemon)
 	hl.exec_cmd(programs.desktop_bar)
 	hl.exec_cmd(programs.notification_center)
 	hl.exec_cmd(programs.idle)

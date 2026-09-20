@@ -1,30 +1,17 @@
-#!/usr/bin/env python3
-# One taskbar entry for Waybar: `windows.py <slot>` prints the window sitting in
-# that slot, and `windows.py overflow` prints the "+N" standing in for the
-# windows past the last slot. One custom module per slot, the same way
-# workspaces.jsonc does it, so every entry is its own button: waybar has no
-# module that lists windows, and a single label could not be clicked per window.
-#
-# Entries are ordered the way the windows are laid out on screen, left to right,
-# with the tabs of a group kept together in tab order. Prints one JSON line per
-# change, driven by Hyprland's event socket, plus SIGRTMIN+8 for the group
-# changes Hyprland has no event for (conf/wm/taskbar.lua sends it).
-#   class "active"    the focused window
-#   class "shown"     the tab its group is currently showing
-#   class "locked"    in a locked group; the lock icon rides on its first tab
-#   class "floating"
-#   class "solo" / "gstart" / "gmid" / "gend"   which tab of its group it is,
-#                                               which is what spaces groups apart
-#
-# `windows.py focus <slot>` focuses that slot's window; the buttons come back in
-# this way because which window a slot holds changes as windows come and go.
+"""The per-window taskbar: one entry per window on the focused monitor.
+
+Entries are ordered the way the windows are laid out on screen, left to right,
+with the tabs of a group kept together in tab order.
+
+  class "active"    the focused window
+  class "shown"     the tab its group is currently showing
+  class "locked"    in a locked group; the lock icon rides on its first tab
+  class "floating"
+  class "solo" / "gstart" / "gmid" / "gend"   which tab of its group it is,
+                                              which is what spaces groups apart
+"""
+
 import html
-import json
-import os
-import select
-import signal
-import socket
-import sys
 
 # Slots must match the number of custom/winN modules in windows.jsonc.
 SLOTS = 12
@@ -77,9 +64,6 @@ SUFFIXES = (
     " - Visual Studio Code",
 )
 
-# conf/wm/taskbar.lua sends this after anything that changes a group.
-GROUP_SIGNAL = signal.SIGRTMIN + 8
-
 EVENTS = {
     "activewindowv2",
     "openwindow",
@@ -98,29 +82,7 @@ EVENTS = {
     "monitorremoved",
 }
 
-SOCKET_DIR = os.path.join(
-    os.environ["XDG_RUNTIME_DIR"], "hypr", os.environ["HYPRLAND_INSTANCE_SIGNATURE"]
-)
-
-
-def request(message):
-    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-        sock.connect(os.path.join(SOCKET_DIR, ".socket.sock"))
-        sock.sendall(message.encode())
-        chunks = []
-        while chunk := sock.recv(65536):
-            chunks.append(chunk)
-    return b"".join(chunks).decode()
-
-
-def hyprctl(what):
-    return json.loads(request(f"j/{what}") or "[]")
-
-
-# Whether a group is locked is not in `hyprctl clients`, so it comes from Lua.
-def locked_addresses():
-    reply = request('repl return require("conf.wm").lockedAddresses()')
-    return {word for word in reply.split() if word.startswith("0x")}
+MODULES = [f"win{slot}" for slot in range(1, SLOTS + 1)] + ["winmore"]
 
 
 def shorten(text, limit):
@@ -144,8 +106,8 @@ def app_name(client):
 # Every window on the focused monitor, in layout order, as (client, tab index,
 # group size). Group members all report the same position, so a group is placed
 # once, where it sits, and its tabs follow in tab order.
-def entries():
-    monitor = next((m for m in hyprctl("monitors") if m["focused"]), None)
+def entries(snapshot):
+    monitor = next((m for m in snapshot.monitors if m["focused"]), None)
     if monitor is None:
         return []
 
@@ -154,9 +116,7 @@ def entries():
     workspace = special["id"] if special["name"] else monitor["activeWorkspace"]["id"]
 
     clients = [
-        c
-        for c in hyprctl("clients")
-        if c["workspace"]["id"] == workspace and c["mapped"]
+        c for c in snapshot.clients if c["workspace"]["id"] == workspace and c["mapped"]
     ]
     by_address = {c["address"]: c for c in clients}
 
@@ -240,66 +200,20 @@ def window_state(items, slot, active, locked):
     return {"text": text, "class": classes, "tooltip": "\n".join(lines)}
 
 
-def state(slot):
-    items = entries()
-    if slot == "overflow":
-        return overflow_state(items)
-    window = hyprctl("activewindow")
-    active = window.get("address") if isinstance(window, dict) else None
-    return window_state(items, slot, active, locked_addresses())
+def render(snapshot):
+    """Every window module, from one layout pass."""
+    items = entries(snapshot)
+    states = {
+        f"win{slot}": window_state(items, slot, snapshot.active, snapshot.locked)
+        for slot in range(1, SLOTS + 1)
+    }
+    states["winmore"] = overflow_state(items)
+    return states
 
 
-def focus(slot):
-    items = entries()
-    if slot <= min(len(items), SLOTS):
-        address = items[slot - 1][0]["address"]
-        request(f'repl require("conf.wm").focusAddress("{address}")')
-
-
-def watch(slot):
-    # The signal handler only has to break the wait; set_wakeup_fd is what the
-    # loop actually sees, since a realtime signal would otherwise be ignored
-    # only after the default action has killed the process.
-    reader, writer = os.pipe()
-    os.set_blocking(writer, False)
-    signal.signal(GROUP_SIGNAL, lambda *_: None)
-    signal.set_wakeup_fd(writer)
-
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(os.path.join(SOCKET_DIR, ".socket2.sock"))
-
-    last = None
-
-    def emit():
-        nonlocal last
-        out = json.dumps(state(slot))
-        if out != last:
-            print(out, flush=True)
-            last = out
-
-    emit()
-    buffer = ""
-    while True:
-        ready, _, _ = select.select([sock, reader], [], [])
-        if reader in ready:
-            os.read(reader, 4096)
-            emit()
-        if sock in ready:
-            data = sock.recv(65536)
-            if not data:
-                return
-            buffer += data.decode(errors="replace")
-            complete, _, buffer = buffer.rpartition("\n")
-            if any(line.partition(">>")[0] in EVENTS for line in complete.split("\n")):
-                emit()
-
-
-def main():
-    if sys.argv[1] == "focus":
-        focus(int(sys.argv[2]))
-        return
-    watch("overflow" if sys.argv[1] == "overflow" else int(sys.argv[1]))
-
-
-if __name__ == "__main__":
-    main()
+def address_at(snapshot, slot):
+    """The window a click on slot N means, or None while that slot is empty."""
+    items = entries(snapshot)
+    if slot > min(len(items), SLOTS):
+        return None
+    return items[slot - 1][0]["address"]

@@ -1,0 +1,85 @@
+"""Buttons for the hidden (special) workspaces.
+
+  slot None   the default special:Hidden scratchpad
+  slot N      the Nth other hidden workspace, 1-based
+
+A slot with no workspace prints empty text, which hides the module. Slots are
+the special workspaces other than DEFAULT, ascending by name -- the same rule
+conf/workspaces/hidden.lua uses to label them H1, H2, ... in the picker, so a
+button and its picker row always mean the same workspace.
+
+  class "hidden"  every button here, for the shared teal styling
+  class "shown"   the workspace is open on a monitor
+  class "empty"   no windows on it
+"""
+
+# Slots must match the number of custom/hiddenN modules in workspaces.jsonc.
+SLOTS = 5
+DEFAULT = "Hidden"
+PREFIX = "special:"
+
+EVENTS = {
+    "activespecial",
+    "openwindow",
+    "closewindow",
+    "movewindowv2",
+    "createworkspacev2",
+    "destroyworkspacev2",
+    "renameworkspace",
+}
+
+MODULES = ["hidden"] + [f"hidden{slot}" for slot in range(1, SLOTS + 1)]
+
+
+def specials(snapshot):
+    """Every special workspace right now, by bare name."""
+    return {
+        w["name"][len(PREFIX) :]: w
+        for w in snapshot.workspaces
+        if w["name"].startswith(PREFIX)
+    }
+
+
+def slot_name(open_, slot):
+    """The workspace a numbered button stands for, or None while it has none."""
+    names = sorted(name for name in open_ if name != DEFAULT)
+    return names[slot - 1] if slot <= len(names) else None
+
+
+def state(snapshot, slot):
+    open_ = specials(snapshot)
+    name = DEFAULT if slot is None else slot_name(open_, slot)
+    if name is None:
+        return {"text": "", "class": [], "tooltip": ""}
+
+    workspace = open_.get(name)
+    windows = workspace["windows"] if workspace else 0
+    shown = any(
+        m["specialWorkspace"]["name"] == PREFIX + name for m in snapshot.monitors
+    )
+
+    if slot is None:
+        text = f"󰘓  {windows}" if windows else "󰘓"
+    else:
+        text = f"󰘓  {name}"
+    plural = "" if windows == 1 else "s"
+    return {
+        "text": text,
+        "class": ["hidden"]
+        + (["shown"] if shown else [])
+        + ([] if windows else ["empty"]),
+        "tooltip": f"{name}: {windows} window{plural}",
+    }
+
+
+def render(snapshot):
+    """Every hidden-workspace module."""
+    states = {"hidden": state(snapshot, None)}
+    for slot in range(1, SLOTS + 1):
+        states[f"hidden{slot}"] = state(snapshot, slot)
+    return states
+
+
+def name_at(snapshot, slot):
+    """The workspace a click on hidden slot N means, or None while it has none."""
+    return slot_name(specials(snapshot), slot)

@@ -9,18 +9,15 @@ local windows = require("conf.wm.windows")
 
 local M = {}
 
--- The taskbar scripts follow Hyprland's event socket and live for as long as
--- waybar does, so the signal waybar handles for its own modules never reaches
--- them. They listen for this one themselves. The pattern matches only the
--- rendering processes -- `windows.py <slot>` -- and not the short-lived
--- `windows.py focus <slot>` a click spawns, which a realtime signal would kill.
-local SIGNAL = 8
-local RENDERERS = "scripts/windows[.]py [0-9]"
+-- The one daemon behind every taskbar button reads commands from a FIFO; this
+-- script is the only thing that writes to it, and does nothing when the daemon
+-- is not running. See ~/.config/waybar/brpol-waybard/README.md.
+local CTL = "~/.config/waybar/brpol-waybard/scripts/ctl.sh"
 
 -- Group lock and group membership have no Hyprland event behind them, so every
 -- action that changes one calls this.
 function M.refresh()
-	hl.exec_cmd(string.format("pkill -RTMIN+%d -f %q", SIGNAL, RENDERERS))
+	hl.exec_cmd(CTL .. " refresh")
 end
 
 -- Every window whose group is locked, space separated. A lock belongs to the
