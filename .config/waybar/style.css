@@ -13,6 +13,7 @@ window#waybar {
 #workspaces,
 #custom-launcher,
 #custom-power,
+#submap,
 #custom-hidden,
 #app,
 #clock,
@@ -90,6 +91,24 @@ window#waybar {
 #custom-power:hover {
   color: #11111b;
   background: #f38ba8;
+}
+
+/* A submap is modal: it is only up while keys are being grabbed, so it gets a
+   filled pill rather than an outlined one. Waybar hides it the rest of the
+   time. */
+#submap {
+  color: #11111b;
+  background: #f9e2af;
+  border-color: #f9e2af;
+  padding: 0 14px;
+  margin-left: 8px;
+}
+
+/* Driven from the notification panel rather than the window manager; matches
+   the bell on the right. */
+#submap.notifications {
+  background: #cba6f7;
+  border-color: #cba6f7;
 }
 
 #app {

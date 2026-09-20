@@ -13,7 +13,7 @@
   "margin-left": 10,
   "margin-right": 10,
 
-  "modules-left": ["custom/launcher", "custom/power"],
+  "modules-left": ["custom/launcher", "custom/power", "hyprland/submap"],
 
   "modules-center": ["group/app"],
 
@@ -34,6 +34,15 @@
     "format": "󰐥",
     "tooltip-format": "Log out, suspend, reboot or shut down",
     "on-click": "~/.config/hypr/scripts/system.sh power",
+  },
+
+  // Which submap the keyboard is in (conf/keymaps.lua in the hypr config).
+  // Hidden entirely unless one is active, since that is a modal state worth
+  // noticing; the name doubles as a CSS class, see #submap.<name> in style.css.
+  "hyprland/submap": {
+    "format": "󰌌  {}",
+    "max-length": 24,
+    "tooltip": false,
   },
 
   // The special:Hidden scratchpad: bright while open, dim otherwise.

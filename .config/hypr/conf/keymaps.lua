@@ -40,8 +40,76 @@ bind(mainMod .. " + SHIFT + G", wm.toggleGroupLock, {
 	description = "Toggle whether the active group is 'locked' (new windows dont open in it)",
 	command = "wm.toggleGroupLock",
 })
-bind("ALT + TAB", hl.dsp.group.next(), { description = "Next window in group", command = "group.next" })
-bind("ALT + SHIFT + TAB", hl.dsp.group.prev(), { description = "Previous window in group", command = "group.prev" })
+bind(mainMod .. " + TAB", hl.dsp.group.next(), { description = "Next window in group", command = "group.next" })
+bind(
+	mainMod .. " + SHIFT + TAB",
+	hl.dsp.group.prev(),
+	{ description = "Previous window in group", command = "group.prev" }
+)
+
+-- Joining a group takes a direction, and reordering tabs is repetitive, so both
+-- get a submap: the first key opens it, and Escape (or any unbound key) leaves.
+local groupSubmapKey = mainMod .. " + ALT + G"
+local reorderSubmapKey = mainMod .. " + CTRL + G"
+
+hl.define_submap("group", function()
+	for _, entry in ipairs({ { "h", "left" }, { "j", "down" }, { "k", "up" }, { "l", "right" } }) do
+		local key, direction = entry[1], entry[2]
+		bind(key, function()
+			wm.groupWith(direction)
+			hl.dispatch(hl.dsp.submap("reset"))
+		end, {
+			prefix = groupSubmapKey,
+			description = "Group with the window or group to the " .. direction,
+			command = "wm.groupWith " .. direction,
+		})
+	end
+	bind("Escape", hl.dsp.submap("reset"), {
+		prefix = groupSubmapKey,
+		description = "Cancel grouping",
+		command = "submap reset",
+	})
+	hl.bind("catchall", hl.dsp.submap("reset"))
+end)
+bind(groupSubmapKey, hl.dsp.submap("group"), {
+	description = "Group with a neighbour, then h/j/k/l for the direction",
+	command = "submap group",
+})
+bind(mainMod .. " + ALT + SHIFT + G", wm.ungroup, {
+	description = "Move the window out of its group, leaving the group intact",
+	command = "wm.ungroup",
+})
+
+-- Unlike the grouping submap this one stays open, so tabs can be walked along
+-- with repeated h/l.
+hl.define_submap("group-reorder", function()
+	bind("h", function()
+		wm.moveInGroup(false)
+	end, {
+		prefix = reorderSubmapKey,
+		repeating = true,
+		description = "Move the window earlier in its group",
+		command = "wm.moveInGroup back",
+	})
+	bind("l", function()
+		wm.moveInGroup(true)
+	end, {
+		prefix = reorderSubmapKey,
+		repeating = true,
+		description = "Move the window later in its group",
+		command = "wm.moveInGroup forward",
+	})
+	bind("Escape", hl.dsp.submap("reset"), {
+		prefix = reorderSubmapKey,
+		description = "Finish reordering",
+		command = "submap reset",
+	})
+	hl.bind("catchall", hl.dsp.submap("reset"))
+end)
+bind(reorderSubmapKey, hl.dsp.submap("group-reorder"), {
+	description = "Reorder tabs in the group, then h/l, Escape to finish",
+	command = "submap group-reorder",
+})
 
 -- Window manipulation (floating, pseudo, splitting, etc)
 bind(

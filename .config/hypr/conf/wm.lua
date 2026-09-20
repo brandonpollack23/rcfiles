@@ -109,6 +109,25 @@ function M.toggleGroupLock()
 	M.refreshGroupLock()
 end
 
+-- Hyprland picks the group to join by direction, so callers (the SUPER + ALT + G
+-- submap) supply one. `into_or_create_group` also groups with a lone window,
+-- which plain `into_group` refuses.
+function M.groupWith(direction)
+	hl.dispatch(hl.dsp.window.move({ into_or_create_group = direction }))
+	M.refreshGroupLock()
+end
+
+-- Pops the active window out on its own; the rest of the group stays together.
+function M.ungroup()
+	hl.dispatch(hl.dsp.window.move({ out_of_group = true }))
+	M.refreshGroupLock()
+end
+
+-- Reorder the active window among its group's tabs.
+function M.moveInGroup(forward)
+	hl.dispatch(hl.dsp.group.move_window({ forward = forward }))
+end
+
 hl.on("window.active", M.refreshGroupLock)
 
 return M

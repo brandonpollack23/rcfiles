@@ -2,15 +2,16 @@ local M = {}
 
 -- `hyprctl binds` reports every Lua bind as an opaque `__lua` handler, so the
 -- searchable list (scripts/keybind-search.sh) is recorded here instead.
--- `opts.command` is the searchable command name; it is stripped before hl.bind.
+-- `opts.command` is the searchable command name, and `opts.prefix` the key that
+-- opens the submap a bind lives in; both are stripped before hl.bind.
 local entries = {}
 
 function M.bind(keys, dispatcher, opts)
 	opts = opts or {}
-	local command = opts.command
-	opts.command = nil
+	local command, prefix = opts.command, opts.prefix
+	opts.command, opts.prefix = nil, nil
 	table.insert(entries, {
-		keys = keys,
+		keys = prefix and (prefix .. " then " .. keys) or keys,
 		command = command or "",
 		description = opts.description or "",
 		dispatcher = dispatcher,
