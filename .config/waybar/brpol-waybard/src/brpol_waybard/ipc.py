@@ -9,45 +9,56 @@ import json
 import os
 import socket
 import subprocess
+from typing import Any, Final
 
-SOCKET_DIR = os.path.join(
+from .types import Address
+
+SOCKET_DIR: Final = os.path.join(
     os.environ["XDG_RUNTIME_DIR"], "hypr", os.environ["HYPRLAND_INSTANCE_SIGNATURE"]
 )
 
-REQUEST_SOCKET = os.path.join(SOCKET_DIR, ".socket.sock")
-EVENT_SOCKET = os.path.join(SOCKET_DIR, ".socket2.sock")
+REQUEST_SOCKET: Final = os.path.join(SOCKET_DIR, ".socket.sock")
+EVENT_SOCKET: Final = os.path.join(SOCKET_DIR, ".socket2.sock")
 
 
-def request(message):
+def request(message: str) -> str:
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.connect(REQUEST_SOCKET)
         sock.sendall(message.encode())
-        chunks = []
+        chunks: list[bytes] = []
         while chunk := sock.recv(65536):
             chunks.append(chunk)
     return b"".join(chunks).decode()
 
 
-def query(what):
+def query(what: str) -> Any:
+    """Decode a `j/` reply.
+
+    This is the trust boundary, and the Any is deliberate: JSON decoding cannot
+    know the shape, so snapshot.py names it instead. Hyprland is the only
+    writer, nothing validates the reply at runtime, and a field added there
+    without one added to types.py is the one class of mistake types will not
+    catch here.
+    """
     return json.loads(request(f"j/{what}") or "[]")
 
 
 # Whether a group is locked is not in `hyprctl clients`, so it comes from Lua.
 # The 0x filter is what tolerates any REPL banner in the reply.
-def locked_addresses():
+def locked_addresses() -> frozenset[Address]:
     reply = request('repl return require("conf.wm").lockedAddresses()')
-    return {word for word in reply.split() if word.startswith("0x")}
+    return frozenset(word for word in reply.split() if word.startswith("0x"))
 
 
 # A taskbar click knows an address, and only Lua can act on a window that is not
 # the focused one.
-def focus_address(address):
+def focus_address(address: Address) -> None:
     request(f'repl require("conf.wm").focusAddress("{address}")')
 
 
 # Through the binary, not the socket: this is the one call the scripts made that
 # way, and a click is rare enough that the process does not matter.
-def toggle_special(name):
+def toggle_special(name: str) -> None:
     subprocess.run(
         ["hyprctl", "dispatch", f'hl.dsp.workspace.toggle_special("{name}")'],
         capture_output=True,
@@ -55,7 +66,7 @@ def toggle_special(name):
     )
 
 
-def events():
+def events() -> socket.socket:
     """A connected event socket. Readable lines are `name>>data`."""
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     sock.connect(EVENT_SOCKET)

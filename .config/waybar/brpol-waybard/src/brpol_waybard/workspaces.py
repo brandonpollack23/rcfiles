@@ -11,47 +11,55 @@ exist prints empty text, which hides the module.
 """
 
 import html
+from typing import Final
+
+from .snapshot import Snapshot
+from .types import Address, ButtonState, CssClass, EventName, ModuleName, States
 
 # Slots must match the number of custom/wsN modules in workspaces.jsonc.
-SLOTS = 20
-MAX_WINDOWS = 5
-MAX_TITLE = 60
+SLOTS: Final = 20
+MAX_WINDOWS: Final = 5
+MAX_TITLE: Final = 60
 
-EVENTS = {
-    "workspacev2",
-    "focusedmonv2",
-    "moveworkspacev2",
-    "createworkspacev2",
-    "destroyworkspacev2",
-    "renameworkspace",
-    "openwindow",
-    "closewindow",
-    "movewindowv2",
-    "windowtitlev2",
-    "urgent",
-    "monitoradded",
-    "monitorremoved",
-}
+EVENTS: Final[frozenset[EventName]] = frozenset(
+    {
+        "workspacev2",
+        "focusedmonv2",
+        "moveworkspacev2",
+        "createworkspacev2",
+        "destroyworkspacev2",
+        "renameworkspace",
+        "openwindow",
+        "closewindow",
+        "movewindowv2",
+        "windowtitlev2",
+        "urgent",
+        "monitoradded",
+        "monitorremoved",
+    }
+)
 
-MODULES = [f"ws{slot}" for slot in range(1, SLOTS + 1)]
+MODULES: Final[list[ModuleName]] = [f"ws{slot}" for slot in range(1, SLOTS + 1)]
 
 
-def shorten(text):
+def shorten(text: str) -> str:
     return text if len(text) <= MAX_TITLE else text[: MAX_TITLE - 1] + "…"
 
 
-def state(snapshot, ws_id, urgent):
+def state(snapshot: Snapshot, ws_id: int, urgent: set[Address]) -> ButtonState:
     workspace = next((w for w in snapshot.workspaces if w["id"] == ws_id), None)
     if workspace is None:
         return {"text": "", "class": [], "tooltip": ""}
 
-    shown = {m["activeWorkspace"]["id"]: m["focused"] for m in snapshot.monitors}
+    shown: dict[int, bool] = {
+        m["activeWorkspace"]["id"]: m["focused"] for m in snapshot.monitors
+    }
     clients = sorted(
         (c for c in snapshot.clients if c["workspace"]["id"] == ws_id),
         key=lambda c: c["focusHistoryID"],
     )
 
-    classes = []
+    classes: list[CssClass] = []
     if ws_id in shown:
         classes.append("active" if shown[ws_id] else "visible")
         urgent.difference_update(c["address"] for c in clients)
@@ -73,6 +81,6 @@ def state(snapshot, ws_id, urgent):
     return {"text": workspace["name"], "class": classes, "tooltip": "\n".join(lines)}
 
 
-def render(snapshot, urgent):
-    """Every workspace module. `urgent` is mutated: see the note in daemon.py."""
+def render(snapshot: Snapshot, urgent: set[Address]) -> States:
+    """Every workspace module. `urgent` is mutated: see the note in __main__.py."""
     return {f"ws{slot}": state(snapshot, slot, urgent) for slot in range(1, SLOTS + 1)}

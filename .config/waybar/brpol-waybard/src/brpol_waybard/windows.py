@@ -12,18 +12,22 @@ with the tabs of a group kept together in tab order.
 """
 
 import html
+from typing import Final, NamedTuple
+
+from .snapshot import Snapshot
+from .types import Address, ButtonState, Client, CssClass, EventName, ModuleName, States
 
 # Slots must match the number of custom/winN modules in windows.jsonc.
-SLOTS = 12
-ACTIVE_LEN = 34
-IDLE_LEN = 34
-TOOLTIP_LEN = 90
-OVERFLOW_LIST = 8
+SLOTS: Final = 12
+ACTIVE_LEN: Final = 34
+IDLE_LEN: Final = 34
+TOOLTIP_LEN: Final = 90
+OVERFLOW_LIST: Final = 8
 
-LOCK_ICON = "󰌾"
-DEFAULT_ICON = "󰖯"
+LOCK_ICON: Final = "󰌾"
+DEFAULT_ICON: Final = "󰖯"
 
-ICONS = {
+ICONS: Final[dict[str, str]] = {
     "com.mitchellh.ghostty": "󰆍",
     "kitty": "󰆍",
     "org.wezfurlong.wezterm": "󰆍",
@@ -45,7 +49,7 @@ ICONS = {
 }
 
 # Pretty names for the tooltip, which is the one place the raw class would show.
-NAMES = {
+NAMES: Final[dict[str, str]] = {
     "com.mitchellh.ghostty": "Ghostty",
     "org.wezfurlong.wezterm": "WezTerm",
     "google-chrome": "Google Chrome",
@@ -56,7 +60,7 @@ NAMES = {
 }
 
 # Titles that repeat the application name; the icon already says which it is.
-SUFFIXES = (
+SUFFIXES: Final[tuple[str, ...]] = (
     " - Google Chrome",
     " - Chromium",
     " — Mozilla Firefox",
@@ -64,32 +68,44 @@ SUFFIXES = (
     " - Visual Studio Code",
 )
 
-EVENTS = {
-    "activewindowv2",
-    "openwindow",
-    "closewindow",
-    "movewindowv2",
-    "windowtitlev2",
-    "changefloatingmode",
-    "fullscreen",
-    "workspacev2",
-    "focusedmonv2",
-    "moveworkspacev2",
-    "createworkspacev2",
-    "destroyworkspacev2",
-    "activespecial",
-    "monitoradded",
-    "monitorremoved",
-}
+EVENTS: Final[frozenset[EventName]] = frozenset(
+    {
+        "activewindowv2",
+        "openwindow",
+        "closewindow",
+        "movewindowv2",
+        "windowtitlev2",
+        "changefloatingmode",
+        "fullscreen",
+        "workspacev2",
+        "focusedmonv2",
+        "moveworkspacev2",
+        "createworkspacev2",
+        "destroyworkspacev2",
+        "activespecial",
+        "monitoradded",
+        "monitorremoved",
+    }
+)
 
-MODULES = [f"win{slot}" for slot in range(1, SLOTS + 1)] + ["winmore"]
+MODULES: Final[list[ModuleName]] = [f"win{slot}" for slot in range(1, SLOTS + 1)] + [
+    "winmore"
+]
 
 
-def shorten(text, limit):
+class Entry(NamedTuple):
+    """One taskbar slot's window, and where it sits in its group."""
+
+    client: Client
+    tab: int
+    size: int
+
+
+def shorten(text: str, limit: int) -> str:
     return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
 
-def label(client):
+def label(client: Client) -> str:
     title = client["title"] or ""
     for suffix in SUFFIXES:
         if title.endswith(suffix):
@@ -98,7 +114,7 @@ def label(client):
     return title.strip() or client["class"] or "?"
 
 
-def app_name(client):
+def app_name(client: Client) -> str:
     name = client["class"] or "?"
     return NAMES.get(name.lower(), name)
 
@@ -106,7 +122,7 @@ def app_name(client):
 # Every window on the focused monitor, in layout order, as (client, tab index,
 # group size). Group members all report the same position, so a group is placed
 # once, where it sits, and its tabs follow in tab order.
-def entries(snapshot):
+def entries(snapshot: Snapshot) -> list[Entry]:
     monitor = next((m for m in snapshot.monitors if m["focused"]), None)
     if monitor is None:
         return []
@@ -118,9 +134,10 @@ def entries(snapshot):
     clients = [
         c for c in snapshot.clients if c["workspace"]["id"] == workspace and c["mapped"]
     ]
-    by_address = {c["address"]: c for c in clients}
+    by_address: dict[Address, Client] = {c["address"]: c for c in clients}
 
-    result, placed = [], set()
+    result: list[Entry] = []
+    placed: set[Address] = set()
     for client in sorted(clients, key=lambda c: (c["at"][0], c["at"][1])):
         members = [by_address[a] for a in client["grouped"] if a in by_address]
         members = members or [client]
@@ -128,23 +145,23 @@ def entries(snapshot):
             continue
         placed.add(members[0]["address"])
         for index, member in enumerate(members):
-            result.append((member, index, len(members)))
+            result.append(Entry(member, index, len(members)))
     return result
 
 
-def blank():
+def blank() -> ButtonState:
     return {"text": "", "class": [], "tooltip": ""}
 
 
-def overflow_state(items):
+def overflow_state(items: list[Entry]) -> ButtonState:
     hidden = items[SLOTS:]
     if not hidden:
         return blank()
 
     lines = [f"<b>{len(hidden)} more window(s)</b>"]
-    for client, _, _ in hidden[:OVERFLOW_LIST]:
-        app = html.escape(app_name(client))
-        title = html.escape(shorten(label(client), TOOLTIP_LEN))
+    for entry in hidden[:OVERFLOW_LIST]:
+        app = html.escape(app_name(entry.client))
+        title = html.escape(shorten(label(entry.client), TOOLTIP_LEN))
         lines.append(f"<span alpha='60%'>{app}</span>  {title}")
     if len(hidden) > OVERFLOW_LIST:
         lines.append(f"<i>… {len(hidden) - OVERFLOW_LIST} more</i>")
@@ -156,12 +173,17 @@ def overflow_state(items):
     }
 
 
-def window_state(items, slot, active, locked):
+def window_state(
+    items: list[Entry],
+    slot: int,
+    active: Address | None,
+    locked: frozenset[Address],
+) -> ButtonState:
     if slot > min(len(items), SLOTS):
         return blank()
     client, index, size = items[slot - 1]
 
-    classes = []
+    classes: list[CssClass] = []
     if client["address"] == active:
         classes.append("active")
     elif client["visible"]:
@@ -200,10 +222,10 @@ def window_state(items, slot, active, locked):
     return {"text": text, "class": classes, "tooltip": "\n".join(lines)}
 
 
-def render(snapshot):
+def render(snapshot: Snapshot) -> States:
     """Every window module, from one layout pass."""
     items = entries(snapshot)
-    states = {
+    states: States = {
         f"win{slot}": window_state(items, slot, snapshot.active, snapshot.locked)
         for slot in range(1, SLOTS + 1)
     }
@@ -211,9 +233,9 @@ def render(snapshot):
     return states
 
 
-def address_at(snapshot, slot):
+def address_at(snapshot: Snapshot, slot: int) -> Address | None:
     """The window a click on slot N means, or None while that slot is empty."""
     items = entries(snapshot)
     if slot > min(len(items), SLOTS):
         return None
-    return items[slot - 1][0]["address"]
+    return items[slot - 1].client["address"]

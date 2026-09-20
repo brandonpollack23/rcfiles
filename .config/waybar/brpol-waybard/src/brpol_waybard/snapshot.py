@@ -8,23 +8,29 @@ identical `lockedAddresses()` calls into Lua. One snapshot is five.
 from dataclasses import dataclass
 
 from . import ipc
+from .types import Address, Client, Monitor, Workspace
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Snapshot:
-    monitors: list
-    clients: list
-    workspaces: list
-    active: str | None
-    locked: frozenset
+    monitors: list[Monitor]
+    clients: list[Client]
+    workspaces: list[Workspace]
+    active: Address | None
+    locked: frozenset[Address]
 
 
-def take():
-    window = ipc.query("activewindow")
+def take() -> Snapshot:
+    # `activewindow` answers an object, or `{}` with nothing focused; the
+    # empty-reply fallback in query() turns a silent socket into a list.
+    window: Client | list[object] = ipc.query("activewindow")
+    monitors: list[Monitor] = ipc.query("monitors")
+    clients: list[Client] = ipc.query("clients")
+    workspaces: list[Workspace] = ipc.query("workspaces")
     return Snapshot(
-        monitors=ipc.query("monitors"),
-        clients=ipc.query("clients"),
-        workspaces=ipc.query("workspaces"),
+        monitors=monitors,
+        clients=clients,
+        workspaces=workspaces,
         active=window.get("address") if isinstance(window, dict) else None,
-        locked=frozenset(ipc.locked_addresses()),
+        locked=ipc.locked_addresses(),
     )

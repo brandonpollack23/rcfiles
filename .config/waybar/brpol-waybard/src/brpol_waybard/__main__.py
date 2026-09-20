@@ -11,49 +11,56 @@ line from waybar, so the inspection lives here instead.
 import json
 import select
 import signal
+import socket
 import sys
 import time
+from typing import Final, NoReturn
 
 from . import control, fifos, hidden, snapshot, windows, workspaces
+from .types import Address, EventName, ModuleName, States
 
 # Any of these means something a button draws may have moved.
-EVENTS = windows.EVENTS | workspaces.EVENTS | hidden.EVENTS
+EVENTS: Final[frozenset[EventName]] = windows.EVENTS | workspaces.EVENTS | hidden.EVENTS
 
-MODULES = windows.MODULES + workspaces.MODULES + hidden.MODULES
+MODULES: Final[list[ModuleName]] = windows.MODULES + workspaces.MODULES + hidden.MODULES
 
 # Hyprland reports a window opening as several events in a row. Waiting this
 # long collapses them into one snapshot, and is short enough to stay invisible.
-DEBOUNCE = 0.016
+DEBOUNCE: Final = 0.016
 
 
 class Daemon:
-    def __init__(self):
-        # Urgency has no "no longer urgent" event: a window raises it, and it
-        # stays raised until its workspace is looked at. So unlike everything
-        # else here, this is state the snapshot cannot rebuild.
+    # Urgency has no "no longer urgent" event: a window raises it, and it
+    # stays raised until its workspace is looked at. So unlike everything
+    # else here, this is state the snapshot cannot rebuild.
+    urgent: set[Address]
+    bar: fifos.Bar
+    events: socket.socket | None
+
+    def __init__(self) -> None:
         self.urgent = set()
         self.bar = fifos.Bar(MODULES)
         self.events = None
 
-    def render(self):
+    def render(self) -> None:
         state = snapshot.take()
         self.bar.publish(windows.render(state))
         self.bar.publish(workspaces.render(state, self.urgent))
         self.bar.publish(hidden.render(state))
 
-    def run(self):
-        self.events = ipc_events()
+    def run(self) -> None:
+        # Bound locally as well so the type stays narrowed for select().
+        events = self.events = ipc_events()
         self.render()
 
         buffer = ""
-        deadline = None
+        deadline: float | None = None
         while True:
             timeout = (
                 None if deadline is None else max(0.0, deadline - time.monotonic())
             )
-            ready, _, _ = select.select(
-                [self.events, self.bar.control.fd], [], [], timeout
-            )
+            watch: list[socket.socket | int] = [events, self.bar.control.fd]
+            ready, _, _ = select.select(watch, [], [], timeout)
 
             if not ready:
                 deadline = None
@@ -66,8 +73,8 @@ class Daemon:
                 for command in self.bar.commands():
                     dirty |= control.apply(command, self.bar, snapshot.take)
 
-            if self.events in ready:
-                data = self.events.recv(65536)
+            if events in ready:
+                data = events.recv(65536)
                 if not data:
                     return  # Hyprland went away; so do we.
                 buffer += data.decode(errors="replace")
@@ -82,27 +89,27 @@ class Daemon:
             if dirty and deadline is None:
                 deadline = time.monotonic() + DEBOUNCE
 
-    def close(self):
+    def close(self) -> None:
         self.bar.close()
 
 
-def ipc_events():
+def ipc_events() -> socket.socket:
     from . import ipc
 
     return ipc.events()
 
 
-def once(name):
+def once(name: ModuleName) -> None:
     if name not in MODULES:
         sys.exit(f"no such module: {name}\nknown: {' '.join(MODULES)}")
     state = snapshot.take()
-    states = windows.render(state)
+    states: States = windows.render(state)
     states.update(workspaces.render(state, set()))
     states.update(hidden.render(state))
     print(json.dumps(states[name]))
 
 
-def main():
+def main() -> None:
     arguments = sys.argv[1:]
     if arguments and arguments[0] == "--once":
         if len(arguments) != 2:
@@ -116,9 +123,13 @@ def main():
         )
 
     daemon = Daemon()
+
+    def stop(*_: object) -> NoReturn:
+        sys.exit(0)
+
     # Leaving FIFOs behind would block the next `cat` on a pipe nobody writes.
     for received in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
-        signal.signal(received, lambda *_: sys.exit(0))
+        signal.signal(received, stop)
     try:
         daemon.run()
     finally:

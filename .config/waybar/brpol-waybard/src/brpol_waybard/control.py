@@ -11,10 +11,14 @@ spawn:
     toggle <n>     show or hide hidden-workspace slot n
 """
 
+from collections.abc import Callable
+
 from . import hidden, ipc, windows
+from .fifos import Bar
+from .snapshot import Snapshot
 
 
-def apply(command, bar, snapshot_of):
+def apply(command: str, bar: Bar, snapshot_of: Callable[[], Snapshot]) -> bool:
     """Run one command. Returns True when the bar should be recomputed.
 
     `snapshot_of` is called only by the commands that need one, so a refresh

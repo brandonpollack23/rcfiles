@@ -60,6 +60,21 @@ has no event for:
 
 It is a silent no-op when the daemon is not running.
 
+## Checking it
+
+    uv run mypy               # type-check; strict, and expected to stay clean
+    uv run ruff check src/    # lint
+    uv run ruff format src/   # format
+
+Every function is annotated and `mypy --strict` passes, so a change that breaks
+a shape is a failed check rather than a button that quietly stops drawing.
+
+The one place types cannot help is the IPC boundary: `ipc.query` returns `Any`
+because JSON decoding cannot know what came back, and `snapshot.py` names the
+shapes on the way in. Nothing validates them at runtime, so a field Hyprland
+renames is still a `KeyError` at 2am -- `types.py` is a record of what is
+expected, not a guarantee. Everything downstream of that boundary is checked.
+
 ## Adding a dependency
 
     uv add <package>          # or: uv add --group dev <package>
@@ -73,6 +88,7 @@ cloned to -- and an Arch Python major bump cannot break it.
 
 | file | what |
 | --- | --- |
+| `src/brpol_waybard/types.py` | the shapes Hyprland's `j/` replies come back in |
 | `src/brpol_waybard/ipc.py` | the request socket, the event socket, the Lua REPL |
 | `src/brpol_waybard/snapshot.py` | everything the 39 buttons need, fetched once |
 | `src/brpol_waybard/windows.py` | taskbar layout, group tabs, lock icon, overflow |

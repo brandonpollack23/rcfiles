@@ -13,25 +13,35 @@ button and its picker row always mean the same workspace.
   class "empty"   no windows on it
 """
 
+from collections.abc import Mapping
+from typing import Final
+
+from .snapshot import Snapshot
+from .types import ButtonState, CssClass, EventName, ModuleName, States, Workspace
+
 # Slots must match the number of custom/hiddenN modules in workspaces.jsonc.
-SLOTS = 5
-DEFAULT = "Hidden"
-PREFIX = "special:"
+SLOTS: Final = 5
+DEFAULT: Final = "Hidden"
+PREFIX: Final = "special:"
 
-EVENTS = {
-    "activespecial",
-    "openwindow",
-    "closewindow",
-    "movewindowv2",
-    "createworkspacev2",
-    "destroyworkspacev2",
-    "renameworkspace",
-}
+EVENTS: Final[frozenset[EventName]] = frozenset(
+    {
+        "activespecial",
+        "openwindow",
+        "closewindow",
+        "movewindowv2",
+        "createworkspacev2",
+        "destroyworkspacev2",
+        "renameworkspace",
+    }
+)
 
-MODULES = ["hidden"] + [f"hidden{slot}" for slot in range(1, SLOTS + 1)]
+MODULES: Final[list[ModuleName]] = ["hidden"] + [
+    f"hidden{slot}" for slot in range(1, SLOTS + 1)
+]
 
 
-def specials(snapshot):
+def specials(snapshot: Snapshot) -> dict[str, Workspace]:
     """Every special workspace right now, by bare name."""
     return {
         w["name"][len(PREFIX) :]: w
@@ -40,13 +50,13 @@ def specials(snapshot):
     }
 
 
-def slot_name(open_, slot):
+def slot_name(open_: Mapping[str, Workspace], slot: int) -> str | None:
     """The workspace a numbered button stands for, or None while it has none."""
     names = sorted(name for name in open_ if name != DEFAULT)
     return names[slot - 1] if slot <= len(names) else None
 
 
-def state(snapshot, slot):
+def state(snapshot: Snapshot, slot: int | None) -> ButtonState:
     open_ = specials(snapshot)
     name = DEFAULT if slot is None else slot_name(open_, slot)
     if name is None:
@@ -63,23 +73,26 @@ def state(snapshot, slot):
     else:
         text = f"󰘓  {name}"
     plural = "" if windows == 1 else "s"
+    classes: list[CssClass] = ["hidden"]
+    if shown:
+        classes.append("shown")
+    if not windows:
+        classes.append("empty")
     return {
         "text": text,
-        "class": ["hidden"]
-        + (["shown"] if shown else [])
-        + ([] if windows else ["empty"]),
+        "class": classes,
         "tooltip": f"{name}: {windows} window{plural}",
     }
 
 
-def render(snapshot):
+def render(snapshot: Snapshot) -> States:
     """Every hidden-workspace module."""
-    states = {"hidden": state(snapshot, None)}
+    states: States = {"hidden": state(snapshot, None)}
     for slot in range(1, SLOTS + 1):
         states[f"hidden{slot}"] = state(snapshot, slot)
     return states
 
 
-def name_at(snapshot, slot):
+def name_at(snapshot: Snapshot, slot: int) -> str | None:
     """The workspace a click on hidden slot N means, or None while it has none."""
     return slot_name(specials(snapshot), slot)
