@@ -2,7 +2,6 @@
 
 ## Features
 
-- hyprcap
 - master work/reference view (1/4 3/4)
 - switching between predefined layouts: focus task and work/reference. save
   which workspace was which

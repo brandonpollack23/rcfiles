@@ -32,6 +32,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted through `scripts/session.sh`, which first restores the last session's windows at login (from the id-addressed copy `conf/workspaces/persist.lua` writes, so named workspaces survive); settings in `hypr-persist.toml` | `hyprland.lua`, `scripts/session.sh` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
+| `hyprcap` (AUR) | screenshots and recordings (pulls in `grim`, `slurp`, `hyprpicker` for the freeze, `wf-recorder`, `wl-clipboard`, `libnotify`, `jq`). `scripts/capture.py` is its panel: screenshot or record, region, window or screen, save folder, clipboard, delay; GTK4 on the same packages as the bar popups (`python-gobject`, `gtk4`, `gtk4-layer-shell`, `adwaita-icon-theme`), themed from `conf/gtk_colors.lua`, settings in `$XDG_STATE_HOME/hypr/capture.json`. While a recording runs, brpol-waybard shows a timer on the bar (`custom/recording`, from hyprcap's PID file) that opens the panel, or stops the recording on right-click | `Print` (panel), `SHIFT+Print` (region), `CTRL+Print` (window), `ALT+Print` (focused monitor) |
 | `rofimoji` | emoji picker; runs through `hyprlauncher --dmenu` (`--selector hyprlauncher`), copies with `wl-clipboard` and pastes with `ydotool` (`--typer ydotool`, since the autodetected `wtype` breaks Hyprland's binds) | `SUPER+SHIFT+semicolon` |
 
 ## Bing wallpaper (`scripts/bing-wallpaper.sh`)
@@ -170,5 +171,5 @@ sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus 
   hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age
 sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
-paru -S --needed google-chrome hypr-persist l1p0-menus-git
+paru -S --needed google-chrome hypr-persist l1p0-menus-git hyprcap
 ```

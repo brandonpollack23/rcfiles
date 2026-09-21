@@ -1,7 +1,8 @@
-"""The status buttons that are not about windows: PIA, weather, night light.
+"""The status buttons that are not about windows: PIA, weather, night light,
+and the screen recording indicator.
 
 Nothing here comes from Hyprland's event socket, so none of it goes through a
-snapshot. Each button has a source of its own, and all three fit the daemon's
+snapshot. Each button has a source of its own, and all four fit the daemon's
 one select loop without a thread:
 
     pia         `piactl monitor connectionstate`, a line per change; its pipe
@@ -10,9 +11,14 @@ one select loop without a thread:
                 same way, so a slow network never holds up the taskbar
     nightlight  hyprsunset's socket, which has no events: asked on a timer,
                 and again straight after a toggle (`ctl.sh nightlight`)
+    recording   the PID file hyprcap keeps while it records, checked every
+                second: hidden unless it names a live process, and counting
+                up from the file's age while it does
 
 The popups these buttons open live in ~/.config/l1p0-menu, and so does the
 config read here: launch.sh there writes the weather key and city into it.
+The recording button opens the capture panel, ~/.config/hypr/scripts/capture.py,
+which leads with a stop button while a recording runs.
 """
 
 import contextlib
@@ -22,13 +28,14 @@ import select
 import shutil
 import socket
 import subprocess
+import time
 from collections.abc import Collection
 from typing import Any, Final
 
 from .ipc import SOCKET_DIR
 from .types import ButtonState, CssClass, ModuleName, States, blank
 
-MODULES: Final[list[ModuleName]] = ["pia", "weather", "nightlight"]
+MODULES: Final[list[ModuleName]] = ["pia", "weather", "nightlight", "recording"]
 
 PIACTL: Final = shutil.which("piactl")
 CURL: Final = shutil.which("curl")
@@ -38,12 +45,16 @@ CONFIG: Final = os.path.join(
     "config.json",
 )
 SUNSET_SOCKET: Final = os.path.join(SOCKET_DIR, ".hyprsunset.sock")
+REC_PID: Final = os.path.join(
+    os.environ.get("XDG_RUNTIME_DIR") or "/run", "hyprcap_rec.pid"
+)
 WEATHER_URL: Final = "https://api.openweathermap.org/data/2.5/weather"
 
 WEATHER_EVERY: Final = 900.0  # seconds
 # After a fetch that failed, and while launch.sh has not written a key yet.
 WEATHER_RETRY: Final = 60.0
 NIGHTLIGHT_EVERY: Final = 30.0
+RECORDING_EVERY: Final = 1.0
 # `piactl monitor` exits with PIA's daemon; look for it again this often.
 PIA_RETRY: Final = 5.0
 
@@ -111,6 +122,31 @@ def render_nightlight(temperature: int | None) -> ButtonState:
             "tooltip": f"Night light: {temperature}K",
         }
     return {"text": "󰖙", "class": ["off"], "tooltip": "Night light: off"}
+
+
+def render_recording(elapsed: float | None) -> ButtonState:
+    """Seconds since the recording started; None when nothing is recording."""
+    if elapsed is None:
+        return blank()
+    minutes, seconds = divmod(max(0, int(elapsed)), 60)
+    hours, minutes = divmod(minutes, 60)
+    clock = f"{hours}:{minutes:02}:{seconds:02}" if hours else f"{minutes}:{seconds:02}"
+    return {
+        "text": f"󰑋 {clock}",
+        "class": ["recording"],
+        "tooltip": "Recording: click to stop it, right-click to stop at once",
+    }
+
+
+def recording_elapsed() -> float | None:
+    """How long hyprcap has been recording, from when it wrote its PID file;
+    None when there is no file, or its process is gone."""
+    try:
+        with open(REC_PID) as file:
+            os.kill(int(file.read().strip()), 0)
+        return time.time() - os.stat(REC_PID).st_mtime
+    except (OSError, ValueError):
+        return None
 
 
 def config() -> Any:
@@ -191,6 +227,7 @@ class Status:
     weather: ButtonState
     weather_due: float
     nightlight_due: float
+    recording_due: float
 
     def __init__(self) -> None:
         self.pia = None
@@ -201,13 +238,14 @@ class Status:
         self.weather = blank()
         self.weather_due = 0.0
         self.nightlight_due = 0.0
+        self.recording_due = 0.0
 
     def fds(self) -> list[int]:
         return [pipe.fd for pipe in (self.pia, self.fetch) if pipe is not None]
 
     def next_due(self) -> float:
         """When step() next has something to do without a pipe being ready."""
-        due = [self.nightlight_due]
+        due = [self.nightlight_due, self.recording_due]
         if self.pia is None and self.pia_due is not None:
             due.append(self.pia_due)
         if self.fetch is None:
@@ -244,6 +282,10 @@ class Status:
         if now >= self.nightlight_due:
             self.nightlight_due = now + NIGHTLIGHT_EVERY
             states["nightlight"] = render_nightlight(temperature())
+
+        if now >= self.recording_due:
+            self.recording_due = now + RECORDING_EVERY
+            states["recording"] = render_recording(recording_elapsed())
 
         return states
 
@@ -301,6 +343,8 @@ def once(name: ModuleName) -> ButtonState:
     try:
         if name == "nightlight":
             return render_nightlight(temperature())
+        if name == "recording":
+            return render_recording(recording_elapsed())
         if name == "pia":
             if PIACTL is None:
                 return blank()

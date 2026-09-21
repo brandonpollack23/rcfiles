@@ -60,7 +60,7 @@ hl.window_rule({
 -- unblurred.
 hl.layer_rule({
 	name = "popup-glass",
-	match = { namespace = "^(swayosd|(audio|brightness|calendar|battery|network|pia|weather)-layer)$" },
+	match = { namespace = "^(swayosd|(audio|brightness|calendar|battery|network|pia|weather|capture)-layer)$" },
 
 	blur = true,
 	ignore_alpha = 0.3,

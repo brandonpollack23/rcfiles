@@ -1,4 +1,4 @@
-"""The daemon: one event subscription, one snapshot, 39 buttons -- and the three
+"""The daemon: one event subscription, one snapshot, 39 buttons -- and the four
 status buttons of status.py, which have sources of their own.
 
     brpol-waybard              run it

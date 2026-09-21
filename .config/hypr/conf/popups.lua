@@ -11,6 +11,7 @@ local TOGGLE = {
 	["network-layer"] = "l1p0-menus --toggle network",
 	["pia-layer"] = "~/.config/l1p0-menu/popups.py pia",
 	["weather-layer"] = "~/.config/l1p0-menu/popups.py weather",
+	["capture-layer"] = "~/.config/hypr/scripts/capture.py",
 }
 
 -- The gap between the bar and a popup: with follow_mouse, crossing it focuses

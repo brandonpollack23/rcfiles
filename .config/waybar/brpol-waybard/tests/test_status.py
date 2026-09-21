@@ -1,8 +1,9 @@
-"""status.py: the PIA, weather and night light buttons.
+"""status.py: the PIA, weather, night light and recording buttons.
 
 The renderers are pure. Status is driven the way the daemon drives it -- select
 on its pipes, then step() -- against stand-ins for the three things it talks
-to: scripts in place of piactl and curl, and a socket in place of hyprsunset.
+to: scripts in place of piactl and curl, a socket in place of hyprsunset, and
+a PID file in place of hyprcap's.
 """
 
 import contextlib
@@ -274,3 +275,52 @@ def test_toggle_goes_to_the_configured_preset_and_back(
 
 def test_toggle_without_hyprsunset_changes_nothing(source: Status) -> None:
     assert source.toggle_nightlight() == {}
+
+
+# -- recording ---------------------------------------------------------------
+
+
+def test_recording_counts_minutes_and_seconds_then_hours() -> None:
+    assert status.render_recording(65.9)["text"] == "󰑋 1:05"
+    assert status.render_recording(3725)["text"] == "󰑋 1:02:05"
+    assert status.render_recording(65)["class"] == ["recording"]
+    assert status.render_recording(None) == blank()
+
+
+@pytest.fixture
+def pid_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    path = tmp_path / "hyprcap_rec.pid"
+    monkeypatch.setattr(status, "REC_PID", str(path))
+    return path
+
+
+def test_recording_is_hidden_without_a_pid_file(source: Status, pid_file: Path) -> None:
+    assert source.step([], time.monotonic())["recording"] == blank()
+
+
+def test_recording_shows_while_its_process_lives_and_times_from_the_file(
+    source: Status, pid_file: Path
+) -> None:
+    pid_file.write_text(f"{os.getpid()}\n")
+    started = time.time() - 90
+    os.utime(pid_file, (started, started))
+    assert source.step([], time.monotonic())["recording"]["text"] == "󰑋 1:30"
+
+
+def test_recording_left_behind_by_a_dead_process_is_hidden(
+    source: Status, pid_file: Path
+) -> None:
+    # hyprcap removes the file when the recorder exits; one left by a crash
+    # names a process that is gone.
+    pid_file.write_text("999999999\n")
+    assert source.step([], time.monotonic())["recording"] == blank()
+
+
+def test_recording_is_checked_every_second(source: Status, pid_file: Path) -> None:
+    now = time.monotonic()
+    assert source.step([], now)["recording"] == blank()
+    assert "recording" not in source.step([], now + status.RECORDING_EVERY / 2)
+
+    pid_file.write_text(f"{os.getpid()}\n")
+    later = source.step([], now + status.RECORDING_EVERY)
+    assert later["recording"]["class"] == ["recording"]

@@ -126,9 +126,9 @@ def test_startup_draws_every_button(
 
 
 def test_status_buttons_start_hidden(read: Callable[[ModuleName], Reader]) -> None:
-    # No piactl, weather key or hyprsunset here (conftest.py), so each is sent
-    # the blank line that clears whatever it showed before a restart.
-    for name in ("pia", "weather", "nightlight"):
+    # No piactl, weather key, hyprsunset or recording here (conftest.py), so
+    # each is sent the blank line that clears whatever it showed before a restart.
+    for name in ("pia", "weather", "nightlight", "recording"):
         assert read(name).wait_for(lambda s: True, "its first line")["text"] == ""
 
 

@@ -86,6 +86,7 @@
   "group/status": {
     "orientation": "horizontal",
     "modules": [
+      "custom/recording",
       "mpris",
       "tray",
       "custom/pia",
@@ -177,6 +178,17 @@
     "restart-interval": 1,
     "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh nightlight",
     "on-click-right": "l1p0-menus --toggle brightness",
+  },
+
+  // Only there while hyprcap records, counting up. A click opens the capture
+  // panel, which leads with a stop button (Enter) while recording; a
+  // right-click stops straight away.
+  "custom/recording": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh recording",
+    "restart-interval": 1,
+    "on-click": "~/.config/hypr/scripts/capture.py",
+    "on-click-right": "hyprcap rec-stop -q --disable-title",
   },
 
   // Laptops only: there is no backlight device on a desktop.

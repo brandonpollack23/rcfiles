@@ -384,6 +384,7 @@ window#waybar {
 #backlight,
 #custom-pia,
 #custom-nightlight,
+#custom-recording,
 #custom-notification {
   padding: 0 9px;
 }
@@ -409,6 +410,22 @@ window#waybar {
 
 #custom-nightlight.on {
   color: #fab387;
+}
+
+/* Pulses, so a recording left running is hard to miss. */
+@keyframes recording-pulse {
+  from {
+    color: #f38ba8;
+  }
+  to {
+    color: rgba(243, 139, 168, 0.45);
+  }
+}
+
+#custom-recording.recording {
+  color: #f38ba8;
+  font-weight: bold;
+  animation: recording-pulse 1s ease-in-out infinite alternate;
 }
 
 #backlight {

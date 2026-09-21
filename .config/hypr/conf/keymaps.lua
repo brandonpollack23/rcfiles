@@ -153,6 +153,16 @@ bindExec(mainMod .. " + semicolon", programs.emoji, { description = "Pick an emo
 bindExec(mainMod .. " + N", "swaync-client -t -sw", { description = "Toggle notification center" })
 bindExec(mainMod .. " + SHIFT + N", "swaync-client --hide-all -sw", { description = "Dismiss all notification popups" })
 
+-- Screenshots and recordings. Print opens the capture panel (scripts/capture.py):
+-- screenshot or record, region, window or screen, and where to save. The
+-- modifiers skip it: freeze the screen while selecting, copy to the clipboard,
+-- save to ~/Pictures/Screenshots and notify.
+bindExec("Print", "~/.config/hypr/scripts/capture.py", { description = "Capture panel (screenshot or record)" })
+local shot = "hyprcap shot -z -c -w -n -s "
+bindExec("SHIFT + Print", shot .. "region", { description = "Screenshot a region" })
+bindExec("CTRL + Print", shot .. "window", { description = "Screenshot a window" })
+bindExec("ALT + Print", shot .. "monitor:active", { description = "Screenshot the focused monitor" })
+
 -- Theming, see conf/theme/
 bindExec(mainMod .. " + F5", "~/.config/hypr/scripts/theme-select.sh", { description = "Pick a theme" })
 bind(mainMod .. " + F6", function()
