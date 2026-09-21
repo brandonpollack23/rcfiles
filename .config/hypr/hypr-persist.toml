@@ -8,8 +8,10 @@ save_interval = 120
 # Where session files are stored
 session_dir = "~/.local/share/hypr-persist"
 
-# Automatically restore the "last" session on daemon start
-restore_on_start = true
+# Off: the daemon would replay workspace names as selectors, which named
+# workspaces break. scripts/session.sh restores at login instead, from the
+# id-addressed copy conf/workspaces/persist.lua writes as session "boot".
+restore_on_start = false
 
 # Launch one command per window (true) or one per unique app (false)
 per_window_launch = false

@@ -30,7 +30,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `hyprsunset` | night light daemon, autostarted; driven over its socket by the bar's night light module and the brightness popup | `hyprland.lua` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
-| `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
+| `hypr-persist` (AUR) | session save/restore daemon, autostarted through `scripts/session.sh`, which first restores the last session's windows at login (from the id-addressed copy `conf/workspaces/persist.lua` writes, so named workspaces survive); settings in `hypr-persist.toml` | `hyprland.lua`, `scripts/session.sh` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
 | `rofimoji` | emoji picker; runs through `hyprlauncher --dmenu` (`--selector hyprlauncher`), copies with `wl-clipboard` and pastes with `ydotool` (`--typer ydotool`, since the autodetected `wtype` breaks Hyprland's binds) | `SUPER+SHIFT+semicolon` |
 

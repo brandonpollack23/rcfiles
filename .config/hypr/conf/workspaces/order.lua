@@ -11,6 +11,10 @@ local END, FIRST = "At the end", "First"
 
 M.END = END
 
+-- Set while a session restore is addressing workspaces by id (persist.lua):
+-- renumbering under it would send the windows still to come to the wrong place.
+local suspended = false
+
 -- The placement lines for a new workspace, default first: the end, the start,
 -- then after each existing workspace in id order.
 function M.positions()
@@ -84,11 +88,23 @@ end
 -- Renumber normal workspaces to 1..N, keeping their order, so the ids match what
 -- e+1/e-1 cycle through. Ascending order means each target id is free.
 function M.compact()
+	if suspended then
+		return
+	end
 	for i, workspace in ipairs(ids.sorted()) do
 		if workspace.id ~= i then
 			ids.change(workspace, i)
 		end
 	end
+end
+
+function M.suspend()
+	suspended = true
+end
+
+function M.resume()
+	suspended = false
+	M.compact()
 end
 
 -- Compact after a workspace comes or goes (e.g. Super+7 with three workspaces

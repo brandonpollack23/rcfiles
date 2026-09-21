@@ -17,7 +17,9 @@ return {
 	nightlight = "hyprsunset",
 	lock = "hyprlock",
 	idle = "hypridle",
-	session = "hypr-persist",
+	-- Session save/restore. session.sh runs the hypr-persist daemon, after the
+	-- login restore when it is passed `restore` (conf/workspaces/persist.lua).
+	session = "~/.config/hypr/scripts/session.sh",
 	wallpaper = "awww-daemon",
 	input_ime = "fcitx5 -d",
 	-- Copies the pick and pastes it into the focused window. ydotool, not the

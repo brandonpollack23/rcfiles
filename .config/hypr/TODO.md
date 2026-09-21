@@ -19,9 +19,6 @@
 - wl freeze to pause games in background and free up gpu
 - theme the file manager (`nautilus`, `conf/programs.lua`)
 - hyprfocus bounce windows or some other focus indicator
-- once we have session restore, check that named workspaces (`conf/workspaces/`)
-  are compatible with it, and whether workspace names can be restored across
-  reboots too
 - hyprmoncfg for different monitor setups/arragements that saves
 - mise migration?
 
