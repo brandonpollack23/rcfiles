@@ -44,7 +44,8 @@ the live bar, because the tests fake that side:
   `workspaces.SLOTS` and `hidden.SLOTS`
 - the classes in `../style.css`, which must stay in step with `CssClass` in
   `types.py`, and its `transition`, which must match `FADE` in `fade.py`
-- the `custom/pia`, `custom/weather` and `custom/nightlight` modules in
+- the `custom/pia`, `custom/weather`, `custom/nightlight`, `custom/recording`
+  and `custom/kdeconnect` modules in
   `../config.jsonc`, named for `status.MODULES`, and
   `~/.config/l1p0-menu/launch.sh`, which writes the `config.json` that
   `status.py` reads the weather key, city and night preset from

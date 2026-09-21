@@ -77,9 +77,11 @@ ARCH_PACKAGES=(
   hyprsunset     # Night light, driven from the bar and its popup (.config/l1p0-menu)
   inotify-tools  # Command-line utilities for monitoring file system events
   jq             # JSON processor; parses Bing's image metadata (.config/hypr/scripts/bing-wallpaper.sh)
+  kdeconnect     # Phone integration; the bar's phone module (.config/waybar/brpol-waybard)
   kio-gdrive     # KIO slave for Google Drive integration with KDE
   neovide        # Neovim client in a fully featured graphical user interface
   sops           # Decrypts *.sops.* secrets in this repo (sops-bootstrap.sh), e.g. the weather API key
+  sshfs          # Browsing the phone's files from kdeconnect-app
   swayosd        # Volume/brightness OSD, started by Hyprland (.config/swayosd)
   tlp            # Advanced power management tool for Linux
   tlpui          # Graphical user interface for TLP

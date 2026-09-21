@@ -71,6 +71,8 @@ type CssClass = Literal[
     "on",
     "off",
     "recording",
+    "unpaired",
+    "charging",
 ]
 """Every class the bar's CSS styles. Same reasoning as EventName: style.css and
 these renderers have to agree, and nothing else checks that they do.

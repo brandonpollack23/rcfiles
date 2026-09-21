@@ -92,6 +92,7 @@
       "custom/pia",
       "network",
       "bluetooth",
+      "custom/kdeconnect",
       "pulseaudio",
       "custom/nightlight",
       "backlight",
@@ -178,6 +179,18 @@
     "restart-interval": 1,
     "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh nightlight",
     "on-click-right": "l1p0-menus --toggle brightness",
+  },
+
+  // The KDE Connect phone and its battery, redrawn on each signal kdeconnectd
+  // sends; muted while it is away, hidden without KDE Connect installed.
+  // Click for the app (pairing, files, SMS), right-click to ring the phone.
+  "custom/kdeconnect": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh kdeconnect",
+    "restart-interval": 1,
+    "on-click": "kdeconnect-app",
+    "on-click-right": "~/.config/waybar/brpol-waybard/scripts/ctl.sh ping-phone",
+    "on-click-middle": "kdeconnect-sms",
   },
 
   // Only there while hyprcap records, counting up. A click opens the capture

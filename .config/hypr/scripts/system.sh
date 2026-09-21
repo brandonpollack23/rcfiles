@@ -19,6 +19,7 @@ reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-swayosd|󰑓  Restart volume/brightness OSD (swayosd, reloads its style)
 restart-hyprsunset|󰑓  Restart night light (hyprsunset)
+restart-kdeconnect|󰑓  Restart KDE Connect (phone)
 edit-secrets|󰌆  Edit secrets (sops: weather API key)
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
 restart-hypridle|󰑓  Restart hypridle (idle dim, lock, screens off)
@@ -103,6 +104,12 @@ restart-hyprsunset)
   pkill -x hyprsunset
   while pgrep -x hyprsunset >/dev/null; do sleep 0.1; done
   setsid -f hyprsunset >/dev/null 2>&1
+  ;;
+restart-kdeconnect)
+  # The bar's phone button starts it again over D-Bus as soon as it is gone.
+  pkill -x kdeconnectd
+  while pgrep -x kdeconnectd >/dev/null; do sleep 0.1; done
+  setsid -f /usr/bin/kdeconnectd >/dev/null 2>&1
   ;;
 edit-secrets) in_terminal sops "$(dirname "$(readlink -f ~/.config/l1p0-menu)")/../secrets.sops.env" ;;
 restart-ydotool) systemctl --user restart ydotool ;;

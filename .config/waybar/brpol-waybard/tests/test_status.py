@@ -1,9 +1,9 @@
-"""status.py: the PIA, weather, night light and recording buttons.
+"""status.py: the PIA, weather, night light, recording and phone buttons.
 
 The renderers are pure. Status is driven the way the daemon drives it -- select
-on its pipes, then step() -- against stand-ins for the three things it talks
-to: scripts in place of piactl and curl, a socket in place of hyprsunset, and
-a PID file in place of hyprcap's.
+on its pipes, then step() -- against stand-ins for the things it talks to:
+scripts in place of piactl, curl and gdbus, a socket in place of hyprsunset,
+and a PID file in place of hyprcap's.
 """
 
 import contextlib
@@ -324,3 +324,125 @@ def test_recording_is_checked_every_second(source: Status, pid_file: Path) -> No
     pid_file.write_text(f"{os.getpid()}\n")
     later = source.step([], now + status.RECORDING_EVERY)
     assert later["recording"]["class"] == ["recording"]
+
+
+# -- kdeconnect --------------------------------------------------------------
+
+
+def test_kdeconnect_states() -> None:
+    phone = status.Phone("p1", "Pixel", True, 83, False)
+    assert status.render_kdeconnect(phone) == {
+        "text": "󰄜 83%",
+        "class": ["connected"],
+        "tooltip": "Pixel: 83%",
+    }
+    charging = status.render_kdeconnect(status.Phone("p1", "Pixel", True, 83, True))
+    assert charging["class"] == ["charging"]
+    assert charging["tooltip"] == "Pixel: 83%, charging"
+    away = status.render_kdeconnect(status.Phone("p1", "Pixel", False, None, False))
+    assert away["class"] == ["disconnected"]
+    assert away["tooltip"] == "Pixel: not connected"
+    assert status.render_kdeconnect(None)["class"] == ["unpaired"]
+
+
+def test_kdeconnect_without_a_shared_battery_shows_just_the_phone() -> None:
+    drawn = status.render_kdeconnect(status.Phone("p1", "Pixel", True, None, False))
+    assert drawn == {"text": "󰄜", "class": ["connected"], "tooltip": "Pixel"}
+
+
+class FakeKdeconnect:
+    """gdbus against a kdeconnectd with one paired phone, which is reachable
+    while `reachable` exists. `gdbus monitor` prints a signal once `signal`
+    exists; `sendPing` writes the object path it was called on to `pinged`."""
+
+    def __init__(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        self.reachable = tmp_path / "reachable"
+        self.signal = tmp_path / "signal"
+        self.pinged = tmp_path / "pinged"
+        gdbus = script(
+            tmp_path / "gdbus",
+            'if test "$1" = monitor; then\n'
+            "  echo 'The name org.kde.kdeconnect is owned by :1.42'\n"
+            f'  until test -e "{self.signal}"; do sleep 0.01; done\n'
+            "  echo '/modules/kdeconnect/devices/p1: org.kde.kdeconnect.device"
+            ".reachableChanged ()'\n"
+            "  exec sleep 30\n"
+            "fi\n"
+            "path=$6 method=$8\nshift 8\n"
+            'case "$method" in\n'
+            "*.devices)\n"
+            f'  if test "$1" = false || test -e "{self.reachable}"; then\n'
+            "    echo \"(['p1'],)\"\n"
+            "  else echo '([],)'; fi ;;\n"
+            "*.Get)\n"
+            '  case "$2" in\n'
+            "  name) echo '(<\"Bob'\"'\"'s Pixel\">,)' ;;\n"
+            f'  isReachable) test -e "{self.reachable}" && echo "(<true>,)" '
+            '|| echo "(<false>,)" ;;\n'
+            "  charge) echo '(<83>,)' ;;\n"
+            "  isCharging) echo '(<true>,)' ;;\n"
+            "  esac ;;\n"
+            f'*.sendPing) echo "$path" >"{self.pinged}"; echo "()" ;;\n'
+            "*) exit 1 ;;\n"
+            "esac\n",
+        )
+        monkeypatch.setattr(status, "GDBUS", gdbus)
+        monkeypatch.setattr(status, "KDECONNECT_CLI", "/usr/bin/kdeconnect-cli")
+
+
+@pytest.fixture
+def kdeconnect(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> FakeKdeconnect:
+    return FakeKdeconnect(tmp_path, monkeypatch)
+
+
+def test_kdeconnect_is_asked_again_on_each_signal(
+    kdeconnect: FakeKdeconnect, source: Status
+) -> None:
+    source.kdeconnect_due = 0.0
+    first = pump(source, lambda seen: "kdeconnect" in seen, "the first state")
+    assert first["kdeconnect"]["class"] == ["disconnected"]
+    assert first["kdeconnect"]["tooltip"] == "Bob's Pixel: not connected"
+
+    kdeconnect.reachable.touch()
+    kdeconnect.signal.touch()
+    seen = pump(
+        source,
+        lambda seen: seen.get("kdeconnect", blank())["class"] == ["charging"],
+        "the phone to connect",
+    )
+    assert seen["kdeconnect"]["text"] == "󰄜 83%"
+
+
+def test_kdeconnect_hides_and_looks_again_when_the_monitor_exits(
+    source: Status, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(status, "GDBUS", script(tmp_path / "gdbus", "exit 1\n"))
+    monkeypatch.setattr(status, "KDECONNECT_CLI", "/usr/bin/kdeconnect-cli")
+    source.kdeconnect_due = 0.0
+
+    seen = pump(
+        source,
+        lambda seen: source.kdeconnect is None and seen.get("kdeconnect") == blank(),
+        "its exit",
+    )
+    # Nothing answered the call either: the same as nothing paired.
+    assert source.kdeconnect_due is not None
+    assert source.kdeconnect_due > time.monotonic()
+    assert "kdeconnect" in seen
+
+
+def test_without_kdeconnect_there_is_no_phone_button(source: Status) -> None:
+    assert source.kdeconnect_due is None
+    assert "kdeconnect" not in source.step([], time.monotonic())
+    assert status.once("kdeconnect") == blank()
+
+
+def test_ping_reaches_a_connected_phone_only(kdeconnect: FakeKdeconnect) -> None:
+    Status.ping_phone()
+    assert not kdeconnect.pinged.exists()
+
+    kdeconnect.reachable.touch()
+    Status.ping_phone()
+    assert kdeconnect.pinged.read_text().strip() == (
+        "/modules/kdeconnect/devices/p1/ping"
+    )

@@ -100,6 +100,8 @@ on a click elsewhere or when another window takes focus.
 | `curl` | `curl` | IP location (ipinfo.io, `launch.sh`) and the bar's current weather (OpenWeatherMap, brpol-waybard) |
 | Private Internet Access client (pia-download, not packaged) | `piactl` | PIA popup and bar module; both hide without it |
 | `hyprsunset` | its socket beside Hyprland's | night light state and toggle (brpol-waybard) |
+| `kdeconnect`, `glib2` | `kdeconnectd` (D-Bus activated), `kdeconnect-app`, `kdeconnect-sms`; `gdbus` | the bar's phone module (`custom/kdeconnect`): brpol-waybard follows kdeconnectd with `gdbus monitor` and asks it for the phone and battery, and pings it on right-click; click opens `kdeconnect-app`, middle-click `kdeconnect-sms`. Hidden without `kdeconnect-cli` |
+| `sshfs` | `sshfs` | browsing the phone's files from `kdeconnect-app` |
 | `brightnessctl` | `brightnessctl` | scrolling the waybar backlight module (laptops) |
 | `pavucontrol`, `nm-connection-editor`, `blueman` | full settings apps | middle/right-click on the audio, network and Bluetooth modules |
 
@@ -141,6 +143,7 @@ from the tables above.
 | `swayosd` | `swayosd-server` | restart volume/brightness OSD |
 | `l1p0-menus-git` (AUR), `hyprsunset` | `l1p0-menus`, `hyprsunset` | restart waybar (restarts the bar popups with it), restart night light |
 | `sops` | `sops` | edit secrets |
+| `kdeconnect` | `kdeconnectd` | restart KDE Connect |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -168,7 +171,8 @@ sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus 
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk \
-  hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age
+  hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age \
+  kdeconnect glib2 sshfs
 sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome hypr-persist l1p0-menus-git hyprcap

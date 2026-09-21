@@ -383,6 +383,7 @@ window#waybar {
 #battery,
 #backlight,
 #custom-pia,
+#custom-kdeconnect,
 #custom-nightlight,
 #custom-recording,
 #custom-notification {
@@ -400,6 +401,19 @@ window#waybar {
 }
 
 #custom-pia.busy {
+  color: #f9e2af;
+}
+
+/* Muted while the phone is away or unpaired; yellow while it charges. */
+#custom-kdeconnect {
+  color: #7f849c;
+}
+
+#custom-kdeconnect.connected {
+  color: #a6e3a1;
+}
+
+#custom-kdeconnect.charging {
   color: #f9e2af;
 }
 

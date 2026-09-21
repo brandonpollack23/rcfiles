@@ -10,6 +10,7 @@ spawn:
     focus <n>      focus the window in taskbar slot n
     toggle <n>     show or hide hidden-workspace slot n
     nightlight     night light on or off
+    ping-phone     make the KDE Connect phone ring
 """
 
 from . import hidden, ipc, layout, snapshot
@@ -48,5 +49,8 @@ def apply(command: str, bar: Bar, status: Status) -> bool:
         # hyprsunset reports nothing back, so the button is redrawn from here.
         case "nightlight":
             bar.publish(status.toggle_nightlight())
+
+        case "ping-phone":
+            status.ping_phone()
 
     return False

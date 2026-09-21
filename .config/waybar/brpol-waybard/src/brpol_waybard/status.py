@@ -1,8 +1,8 @@
 """The status buttons that are not about windows: PIA, weather, night light,
-and the screen recording indicator.
+the screen recording indicator and the phone.
 
 Nothing here comes from Hyprland's event socket, so none of it goes through a
-snapshot. Each button has a source of its own, and all four fit the daemon's
+snapshot. Each button has a source of its own, and all five fit the daemon's
 one select loop without a thread:
 
     pia         `piactl monitor connectionstate`, a line per change; its pipe
@@ -14,6 +14,10 @@ one select loop without a thread:
     recording   the PID file hyprcap keeps while it records, checked every
                 second: hidden unless it names a live process, and counting
                 up from the file's age while it does
+    kdeconnect  kdeconnectd on the session bus: `gdbus monitor` prints a line
+                for every signal it sends (a phone coming or going, pairing, a
+                battery report), and each batch of lines is the cue to ask it
+                again. Asking starts kdeconnectd if it is not running yet
 
 The popups these buttons open live in ~/.config/l1p0-menu, and so does the
 config read here: launch.sh there writes the weather key and city into it.
@@ -21,24 +25,37 @@ The recording button opens the capture panel, ~/.config/hypr/scripts/capture.py,
 which leads with a stop button while a recording runs.
 """
 
+import ast
 import contextlib
 import json
 import os
+import re
 import select
 import shutil
 import socket
 import subprocess
 import time
 from collections.abc import Collection
+from dataclasses import dataclass
 from typing import Any, Final
 
 from .ipc import SOCKET_DIR
 from .types import ButtonState, CssClass, ModuleName, States, blank
 
-MODULES: Final[list[ModuleName]] = ["pia", "weather", "nightlight", "recording"]
+MODULES: Final[list[ModuleName]] = [
+    "pia",
+    "weather",
+    "nightlight",
+    "recording",
+    "kdeconnect",
+]
 
 PIACTL: Final = shutil.which("piactl")
 CURL: Final = shutil.which("curl")
+GDBUS: Final = shutil.which("gdbus")
+# Only asked whether KDE Connect is installed: everything goes over D-Bus.
+KDECONNECT_CLI: Final = shutil.which("kdeconnect-cli")
+KDECONNECT: Final = "org.kde.kdeconnect"
 CONFIG: Final = os.path.join(
     os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"),
     "l1p0-menu",
@@ -57,6 +74,8 @@ NIGHTLIGHT_EVERY: Final = 30.0
 RECORDING_EVERY: Final = 1.0
 # `piactl monitor` exits with PIA's daemon; look for it again this often.
 PIA_RETRY: Final = 5.0
+# Likewise `gdbus monitor`, which should outlive kdeconnectd restarts anyway.
+KDECONNECT_RETRY: Final = 5.0
 
 # What l1p0-menus' own night light switch counts as off, and turns it on to
 # when its config names no preset.
@@ -136,6 +155,105 @@ def render_recording(elapsed: float | None) -> ButtonState:
         "class": ["recording"],
         "tooltip": "Recording: click to stop it, right-click to stop at once",
     }
+
+
+@dataclass(frozen=True)
+class Phone:
+    """The paired device the button is about, as kdeconnectd reports it."""
+
+    id: str
+    name: str
+    reachable: bool
+    charge: int | None  # None while the phone does not share its battery
+    charging: bool
+
+
+def render_kdeconnect(phone: Phone | None) -> ButtonState:
+    """None when nothing is paired, or kdeconnectd did not answer."""
+    if phone is None:
+        return {
+            "text": "󰄜",
+            "class": ["unpaired"],
+            "tooltip": "KDE Connect: no paired phone, click to pair one",
+        }
+    if not phone.reachable:
+        return {
+            "text": "󰄜",
+            "class": ["disconnected"],
+            "tooltip": f"{phone.name}: not connected",
+        }
+    if phone.charge is None:
+        return {"text": "󰄜", "class": ["connected"], "tooltip": phone.name}
+    charging = ", charging" if phone.charging else ""
+    return {
+        "text": f"󰄜 {phone.charge}%",
+        "class": ["charging" if phone.charging else "connected"],
+        "tooltip": f"{phone.name}: {phone.charge}%{charging}",
+    }
+
+
+def kdeconnect_call(path: str, method: str, *args: str) -> str | None:
+    """One method call on kdeconnectd, as gdbus prints the reply, e.g.
+    `(['a1b2', 'c3d4'],)`; None when it failed or nothing answered."""
+    if GDBUS is None:
+        return None
+    try:
+        reply = subprocess.run(
+            [GDBUS, "call", "--session", "--dest", KDECONNECT]
+            + ["--object-path", f"/modules/kdeconnect{path}", "--method", method]
+            + list(args),
+            capture_output=True,
+            text=True,
+            timeout=1,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return reply.stdout.strip() if reply.returncode == 0 else None
+
+
+def kdeconnect_property(path: str, interface: str, name: str) -> str | None:
+    """A property's value, unwrapped from gdbus's `(<value>,)`: strings without
+    their quotes, numbers and booleans as they are spelled (`83`, `true`)."""
+    reply = kdeconnect_call(
+        path, "org.freedesktop.DBus.Properties.Get", interface, name
+    )
+    found = re.fullmatch(r"\(<(.*)>,\)", reply or "", re.DOTALL)
+    if found is None:
+        return None
+    value = found[1]
+    if value[:1] in ("'", '"'):
+        with contextlib.suppress(ValueError, SyntaxError):
+            return str(ast.literal_eval(value))
+    return value
+
+
+def paired_ids(reachable_only: bool) -> list[str]:
+    reply = kdeconnect_call(
+        "",
+        "org.kde.kdeconnect.daemon.devices",
+        "true" if reachable_only else "false",
+        "true",
+    )
+    return re.findall(r"'([^']*)'", reply or "")
+
+
+def phone() -> Phone | None:
+    """The first paired device that is reachable, else the first paired one."""
+    ids = paired_ids(True) or paired_ids(False)
+    if not ids:
+        return None
+    path = f"/devices/{ids[0]}"
+    device = "org.kde.kdeconnect.device"
+    battery = "org.kde.kdeconnect.device.battery"
+    charge = kdeconnect_property(f"{path}/battery", battery, "charge")
+    return Phone(
+        id=ids[0],
+        name=kdeconnect_property(path, device, "name") or ids[0],
+        reachable=kdeconnect_property(path, device, "isReachable") == "true",
+        charge=int(charge) if charge is not None and charge.isdecimal() else None,
+        charging=kdeconnect_property(f"{path}/battery", battery, "isCharging")
+        == "true",
+    )
 
 
 def recording_elapsed() -> float | None:
@@ -228,6 +346,8 @@ class Status:
     weather_due: float
     nightlight_due: float
     recording_due: float
+    kdeconnect: Pipe | None
+    kdeconnect_due: float | None
 
     def __init__(self) -> None:
         self.pia = None
@@ -239,9 +359,13 @@ class Status:
         self.weather_due = 0.0
         self.nightlight_due = 0.0
         self.recording_due = 0.0
+        self.kdeconnect = None
+        # Not installed, no button, as with PIA.
+        self.kdeconnect_due = 0.0 if KDECONNECT_CLI and GDBUS else None
 
     def fds(self) -> list[int]:
-        return [pipe.fd for pipe in (self.pia, self.fetch) if pipe is not None]
+        pipes = (self.pia, self.fetch, self.kdeconnect)
+        return [pipe.fd for pipe in pipes if pipe is not None]
 
     def next_due(self) -> float:
         """When step() next has something to do without a pipe being ready."""
@@ -250,6 +374,8 @@ class Status:
             due.append(self.pia_due)
         if self.fetch is None:
             due.append(self.weather_due)
+        if self.kdeconnect is None and self.kdeconnect_due is not None:
+            due.append(self.kdeconnect_due)
         return min(due)
 
     def step(self, ready: Collection[object], now: float) -> States:
@@ -286,6 +412,27 @@ class Status:
         if now >= self.recording_due:
             self.recording_due = now + RECORDING_EVERY
             states["recording"] = render_recording(recording_elapsed())
+
+        if (
+            self.kdeconnect is None
+            and self.kdeconnect_due is not None
+            and now >= self.kdeconnect_due
+        ):
+            assert GDBUS is not None
+            self.kdeconnect = Pipe(
+                [GDBUS, "monitor", "--session", "--dest", KDECONNECT]
+            )
+            states["kdeconnect"] = render_kdeconnect(phone())
+        if self.kdeconnect is not None and self.kdeconnect.fd in ready:
+            alive = self.kdeconnect.read()
+            # What the signal was does not matter, only that there was one.
+            self.kdeconnect.lines()
+            if alive:
+                states["kdeconnect"] = render_kdeconnect(phone())
+            else:
+                self.kdeconnect.close()
+                self.kdeconnect, self.kdeconnect_due = None, now + KDECONNECT_RETRY
+                states["kdeconnect"] = blank()
 
         return states
 
@@ -330,8 +477,17 @@ class Status:
         sunset(f"temperature {NEUTRAL if current < NEUTRAL else preset}")
         return {"nightlight": render_nightlight(temperature())}
 
+    @staticmethod
+    def ping_phone() -> None:
+        """Make the phone ring, when one is connected."""
+        found = phone()
+        if found is not None and found.reachable:
+            kdeconnect_call(
+                f"/devices/{found.id}/ping", "org.kde.kdeconnect.device.ping.sendPing"
+            )
+
     def close(self) -> None:
-        for pipe in (self.pia, self.fetch):
+        for pipe in (self.pia, self.fetch, self.kdeconnect):
             if pipe is not None:
                 pipe.close()
 
@@ -345,6 +501,10 @@ def once(name: ModuleName) -> ButtonState:
             return render_nightlight(temperature())
         if name == "recording":
             return render_recording(recording_elapsed())
+        if name == "kdeconnect":
+            return (
+                blank() if source.kdeconnect_due is None else render_kdeconnect(phone())
+            )
         if name == "pia":
             if PIACTL is None:
                 return blank()

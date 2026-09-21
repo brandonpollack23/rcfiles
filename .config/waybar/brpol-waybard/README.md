@@ -2,8 +2,8 @@
 
 The one process behind every scripted button in this waybar config: the 32
 taskbar slots and their overflow, the 20 workspace buttons, the 6 hidden
-(special) workspace buttons, and four status buttons -- PIA, weather, night
-light and the screen recording indicator -- that have nothing to do with windows but would otherwise each be a
+(special) workspace buttons, and five status buttons -- PIA, weather, night
+light, the screen recording indicator and the KDE Connect phone -- that have nothing to do with windows but would otherwise each be a
 script of their own.
 
 ## Why
@@ -81,7 +81,7 @@ inside Hyprland, outside it, or over ssh.
 | `test_fade.py` | the fade and focus-hold timeline, one render at a time with a made-up clock |
 | `test_fifos.py` | real pipes in a temp directory, read the way `cat` reads them |
 | `test_control.py` | each control command, with Hyprland and the snapshot stubbed out |
-| `test_status.py` | the status buttons: the renderers, and `Status` against scripts standing in for `piactl` and `curl`, a socket for hyprsunset, and a PID file for hyprcap |
+| `test_status.py` | the status buttons: the renderers, and `Status` against scripts standing in for `piactl`, `curl` and `gdbus`, a socket for hyprsunset, and a PID file for hyprcap |
 | `test_daemon.py` | the whole daemon against `fake_hyprland.py`: real sockets, pipes, debounce and timers |
 
 `test_layout.py` also arranges a few hundred random workspaces and checks the
@@ -126,12 +126,13 @@ The status buttons stay out of that flow, since none of them is drawn from a
 snapshot. `Status` keeps its own pipes and timers, the select loop watches them
 beside the event socket, and what `Status.step()` returns is published as is:
 
-    `piactl monitor` line, `curl` finishing, or a timer
+    `piactl monitor` or `gdbus monitor` line, `curl` finishing, or a timer
       -> status     Status.step(): the buttons that may have changed
       -> fifos      Bar.publish()
 
-`conftest.py` takes `piactl`, `curl` and the l1p0-menus config away from every
-test, so none of them reaches the real VPN, network or API key.
+`conftest.py` takes `piactl`, `curl`, `gdbus` and the l1p0-menus config away
+from every test, so none of them reaches the real VPN, network, API key or
+phone.
 
 | file | what |
 | --- | --- |
@@ -143,7 +144,7 @@ test, so none of them reaches the real VPN, network or API key.
 | `src/brpol_waybard/windows.py` | the taskbar buttons: classes, group and lock icons, tooltips, overflow |
 | `src/brpol_waybard/workspaces.py` | the workspace buttons and the urgency set |
 | `src/brpol_waybard/hidden.py` | the special-workspace buttons |
-| `src/brpol_waybard/status.py` | the PIA, weather, night light and recording buttons, and where each gets its state |
+| `src/brpol_waybard/status.py` | the PIA, weather, night light, recording and phone buttons, and where each gets its state |
 | `src/brpol_waybard/fifos.py` | the pipes, and why they are opened O_RDWR |
 | `src/brpol_waybard/control.py` | what a line on the control FIFO means |
 | `src/brpol_waybard/fade.py` | fading a new window in, and holding the focus colours meanwhile |

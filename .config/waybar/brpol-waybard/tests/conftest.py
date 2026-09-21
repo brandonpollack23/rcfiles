@@ -26,13 +26,15 @@ def pytest_sessionfinish() -> None:
 
 @pytest.fixture(autouse=True)
 def no_real_status_sources(monkeypatch: pytest.MonkeyPatch) -> None:
-    """status.py finds piactl, curl, l1p0-menus' config and hyprcap's PID file
-    on the machine it runs on. A test that wants one puts a stand-in there
-    itself."""
+    """status.py finds piactl, curl, gdbus, KDE Connect, l1p0-menus' config and
+    hyprcap's PID file on the machine it runs on. A test that wants one puts a
+    stand-in there itself."""
     from brpol_waybard import status
 
     monkeypatch.setattr(status, "PIACTL", None)
     monkeypatch.setattr(status, "CURL", None)
+    monkeypatch.setattr(status, "GDBUS", None)
+    monkeypatch.setattr(status, "KDECONNECT_CLI", None)
     monkeypatch.setattr(status, "CONFIG", os.path.join(RUNTIME_DIR, "no-config.json"))
     monkeypatch.setattr(
         status, "REC_PID", os.path.join(RUNTIME_DIR, "no-recording.pid")

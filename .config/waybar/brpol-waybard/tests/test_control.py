@@ -24,8 +24,16 @@ class FakeBar:
 
 
 class FakeStatus:
+    pings: int
+
+    def __init__(self) -> None:
+        self.pings = 0
+
     def toggle_nightlight(self) -> States:
         return {"nightlight": {"text": "󰖔", "class": ["on"], "tooltip": ""}}
+
+    def ping_phone(self) -> None:
+        self.pings += 1
 
 
 class Calls:
@@ -55,8 +63,10 @@ def calls(monkeypatch: pytest.MonkeyPatch) -> Calls:
     return made
 
 
-def apply(command: str, bar: FakeBar | None = None) -> bool:
-    return control.apply(command, bar or FakeBar(), FakeStatus())  # type: ignore[arg-type]
+def apply(
+    command: str, bar: FakeBar | None = None, status: FakeStatus | None = None
+) -> bool:
+    return control.apply(command, bar or FakeBar(), status or FakeStatus())  # type: ignore[arg-type]
 
 
 def test_refresh_asks_for_a_render_without_taking_a_snapshot(calls: Calls) -> None:
@@ -101,4 +111,12 @@ def test_nightlight_toggles_and_redraws_its_own_button(calls: Calls) -> None:
     # hyprsunset has no event to wait for, and nothing else on the bar moved.
     assert apply("nightlight", bar) is False
     assert bar.published == [FakeStatus().toggle_nightlight()]
+    assert calls.snapshots == 0
+
+
+def test_ping_phone_pings_and_redraws_nothing(calls: Calls) -> None:
+    bar, status = FakeBar(), FakeStatus()
+    assert apply("ping-phone", bar, status) is False
+    assert status.pings == 1
+    assert bar.published == []
     assert calls.snapshots == 0
