@@ -1,0 +1,10 @@
+# Maintenance tasks for this repo: `mise run <task>` from anywhere inside it,
+# `mise tasks` to list them.
+
+[tasks.secrets]
+description = "Edit the repo's secrets (secrets.sops.env) in $EDITOR"
+run = "sops {{config_root}}/secrets.sops.env"
+
+[tasks.sops-bootstrap]
+description = "Let this machine decrypt the secrets (asks for the master password)"
+run = "{{config_root}}/sops-bootstrap.sh"

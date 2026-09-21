@@ -1,0 +1,13 @@
+# Secrets committed to this repo are files named *.sops.<ext>, encrypted to
+# every key below. sops-bootstrap.sh (run by install.sh) maintains this file:
+# it adds each new machine, using the master key in .sops-master.key.age, which
+# the master password unlocks.
+#
+# Recipients:
+#   age1vn2ez96nfafhg8atmxq4mq794epk68xudysnwu90rdllj2jceamq5gm53r  NCC-1701E-BTW
+#   age1ywy3dydajk7hr0jt5qkeza39jx7uy7p636tgewsj0ncehjqsnpfq3600j5  master
+creation_rules:
+  - path_regex: \.sops\.(json|ya?ml|env|ini)$
+    age: >-
+      age1vn2ez96nfafhg8atmxq4mq794epk68xudysnwu90rdllj2jceamq5gm53r,
+      age1ywy3dydajk7hr0jt5qkeza39jx7uy7p636tgewsj0ncehjqsnpfq3600j5
