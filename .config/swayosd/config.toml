@@ -1,0 +1,19 @@
+# SwayOSD 0.3.2. Every key here is from the packaged /etc/xdg/swayosd/config.toml.
+# The `style` key is parsed but never read by 0.3.2 (only `--style` is), so the
+# stylesheet is picked up from its default path, ~/.config/swayosd/style.css.
+[server]
+# Where the bottom edge of the OSD window sits, as a fraction of the monitor
+# height from the top: 0.75 is 25% above the bottom edge.
+top_margin = 0.75
+
+max_volume = 100
+min_brightness = 5
+
+show_percentage = false
+
+keyboard_backlight = true
+
+# Milliseconds. The fade in and out comes from Hyprland's layer animations.
+duration = 900
+
+[client]

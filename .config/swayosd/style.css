@@ -1,0 +1,105 @@
+/*
+ * Compact GNOME-like OSD for SwayOSD 0.3.2.
+ *
+ * Loaded on top of /etc/xdg/swayosd/style.css, so everything that file sets is
+ * overridden here. Selectors come from src/server/osd_window.rs: window#osd
+ * (also .osd), box#container, image, progressbar, segmentedprogress > segment,
+ * label.title-4.
+ *
+ * Three things are hard-coded in the server and worked around below:
+ *  - the window has a 250px width request, so the window itself is transparent
+ *    and #container is the visible panel, inset with margins;
+ *  - #container is a horizontal box (12px spacing) holding the icon and then
+ *    the bar. The icon's right margin and the bar's left margin are negative so
+ *    both span the full width, and vertical margins stack them;
+ *  - the icon has a 32px pixel size, which wins over -gtk-icon-size, so it is
+ *    scaled with -gtk-icon-transform.
+ *
+ * Panel: 250 - 2*50 = 150px wide; 2*1 border + 2*20 padding + 108 content =
+ * 150px high.
+ */
+
+window#osd {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+window#osd #container {
+  margin: 28px 50px;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid alpha(white, 0.12);
+  background: alpha(#16161a, 0.55);
+  box-shadow: 0 6px 22px alpha(black, 0.22);
+}
+
+/* Each child is 108px wide and gives 60px back as a negative margin, so the box
+ * sees 48 + 12 spacing + 48 = 108px and both children cover the same columns. */
+window#osd image {
+  min-width: 108px;
+  margin-right: -60px;
+  margin-top: 16px;
+  margin-bottom: 60px;
+  color: white;
+  -gtk-icon-style: symbolic;
+  -gtk-icon-transform: scale(2);
+  transition: opacity 150ms ease-out;
+}
+
+window#osd progressbar,
+window#osd segmentedprogress {
+  min-width: 108px;
+  min-height: 6px;
+  margin-left: -60px;
+  margin-top: 82px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+}
+
+window#osd trough,
+window#osd segment {
+  min-width: 0;
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: alpha(white, 0.2);
+}
+
+window#osd progress,
+window#osd segment.active {
+  /* Adwaita pulls progress 1px over the trough border on each side */
+  margin: 0;
+  min-width: 0;
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: white;
+  transition: all 120ms ease-out;
+}
+
+window#osd segment {
+  margin-left: 6px;
+}
+
+window#osd segment:first-child {
+  margin-left: 0;
+}
+
+/* Muted: the server marks the bar insensitive. */
+window#osd progressbar:disabled,
+window#osd image:disabled {
+  opacity: 0.4;
+}
+
+/* GTK CSS has no display: none. Volume and brightness get no label at all with
+ * show_percentage = false; this collapses the Caps/Num Lock and player text. */
+window#osd label {
+  font-size: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+}
