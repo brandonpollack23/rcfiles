@@ -11,6 +11,7 @@
 -- and lets go when the script reports in (M.finish).
 
 local ids = require("conf.workspaces.ids")
+local layout = require("conf.workspaces.layout")
 local order = require("conf.workspaces.order")
 
 local M = {}
@@ -81,6 +82,7 @@ local function applyPending()
 			pending[workspace.id] = nil
 			if workspace.name ~= name then
 				hl.dispatch(hl.dsp.workspace.rename({ workspace = workspace.id, name = name }))
+				layout.named(workspace.id)
 			end
 		end
 	end

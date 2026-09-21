@@ -4,12 +4,14 @@
 --   order.lua   placement, reordering, and keeping the ids gap-free
 --   ids.lua     workspace ids, their labels, and the lookups both need
 --   hidden.lua  the special workspaces the picker lists as H1, H2, ...
+--   layout.lua  which layout each workspace is in, focus or work/reference
 --   persist.lua getting names and order through a session restore
 --
 -- This file is the only name the rest of the config knows: keymaps.lua and
 -- scripts/workspace-menu.sh come through `conf.workspaces`.
 
 local hidden = require("conf.workspaces.hidden")
+local layout = require("conf.workspaces.layout")
 local order = require("conf.workspaces.order")
 local persist = require("conf.workspaces.persist")
 local picker = require("conf.workspaces.picker")
@@ -31,6 +33,9 @@ function M.rename(id, name)
 	persist.recordSoon()
 end
 M.active = picker.active
+
+-- Layouts (conf/layouts.lua)
+M.toggleLayout = layout.toggle
 
 -- Ordering
 M.positions = order.positions

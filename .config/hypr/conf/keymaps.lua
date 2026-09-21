@@ -245,6 +245,11 @@ bindLayout(mainMod .. " + SHIFT + Return", "focusmaster", "Focus master window")
 bindLayout(mainMod .. " + I", "addmaster", "Add window as a master")
 bindLayout(mainMod .. " + D", "removemaster", "Remove window from masters")
 bindLayout(mainMod .. " + O", "orientationcycle left top right bottom center", "Cycle master orientation")
+-- The presets and the reference column's width are in conf/layouts.lua.
+bind(mainMod .. " + ALT + O", workspaces.toggleLayout, {
+	description = "Switch the workspace between the focus and work/reference layouts",
+	command = "workspaces.toggleLayout",
+})
 
 -- Multimedia and brightness control control
 

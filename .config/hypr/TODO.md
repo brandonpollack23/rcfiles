@@ -2,9 +2,6 @@
 
 ## Features
 
-- master work/reference view (1/4 3/4)
-- switching between predefined layouts: focus task and work/reference. save
-  which workspace was which
 - sounds on connect of usb devices
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
 - `super + alt + shift + w` for a new hidden workspace, so making one does not

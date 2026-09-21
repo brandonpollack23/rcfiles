@@ -4,6 +4,7 @@
 
 local hidden = require("conf.workspaces.hidden")
 local ids = require("conf.workspaces.ids")
+local layout = require("conf.workspaces.layout")
 local order = require("conf.workspaces.order")
 
 local M = {}
@@ -134,13 +135,18 @@ function M.createHidden(action, name)
 	goTo(action, "special:" .. name)
 end
 
--- An empty name resets the label to the id.
+-- An empty name resets the label to the id. The workspace's layout goes with it.
 function M.rename(id, name)
 	name = name:match("^%s*(.-)%s*$")
 	if name == "" then
 		name = tostring(id)
 	end
+	local workspace = hl.get_workspace(id)
+	local old = workspace and workspace.name
 	hl.dispatch(hl.dsp.workspace.rename({ workspace = id, name = name }))
+	if old then
+		layout.renamed(old, id)
+	end
 end
 
 -- "<id>\n<name>" of the active normal workspace, for the rename prompt.
