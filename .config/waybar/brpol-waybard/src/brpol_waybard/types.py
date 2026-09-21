@@ -52,6 +52,12 @@ type CssClass = Literal[
     "grouped",
     "locked",
     "overflow",
+    "master",
+    "fresh",
+    "ghost",
+    "gap",
+    "first",
+    "last",
     # workspaces.py
     "visible",
     "urgent",
@@ -76,6 +82,11 @@ class WorkspaceRef(TypedDict):
 
 class Monitor(TypedDict):
     focused: bool
+    x: int
+    width: int  # physical pixels, before scale and transform
+    height: int
+    scale: float
+    transform: int  # odd values are rotated a quarter turn
     activeWorkspace: WorkspaceRef
     specialWorkspace: WorkspaceRef  # `name` is "" while none is open
 
@@ -94,6 +105,7 @@ Client = TypedDict(
         "title": str,
         "workspace": WorkspaceRef,
         "at": list[int],  # [x, y]; the taskbar's left-to-right order
+        "size": list[int],  # [width, height], in layout coordinates like `at`
         "mapped": bool,
         "visible": bool,
         "floating": bool,

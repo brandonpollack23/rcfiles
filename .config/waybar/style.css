@@ -117,7 +117,8 @@ window#waybar {
   background: transparent;
   border: none;
   padding: 3px 0;
-  margin: 0 8px;
+  /* Clear space between the taskbar and the clock and status pills. */
+  margin: 0 48px;
 }
 
 #windows label {
@@ -129,25 +130,87 @@ window#waybar {
   border-radius: 9px;
   padding: 3px 10px;
   margin: 0;
+  /* Every tab the same width, so that the sides of the master differ only by
+     whole tabs and gaps and the daemon can balance them with ghosts: the
+     longest label it writes is 29 columns of this 8px font. */
+  min-width: 232px;
   box-shadow: none;
   text-shadow: none;
-  transition: all 150ms ease;
+  /* Colours only. A transition on a margin, padding or width would slide the
+     whole taskbar every time a slot changes what it holds. One duration for
+     all of it, so a new window fading in and the focus crossing from one tab
+     to another move at the same rate; FADE in brpol-waybard's __main__.py
+     has to match it. */
+  transition:
+    color 250ms ease,
+    background-color 250ms ease,
+    border-color 250ms ease,
+    opacity 250ms ease;
 }
 
 /* Tabs of one group touch, so their fills and borders run together into one
    box; everything else is a tile of its own and gets the gap. Half of it goes
    on each side, so the two sides of a gap are symmetric and the ends of the
-   bar stay even -- 24px a side is the 48px gap between tiles. */
+   bar stay even -- 4px a side is the 8px gap between tiles, which keeps the
+   windows on one side of the master close without running them together. */
 #windows label.solo,
 #windows label.gstart,
 #windows label.overflow {
-  margin-left: 256px;
+  margin-left: 4px;
 }
 
 #windows label.solo,
 #windows label.gend,
 #windows label.overflow {
+  margin-right: 4px;
+}
+
+/* The master stands well clear of the windows either side of it: 256px on
+   each side, its own rather than its neighbours', so it stays symmetric. */
+#windows label.master.solo,
+#windows label.master.gstart {
+  margin-left: 256px;
+}
+
+#windows label.master.solo,
+#windows label.master.gend {
   margin-right: 256px;
+}
+
+/* Invisible padding that keeps the master in the middle of the bar: the daemon
+   puts one on the short side for every tab or gap it is short by. A plain
+   ghost is one tab wide, a solo ghost one tab plus its gaps, and a gap ghost
+   the gaps alone. */
+#windows label.ghost {
+  opacity: 0;
+  transition: none;
+}
+
+#windows label.ghost.gap {
+  min-width: 0;
+  padding: 0;
+  border-width: 0;
+  margin: 0 4px;
+}
+
+/* The two ends of the taskbar: their outer gap would space them from nothing,
+   and only costs the bar room it does not have. Both ends always lose it
+   together, so the master stays centred. */
+#windows label.first,
+#windows label.ghost.gap.first {
+  margin-left: 0;
+}
+
+#windows label.last,
+#windows label.ghost.gap.last {
+  margin-right: 0;
+}
+
+/* A window that has just opened: drawn transparent at once, then faded in by
+   the label's own opacity transition when the daemon takes the class away. */
+#windows label.fresh {
+  opacity: 0;
+  transition: none;
 }
 
 /* A group, drawn as one filled box around its tabs. Waybar groups are fixed at
@@ -228,8 +291,6 @@ window#waybar {
   color: #11111b;
   background: #f5c2e7;
   border-color: #f5c2e7;
-  padding-left: 13px;
-  padding-right: 13px;
 }
 
 #windows label.gstart.active,

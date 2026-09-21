@@ -13,7 +13,7 @@ poweroff|󰐥  Shut down'
 
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
-restart-waybar|󰑓  Restart waybar
+restart-waybar|󰑓  Restart waybar and its taskbar daemon
 restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
@@ -63,7 +63,11 @@ poweroff) systemctl poweroff ;;
 
 reload-hyprland) hyprctl reload ;;
 restart-waybar)
+  # The taskbar daemon too: a change to the bar's buttons usually changes both
+  # the waybar config and the daemon that fills them.
+  "$0" restart-taskbar-daemon
   pkill -x waybar
+  while pgrep -x waybar >/dev/null; do sleep 0.1; done
   setsid -f waybar >/dev/null 2>&1
   ;;
 restart-taskbar-daemon)

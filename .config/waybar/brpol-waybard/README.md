@@ -1,6 +1,6 @@
 # brpol-waybard
 
-The one process behind every scripted button in this waybar config: the 12
+The one process behind every scripted button in this waybar config: the 32
 taskbar slots and their overflow, the 20 workspace buttons, and the 6 hidden
 (special) workspace buttons.
 
