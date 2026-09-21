@@ -4,6 +4,7 @@
 --   group.lua    window groups: every action that changes one
 --   history.lua  undo/redo for the group actions
 --   dialog.lua   the ask-then-call-back confirmation dialog both flows use
+--   focus.lua    putting keyboard focus back after the lock screen
 --   taskbar.lua  what waybar's per-window taskbar needs and IPC does not report
 --   windows.lua  looking up windows and groups by address
 --
@@ -12,6 +13,7 @@
 -- so the submodules can be rearranged without touching them.
 
 local close = require("conf.wm.close")
+local focus = require("conf.wm.focus")
 local group = require("conf.wm.group")
 local history = require("conf.wm.history")
 local taskbar = require("conf.wm.taskbar")
@@ -36,6 +38,9 @@ M.ungroup = group.ungroup
 M.confirmUngroup = group.confirmUngroup
 M.cancelUngroup = group.cancelUngroup
 M.moveInGroup = group.moveInGroup
+
+-- Unlocking, called by hypridle's on_unlock_cmd
+M.restoreFocus = focus.restore
 
 -- Undo/redo
 M.undo = history.undo

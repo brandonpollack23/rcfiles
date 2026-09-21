@@ -26,7 +26,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `waybar` | desktop bar, autostarted. Its taskbar, workspace and hidden-workspace buttons are fed by `brpol-waybard`, started just before it (`conf/programs.lua`); the group lock icon it draws comes from there (`conf/wm/group.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
-| `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf` | `hyprland.lua` |
+| `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
 | `rofimoji` | emoji picker; runs through `hyprlauncher --dmenu` (`--selector hyprlauncher`), copies with `wl-clipboard` and pastes with `ydotool` (`--typer ydotool`, since the autodetected `wtype` breaks Hyprland's binds) | `SUPER+SHIFT+semicolon` |
