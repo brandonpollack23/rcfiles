@@ -3,10 +3,9 @@
 ## Features
 
 - unified settings app
-- mise migration?
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
-- notification/new tab highlights workspace
+- sounds on connect of usb devices
 - mission control like view, super + shift + w, make new workspace super + alt +
   w
 - master work/reference view (1/4 3/4)
@@ -28,6 +27,7 @@
   are compatible with it, and whether workspace names can be restored across
   reboots too
 - hyprmoncfg for different monitor setups/arragements that saves
+- mise migration?
 
 ## Disabled config snippets
 
