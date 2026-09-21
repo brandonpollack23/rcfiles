@@ -155,6 +155,14 @@ from the tables above.
 | `swayosd` | `swayosd-client`; `swayosd-libinput-backend.service` (system unit, enabled by `install.sh`) | `scripts/osd.sh` shows the new level after each volume, mute, mic mute and brightness key. The backend only feeds the Caps/Num/Scroll Lock popups: 0.3.2 ignores the media keys it reports |
 | `gawk`, `coreutils` | `awk`, `cut`, `tr` | parsing `wpctl` and `brightnessctl` output (`scripts/osd.sh`) |
 
+## Workspace overview (`conf/overview.lua`)
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `hyprland` | `hyprpm`, the plugin manager | `ensure-plugins` in `scripts/system.sh` at startup (`hyprland.lua`): `hyprpm reload -n`, or the install in a terminal when Hyprspace is missing; install, update and reload actions in the same script, and `install.sh` runs the install when it runs inside Hyprland; `hyprpm update` after `paru -Syu` in the update action |
+| Hyprspace (hyprpm plugin, not a package) | the overview, `hl.plugin.overview.toggle()` | `SUPER+SHIFT+W`. Installed from [brandonpollack23/Hyprspace](https://github.com/brandonpollack23/Hyprspace) (its `main`: upstream plus one commit) by the `plugins` action in `scripts/system.sh`: the 0.56 fork in [KZDKM/Hyprspace#238](https://github.com/KZDKM/Hyprspace/pull/238) plus the `id: name` labels under each workspace |
+| `cmake`, `meson`, `cpio`, `pkgconf`, `gcc`, `make`, `git` | what `hyprpm` needs to fetch the Hyprland headers and build plugins | `hyprpm update` / `hyprpm add` |
+
 ## Referenced only in `TODO.md`
 
 Not needed today; install if you paste the matching snippet from `TODO.md` back
@@ -162,7 +170,7 @@ into the config.
 
 - `hyprpaper`, `network-manager-applet` (`nm-applet`): autostart in `hyprland.lua`
 - `hyprshutdown`: exit bind in `conf/keymaps.lua`
-- `grim`, `xdg-desktop-portal-hyprland`, `hyprpm` (ships with `hyprland`): permissions in `hyprland.lua`
+- `grim`, `xdg-desktop-portal-hyprland`, `hyprpm` (ships with `hyprland`, also loads the overview plugin): permissions in `hyprland.lua`
 
 ## Install
 
@@ -172,7 +180,7 @@ sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus 
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk \
   hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age \
-  kdeconnect glib2 sshfs
+  kdeconnect glib2 sshfs cmake meson cpio pkgconf gcc make git
 sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome hypr-persist l1p0-menus-git hyprcap

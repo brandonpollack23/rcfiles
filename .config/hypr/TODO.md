@@ -6,8 +6,6 @@
 - switching between predefined layouts: focus task and work/reference. save
   which workspace was which
 - sounds on connect of usb devices
-- mission control like view, super + shift + w, make new workspace super + alt +
-  w
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
 - `super + alt + shift + w` for a new hidden workspace, so making one does not
   have to go through the picker (`conf/workspaces/hidden.lua`)

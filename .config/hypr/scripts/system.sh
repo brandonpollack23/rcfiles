@@ -13,6 +13,8 @@ poweroff|󰐥  Shut down'
 
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
+reload-plugins|󰑓  Reload Hyprland plugins (hyprpm; installs or enables them, asking for sudo)
+plugins|󰏗  Install/update Hyprland plugins (hyprpm, Hyprspace)
 restart-waybar|󰑓  Restart waybar, its taskbar daemon and its popups
 restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
 reload-swaync|󰑓  Reload notification center config and style
@@ -27,7 +29,7 @@ restart-hypr-persist|󰑓  Restart hypr-persist (session restore)
 session-save|󰆓  Save session now (hypr-persist)
 restart-audio|󰑓  Restart audio (PipeWire)
 enroll-fingerprint|󰈷  Enroll fingerprint (fprintd)
-update|󰚰  Update system (paru)
+update|󰚰  Update system (paru, then hyprpm plugins)
 clean|󰃢  Remove unneeded packages (paru)
 failed-units|󰀦  Failed services
 journal-errors|󰀦  Errors since boot
@@ -66,6 +68,31 @@ reboot) systemctl reboot ;;
 poweroff) systemctl poweroff ;;
 
 reload-hyprland) hyprctl reload ;;
+plugins) in_terminal "$0" install-plugins ;;
+reload-plugins | ensure-plugins)
+  # Also run by Hyprland at startup, as ensure-plugins (hyprland.lua). Loads the
+  # plugins, or first installs or enables them in a terminal, where hyprpm asks
+  # for the sudo password.
+  # hyprpm colors "true", so strip the escapes before matching it.
+  if hyprpm list | sed 's/\x1b\[[0-9;]*m//g' | grep -A2 "Hyprspace (by brandonpollack23)" | grep -q "enabled: true"; then
+    hyprpm reload -n
+  else
+    in_terminal sh -c 'echo "Hyprland plugins are missing or disabled; installing them (Hyprspace)."; "$0" install-plugins' "$0"
+  fi
+  ;;
+install-plugins)
+  # Not in the menu: "plugins" and "reload-plugins" run it in a terminal, and
+  # install.sh directly.
+  # Hyprspace from brandonpollack23/Hyprspace: the 0.56 fork in
+  # KZDKM/Hyprspace#238 plus workspace labels. Replaces any other Hyprspace
+  # repo. hyprpm asks for sudo to fetch the Hyprland headers.
+  hyprpm update && {
+    hyprpm list | grep -q "Hyprspace (by brandonpollack23)" || {
+      if hyprpm list | grep -q "Repository Hyprspace"; then hyprpm remove Hyprspace; fi &&
+        hyprpm add https://github.com/brandonpollack23/Hyprspace
+    }
+  } && hyprpm enable Hyprspace && hyprpm reload -n
+  ;;
 restart-waybar)
   # The taskbar daemon too: a change to the bar's buttons usually changes both
   # the waybar config and the daemon that fills them.
@@ -127,7 +154,11 @@ session-save) hypr-persist save ;;
 restart-audio) systemctl --user restart wireplumber pipewire pipewire-pulse ;;
 enroll-fingerprint) in_terminal sh -c 'fprintd-enroll && fprintd-verify' ;;
 
-update) in_terminal paru -Syu ;;
+update)
+  # Plugins are built against one Hyprland version, so rebuild them after an
+  # upgrade; hyprpm reload at the next login picks them up.
+  in_terminal sh -c 'paru -Syu && hyprpm update'
+  ;;
 clean) in_terminal paru -c ;;
 failed-units) in_terminal systemctl --failed ;;
 journal-errors) in_terminal journalctl -b -p err --no-pager ;;

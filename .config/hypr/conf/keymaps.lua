@@ -3,6 +3,7 @@ local wm = require("conf.wm")
 local helpers = require("conf.bind_helpers")
 local theme = require("conf.theme")
 local workspaces = require("conf.workspaces")
+local overview = require("conf.overview")
 
 local bind, bindExec, bindLayout = helpers.bind, helpers.bindExec, helpers.bindLayout
 
@@ -185,7 +186,12 @@ end
 
 local workspaceMenu = "~/.config/hypr/scripts/workspace-menu.sh"
 bindExec(mainMod .. " + W", workspaceMenu .. " focus", { description = "Pick a workspace (or create one)" })
-bindExec(mainMod .. " + SHIFT + W", workspaceMenu .. " new", { description = "Create a named workspace" })
+bindExec(mainMod .. " + ALT + W", workspaceMenu .. " new", { description = "Create a named workspace" })
+bind(
+	mainMod .. " + SHIFT + W",
+	overview.toggle,
+	{ description = "Workspace overview (Hyprspace)", command = "overview.toggle" }
+)
 bindExec(mainMod .. " + M", workspaceMenu .. " move", { description = "Move window to a picked workspace" })
 -- mainMod + "$": binds match the unshifted key, so "dollar" never fires
 bindExec(mainMod .. " + SHIFT + 4", workspaceMenu .. " rename", { description = "Rename workspace" })

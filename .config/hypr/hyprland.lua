@@ -8,6 +8,7 @@ require("conf.keymaps")
 require("conf.lockscreen")
 require("conf.gtk_colors")
 require("conf.notifications")
+require("conf.overview")
 require("conf.popups")
 require("conf.rules")
 local workspaces = require("conf.workspaces")
@@ -24,6 +25,9 @@ hl.monitor({
 
 -- See https://wiki.hypr.land/configuring/core/autostart/
 hl.on("hyprland.start", function()
+	-- Loads the hyprpm plugins (Hyprspace, conf/overview.lua), installing them
+	-- first on a machine that doesn't have them.
+	hl.exec_cmd("~/.config/hypr/scripts/system.sh ensure-plugins")
 	-- Before the bar: its buttons block on the daemon's FIFOs until it is up.
 	hl.exec_cmd(programs.taskbar_daemon)
 	hl.exec_cmd(programs.desktop_bar)
