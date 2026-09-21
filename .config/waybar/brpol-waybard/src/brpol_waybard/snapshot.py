@@ -30,8 +30,11 @@ class Snapshot:
     monitors: list[Monitor]
     clients: list[Client]
     workspaces: list[Workspace]
-    active: Address | None
-    locked: frozenset[Address]
+    active: Address | None  # the focused window
+    locked: frozenset[Address]  # every window in a locked group
+
+    def focused_monitor(self) -> Monitor | None:
+        return next((m for m in self.monitors if m["focused"]), None)
 
 
 def take() -> Snapshot:

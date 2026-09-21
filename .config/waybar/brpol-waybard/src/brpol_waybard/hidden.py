@@ -17,12 +17,21 @@ from collections.abc import Mapping
 from typing import Final
 
 from .snapshot import Snapshot
-from .types import ButtonState, CssClass, EventName, ModuleName, States, Workspace
+from .types import (
+    ButtonState,
+    CssClass,
+    EventName,
+    ModuleName,
+    States,
+    Workspace,
+    blank,
+)
 
 # Slots must match the number of custom/hiddenN modules in workspaces.jsonc.
 SLOTS: Final = 5
 DEFAULT: Final = "Hidden"
 PREFIX: Final = "special:"
+ICON: Final = "󰘓"
 
 EVENTS: Final[frozenset[EventName]] = frozenset(
     {
@@ -53,25 +62,29 @@ def specials(snapshot: Snapshot) -> dict[str, Workspace]:
 def slot_name(open_: Mapping[str, Workspace], slot: int) -> str | None:
     """The workspace a numbered button stands for, or None while it has none."""
     names = sorted(name for name in open_ if name != DEFAULT)
-    return names[slot - 1] if slot <= len(names) else None
+    return names[slot - 1] if 1 <= slot <= len(names) else None
 
 
 def state(snapshot: Snapshot, slot: int | None) -> ButtonState:
     open_ = specials(snapshot)
     name = DEFAULT if slot is None else slot_name(open_, slot)
     if name is None:
-        return {"text": "", "class": [], "tooltip": ""}
+        return blank()
 
+    # The default scratchpad has a button even while its workspace does not
+    # exist, which is whenever nothing is on it.
     workspace = open_.get(name)
     windows = workspace["windows"] if workspace else 0
     shown = any(
         m["specialWorkspace"]["name"] == PREFIX + name for m in snapshot.monitors
     )
 
+    # The default scratchpad is labelled by how much is in it, the others by
+    # their name.
     if slot is None:
-        text = f"󰘓  {windows}" if windows else "󰘓"
+        text = f"{ICON}  {windows}" if windows else ICON
     else:
-        text = f"󰘓  {name}"
+        text = f"{ICON}  {name}"
     plural = "" if windows == 1 else "s"
     classes: list[CssClass] = ["hidden"]
     if shown:

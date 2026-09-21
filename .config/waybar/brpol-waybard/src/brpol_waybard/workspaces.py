@@ -11,10 +11,20 @@ exist prints empty text, which hides the module.
 """
 
 import html
+from collections.abc import Set
 from typing import Final
 
+from . import labels
 from .snapshot import Snapshot
-from .types import Address, ButtonState, CssClass, EventName, ModuleName, States
+from .types import (
+    Address,
+    ButtonState,
+    CssClass,
+    EventName,
+    ModuleName,
+    States,
+    blank,
+)
 
 # Slots must match the number of custom/wsN modules in workspaces.jsonc.
 SLOTS: Final = 20
@@ -42,16 +52,21 @@ EVENTS: Final[frozenset[EventName]] = frozenset(
 MODULES: Final[list[ModuleName]] = [f"ws{slot}" for slot in range(1, SLOTS + 1)]
 
 
-def shorten(text: str) -> str:
-    return text if len(text) <= MAX_TITLE else text[: MAX_TITLE - 1] + "…"
+def seen(snapshot: Snapshot) -> set[Address]:
+    """Every window on a workspace some monitor is showing, which is what ends
+    its urgency: see the note on Daemon.urgent in __main__.py."""
+    showing = {m["activeWorkspace"]["id"] for m in snapshot.monitors}
+    return {c["address"] for c in snapshot.clients if c["workspace"]["id"] in showing}
 
 
-def state(snapshot: Snapshot, ws_id: int, urgent: set[Address]) -> ButtonState:
+def state(snapshot: Snapshot, ws_id: int, urgent: Set[Address]) -> ButtonState:
     workspace = next((w for w in snapshot.workspaces if w["id"] == ws_id), None)
     if workspace is None:
-        return {"text": "", "class": [], "tooltip": ""}
+        return blank()
 
-    shown: dict[int, bool] = {
+    # Which monitor, if any, is showing this workspace, and its windows with
+    # the most recently focused first.
+    focused_by_shown: dict[int, bool] = {
         m["activeWorkspace"]["id"]: m["focused"] for m in snapshot.monitors
     }
     clients = sorted(
@@ -60,19 +75,18 @@ def state(snapshot: Snapshot, ws_id: int, urgent: set[Address]) -> ButtonState:
     )
 
     classes: list[CssClass] = []
-    if ws_id in shown:
-        classes.append("active" if shown[ws_id] else "visible")
-        urgent.difference_update(c["address"] for c in clients)
+    if ws_id in focused_by_shown:
+        classes.append("active" if focused_by_shown[ws_id] else "visible")
     if any(c["address"] in urgent for c in clients):
         classes.append("urgent")
     if not clients:
         classes.append("empty")
 
+    # The tooltip: the workspace's name, then its first few windows.
     lines = [f"<b>{html.escape(workspace['name'])}</b>"]
     for c in clients[:MAX_WINDOWS]:
-        app = html.escape(c["class"] or "?")
-        title = html.escape(shorten(c["title"] or c["class"] or "?"))
-        lines.append(f"<span alpha='60%'>{app}</span>  {title}")
+        title = labels.shorten(c["title"] or c["class"] or "?", MAX_TITLE)
+        lines.append(labels.tooltip_row(c["class"] or "?", title))
     if len(clients) > MAX_WINDOWS:
         lines.append(f"<i>… {len(clients) - MAX_WINDOWS} more</i>")
     if not clients:
@@ -81,6 +95,7 @@ def state(snapshot: Snapshot, ws_id: int, urgent: set[Address]) -> ButtonState:
     return {"text": workspace["name"], "class": classes, "tooltip": "\n".join(lines)}
 
 
-def render(snapshot: Snapshot, urgent: set[Address]) -> States:
-    """Every workspace module. `urgent` is mutated: see the note in __main__.py."""
+def render(snapshot: Snapshot, urgent: Set[Address]) -> States:
+    """Every workspace module. `urgent` is the windows still asking for
+    attention."""
     return {f"ws{slot}": state(snapshot, slot, urgent) for slot in range(1, SLOTS + 1)}

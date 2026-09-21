@@ -69,9 +69,6 @@ type CssClass = Literal[
 these renderers have to agree, and nothing else checks that they do.
 """
 
-type Verb = Literal["refresh", "prime", "focus", "toggle"]
-"""What scripts/ctl.sh may write to the control FIFO."""
-
 
 class WorkspaceRef(TypedDict):
     """How a workspace is named from inside a client or a monitor."""
@@ -126,3 +123,8 @@ ButtonState = TypedDict(
 
 type States = dict[ModuleName, ButtonState]
 """Every button a renderer produced, by module name."""
+
+
+def blank() -> ButtonState:
+    """A button with no text, which is how waybar is told to hide a module."""
+    return {"text": "", "class": [], "tooltip": ""}

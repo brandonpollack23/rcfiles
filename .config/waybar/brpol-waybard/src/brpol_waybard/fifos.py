@@ -19,16 +19,13 @@ import os
 from collections.abc import Iterable
 from typing import Final
 
+from .ipc import SOCKET_DIR
 from .types import ButtonState, ModuleName, States
 
-DIRECTORY: Final = "waybar"
+# Beside Hyprland's own sockets, so the pipes are per session like they are.
+# scripts/button.sh and scripts/ctl.sh spell out the same paths.
+DIRECTORY: Final = os.path.join(SOCKET_DIR, "waybar")
 CONTROL: Final = "control"
-
-
-def runtime_dir() -> str:
-    from .ipc import SOCKET_DIR
-
-    return os.path.join(SOCKET_DIR, DIRECTORY)
 
 
 class Fifo:
@@ -93,12 +90,11 @@ class Bar:
     control: Fifo
 
     def __init__(self, names: Iterable[ModuleName]) -> None:
-        directory = runtime_dir()
-        os.makedirs(directory, 0o700, exist_ok=True)
+        os.makedirs(DIRECTORY, 0o700, exist_ok=True)
         # Deliberately not unlinking first: a restart should keep feeding the
         # `cat`s that are already attached to these pipes.
-        self.fifos = {name: Fifo(os.path.join(directory, name)) for name in names}
-        self.control = Fifo(os.path.join(directory, CONTROL))
+        self.fifos = {name: Fifo(os.path.join(DIRECTORY, name)) for name in names}
+        self.control = Fifo(os.path.join(DIRECTORY, CONTROL))
 
     def publish(self, states: States) -> None:
         for name, state in states.items():

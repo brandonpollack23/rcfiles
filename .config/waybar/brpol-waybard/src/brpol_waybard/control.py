@@ -11,42 +11,36 @@ spawn:
     toggle <n>     show or hide hidden-workspace slot n
 """
 
-from collections.abc import Callable
-
-from . import hidden, ipc, windows
+from . import hidden, ipc, layout, snapshot
 from .fifos import Bar
-from .snapshot import Snapshot
 
 
-def apply(command: str, bar: Bar, snapshot_of: Callable[[], Snapshot]) -> bool:
+def apply(command: str, bar: Bar) -> bool:
     """Run one command. Returns True when the bar should be recomputed.
 
-    `snapshot_of` is called only by the commands that need one, so a refresh
-    does not pay for a snapshot it is about to take anyway.
+    Anything malformed is ignored: a click is not worth a traceback.
     """
     verb, _, argument = command.strip().partition(" ")
 
-    if verb == "refresh":
-        return True
+    match verb:
+        case "refresh":
+            return True
 
-    if verb == "prime":
-        bar.prime(argument or None)
-        return False
+        case "prime":
+            bar.prime(argument or None)
 
-    if verb in ("focus", "toggle"):
-        try:
-            slot = int(argument)
-        except ValueError:
-            return False
-        if verb == "focus":
-            address = windows.address_at(snapshot_of(), slot)
+        # A click names a slot, and what is in that slot is only known from a
+        # snapshot. Both act through Hyprland, which reports the change back on
+        # the event socket, so neither asks for a recompute itself.
+        case "focus" if argument.isdecimal():
+            taskbar = layout.arrange(snapshot.take())
+            address = taskbar.address_at(int(argument))
             if address is not None:
                 ipc.focus_address(address)
-        else:
-            name = hidden.name_at(snapshot_of(), slot)
+
+        case "toggle" if argument.isdecimal():
+            name = hidden.name_at(snapshot.take(), int(argument))
             if name is not None:
                 ipc.toggle_special(name)
-        # Both act through Hyprland, which reports back on the event socket.
-        return False
 
     return False

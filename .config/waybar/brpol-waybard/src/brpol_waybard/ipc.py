@@ -22,6 +22,8 @@ EVENT_SOCKET: Final = os.path.join(SOCKET_DIR, ".socket2.sock")
 
 
 def request(message: str) -> str:
+    """One round trip on the request socket. Hyprland closes the connection
+    after replying, which is what ends the read."""
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.connect(REQUEST_SOCKET)
         sock.sendall(message.encode())
@@ -43,22 +45,24 @@ def query(what: str) -> Any:
     return json.loads(request(f"j/{what}") or "[]")
 
 
-# Whether a group is locked is not in `hyprctl clients`, so it comes from Lua.
-# The 0x filter is what tolerates any REPL banner in the reply.
 def locked_addresses() -> frozenset[Address]:
+    """Every window in a locked group. Whether a group is locked is not in
+    `hyprctl clients`, so it comes from Lua. The 0x filter is what tolerates
+    any REPL banner in the reply."""
     reply = request('repl return require("conf.wm").lockedAddresses()')
     return frozenset(word for word in reply.split() if word.startswith("0x"))
 
 
-# A taskbar click knows an address, and only Lua can act on a window that is not
-# the focused one.
 def focus_address(address: Address) -> None:
+    """Focus a window by address. A taskbar click knows an address, and only
+    Lua can act on a window that is not the focused one."""
     request(f'repl require("conf.wm").focusAddress("{address}")')
 
 
-# Through the binary, not the socket: this is the one call the scripts made that
-# way, and a click is rare enough that the process does not matter.
 def toggle_special(name: str) -> None:
+    """Show or hide a special workspace. Through the binary, not the socket:
+    this is the one call the scripts made that way, and a click is rare enough
+    that the process does not matter."""
     subprocess.run(
         ["hyprctl", "dispatch", f'hl.dsp.workspace.toggle_special("{name}")'],
         capture_output=True,

@@ -62,9 +62,27 @@ It is a silent no-op when the daemon is not running.
 
 ## Checking it
 
-    uv run mypy               # type-check; strict, and expected to stay clean
-    uv run ruff check src/    # lint
-    uv run ruff format src/   # format
+    uv run pytest                   # the tests; about two seconds
+    uv run mypy                     # type-check; strict, and expected to stay clean
+    uv run ruff check src tests     # lint
+    uv run ruff format src tests    # format
+
+None of these touch the running session. `tests/conftest.py` points the package
+at a scratch runtime directory before it is imported, so the tests pass the same
+inside Hyprland, outside it, or over ssh.
+
+| tests | what |
+| --- | --- |
+| `test_labels.py`, `test_layout.py`, `test_windows.py`, `test_workspaces.py`, `test_hidden.py`, `test_snapshot.py` | the pure functions, fed snapshots made by `builders.py` |
+| `test_fade.py` | the fade and focus-hold timeline, one render at a time with a made-up clock |
+| `test_fifos.py` | real pipes in a temp directory, read the way `cat` reads them |
+| `test_control.py` | each control command, with Hyprland and the snapshot stubbed out |
+| `test_daemon.py` | the whole daemon against `fake_hyprland.py`: real sockets, pipes, debounce and timers |
+
+`test_layout.py` also arranges a few hundred random workspaces and checks the
+two things the layout exists for: both sides of the master draw the same width,
+and every window is drawn or overflowed exactly once. When a layout bug turns
+up, add the arrangement that showed it to that file as a plain test.
 
 Every function is annotated and `mypy --strict` passes, so a change that breaks
 a shape is a failed check rather than a button that quietly stops drawing.
@@ -86,19 +104,35 @@ cloned to -- and an Arch Python major bump cannot break it.
 
 ## Layout
 
+One render, start to finish -- every arrow is a plain function call:
+
+    Hyprland event or ctl.sh line
+      -> __main__   debounce, then Daemon.render()
+      -> snapshot   take(): the five queries
+      -> layout     arrange(): which window is in which slot
+      -> fade       Fader.step(): which windows are fresh, where focus is drawn
+      -> windows / workspaces / hidden   render(): the JSON for each button
+      -> fifos      Bar.publish(): written only where a button changed
+
+The renderers are pure functions of a snapshot. The only state that outlives a
+render is in `Daemon` (the urgency set, the debounce) and `Fader`.
+
 | file | what |
 | --- | --- |
 | `src/brpol_waybard/types.py` | the shapes Hyprland's `j/` replies come back in |
 | `src/brpol_waybard/ipc.py` | the request socket, the event socket, the Lua REPL |
 | `src/brpol_waybard/snapshot.py` | everything the 39 buttons need, fetched once |
-| `src/brpol_waybard/windows.py` | taskbar layout, group tabs, lock icon, overflow |
+| `src/brpol_waybard/layout.py` | which window goes in which taskbar slot, and the ghosts that balance it |
+| `src/brpol_waybard/labels.py` | a window's icon, title and application name |
+| `src/brpol_waybard/windows.py` | the taskbar buttons: classes, group and lock icons, tooltips, overflow |
 | `src/brpol_waybard/workspaces.py` | the workspace buttons and the urgency set |
 | `src/brpol_waybard/hidden.py` | the special-workspace buttons |
 | `src/brpol_waybard/fifos.py` | the pipes, and why they are opened O_RDWR |
 | `src/brpol_waybard/control.py` | what a line on the control FIFO means |
+| `src/brpol_waybard/fade.py` | fading a new window in, and holding the focus colours meanwhile |
 | `src/brpol_waybard/__main__.py` | the event loop |
 
-Two counts are contracts with the waybar config: `windows.SLOTS` must equal the
+Two counts are contracts with the waybar config: `layout.SLOTS` must equal the
 number of `custom/winN` modules in `windows.jsonc`, and `workspaces.SLOTS` /
 `hidden.SLOTS` the number of `custom/wsN` / `custom/hiddenN` in
 `workspaces.jsonc`.

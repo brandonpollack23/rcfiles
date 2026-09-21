@@ -4,13 +4,13 @@
 // filled in layout order, so slot N is the Nth window from the left rather
 // than any particular window; clicks go back through the daemon for that
 // reason. Each slot has a fixed role -- invisible ghosts, left of the master,
-// the master, right of it, ghosts -- see the SLOTS ranges in windows.py; empty
+// the master, right of it, ghosts -- see the SLOTS ranges in layout.py; empty
 // slots hide themselves, and custom/winmore stands in for windows that found
 // no slot.
 //
 // Every module here is `cat` on a FIFO that brpol-waybard writes, not a script
 // of its own: see brpol-waybard/README.md. Keep the number of custom/winN
-// modules equal to SLOTS in brpol-waybard/src/brpol_waybard/windows.py.
+// modules equal to SLOTS in brpol-waybard/src/brpol_waybard/layout.py.
 {
   "group/windows": {
     "orientation": "horizontal",

@@ -139,7 +139,7 @@ window#waybar {
   /* Colours only. A transition on a margin, padding or width would slide the
      whole taskbar every time a slot changes what it holds. One duration for
      all of it, so a new window fading in and the focus crossing from one tab
-     to another move at the same rate; FADE in brpol-waybard's __main__.py
+     to another move at the same rate; FADE in brpol-waybard's fade.py
      has to match it. */
   transition:
     color 250ms ease,

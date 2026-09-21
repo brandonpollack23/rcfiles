@@ -68,3 +68,7 @@ something you've done.
   behind, including dialogs. Leaving test windows around is a bug in the test.
 - From a shell without `HYPRLAND_INSTANCE_SIGNATURE`, take it from
   `hyprctl instances`.
+- The waybar taskbar daemon (`../waybar/brpol-waybard`) has its own test suite
+  and its own `AGENTS.md`. After any change to the daemon, or to what it calls
+  here (`lockedAddresses` and `focusAddress` in `conf/wm/taskbar.lua`, and the
+  `ctl.sh refresh` calls there after group changes), run `uv run pytest` there.

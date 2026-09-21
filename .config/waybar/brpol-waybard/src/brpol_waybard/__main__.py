@@ -8,16 +8,19 @@ exactly what slot 3 emits. A FIFO cannot be read that way without stealing the
 line from waybar, so the inspection lives here instead.
 """
 
-import dataclasses
 import json
 import select
 import signal
 import socket
 import sys
 import time
+from collections.abc import Set
 from typing import Final, NoReturn
 
-from . import control, fifos, hidden, snapshot, windows, workspaces
+from . import control, fifos, hidden, ipc, layout, snapshot, windows, workspaces
+from .fade import Fader
+from .layout import Layout
+from .snapshot import Snapshot
 from .types import Address, EventName, ModuleName, States
 
 # Any of these means something a button draws may have moved.
@@ -29,140 +32,127 @@ MODULES: Final[list[ModuleName]] = windows.MODULES + workspaces.MODULES + hidden
 # long collapses them into one snapshot, and is short enough to stay invisible.
 DEBOUNCE: Final = 0.016
 
-# A window that has just opened is first drawn transparent and redrawn opaque
-# this much later, which style.css's opacity transition turns into a fade. Long
-# enough that GTK has drawn a frame in between; a change inside one frame is
-# not animated.
-FADE_DELAY: Final = 0.025
 
-# How long the fade takes: the `transition` on `#windows label` in style.css,
-# for opacity and the focus colours alike. Keep the two in step.
-FADE: Final = 0.125
-
-# A window that opens focused does not take the focus colours until it has
-# faded in; the old focus keeps them until then, and the two cross-fade.
-FOCUS_DELAY: Final = FADE_DELAY + FADE
+def render_all(
+    state: Snapshot,
+    taskbar: Layout,
+    fresh: frozenset[Address] = frozenset(),
+    urgent: Set[Address] = frozenset(),
+) -> States:
+    """Every button on the bar, by module name."""
+    return {
+        **windows.render(state, taskbar, fresh),
+        **workspaces.render(state, urgent),
+        **hidden.render(state),
+    }
 
 
 class Daemon:
+    events: socket.socket
+    # Event-socket bytes received so far that do not yet end in a newline.
+    partial: str
+    bar: fifos.Bar
+    fader: Fader
     # Urgency has no "no longer urgent" event: a window raises it, and it
     # stays raised until its workspace is looked at. So unlike everything
     # else here, this is state the snapshot cannot rebuild.
     urgent: set[Address]
-    bar: fifos.Bar
-    events: socket.socket | None
-    # The windows with a button after the last render, and the workspace they
-    # were on: a window new to a workspace fades in, a workspace switched to
-    # is simply drawn.
-    shown: frozenset[Address]
-    workspace: int | None
-    fade: float | None
-    # While a window that opened focused fades in, the focus is drawn where it
-    # was: on `held`, until `hold`, for as long as `holding_for` stays focused.
-    drawn: Address | None
-    held: Address | None
-    holding_for: Address | None
-    hold: float | None
+    # When the render that events have asked for is due, if one is.
+    debounce: float | None
 
     def __init__(self) -> None:
-        self.urgent = set()
+        self.events = ipc.events()
+        self.partial = ""
         self.bar = fifos.Bar(MODULES)
-        self.events = None
-        self.shown = frozenset()
-        self.workspace = None
-        self.fade = None
-        self.drawn = None
-        self.held = self.holding_for = None
-        self.hold = None
+        self.fader = Fader()
+        self.urgent = set()
+        self.debounce = None
 
     def render(self) -> None:
         state = snapshot.take()
-        now = time.monotonic()
-        shown = windows.shown(state)
-        workspace = windows.workspace(state)
-        fresh = shown - self.shown if workspace == self.workspace else frozenset()
-        self.shown, self.workspace = shown, workspace
-        if fresh:
-            self.fade = now + FADE_DELAY
-            if state.active in fresh:
-                self.held, self.holding_for = self.drawn, state.active
-                self.hold = now + FOCUS_DELAY
+        taskbar = layout.arrange(state)
 
-        # Focus moving anywhere else, or the hold running out, ends it.
-        if self.hold is not None and (
-            now >= self.hold or state.active != self.holding_for
-        ):
-            self.held = self.holding_for = self.hold = None
-        if self.hold is not None:
-            state = dataclasses.replace(state, active=self.held)
-        self.drawn = state.active
+        # Let the fader see what is about to be drawn. It answers with which
+        # windows to draw transparent, and may move the focus back for a moment.
+        state, fresh = self.fader.step(
+            state,
+            taskbar.addresses(),
+            layout.current_workspace(state),
+            time.monotonic(),
+        )
 
-        self.bar.publish(windows.render(state, fresh))
-        self.bar.publish(workspaces.render(state, self.urgent))
-        self.bar.publish(hidden.render(state))
+        # A window stops being urgent once its workspace is on a monitor.
+        self.urgent -= workspaces.seen(state)
+
+        self.bar.publish(render_all(state, taskbar, fresh, self.urgent))
 
     def run(self) -> None:
-        # Bound locally as well so the type stays narrowed for select().
-        events = self.events = ipc_events()
         self.render()
 
-        buffer = ""
-        deadline: float | None = None
         while True:
-            # Whichever comes first: a debounced render, a fade to start, or
-            # the focus to follow it. Each is a full render: the windows that
-            # were fresh are in `shown` by now, and render() ends a hold that
-            # has run out.
-            due = [d for d in (deadline, self.fade, self.hold) if d is not None]
+            # Sleep until there is something to read or a render falls due:
+            # the debounced one, or one the fader wants. There is no telling
+            # them apart afterwards and no need to, since each is a full
+            # render and a full render settles all of them.
+            due = [
+                t for t in (self.debounce, self.fader.next_render()) if t is not None
+            ]
             timeout = max(0.0, min(due) - time.monotonic()) if due else None
-            watch: list[socket.socket | int] = [events, self.bar.control.fd]
+            watch: list[socket.socket | int] = [self.events, self.bar.control.fd]
             ready, _, _ = select.select(watch, [], [], timeout)
 
             if not ready:
-                deadline = self.fade = None
+                self.debounce = None
                 self.render()
                 continue
 
+            # Find out whether anything that came in changes the bar. Nothing
+            # is drawn here: it only starts the debounce, unless one is running.
             dirty = False
-
             if self.bar.control.fd in ready:
                 for command in self.bar.commands():
-                    dirty |= control.apply(command, self.bar, snapshot.take)
-
-            if events in ready:
-                data = events.recv(65536)
-                if not data:
+                    dirty |= control.apply(command, self.bar)
+            if self.events in ready:
+                lines = self.read_events()
+                if lines is None:
                     return  # Hyprland went away; so do we.
-                buffer += data.decode(errors="replace")
-                complete, _, buffer = buffer.rpartition("\n")
-                for line in complete.split("\n"):
-                    name, _, payload = line.partition(">>")
-                    if name == "urgent":
-                        self.urgent.add("0x" + payload)
-                    if name in EVENTS:
-                        dirty = True
+                dirty |= self.note_events(lines)
 
-            if dirty and deadline is None:
-                deadline = time.monotonic() + DEBOUNCE
+            if dirty and self.debounce is None:
+                self.debounce = time.monotonic() + DEBOUNCE
+
+    def read_events(self) -> list[str] | None:
+        """The whole lines now available on the event socket, or None once
+        Hyprland has closed it."""
+        data = self.events.recv(65536)
+        if not data:
+            return None
+        received = self.partial + data.decode(errors="replace")
+        complete, _, self.partial = received.rpartition("\n")
+        return complete.split("\n")
+
+    def note_events(self, lines: list[str]) -> bool:
+        """Take in a batch of `name>>data` lines. Returns True when any of them
+        means the bar should be recomputed."""
+        dirty = False
+        for line in lines:
+            name, _, payload = line.partition(">>")
+            if name == "urgent":
+                self.urgent.add("0x" + payload)
+            if name in EVENTS:
+                dirty = True
+        return dirty
 
     def close(self) -> None:
+        self.events.close()
         self.bar.close()
-
-
-def ipc_events() -> socket.socket:
-    from . import ipc
-
-    return ipc.events()
 
 
 def once(name: ModuleName) -> None:
     if name not in MODULES:
         sys.exit(f"no such module: {name}\nknown: {' '.join(MODULES)}")
     state = snapshot.take()
-    states: States = windows.render(state)
-    states.update(workspaces.render(state, set()))
-    states.update(hidden.render(state))
-    print(json.dumps(states[name]))
+    print(json.dumps(render_all(state, layout.arrange(state))[name]))
 
 
 def main() -> None:
