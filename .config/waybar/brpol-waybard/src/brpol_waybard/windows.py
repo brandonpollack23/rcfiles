@@ -5,7 +5,9 @@ with the tabs of a group kept together in tab order.
 
   class "active"    the focused window
   class "shown"     the tab its group is currently showing
-  class "locked"    in a locked group; the lock icon rides on its first tab
+  class "grouped"   in a group, even a group of one; the group icon rides on
+                    its first tab, and a locked group shows a lock instead
+  class "locked"    in a locked group
   class "floating"
   class "solo" / "gstart" / "gmid" / "gend"   which tab of its group it is,
                                               which is what spaces groups apart
@@ -25,6 +27,7 @@ TOOLTIP_LEN: Final = 90
 OVERFLOW_LIST: Final = 8
 
 LOCK_ICON: Final = "󰌾"
+GROUP_ICON: Final = "󰆏"
 DEFAULT_ICON: Final = "󰖯"
 
 ICONS: Final[dict[str, str]] = {
@@ -199,6 +202,10 @@ def window_state(
     else:
         classes.append("gmid")
 
+    # Hyprland lists a group of one in its own `grouped`, so that is the test.
+    is_grouped = bool(client["grouped"])
+    if is_grouped:
+        classes.append("grouped")
     is_locked = client["address"] in locked
     if is_locked:
         classes.append("locked")
@@ -206,10 +213,11 @@ def window_state(
     icon = ICONS.get((client["class"] or "").lower(), DEFAULT_ICON)
     budget = ACTIVE_LEN if "active" in classes else IDLE_LEN
     text = f"{icon}  {html.escape(shorten(label(client), budget))}"
-    # The lock belongs to the group, so it rides on the group's first tab. That
-    # is what makes it visible on a group that is not the focused one.
-    if is_locked and index == 0:
-        text = f"{LOCK_ICON} {text}"
+    # The group marker belongs to the group, so it rides on the group's first
+    # tab. That is what makes it visible on a group that is not the focused one.
+    # Locking replaces it: a locked group is still a group.
+    if index == 0 and (is_locked or is_grouped):
+        text = f"{LOCK_ICON if is_locked else GROUP_ICON} {text}"
 
     lines = [f"<b>{html.escape(shorten(label(client), TOOLTIP_LEN))}</b>"]
     lines.append(f"<span alpha='60%'>{html.escape(app_name(client))}</span>")
@@ -218,6 +226,8 @@ def window_state(
         lines.append(f"{group} · locked" if is_locked else group)
     elif is_locked:
         lines.append("Locked group of one")
+    elif is_grouped:
+        lines.append("Group of one")
 
     return {"text": text, "class": classes, "tooltip": "\n".join(lines)}
 

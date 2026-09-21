@@ -49,6 +49,7 @@ type CssClass = Literal[
     "gstart",
     "gmid",
     "gend",
+    "grouped",
     "locked",
     "overflow",
     # workspaces.py
