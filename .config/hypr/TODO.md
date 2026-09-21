@@ -3,6 +3,7 @@
 ## Features
 
 - unified settings app
+- mise migration?
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
 - notification/new tab highlights workspace
@@ -11,6 +12,7 @@
 - master work/reference view (1/4 3/4)
 - switching between predefined layouts: focus task and work/reference
 - coding orientation, cycle between layouts on workspaces and save them
+- hyprcap
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
 - `super + alt + shift + w` for a new hidden workspace, so making one does not
