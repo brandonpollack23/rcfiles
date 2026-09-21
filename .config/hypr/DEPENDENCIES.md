@@ -25,6 +25,7 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 | `waybar` | desktop bar, autostarted. Its taskbar, workspace and hidden-workspace buttons are fed by `brpol-waybard`, started just before it (`conf/programs.lua`); the group lock icon it draws comes from there (`conf/wm/group.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
+| `swayosd` | volume/brightness popup (`swayosd-server`), autostarted; styled by `~/.config/swayosd/` and blurred by the `swayosd-glass` layer rule (`conf/rules.lua`) | `hyprland.lua` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
@@ -107,6 +108,7 @@ from the tables above.
 | `paru` (AUR) | `paru` | update system, remove unneeded packages |
 | `awww` | `awww-daemon` | restart wallpaper daemon |
 | `hypr-persist` (AUR) | `hypr-persist` | restart session daemon, save session now |
+| `swayosd` | `swayosd-server` | restart volume/brightness OSD |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -115,6 +117,8 @@ from the tables above.
 | `wireplumber` (with `pipewire`) | `wpctl` | volume and mic mute keys |
 | `playerctl` | `playerctl` | play/pause/next/prev keys |
 | `brightnessctl` | `brightnessctl` | brightness keys |
+| `swayosd` | `swayosd-client`; `swayosd-libinput-backend.service` (system unit, enabled by `install.sh`) | `scripts/osd.sh` shows the new level after each volume, mute, mic mute and brightness key. The backend only feeds the Caps/Num/Scroll Lock popups: 0.3.2 ignores the media keys it reports |
+| `gawk`, `coreutils` | `awk`, `cut`, `tr` | parsing `wpctl` and `brightnessctl` output (`scripts/osd.sh`) |
 
 ## Referenced only in `TODO.md`
 
@@ -131,7 +135,8 @@ into the config.
 sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
-  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard
+  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk
+sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
 paru -S --needed google-chrome hypr-persist
 ```

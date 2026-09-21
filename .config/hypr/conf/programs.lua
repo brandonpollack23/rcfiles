@@ -8,6 +8,8 @@ return {
 	-- before it. See ~/.config/waybar/brpol-waybard/README.md.
 	taskbar_daemon = "~/.config/waybar/brpol-waybard/scripts/launch.sh",
 	notification_center = "swaync",
+	-- Volume/brightness popup, styled by ~/.config/swayosd/style.css.
+	osd = "swayosd-server",
 	lock = "hyprlock",
 	idle = "hypridle",
 	session = "hypr-persist",

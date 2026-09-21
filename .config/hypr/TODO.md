@@ -2,7 +2,6 @@
 
 ## Features
 
-- unified settings app
 - can volume open volume control popup panel
 - can bluetooth open bluetooth control popup panel
 - sounds on connect of usb devices
@@ -21,7 +20,6 @@
 - teamspeak should prefer right side and comms workspace
 - wl freeze to pause games in background and free up gpu
 - theme the file manager (`nautilus`, `conf/programs.lua`)
-- popup for sound/mute
 - hyprfocus bounce windows or some other focus indicator
 - once we have session restore, check that named workspaces (`conf/workspaces/`)
   are compatible with it, and whether workspace names can be restored across

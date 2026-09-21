@@ -77,6 +77,7 @@ ARCH_PACKAGES=(
   jq             # JSON processor; parses Bing's image metadata (.config/hypr/scripts/bing-wallpaper.sh)
   kio-gdrive     # KIO slave for Google Drive integration with KDE
   neovide        # Neovim client in a fully featured graphical user interface
+  swayosd        # Volume/brightness OSD, started by Hyprland (.config/swayosd)
   tlp            # Advanced power management tool for Linux
   tlpui          # Graphical user interface for TLP
 
@@ -330,6 +331,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
   ln -sfn "$RCFILES_DIR/.config/waybar" "$HOME/.config/waybar"
   ln -sfn "$RCFILES_DIR/.config/swaync" "$HOME/.config/swaync"
+  ln -sfn "$RCFILES_DIR/.config/swayosd" "$HOME/.config/swayosd"
   ln -sfn "$RCFILES_DIR/.config/taskwarrior" "$HOME/.taskwarrior"
   ln -sfn "$RCFILES_DIR/.cowfiles" "$HOME/.cowfiles"
   ln -sfn "$RCFILES_DIR/.cowrc" "$HOME/.cowrc"
@@ -353,6 +355,11 @@ function setup_home_dir() {
     systemctl --user mask swaync.service >/dev/null 2>&1 || true
     # ydotoold sends the notification center's vim keys (.config/hypr/conf/notifications.lua).
     systemctl --user enable --now ydotool.service >/dev/null 2>&1 || true
+    # SwayOSD's key listener is a system service (it reads /dev/input as root);
+    # swayosd-server itself is started by Hyprland. Only there with swayosd installed.
+    if systemctl cat swayosd-libinput-backend.service >/dev/null 2>&1; then
+      sudo systemctl enable --now swayosd-libinput-backend.service >/dev/null 2>&1 || true
+    fi
   fi
   ln -sfn "$RCFILES_DIR/zsh-custom" "$HOME/zsh-custom"
 

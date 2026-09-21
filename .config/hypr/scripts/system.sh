@@ -17,6 +17,7 @@ restart-waybar|󰑓  Restart waybar and its taskbar daemon
 restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
+restart-swayosd|󰑓  Restart volume/brightness OSD (swayosd, reloads its style)
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
 restart-hypridle|󰑓  Restart hypridle (idle dim, lock, screens off)
 restart-hypr-persist|󰑓  Restart hypr-persist (session restore)
@@ -84,6 +85,11 @@ restart-swaync)
   pkill -x swaync
   while pgrep -x swaync >/dev/null; do sleep 0.1; done
   setsid -f swaync >/dev/null 2>&1
+  ;;
+restart-swayosd)
+  pkill -x swayosd-server
+  while pgrep -x swayosd-server >/dev/null; do sleep 0.1; done
+  setsid -f swayosd-server >/dev/null 2>&1
   ;;
 restart-ydotool) systemctl --user restart ydotool ;;
 restart-hypridle)

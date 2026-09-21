@@ -233,24 +233,27 @@ bindLayout(mainMod .. " + O", "orientationcycle left top right bottom center", "
 -- Multimedia and brightness control control
 
 -- Laptop multimedia keys for volume and LCD brightness
+-- Each bind then shows the new level in SwayOSD, which cannot pick these keys up
+-- by itself (scripts/osd.sh).
+local osd = "~/.config/hypr/scripts/osd.sh"
 bindExec(
 	"XF86AudioRaiseVolume",
-	"wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
+	"wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+; " .. osd .. " sink",
 	{ locked = true, repeating = true, description = "Volume up" }
 )
 bindExec(
 	"XF86AudioLowerVolume",
-	"wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+	"wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; " .. osd .. " sink",
 	{ locked = true, repeating = true, description = "Volume down" }
 )
 bindExec(
 	"XF86AudioMute",
-	"wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+	"wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; " .. osd .. " sink",
 	{ locked = true, repeating = true, description = "Mute audio" }
 )
 bindExec(
 	"XF86AudioMicMute",
-	"wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+	"wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; " .. osd .. " source",
 	{ locked = true, repeating = true, description = "Mute microphone" }
 )
 
@@ -262,11 +265,11 @@ bindExec("XF86AudioPrev", "playerctl previous", { locked = true, description = "
 
 bindExec(
 	"XF86MonBrightnessUp",
-	"brightnessctl -e4 -n2 set 5%+",
+	"brightnessctl -e4 -n2 set 5%+; " .. osd .. " brightness",
 	{ locked = true, repeating = true, description = "Brightness up" }
 )
 bindExec(
 	"XF86MonBrightnessDown",
-	"brightnessctl -e4 -n2 set 5%-",
+	"brightnessctl -e4 -n2 set 5%-; " .. osd .. " brightness",
 	{ locked = true, repeating = true, description = "Brightness down" }
 )

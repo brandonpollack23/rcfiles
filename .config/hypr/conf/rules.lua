@@ -52,3 +52,15 @@ hl.window_rule({
 	no_focus = true,
 	move = "monitor_w-window_w monitor_h-window_h-38",
 })
+
+-- SwayOSD (namespace from `hyprctl layers`). Its window is wider than the
+-- visible panel and transparent around it, so skip blur where the alpha is
+-- below the panel's: that leaves the margin and the CSS shadow unblurred.
+hl.layer_rule({
+	name = "swayosd-glass",
+	match = { namespace = "^swayosd$" },
+
+	blur = true,
+	ignore_alpha = 0.3,
+	animation = "fade",
+})
