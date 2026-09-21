@@ -121,7 +121,9 @@ end
 
 -- Hyprland picks the group to join by direction, so callers (the SUPER + ALT + G
 -- submap) supply one. `into_or_create_group` also groups with a lone window,
--- which plain `into_group` refuses.
+-- which plain `into_group` refuses. A lock only stops new windows from landing
+-- in a group, so an explicit join ignores it; the option is flipped just for
+-- this dispatch so the other group moves keep honouring locks.
 function M.joinToward(direction)
 	local active = hl.get_active_window()
 	if not active then
@@ -129,7 +131,10 @@ function M.joinToward(direction)
 	end
 	local address = active.address
 
+	local ignoredLock = hl.get_config("binds.ignore_group_lock")
+	hl.config({ binds = { ignore_group_lock = true } })
 	hl.dispatch(hl.dsp.window.move({ into_or_create_group = direction }))
+	hl.config({ binds = { ignore_group_lock = ignoredLock } })
 	M.refreshBar()
 
 	-- Nothing to record if there was no group that way.
