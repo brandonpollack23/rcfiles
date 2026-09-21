@@ -125,6 +125,13 @@ def test_startup_draws_every_button(
     assert read(f"win{CENTRE[1]}").wait_for(lambda s: True, "a line")["text"] == ""
 
 
+def test_status_buttons_start_hidden(read: Callable[[ModuleName], Reader]) -> None:
+    # No piactl, weather key or hyprsunset here (conftest.py), so each is sent
+    # the blank line that clears whatever it showed before a restart.
+    for name in ("pia", "weather", "nightlight"):
+        assert read(name).wait_for(lambda s: True, "its first line")["text"] == ""
+
+
 def test_one_snapshot_is_five_requests(hyprland: FakeHyprland, running: Daemon) -> None:
     assert len(hyprland.requests) == 5
 

@@ -22,6 +22,7 @@
     "custom/power",
     "hyprland/submap",
     "clock",
+    "custom/weather",
   ],
 
   "modules-center": ["group/windows"],
@@ -49,16 +50,37 @@
     "tooltip": false,
   },
 
-  // Hover lists every zone in "timezones"; scroll cycles which one is shown.
+  // Popups: a click on a status module toggles its l1p0-menus popup
+  // (~/.config/l1p0-menu, started by Hyprland), which opens above the bar in
+  // that module's corner. PIA and weather have no l1p0-menus module, so
+  // popups.py there draws them. Their bar modules and the night light's are
+  // fed by brpol-waybard like the taskbar (status.py there).
+
+  // No tooltips on the modules that open a popup: a click would leave the
+  // tooltip drawn over it, and the popup says more anyway.
+
+  // Scroll cycles which zone of "timezones" is shown. Click opens the
+  // calendar, so the long format moves to right-click.
   "clock": {
     "format": "󰥔  {:%Y/%m/%d  %H:%M %Z}",
     "format-alt": "󰃭  {:%A, %B %d  ·  %H:%M %Z}",
+    "format-alt-click": "click-right",
+    "on-click": "l1p0-menus --toggle calendar",
     "timezones": ["", "Etc/UTC", "America/Los_Angeles", "America/New_York"],
-    "tooltip-format": "<tt>{tz_list}</tt>\n\n<tt><small>{calendar}</small></tt>",
+    "tooltip": false,
     "actions": {
       "on-scroll-up": "tz_up",
       "on-scroll-down": "tz_down",
     },
+  },
+
+  // Hidden until ~/.config/l1p0-menu/launch.sh has an API key to give it.
+  "custom/weather": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh weather",
+    "tooltip": false,
+    "restart-interval": 1,
+    "on-click": "~/.config/l1p0-menu/popups.py weather",
   },
 
   "group/status": {
@@ -66,9 +88,12 @@
     "modules": [
       "mpris",
       "tray",
+      "custom/pia",
       "network",
       "bluetooth",
       "pulseaudio",
+      "custom/nightlight",
+      "backlight",
       "battery",
       "custom/notification",
     ],
@@ -100,20 +125,24 @@
     "format-wifi": "󰤨  {signalStrength}%",
     "format-ethernet": "󰈀",
     "format-disconnected": "󰤭",
-    "tooltip-format-wifi": "{essid}\n{ipaddr}",
-    "on-click": "nm-connection-editor",
+    "tooltip": false,
+    "on-click": "l1p0-menus --toggle network",
+    "on-click-right": "nm-connection-editor",
   },
 
   "bluetooth": {
     "format": "󰂯",
     "format-disabled": "󰂲",
     "format-connected": "󰂱 {num_connections}",
-    "on-click": "blueman-manager",
+    "tooltip": false,
+    "on-click": "l1p0-menus --toggle network",
+    "on-click-right": "blueman-manager",
   },
 
   "pulseaudio": {
     "format": "{icon} {volume}%",
     "format-muted": "󰖁",
+    "tooltip": false,
 
     "format-icons": {
       "headphone": "󰋋",
@@ -121,10 +150,43 @@
       "default": ["󰕿", "󰖀", "󰕾"],
     },
 
-    "on-click": "pavucontrol",
+    "on-click": "l1p0-menus --toggle audio",
+    "on-click-middle": "pavucontrol",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+  },
+
+  // Follows `piactl monitor`, so it changes with the VPN rather than on a
+  // timer; hidden where there is no piactl.
+  "custom/pia": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh pia",
+    "tooltip": false,
+    "restart-interval": 1,
+    "on-click": "~/.config/l1p0-menu/popups.py pia",
+    "on-click-right": "piactl connect",
+    "on-click-middle": "piactl disconnect",
+  },
+
+  // hyprsunset has no event stream: the daemon redraws this after its own
+  // toggle, and asks every 30s for a change made from the popup's slider.
+  "custom/nightlight": {
+    "return-type": "json",
+    "exec": "~/.config/waybar/brpol-waybard/scripts/button.sh nightlight",
+    "restart-interval": 1,
+    "on-click": "~/.config/waybar/brpol-waybard/scripts/ctl.sh nightlight",
+    "on-click-right": "l1p0-menus --toggle brightness",
+  },
+
+  // Laptops only: there is no backlight device on a desktop.
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "tooltip": false,
+    "on-click": "l1p0-menus --toggle brightness",
+    "on-scroll-up": "brightnessctl -q set 5%+",
+    "on-scroll-down": "brightnessctl -q set 5%-",
   },
 
   // Hides itself when /sys/class/power_supply has no battery (desktops).
@@ -137,7 +199,8 @@
     "format-charging": "󰂄 {capacity}%",
     "format-plugged": "󰚥 {capacity}%",
     "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
-    "tooltip-format": "{timeTo}",
+    "tooltip": false,
+    "on-click": "l1p0-menus --toggle battery",
   },
 
   "custom/notification": {

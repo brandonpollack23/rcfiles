@@ -8,3 +8,5 @@ Brewfile.lock.json
 .config/herdr/.plugins.lock
 .config/herdr/config.toml.bak
 .config/herdr/config.toml.claude-bak-*
+# Written by .config/l1p0-menu/launch.sh; holds the decrypted weather key.
+.config/l1p0-menu/config.json

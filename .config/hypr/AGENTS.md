@@ -29,6 +29,13 @@ for session and power actions) and a matching `case` branch. Use `in_terminal`
 for commands whose output the user needs to read or that prompt. When you add a
 new daemon or program to the config, add its restart or reload here too.
 
+## Waybar scripting goes in brpol-waybard
+
+Do not write standalone scripts for the bar, here in `scripts/` or anywhere
+else: module output, multi-step clicks and anything modules share all go in the
+daemon at `../waybar/brpol-waybard`. Its `AGENTS.md` says how to add a button
+or a click, and which checks to run.
+
 ## Disabled config and TODOs
 
 Don't leave commented-out config or TODO comments in the Lua files. Put planned

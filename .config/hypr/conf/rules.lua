@@ -53,12 +53,14 @@ hl.window_rule({
 	move = "monitor_w-window_w monitor_h-window_h-38",
 })
 
--- SwayOSD (namespace from `hyprctl layers`). Its window is wider than the
--- visible panel and transparent around it, so skip blur where the alpha is
--- below the panel's: that leaves the margin and the CSS shadow unblurred.
+-- SwayOSD and the bar's popups (l1p0-menus and ~/.config/l1p0-menu/popups.py;
+-- namespaces from `hyprctl layers`), one look for all of them. SwayOSD's window
+-- is wider than the visible panel and transparent around it, so skip blur where
+-- the alpha is below the panel's: that leaves the margin and the CSS shadow
+-- unblurred.
 hl.layer_rule({
-	name = "swayosd-glass",
-	match = { namespace = "^swayosd$" },
+	name = "popup-glass",
+	match = { namespace = "^(swayosd|(audio|brightness|calendar|battery|network|pia|weather)-layer)$" },
 
 	blur = true,
 	ignore_alpha = 0.3,

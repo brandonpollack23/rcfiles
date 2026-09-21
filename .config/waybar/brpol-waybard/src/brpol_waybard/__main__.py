@@ -1,4 +1,5 @@
-"""The daemon: one event subscription, one snapshot, 39 buttons.
+"""The daemon: one event subscription, one snapshot, 39 buttons -- and the three
+status buttons of status.py, which have sources of their own.
 
     brpol-waybard              run it
     brpol-waybard --once NAME  print what button NAME would show, and exit
@@ -17,16 +18,28 @@ import time
 from collections.abc import Set
 from typing import Final, NoReturn
 
-from . import control, fifos, hidden, ipc, layout, snapshot, windows, workspaces
+from . import (
+    control,
+    fifos,
+    hidden,
+    ipc,
+    layout,
+    snapshot,
+    status,
+    windows,
+    workspaces,
+)
 from .fade import Fader
 from .layout import Layout
 from .snapshot import Snapshot
-from .types import Address, EventName, ModuleName, States
+from .types import Address, EventName, ModuleName, States, blank
 
 # Any of these means something a button draws may have moved.
 EVENTS: Final[frozenset[EventName]] = windows.EVENTS | workspaces.EVENTS | hidden.EVENTS
 
-MODULES: Final[list[ModuleName]] = windows.MODULES + workspaces.MODULES + hidden.MODULES
+MODULES: Final[list[ModuleName]] = (
+    windows.MODULES + workspaces.MODULES + hidden.MODULES + status.MODULES
+)
 
 # Hyprland reports a window opening as several events in a row. Waiting this
 # long collapses them into one snapshot, and is short enough to stay invisible.
@@ -53,6 +66,7 @@ class Daemon:
     partial: str
     bar: fifos.Bar
     fader: Fader
+    status: status.Status
     # Urgency has no "no longer urgent" event: a window raises it, and it
     # stays raised until its workspace is looked at. So unlike everything
     # else here, this is state the snapshot cannot rebuild.
@@ -65,6 +79,7 @@ class Daemon:
         self.partial = ""
         self.bar = fifos.Bar(MODULES)
         self.fader = Fader()
+        self.status = status.Status()
         self.urgent = set()
         self.debounce = None
 
@@ -88,22 +103,36 @@ class Daemon:
 
     def run(self) -> None:
         self.render()
+        # Hidden until their sources have answered; a blank line rather than
+        # no line, so a button left over from before a restart clears.
+        self.bar.publish({name: blank() for name in status.MODULES})
 
         while True:
             # Sleep until there is something to read or a render falls due:
             # the debounced one, or one the fader wants. There is no telling
             # them apart afterwards and no need to, since each is a full
             # render and a full render settles all of them.
-            due = [
+            renders = [
                 t for t in (self.debounce, self.fader.next_render()) if t is not None
             ]
-            timeout = max(0.0, min(due) - time.monotonic()) if due else None
-            watch: list[socket.socket | int] = [self.events, self.bar.control.fd]
+            due = min([*renders, self.status.next_due()])
+            timeout = max(0.0, due - time.monotonic())
+            watch: list[socket.socket | int] = [
+                self.events,
+                self.bar.control.fd,
+                *self.status.fds(),
+            ]
             ready, _, _ = select.select(watch, [], [], timeout)
 
+            # The status buttons keep their own time and their own pipes, and
+            # never need a snapshot.
+            now = time.monotonic()
+            self.bar.publish(self.status.step(ready, now))
+
             if not ready:
-                self.debounce = None
-                self.render()
+                if any(t <= now for t in renders):
+                    self.debounce = None
+                    self.render()
                 continue
 
             # Find out whether anything that came in changes the bar. Nothing
@@ -111,7 +140,7 @@ class Daemon:
             dirty = False
             if self.bar.control.fd in ready:
                 for command in self.bar.commands():
-                    dirty |= control.apply(command, self.bar)
+                    dirty |= control.apply(command, self.bar, self.status)
             if self.events in ready:
                 lines = self.read_events()
                 if lines is None:
@@ -145,12 +174,16 @@ class Daemon:
 
     def close(self) -> None:
         self.events.close()
+        self.status.close()
         self.bar.close()
 
 
 def once(name: ModuleName) -> None:
     if name not in MODULES:
         sys.exit(f"no such module: {name}\nknown: {' '.join(MODULES)}")
+    if name in status.MODULES:
+        print(json.dumps(status.once(name)))
+        return
     state = snapshot.take()
     print(json.dumps(render_all(state, layout.arrange(state))[name]))
 

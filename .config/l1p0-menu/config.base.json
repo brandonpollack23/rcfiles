@@ -1,0 +1,30 @@
+{
+  "weather-clock": {
+    "language": "en",
+    "show_sunset": true,
+    "show_feels_like": true,
+    "margin": "0, 0, 8, 102",
+    "anchor": "bottom-left",
+    "date_format": "%A, %B %d"
+  },
+  "network": {
+    "margin": "0, 10, 8, 0",
+    "anchor": "bottom-right",
+    "notification": true
+  },
+  "battery": {
+    "margin": "0, 10, 8, 0",
+    "anchor": "bottom-right",
+    "notification_threshold": "5, 15, 30",
+    "notification": true
+  },
+  "audio": {
+    "margin": "0, 10, 8, 0",
+    "anchor": "bottom-right"
+  },
+  "brightness": {
+    "margin": "0, 10, 8, 0",
+    "anchor": "bottom-right",
+    "night_preset": "3500"
+  }
+}

@@ -64,6 +64,12 @@ type CssClass = Literal[
     "empty",
     # hidden.py
     "hidden",
+    # status.py
+    "connected",
+    "disconnected",
+    "busy",
+    "on",
+    "off",
 ]
 """Every class the bar's CSS styles. Same reasoning as EventName: style.css and
 these renderers have to agree, and nothing else checks that they do.

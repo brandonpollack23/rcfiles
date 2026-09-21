@@ -2,15 +2,13 @@
 
 ## Features
 
-- can volume open volume control popup panel
-- can bluetooth open bluetooth control popup panel
+- hyprcap
+- master work/reference view (1/4 3/4)
+- switching between predefined layouts: focus task and work/reference. save
+  which workspace was which
 - sounds on connect of usb devices
 - mission control like view, super + shift + w, make new workspace super + alt +
   w
-- master work/reference view (1/4 3/4)
-- switching between predefined layouts: focus task and work/reference
-- coding orientation, cycle between layouts on workspaces and save them
-- hyprcap
 - kde phone connect
 - hidden workspace stuff to replicate minimizing: windows I can pull up, view
 - `super + alt + shift + w` for a new hidden workspace, so making one does not

@@ -16,6 +16,7 @@ window#waybar {
 #submap,
 #hidden,
 #clock,
+#custom-weather,
 #status {
   background: rgba(30, 30, 46, 0.94);
   border: 1px solid rgba(137, 180, 250, 0.2);
@@ -322,7 +323,8 @@ window#waybar {
 /* Right-side pills sit next to each other; space them apart. */
 #hidden,
 #status,
-#clock {
+#clock,
+#custom-weather {
   margin-left: 8px;
 }
 
@@ -360,8 +362,13 @@ window#waybar {
   background: rgba(148, 226, 213, 0.15);
 }
 
-#clock {
+#clock,
+#custom-weather {
   padding: 0 16px;
+}
+
+#custom-weather {
+  color: #89dceb;
 }
 
 #status {
@@ -374,8 +381,38 @@ window#waybar {
 #bluetooth,
 #pulseaudio,
 #battery,
+#backlight,
+#custom-pia,
+#custom-nightlight,
 #custom-notification {
   padding: 0 9px;
+}
+
+/* Muted until the VPN is up; yellow while it is connecting or dropping. */
+#custom-pia {
+  color: #7f849c;
+  font-size: 15px;
+}
+
+#custom-pia.connected {
+  color: #a6e3a1;
+}
+
+#custom-pia.busy {
+  color: #f9e2af;
+}
+
+#custom-nightlight {
+  color: #7f849c;
+  font-size: 15px;
+}
+
+#custom-nightlight.on {
+  color: #fab387;
+}
+
+#backlight {
+  color: #f9e2af;
 }
 
 #mpris {

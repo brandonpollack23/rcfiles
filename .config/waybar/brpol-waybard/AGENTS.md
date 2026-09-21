@@ -3,6 +3,25 @@
 The daemon behind every scripted waybar button. `README.md` has the why, the
 file layout, and how one render flows; read it first.
 
+## Everything scripted on the bar goes here
+
+Anything waybar needs a program for belongs in this daemon, not in a script of
+its own: a module's output (`exec`), a click that takes more than one plain
+command, state several modules share, polling, following another program's
+output. Do not add a `custom/*` module whose `exec` is a new shell or Python
+script, here or under `~/.config/hypr/scripts` or anywhere else, and do not put
+inline Python in a shell script to get around that.
+
+A new button is a name in a `MODULES` list, fed through a FIFO and read with
+`scripts/button.sh <name>`; a new click is a verb in `control.py`, sent with
+`scripts/ctl.sh <verb>`. `status.py` is the pattern for a button that is not
+about windows: its sources join the one select loop as a pipe or a timer, so
+nothing blocks the taskbar and nothing needs a thread. A plain one-liner in the
+waybar config (`"on-click": "pavucontrol"`) is fine as it is.
+
+Separate programs the bar only launches are not part of this: the popups in
+`~/.config/l1p0-menu` are GTK windows on the system Python and stay there.
+
 ## Run the checks after every change
 
 Any change under `src/` or `tests/` is not done until all three pass:
@@ -25,6 +44,10 @@ the live bar, because the tests fake that side:
   `workspaces.SLOTS` and `hidden.SLOTS`
 - the classes in `../style.css`, which must stay in step with `CssClass` in
   `types.py`, and its `transition`, which must match `FADE` in `fade.py`
+- the `custom/pia`, `custom/weather` and `custom/nightlight` modules in
+  `../config.jsonc`, named for `status.MODULES`, and
+  `~/.config/l1p0-menu/launch.sh`, which writes the `config.json` that
+  `status.py` reads the weather key, city and night preset from
 
 ## Tests change with the code
 

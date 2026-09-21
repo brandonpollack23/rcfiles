@@ -10,6 +10,11 @@ return {
 	notification_center = "swaync",
 	-- Volume/brightness popup, styled by ~/.config/swayosd/style.css.
 	osd = "swayosd-server",
+	-- The popups behind the bar's status modules. launch.sh renders the config
+	-- and style l1p0-menus reads, then runs its daemon.
+	bar_popups = "~/.config/l1p0-menu/launch.sh",
+	-- Night light; idle at a neutral temperature until the bar turns it on.
+	nightlight = "hyprsunset",
 	lock = "hyprlock",
 	idle = "hypridle",
 	session = "hypr-persist",

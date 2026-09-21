@@ -13,11 +13,13 @@ poweroff|󰐥  Shut down'
 
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
-restart-waybar|󰑓  Restart waybar and its taskbar daemon
+restart-waybar|󰑓  Restart waybar, its taskbar daemon and its popups
 restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-swayosd|󰑓  Restart volume/brightness OSD (swayosd, reloads its style)
+restart-hyprsunset|󰑓  Restart night light (hyprsunset)
+edit-secrets|󰌆  Edit secrets (sops: weather API key)
 restart-ydotool|󰑓  Restart ydotool (notification center keys)
 restart-hypridle|󰑓  Restart hypridle (idle dim, lock, screens off)
 restart-hypr-persist|󰑓  Restart hypr-persist (session restore)
@@ -67,6 +69,12 @@ restart-waybar)
   # The taskbar daemon too: a change to the bar's buttons usually changes both
   # the waybar config and the daemon that fills them.
   "$0" restart-taskbar-daemon
+  # And the popups its status modules open (~/.config/l1p0-menu), which picks
+  # up a changed weather key. popups.py comes back with the next click.
+  pkill -f 'l1p0-menus --daemon$'
+  pkill -f 'l1p0-menu/popups.py'
+  while pgrep -f 'l1p0-menus --daemon$' >/dev/null; do sleep 0.1; done
+  setsid -f ~/.config/l1p0-menu/launch.sh >/dev/null 2>&1
   pkill -x waybar
   while pgrep -x waybar >/dev/null; do sleep 0.1; done
   setsid -f waybar >/dev/null 2>&1
@@ -91,6 +99,12 @@ restart-swayosd)
   while pgrep -x swayosd-server >/dev/null; do sleep 0.1; done
   setsid -f swayosd-server >/dev/null 2>&1
   ;;
+restart-hyprsunset)
+  pkill -x hyprsunset
+  while pgrep -x hyprsunset >/dev/null; do sleep 0.1; done
+  setsid -f hyprsunset >/dev/null 2>&1
+  ;;
+edit-secrets) in_terminal sops "$(dirname "$(readlink -f ~/.config/l1p0-menu)")/../secrets.sops.env" ;;
 restart-ydotool) systemctl --user restart ydotool ;;
 restart-hypridle)
   pkill -x hypridle

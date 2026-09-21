@@ -4,18 +4,28 @@ import pytest
 
 from brpol_waybard import control, ipc, snapshot
 from brpol_waybard.layout import CENTRE, RIGHT
-from brpol_waybard.types import ModuleName, Workspace
+from brpol_waybard.types import ModuleName, States, Workspace
 from builders import master, snap
 
 
 class FakeBar:
     primed: list[ModuleName | None]
+    published: list[States]
 
     def __init__(self) -> None:
         self.primed = []
+        self.published = []
 
     def prime(self, name: ModuleName | None = None) -> None:
         self.primed.append(name)
+
+    def publish(self, states: States) -> None:
+        self.published.append(states)
+
+
+class FakeStatus:
+    def toggle_nightlight(self) -> States:
+        return {"nightlight": {"text": "󰖔", "class": ["on"], "tooltip": ""}}
 
 
 class Calls:
@@ -46,7 +56,7 @@ def calls(monkeypatch: pytest.MonkeyPatch) -> Calls:
 
 
 def apply(command: str, bar: FakeBar | None = None) -> bool:
-    return control.apply(command, bar or FakeBar())  # type: ignore[arg-type]
+    return control.apply(command, bar or FakeBar(), FakeStatus())  # type: ignore[arg-type]
 
 
 def test_refresh_asks_for_a_render_without_taking_a_snapshot(calls: Calls) -> None:
@@ -84,3 +94,11 @@ def test_toggle_toggles_the_special_workspace_in_that_slot(calls: Calls) -> None
 def test_malformed_commands_are_ignored(calls: Calls, command: str) -> None:
     assert apply(command) is False
     assert (calls.focused, calls.toggled) == ([], [])
+
+
+def test_nightlight_toggles_and_redraws_its_own_button(calls: Calls) -> None:
+    bar = FakeBar()
+    # hyprsunset has no event to wait for, and nothing else on the bar moved.
+    assert apply("nightlight", bar) is False
+    assert bar.published == [FakeStatus().toggle_nightlight()]
+    assert calls.snapshots == 0

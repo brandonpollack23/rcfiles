@@ -6,6 +6,7 @@
 #                       only just attached; waybar runs this as a button comes up
 #   ctl.sh focus <n>    focus the window in taskbar slot n
 #   ctl.sh toggle <n>   show or hide hidden-workspace slot n
+#   ctl.sh nightlight   night light on or off
 #
 # Silently does nothing when the daemon is not running: the bar is not worth
 # blocking a click or the compositor over.

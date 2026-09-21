@@ -9,13 +9,15 @@ spawn:
                    only just attached; every button when no name is given
     focus <n>      focus the window in taskbar slot n
     toggle <n>     show or hide hidden-workspace slot n
+    nightlight     night light on or off
 """
 
 from . import hidden, ipc, layout, snapshot
 from .fifos import Bar
+from .status import Status
 
 
-def apply(command: str, bar: Bar) -> bool:
+def apply(command: str, bar: Bar, status: Status) -> bool:
     """Run one command. Returns True when the bar should be recomputed.
 
     Anything malformed is ignored: a click is not worth a traceback.
@@ -42,5 +44,9 @@ def apply(command: str, bar: Bar) -> bool:
             name = hidden.name_at(snapshot.take(), int(argument))
             if name is not None:
                 ipc.toggle_special(name)
+
+        # hyprsunset reports nothing back, so the button is redrawn from here.
+        case "nightlight":
+            bar.publish(status.toggle_nightlight())
 
     return False

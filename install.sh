@@ -64,6 +64,7 @@ DEBIAN_PACKAGES=(
 )
 
 ARCH_PACKAGES=(
+  age            # Keys sops encrypts this repo's secrets to (sops-bootstrap.sh)
   alacritty      # A fast, cross-platform, OpenGL terminal emulator
   awww           # Wallpaper daemon for the Bing wallpaper (.config/hypr/scripts/bing-wallpaper.sh)
   bitwarden      # Secure, open source password manager for all of your devices
@@ -73,10 +74,12 @@ ARCH_PACKAGES=(
   github-cli     # GitHub’s official command line tool
   hypridle       # Idle daemon: dim, lock and screens off (.config/hypr/hypridle.conf)
   hyprlock       # Lock screen (.config/hypr/hyprlock.conf)
+  hyprsunset     # Night light, driven from the bar and its popup (.config/l1p0-menu)
   inotify-tools  # Command-line utilities for monitoring file system events
   jq             # JSON processor; parses Bing's image metadata (.config/hypr/scripts/bing-wallpaper.sh)
   kio-gdrive     # KIO slave for Google Drive integration with KDE
   neovide        # Neovim client in a fully featured graphical user interface
+  sops           # Decrypts *.sops.* secrets in this repo (sops-bootstrap.sh), e.g. the weather API key
   swayosd        # Volume/brightness OSD, started by Hyprland (.config/swayosd)
   tlp            # Advanced power management tool for Linux
   tlpui          # Graphical user interface for TLP
@@ -100,6 +103,7 @@ AUR_ARCH_PACKAGES=(
   bazelisk-bin   # Bazelisk is a wrapper for Bazel that automatically downloads and uses the correct version of Bazel
   changie        # changelog generator used by pulumi
   hypr-persist   # Hyprland session save/restore daemon (.config/hypr/hypr-persist.toml)
+  l1p0-menus-git # Popups behind the waybar status modules (.config/l1p0-menu)
   neovim-nightly # Latest nightly build of Neovim
   obsidian       # Powerful knowledge base on top of a local folder of plain text Markdown files
   tmux-mem-cpu-load
@@ -328,6 +332,7 @@ function setup_home_dir() {
   ln -sfn "$RCFILES_DIR/.config/herdr" "$HOME/.config/herdr"
   ln -sfn "$RCFILES_DIR/.config/hypr" "$HOME/.config/hypr"
   ln -sfn "$RCFILES_DIR/.config/jj" "$HOME/.config/jj"
+  ln -sfn "$RCFILES_DIR/.config/l1p0-menu" "$HOME/.config/l1p0-menu"
   ln -sfn "$RCFILES_DIR/.config/nvim" "$HOME/.config/nvim"
   ln -sfn "$RCFILES_DIR/.config/waybar" "$HOME/.config/waybar"
   ln -sfn "$RCFILES_DIR/.config/swaync" "$HOME/.config/swaync"
@@ -463,6 +468,10 @@ mix do local.rebar --force, local.hex --force
 mix escript.install hex livebook
 
 setup_home_dir
+
+# Secrets (*.sops.*): gives this machine an age key and, with the master
+# password, adds it to the recipients. Its changes to the repo need committing.
+"$RCFILES_DIR/sops-bootstrap.sh" || echo "sops-bootstrap.sh failed; run it again once sops and age are installed" >&2
 
 # Setup shell
 chsh -s $(which zsh) $USER

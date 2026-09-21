@@ -11,6 +11,8 @@ import os
 import shutil
 import tempfile
 
+import pytest
+
 # Kept short: a unix socket path has to fit in 108 bytes.
 RUNTIME_DIR = tempfile.mkdtemp(prefix="waybard-")
 os.environ["XDG_RUNTIME_DIR"] = RUNTIME_DIR
@@ -20,3 +22,14 @@ os.makedirs(os.path.join(RUNTIME_DIR, "hypr", "test"))
 
 def pytest_sessionfinish() -> None:
     shutil.rmtree(RUNTIME_DIR, ignore_errors=True)
+
+
+@pytest.fixture(autouse=True)
+def no_real_status_sources(monkeypatch: pytest.MonkeyPatch) -> None:
+    """status.py finds piactl, curl and l1p0-menus' config on the machine it
+    runs on. A test that wants one puts a stand-in there itself."""
+    from brpol_waybard import status
+
+    monkeypatch.setattr(status, "PIACTL", None)
+    monkeypatch.setattr(status, "CURL", None)
+    monkeypatch.setattr(status, "CONFIG", os.path.join(RUNTIME_DIR, "no-config.json"))

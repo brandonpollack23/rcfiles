@@ -25,7 +25,9 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `google-chrome` (AUR) | browser, autostarted | `hyprland.lua` |
 | `waybar` | desktop bar, autostarted. Its taskbar, workspace and hidden-workspace buttons are fed by `brpol-waybard`, started just before it (`conf/programs.lua`); the group lock icon it draws comes from there (`conf/wm/group.lua`) | `hyprland.lua` |
 | `swaync` | notification center, autostarted; `swaync-client` toggles it | `hyprland.lua`, `SUPER+N` |
-| `swayosd` | volume/brightness popup (`swayosd-server`), autostarted; styled by `~/.config/swayosd/` and blurred by the `swayosd-glass` layer rule (`conf/rules.lua`) | `hyprland.lua` |
+| `swayosd` | volume/brightness popup (`swayosd-server`), autostarted; styled by `~/.config/swayosd/` and blurred by the `popup-glass` layer rule (`conf/rules.lua`), which the bar popups share | `hyprland.lua` |
+| `l1p0-menus-git` (AUR) | popups behind the waybar status modules (audio, network and Bluetooth, calendar and weather, brightness and night light, battery), autostarted through `~/.config/l1p0-menu/launch.sh`; see "Bar popups" below | `hyprland.lua` |
+| `hyprsunset` | night light daemon, autostarted; driven over its socket by the bar's night light module and the brightness popup | `hyprland.lua` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
 | `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted; restores the last session's windows (adopting ones already open) per `hypr-persist.toml` | `hyprland.lua` |
@@ -73,6 +75,33 @@ labels come from `scripts/lock-info.sh`.
 | `brightnessctl` | `brightnessctl` | dim before locking (`hypridle.conf`); no-op on desktop monitors |
 | `fprintd` (only with a reader) | fingerprint D-Bus service, `fprintd-enroll` | parallel fingerprint unlock (`hyprlock.conf` `auth`); installed by `install.sh` when a reader is found; enroll from the system menu |
 
+## Bar popups (`~/.config/l1p0-menu`)
+
+`launch.sh` writes `config.json` (gitignored) and runs l1p0-menus:
+`config.base.json` plus the two things l1p0-menus only takes from there, the
+OpenWeatherMap key and the city (located by IP). The key is `OWM_API_KEY` in the
+repo's sops-encrypted dotenv, `secrets.sops.env` at the rcfiles root, read with
+`sops exec-env`; edit it with `mise run secrets` or "Edit secrets" in the system
+menu, then "Restart waybar", which restarts the popups too.
+`sops-bootstrap.sh` there (run by `install.sh`) gives a new machine access with
+the master password. `style.css` is upstream's stylesheet recoloured to the
+bar's palette. `popups.py` draws the PIA and weather popups, which l1p0-menus
+has no module for. The PIA, weather and night light modules in waybar are fed
+by brpol-waybard (`status.py` there), and `conf/popups.lua` closes an open popup
+on a click elsewhere or when another window takes focus.
+
+| Package | Provides | Used by |
+| --- | --- | --- |
+| `python`, `python-gobject`, `gtk4`, `gtk4-layer-shell` | system Python with GTK bindings (also what l1p0-menus runs on) | `popups.py` |
+| `adwaita-icon-theme` | the symbolic icons the popups name | `popups.py` uses it; breeze-dark draws several blank |
+| `sops`, `age` | `sops`; the key pair in `~/.config/sops/age/keys.txt` | reading `OWM_API_KEY` from `secrets.sops.env` (`launch.sh`); system menu "Edit secrets" |
+| `jq` | `jq` | writing `config.json` (`launch.sh`) |
+| `curl` | `curl` | IP location (ipinfo.io, `launch.sh`) and the bar's current weather (OpenWeatherMap, brpol-waybard) |
+| Private Internet Access client (pia-download, not packaged) | `piactl` | PIA popup and bar module; both hide without it |
+| `hyprsunset` | its socket beside Hyprland's | night light state and toggle (brpol-waybard) |
+| `brightnessctl` | `brightnessctl` | scrolling the waybar backlight module (laptops) |
+| `pavucontrol`, `nm-connection-editor`, `blueman` | full settings apps | middle/right-click on the audio, network and Bluetooth modules |
+
 ## Notification center (`~/.config/swaync`)
 
 Buttons in the control center (`SUPER+N`) grid, set in `swaync/config.json`.
@@ -109,6 +138,8 @@ from the tables above.
 | `awww` | `awww-daemon` | restart wallpaper daemon |
 | `hypr-persist` (AUR) | `hypr-persist` | restart session daemon, save session now |
 | `swayosd` | `swayosd-server` | restart volume/brightness OSD |
+| `l1p0-menus-git` (AUR), `hyprsunset` | `l1p0-menus`, `hyprsunset` | restart waybar (restarts the bar popups with it), restart night light |
+| `sops` | `sops` | edit secrets |
 
 ## Media / hardware keys (`conf/keymaps.lua`)
 
@@ -135,8 +166,9 @@ into the config.
 sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus \
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
-  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk
+  ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk \
+  hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age
 sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader
-paru -S --needed google-chrome hypr-persist
+paru -S --needed google-chrome hypr-persist l1p0-menus-git
 ```
