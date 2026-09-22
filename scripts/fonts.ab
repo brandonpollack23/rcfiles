@@ -1,0 +1,21 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Install the fonts in fonts/"
+//MISE wait_for=["deps"]
+
+import { is_command } from "std/env"
+import { detect_os } from "./lib/os.ab"
+import { repo_root } from "./lib/run.ab"
+import { home, xdg_data_home } from "./lib/paths.ab"
+
+main {
+    let dir = "{xdg_data_home()}/fonts"
+    if detect_os() == "mac" {
+        dir = "{home()}/Library/Fonts"
+    }
+    const root = repo_root()
+    $ mkdir -p "{dir}" $?
+    $ cp -v "{root}"/fonts/*.ttf "{dir}/" $?
+    if is_command("fc-cache") {
+        $ fc-cache -f "{dir}" $?
+    }
+}

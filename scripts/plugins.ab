@@ -1,0 +1,29 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim + Mason) plugins"
+//MISE wait_for=["stow"]
+
+import { dir_exists } from "std/fs"
+import { repo_root } from "./lib/run.ab"
+import { home, xdg_data_home } from "./lib/paths.ab"
+
+main {
+    const base = home()
+    const root = repo_root()
+
+    const antidote = "{xdg_data_home()}/antidote"
+    if not dir_exists(antidote) {
+        $ git clone --depth=1 https://github.com/mattmc3/antidote.git "{antidote}" $?
+    }
+    $ zsh -c "source {antidote}/antidote.zsh && antidote bundle <{base}/.zsh_plugins.txt >{base}/.zsh_plugins.zsh" $?
+
+    const tpm = "{base}/.tmux/plugins/tpm"
+    if not dir_exists(tpm) {
+        $ git clone --depth=1 https://github.com/tmux-plugins/tpm "{tpm}" $?
+    }
+    $ "{tpm}/bin/install_plugins" $?
+
+    // Installs the versions pinned in lazy-lock.json.
+    $ nvim --headless "+Lazy! restore" +qa $?
+    // Mason tools have no lockfile, so these install at the latest registry version.
+    $ nvim --headless "+luafile {root}/scripts/lib/mason-install.lua" $?
+}

@@ -6,6 +6,9 @@ return {
     "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
+        -- amber (server set up in languages.lua; no lspconfig mapping, so
+        -- it has to be listed here to get installed)
+        "amber-lsp",
         -- elixir
         "elixir-ls",
         "expert",

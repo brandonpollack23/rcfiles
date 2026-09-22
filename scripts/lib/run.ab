@@ -1,0 +1,60 @@
+// Running commands, with a dry-run mode that prints them instead.
+// Not executable, so mise doesn't list it as a task.
+//
+// The dry-run flag lives in an exported variable, not a module variable: amber
+// compiles a module once per import path, each copy with its own variables.
+
+import { env_var_get } from "std/env"
+import { split_lines } from "std/text"
+
+// The repo root: mise sets it for every task.
+pub fun repo_root(): Text {
+    return trust env_var_get("MISE_CONFIG_ROOT")
+}
+
+pub fun set_dry_run(dry: Bool): Null {
+    if dry {
+        trust $ export RCFILES_DRY_RUN=1 $
+    } else {
+        trust $ unset RCFILES_DRY_RUN $
+    }
+}
+
+pub fun is_dry_run(): Bool {
+    return trust env_var_get("RCFILES_DRY_RUN") == "1"
+}
+
+// True when stdin is a terminal, so the task can ask questions.
+pub fun is_interactive(): Bool {
+    trust $ test -t 0 $
+    return status() == 0
+}
+
+// `text` as one shell word, safe to splice into a command line.
+pub fun quoted(text: Text): Text {
+    return trust $ printf '%q' "{text}" $
+}
+
+// Runs a shell command line in this shell (so `source` and `export` stick),
+// or prints it when dry-running.
+pub fun run(cmd: Text): Null? {
+    if is_dry_run() {
+        echo(cmd)
+        return null
+    }
+    $ eval "{cmd}" $?
+}
+
+// The words of a mise `var=#true` argument (shell-quoted, like $usage_package).
+pub fun usage_words(name: Text): [Text] {
+    const quoted_words = trust env_var_get(name)
+    if quoted_words == "" {
+        return [Text]
+    }
+    let words = [Text]
+    const listed = trust $ eval "set -- {quoted_words}" && printf '%s\n' "\$@" $
+    for word in split_lines(listed) {
+        words += [word]
+    }
+    return words
+}

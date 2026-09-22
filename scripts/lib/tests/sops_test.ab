@@ -1,0 +1,50 @@
+import { assert, assert_eq } from "std/test"
+import { split_lines, text_contains } from "std/text"
+import { keys_path_from, is_secret_file, initial_rules, add_recipient } from "../sops.ab"
+
+const MASTER = "age1ywy3dydajk7hr0jt5qkeza39jx7uy7p636tgewsj0ncehjqsnpfq3600j5"
+const LAPTOP = "age1vn2ez96nfafhg8atmxq4mq794epk68xudysnwu90rdllj2jceamq5gm53r"
+const DESKTOP = "age1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+
+test "keys_path_from follows the sops lookup order" {
+    assert_eq(keys_path_from("/k.txt", "/home/u/.config"), "/k.txt")?
+    assert_eq(keys_path_from("", "/xdg"), "/xdg/sops/age/keys.txt")?
+}
+
+test "is_secret_file matches the .sops.yaml rule" {
+    assert(is_secret_file("secrets.sops.env"))?
+    assert(is_secret_file("dir/x.sops.yaml"))?
+    assert(is_secret_file("x.sops.yml"))?
+    assert(is_secret_file("x.sops.json"))?
+    assert(is_secret_file("x.sops.ini"))?
+    assert(not is_secret_file(".sops.yaml"))?
+    assert(not is_secret_file("dir/.sops.env"))?
+    assert(not is_secret_file("x.sops.txt"))?
+    assert(not is_secret_file("x.sops.env.bak"))?
+}
+
+test "initial_rules lists only the master key" {
+    const rules = initial_rules(MASTER)
+    assert(text_contains(rules, "#   {MASTER}  master"))?
+    assert(text_contains(rules, "      {MASTER}"))?
+    assert(text_contains(rules, "path_regex: \\.sops\\.(json|ya?ml|env|ini)$"))?
+}
+
+test "add_recipient puts the new key above the master" {
+    const one = add_recipient(initial_rules(MASTER), LAPTOP, "laptop")
+    const rows = split_lines(one)
+    assert_eq(rows[6], "#   {LAPTOP}  laptop")?
+    assert_eq(rows[7], "#   {MASTER}  master")?
+    assert_eq(rows[len(rows) - 2], "      {LAPTOP},")?
+    assert_eq(rows[len(rows) - 1], "      {MASTER}")?
+}
+
+test "add_recipient twice keeps every earlier key and one comma each" {
+    const two = add_recipient(add_recipient(initial_rules(MASTER), LAPTOP, "laptop"), DESKTOP, "desktop")
+    const rows = split_lines(two)
+    assert_eq(rows[6], "#   {DESKTOP}  desktop")?
+    assert_eq(rows[7], "#   {LAPTOP}  laptop")?
+    assert_eq(rows[len(rows) - 3], "      {LAPTOP},")?
+    assert_eq(rows[len(rows) - 2], "      {DESKTOP},")?
+    assert_eq(rows[len(rows) - 1], "      {MASTER}")?
+}

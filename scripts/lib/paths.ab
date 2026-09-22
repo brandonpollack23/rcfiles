@@ -1,0 +1,36 @@
+// Paths under $HOME. Not executable, so mise doesn't list it as a task.
+
+import { starts_with, slice, count_chars } from "std/text"
+import { env_var_get } from "std/env"
+
+pub fun home(): Text {
+    return trust env_var_get("HOME")
+}
+
+// `abs` relative to `home` ("~/.config/x" -> ".config/x"), or "" when it
+// isn't under it.
+pub fun home_relative(abs: Text, home: Text): Text {
+    if not starts_with(abs, "{home}/") {
+        return ""
+    }
+    const skip = count_chars(home) + 1
+    return slice(abs, skip)
+}
+
+// $XDG_CONFIG_HOME, defaulting to ~/.config.
+pub fun xdg_config_home(): Text {
+    const set = trust env_var_get("XDG_CONFIG_HOME")
+    if set != "" {
+        return set
+    }
+    return "{home()}/.config"
+}
+
+// $XDG_DATA_HOME, defaulting to ~/.local/share.
+pub fun xdg_data_home(): Text {
+    const set = trust env_var_get("XDG_DATA_HOME")
+    if set != "" {
+        return set
+    }
+    return "{home()}/.local/share"
+}

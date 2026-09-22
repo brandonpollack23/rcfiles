@@ -1,0 +1,9 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Run the Amber tests in scripts/lib/tests"
+
+import { repo_root } from "./lib/run.ab"
+
+main {
+    const root = repo_root()
+    $ amber test --target bash-3.2 "{root}/scripts/lib/tests" $?
+}

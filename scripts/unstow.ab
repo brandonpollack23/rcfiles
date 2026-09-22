@@ -1,0 +1,10 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Remove a package's links from $HOME"
+//USAGE arg "<package>..." var=#true
+
+import { usage_words } from "./lib/run.ab"
+import { stow } from "./lib/stow.ab"
+
+main {
+    stow("-D", usage_words("usage_package"))?
+}

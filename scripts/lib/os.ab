@@ -1,0 +1,56 @@
+// Which OS this is, and Homebrew. Imported by the tasks that do different
+// things per OS; not executable, so mise doesn't list it as a task.
+
+import { starts_with, split_words } from "std/text"
+import { file_exists } from "std/fs"
+import { is_command } from "std/env"
+
+// The OS name for `ostype` ($OSTYPE) and `ids` (ID and ID_LIKE from
+// /etc/os-release, space separated): mac, arch, debian or fedora (their
+// derivatives too: Ubuntu, Manjaro...), or linux for any other Linux.
+pub fun os_from(ostype: Text, ids: Text): Text {
+    if starts_with(ostype, "darwin") {
+        return "mac"
+    }
+    for id in split_words(ids) {
+        if {
+            id == "arch" or id == "debian" or id == "fedora" {
+                return id
+            }
+            id == "ubuntu" {
+                return "debian"
+            }
+        }
+    }
+    return "linux"
+}
+
+pub fun detect_os(): Text {
+    // $OSTYPE is a bash variable, not exported, so ask the running shell.
+    const ostype = trust $ printf '%s' "\$OSTYPE" $
+    let ids = ""
+    if file_exists("/etc/os-release") {
+        ids = trust $ . /etc/os-release && printf '%s %s' "\$ID" "\$ID_LIKE" $
+    }
+    return os_from(ostype, ids)
+}
+
+// The brew command if Homebrew is installed, else "".
+fun find_brew(): Text {
+    for brew in ["brew", "/opt/homebrew/bin/brew", "/usr/local/bin/brew", "/home/linuxbrew/.linuxbrew/bin/brew"] {
+        if is_command(brew) {
+            return brew
+        }
+    }
+    return ""
+}
+
+// Installs Homebrew if it isn't there, and puts it on PATH for this script.
+pub fun ensure_brew(): Null? {
+    let brew = find_brew()
+    if brew == "" {
+        $ /bin/bash -c "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" $?
+        brew = find_brew()
+    }
+    $ eval "\$("{brew}" shellenv)" $?
+}

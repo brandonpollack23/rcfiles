@@ -1,0 +1,13 @@
+import { assert_eq } from "std/test"
+import { os_from } from "../os.ab"
+
+test "os_from: mac, the four Linux families, and anything else" {
+    assert_eq(os_from("darwin24", ""), "mac")?
+    assert_eq(os_from("linux-gnu", "arch"), "arch")?
+    assert_eq(os_from("linux-gnu", "manjaro arch"), "arch")?
+    assert_eq(os_from("linux-gnu", "debian"), "debian")?
+    assert_eq(os_from("linux-gnu", "ubuntu debian"), "debian")?
+    assert_eq(os_from("linux-gnu", "fedora"), "fedora")?
+    assert_eq(os_from("linux-gnu", "nixos"), "linux")?
+    assert_eq(os_from("linux-gnu", ""), "linux")?
+}

@@ -21,6 +21,15 @@ return {
     opts = {
       codelens = { enabled = true },
       servers = {
+        -- nvim-lspconfig and mason-lspconfig have no entry for amber-lsp, so
+        -- define it here; mason = false keeps LazyVim from looking one up.
+        -- The binary still comes from Mason, via ensure_installed in mason.lua.
+        amber_lsp = {
+          mason = false,
+          cmd = { "amber-lsp" },
+          filetypes = { "amber" },
+          root_markers = { "mise.toml", ".git" },
+        },
         nixd = {
           -- Use the nixd already on PATH (/usr/bin/nixd) instead of Mason.
           mason = false,
@@ -116,4 +125,12 @@ return {
   },
   -- hex completion for deps in elixir
   { "dbernheisel/hex-cmp" },
+  {
+    "amber-lang/amber-vim",
+    init = function()
+      -- amber-vim's ftdetect uses setfiletype, which loses to shebang detection
+      -- (`#!/usr/bin/env -S sh -c 'exec amber run ...'` reads as sh).
+      vim.filetype.add({ extension = { ab = "amber" } })
+    end,
+  },
 }

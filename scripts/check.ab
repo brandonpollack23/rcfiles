@@ -1,0 +1,14 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Dry run: show what stow would link, and any conflicts with files in $HOME"
+//USAGE arg "[package]..." var=#true help="Packages to check (default: all)"
+
+import { usage_words } from "./lib/run.ab"
+import { all_packages, stow } from "./lib/stow.ab"
+
+main {
+    let packages = usage_words("usage_package")
+    if len(packages) == 0 {
+        packages = all_packages()
+    }
+    stow("-n -R", packages)?
+}

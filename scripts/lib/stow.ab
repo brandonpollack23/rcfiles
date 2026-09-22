@@ -1,0 +1,34 @@
+// GNU Stow on the packages in dotfiles/. Not executable, so mise doesn't list
+// it as a task.
+
+import { env_var_get } from "std/env"
+import { split_lines, join } from "std/text"
+import { run, quoted } from "./run.ab"
+import { home } from "./paths.ab"
+
+// dotfiles/, from mise.toml.
+pub fun dotfiles(): Text {
+    return trust env_var_get("DOTFILES")
+}
+
+// Every package: the directories in dotfiles/.
+pub fun all_packages(): [Text] {
+    const dir = dotfiles()
+    return split_lines(trust $ ls -1 "{dir}" $)
+}
+
+// Stow links a whole directory when it doesn't exist in $HOME yet. For these
+// shared ones that would put other programs' files into this repo, so make
+// sure they are real directories first.
+pub fun ensure_shared_dirs(): Null? {
+    const base = home()
+    for dir in [".config", ".config/git", ".config/systemd/user", ".local/bin", ".local/share", ".claude"] {
+        $ mkdir -p "{base}/{dir}" $?
+    }
+}
+
+// `stow -v <flags> <packages>` from dotfiles/ into $HOME.
+pub fun stow(flags: Text, packages: [Text]): Null? {
+    const dir = quoted(dotfiles())
+    run("stow -v -d {dir} -t ~ {flags} {join(packages, " ")}")?
+}

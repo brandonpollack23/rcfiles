@@ -1,0 +1,10 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="List the stow packages"
+
+import { all_packages } from "./lib/stow.ab"
+
+main {
+    for package in all_packages() {
+        echo(package)
+    }
+}

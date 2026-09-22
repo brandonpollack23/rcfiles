@@ -1,0 +1,12 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Stow a package over existing files in $HOME, moving them into the repo (review with `jj diff` after)"
+//USAGE arg "<package>..." var=#true
+
+import { usage_words } from "./lib/run.ab"
+import { ensure_shared_dirs, stow } from "./lib/stow.ab"
+
+main {
+    ensure_shared_dirs()?
+    stow("--adopt", usage_words("usage_package"))?
+    echo("Adopted. The repo now has the files that were in $HOME; review them with 'jj diff' and restore what you don't want.")
+}

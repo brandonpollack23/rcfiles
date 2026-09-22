@@ -1,0 +1,53 @@
+import { assert_eq } from "std/test"
+import { join } from "std/text"
+import { sort_package, names_for, field, group_names } from "../packages.ab"
+
+// sort_package's lines, space separated, for short assertions.
+fun sorted(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text): Text {
+    return join(sort_package(os, name, arch, brew, cask, mas, cargo), " ")
+}
+
+test "cargo wins on every OS" {
+    assert_eq(sorted("arch", "starship-jj", "", "", "", "", "true"), "cargo|starship-jj")?
+    assert_eq(sorted("mac", "x", "", "", "", "", "some-crate"), "cargo|some-crate")?
+    assert_eq(sorted("debian", "x", "aur-name", "formula", "", "", "true"), "cargo|x")?
+}
+
+test "arch: pacman by the key, by another name, by a list, or not at all" {
+    assert_eq(sorted("arch", "ripgrep", "", "", "", "", ""), "pacman|ripgrep")?
+    assert_eq(sorted("arch", "jj", "jujutsu", "", "", "", ""), "pacman|jujutsu")?
+    assert_eq(sorted("arch", "rust", "rustup,lld", "", "", "", ""), "pacman|rustup pacman|lld")?
+    assert_eq(sorted("arch", "mas-only", "false", "", "", "", ""), "")?
+    assert_eq(sorted("arch", "app", "", "", "true", "", ""), "pacman|app")?
+}
+
+test "mac: the App Store, then casks, then Homebrew" {
+    assert_eq(sorted("mac", "xcode", "", "", "", "497799835", ""), "mas|497799835")?
+    assert_eq(sorted("mac", "ghostty", "", "", "true", "", ""), "cask|ghostty")?
+    assert_eq(sorted("mac", "chrome", "", "", "google-chrome", "", ""), "cask|google-chrome")?
+    assert_eq(sorted("mac", "ripgrep", "", "", "", "", ""), "brew|ripgrep")?
+    assert_eq(sorted("mac", "jj", "jujutsu", "jj", "", "", ""), "brew|jj")?
+    assert_eq(sorted("mac", "linux-only", "", "false", "", "", ""), "")?
+    assert_eq(sorted("mac", "x", "", "", "false", "", ""), "brew|x")?
+}
+
+test "debian: Homebrew, and no Mac-only things" {
+    assert_eq(sorted("debian", "ripgrep", "", "", "", "", ""), "brew|ripgrep")?
+    assert_eq(sorted("debian", "jj", "jujutsu", "jj", "", "", ""), "brew|jj")?
+    assert_eq(sorted("debian", "xcode", "", "", "", "497799835", ""), "")?
+    assert_eq(sorted("debian", "ghostty", "", "", "true", "", ""), "")?
+    assert_eq(sorted("debian", "pacman-only", "", "false", "", "", ""), "")?
+}
+
+test "names_for picks one manager's names" {
+    const packages = ["brew|a", "cask|b", "brew|c", "cargo|d"]
+    assert_eq(join(names_for(packages, "brew"), " "), "a c")?
+    assert_eq(join(names_for(packages, "cask"), " "), "b")?
+    assert_eq(join(names_for(packages, "mas"), " "), "")?
+}
+
+test "field is empty past the end" {
+    assert_eq(field(["a", "b"], 1), "b")?
+    assert_eq(field(["a", "b"], 2), "")?
+    assert_eq(join(group_names(["core\tthe basics", "dev\tdev tools"]), " "), "core dev")?
+}

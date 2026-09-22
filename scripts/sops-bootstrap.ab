@@ -1,0 +1,110 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Let this machine decrypt the secrets (asks for the master password)"
+//MISE wait_for=["deps"]
+// Lets this machine decrypt the repo's secrets (*.sops.*, rules in .sops.yaml).
+// Run by `mise run install`; safe to run again, it only does what is still missing.
+//
+// Every machine has its own age key in ~/.config/sops/age/keys.txt and is a
+// recipient in .sops.yaml. What lets a new machine in is the master key: an age
+// key that is also a recipient, committed as .sops-master.key.age, encrypted
+// with a passphrase (the master password). So, on a new machine:
+//
+//   1. make this machine's key, if it has none
+//   2. add its public key to .sops.yaml
+//   3. ask for the master password, and with the master key re-encrypt every
+//      secret to the new list of recipients (`sops updatekeys`)
+//
+// after which the master key is not needed here again. Commit and push what
+// changed (.sops.yaml and the secrets), or the next machine undoes it.
+//
+// The first run anywhere creates the master key and asks for a new password.
+
+import { is_command, echo_error } from "std/env"
+import { file_exists, file_read, file_write } from "std/fs"
+import { text_contains, join } from "std/text"
+import { repo_root } from "./lib/run.ab"
+import { keys_path, ensure_machine_key, machine_public_key, secret_files, initial_rules, add_recipient } from "./lib/sops.ab"
+
+// sops and age come from `deps`; run it if they aren't here yet.
+fun ensure_tools(): Null? {
+    for tool in ["sops", "age", "age-keygen"] {
+        if not is_command(tool) {
+            $ mise run deps $?
+            return null
+        }
+    }
+}
+
+// The first run anywhere: makes the master key, encrypted with a new master
+// password, and a .sops.yaml that lists only it.
+fun create_master_key(master_path: Text, rules_path: Text): Null? {
+    echo("Creating the master key. Choose the master password: it is what adds new machines.")
+    const key = $ age-keygen 2>/dev/null $?
+    const master = $ age-keygen -y <<<"{key}" $?
+    $ age --passphrase --armor -o "{master_path}" <<<"{key}" $?
+    file_write(rules_path, initial_rules(master))?
+}
+
+// Asks for the master password and puts the master key where sops looks for
+// keys, for the rest of this run. Before .sops.yaml changes, so a wrong
+// password leaves nothing half done.
+fun unlock_master_key(master_path: Text, host: Text): Null {
+    echo("Adding this machine ({host}) to the repo's secrets. Master password:")
+    const master_key = $ age --decrypt "{master_path}" $ failed(code) {
+        echo_error("sops-bootstrap: could not decrypt the master key (wrong password?)", code)
+    }
+    trust $ export SOPS_AGE_KEY="{master_key}" $
+}
+
+// Re-encrypts every secret to the recipients now in .sops.yaml.
+fun rekey_secrets(repo: Text, files: [Text]): Null? {
+    for file in files {
+        $ (cd "{repo}" && sops updatekeys --yes "{file}") $?
+    }
+    trust $ unset SOPS_AGE_KEY $
+}
+
+main {
+    ensure_tools()?
+    const repo = repo_root()
+    const rules_path = "{repo}/.sops.yaml"
+    const master_path = "{repo}/.sops-master.key.age"
+    const keys = keys_path()
+    ensure_machine_key(keys)?
+    const machine = machine_public_key(keys)?
+    const host = trust $ uname -n $
+
+    // With a brand new master key, the existing secrets aren't encrypted to it
+    // yet, so this machine's own key must be what decrypts them below.
+    let rekey_with_machine_key = false
+    if not file_exists(master_path) {
+        create_master_key(master_path, rules_path)?
+        const existing = secret_files(repo)
+        if len(existing) > 0 {
+            echo("The existing secrets are not encrypted to the new master key yet: this machine must be able to decrypt them.")
+            rekey_with_machine_key = true
+        }
+    }
+
+    const files = secret_files(repo)
+    const rules = file_read(rules_path)?
+    const is_recipient = text_contains(rules, machine)
+    if is_recipient and not rekey_with_machine_key {
+        echo("sops: this machine can already decrypt the secrets")
+        exit(0)
+    }
+    if not is_recipient {
+        if len(files) > 0 and not rekey_with_machine_key {
+            unlock_master_key(master_path, host)
+        }
+        file_write(rules_path, add_recipient(rules, machine, host))?
+    }
+    if len(files) == 0 {
+        echo("sops: added this machine to .sops.yaml; there are no secrets to re-encrypt yet")
+        exit(0)
+    }
+    rekey_secrets(repo, files)?
+
+    echo("sops: done. Commit and push .sops.yaml and the re-encrypted secrets:")
+    echo("  git -C {repo} add .sops.yaml .sops-master.key.age {join(files, " ")}")
+}

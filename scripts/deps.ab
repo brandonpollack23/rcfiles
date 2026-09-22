@@ -1,0 +1,229 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
+//USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
+//USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
+
+import { env_var_get, is_command, echo_error, input_confirm } from "std/env"
+import { file_exists, file_read, file_write } from "std/fs"
+import { split, split_lines, join } from "std/text"
+import { array_contains } from "std/array"
+
+import { detect_os, ensure_brew } from "./lib/os.ab"
+import { repo_root, run, set_dry_run, is_dry_run, is_interactive, usage_words } from "./lib/run.ab"
+import { home, xdg_config_home } from "./lib/paths.ab"
+import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
+
+// Every group but the ones every machine gets.
+fun optional_groups(names: [Text]): [Text] {
+    let optional = [Text]
+    for name in names {
+        if name != "core" and name != "mac" {
+            optional += [name]
+        }
+    }
+    return optional
+}
+
+// The groups named on the command line: "all" for every optional one, else
+// each name checked against packages.toml.
+fun groups_from_args(asked: [Text], names: [Text]): [Text] {
+    if join(asked, " ") == "all" {
+        return optional_groups(names)
+    }
+    for name in asked {
+        if not array_contains(names, name) {
+            echo_error("deps: no group {name} in packages.toml", 1)
+        }
+    }
+    return asked
+}
+
+// The groups an earlier run saved, one per line.
+fun groups_from_file(saved: Text): [Text]? {
+    let picked = [Text]
+    for name in split_lines(file_read(saved)?) {
+        if name != "" {
+            picked += [name]
+        }
+    }
+    return picked
+}
+
+// Asks about each optional group ("name<TAB>description" lines).
+fun ask_groups(os: Text, groups: [Text]): [Text] {
+    let and_mac = ""
+    if os == "mac" {
+        and_mac = ", and mac on every Mac"
+    }
+    echo("core goes on every machine{and_mac}. Which of these should this one have?")
+    let picked = [Text]
+    for group in groups {
+        const parts = split(group, "\t")
+        const name = field(parts, 0)
+        if name != "core" and name != "mac" {
+            if input_confirm("  {name}: {field(parts, 1)}?") {
+                picked += [name]
+            }
+        }
+    }
+    return picked
+}
+
+// Remembers `picked` for the next run (unless this one is a dry run).
+
+// The optional groups to install: named on the command line, else the ones
+// picked last time, else asked for. Saved either way, for next time.
+fun pick_groups(os: Text, groups: [Text], saved: Text): [Text]? {
+    const asked = usage_words("usage_group")
+    if len(asked) > 0 {
+        const picked = groups_from_args(asked, group_names(groups))
+        save_groups(saved, picked)?
+        return picked
+    }
+    if file_exists(saved) {
+        return groups_from_file(saved)?
+    }
+    let picked = [Text]
+    if is_interactive() {
+        picked = ask_groups(os, groups)
+    } else {
+        echo("deps: installing core only; name more groups with: mise run deps <group>...")
+    }
+    save_groups(saved, picked)?
+    return picked
+}
+
+fun save_groups(saved: Text, picked: [Text]): Null? {
+    if is_dry_run() {
+        return null
+    }
+    $ mkdir -p "\$(dirname "{saved}")" $?
+    file_write(saved, join(picked, "\n"))?
+    echo("deps: saved the groups in {saved}")
+}
+
+// Homebrew, and the formulae (on the Mac, Debian and Fedora).
+fun brew_deps(packages: [Text]): Null? {
+    if is_dry_run() {
+        echo("ensure_brew")
+    } else {
+        ensure_brew()?
+    }
+    const formulae = names_for(packages, "brew")
+    if len(formulae) > 0 {
+        run("brew install {join(formulae, " ")}")?
+    }
+}
+
+fun mac_deps(packages: [Text]): Null? {
+    brew_deps(packages)?
+    const casks = names_for(packages, "cask")
+    if len(casks) > 0 {
+        run("brew install --cask {join(casks, " ")}")?
+    }
+    const apps = names_for(packages, "mas")
+    if len(apps) > 0 {
+        run("mas install {join(apps, " ")}")?
+    }
+}
+
+// yay isn't in the official repos, so build yay-bin from the AUR.
+fun install_yay(): Null? {
+    $ sudo pacman -S --needed git base-devel $?
+    const build = $ mktemp -d $?
+    $ git clone https://aur.archlinux.org/yay-bin.git "{build}/yay-bin" $?
+    $ (cd "{build}/yay-bin" && makepkg -si --noconfirm) $?
+    $ rm -rf "{build}" $?
+}
+
+fun arch_deps(packages: [Text]): Null? {
+    if not is_command("yay") and not is_command("paru") {
+        if is_dry_run() {
+            echo("install_yay")
+        } else {
+            install_yay()?
+        }
+    }
+    let aur_helper = "yay"
+    if not is_command("yay") {
+        aur_helper = "paru"
+    }
+    run("{aur_helper} -S --needed {join(names_for(packages, "pacman"), " ")}")?
+}
+
+// Debian and Fedora: just what Homebrew needs from the system, then everything
+// else from Homebrew; their own repos lack or lag many of these (jj, starship,
+// sops, difftastic, lazygit...).
+fun debian_deps(packages: [Text]): Null? {
+    run("sudo apt-get update")?
+    run("sudo apt-get install -y build-essential procps curl file git")?
+    brew_deps(packages)?
+}
+
+fun fedora_deps(packages: [Text]): Null? {
+    run("sudo dnf group install -y development-tools")?
+    run("sudo dnf install -y procps-ng curl file git")?
+    brew_deps(packages)?
+}
+
+// Rust, through rustup (its own installer, so it's the same on every OS).
+// ~/.cargo/env puts cargo on PATH; .zshrc sources it too.
+fun ensure_rust(): Null? {
+    const base = home()
+    if not file_exists("{base}/.cargo/bin/rustup") and not is_command("rustup") {
+        $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path $?
+    }
+    if file_exists("{base}/.cargo/env") {
+        $ source "{base}/.cargo/env" $?
+    }
+    trust $ rustup default >/dev/null 2>&1 $
+    if status() != 0 {
+        $ rustup default stable $?
+    }
+}
+
+main {
+    set_dry_run(trust env_var_get("usage_dry_run") == "true")
+    const root = repo_root()
+    const os = detect_os()
+    const saved = "{xdg_config_home()}/rcfiles/groups"
+
+    const groups = all_groups(root)?
+    const picked = pick_groups(os, groups, saved)?
+    let installing = ["core"]
+    if os == "mac" {
+        installing += ["mac"]
+    }
+    installing += picked
+    echo("deps: installing {join(installing, " ")}")
+    const packages = packages_for(root, os, installing)?
+
+    if {
+        os == "mac" {
+            mac_deps(packages)?
+        }
+        os == "arch" {
+            arch_deps(packages)?
+        }
+        os == "debian" {
+            debian_deps(packages)?
+        }
+        os == "fedora" {
+            fedora_deps(packages)?
+        }
+        else {
+            echo_error("deps: not supported on {os}", 1)
+        }
+    }
+
+    if not is_dry_run() {
+        ensure_rust()?
+    }
+    const crates = names_for(packages, "cargo")
+    if len(crates) > 0 {
+        run("cargo binstall -y {join(crates, " ")}")?
+    }
+
+    // Erlang and Elixir: the latest stable releases, pinned in ~/.config/mise/config.toml.
+    run("mise use -g erlang@latest elixir@latest")?
+}

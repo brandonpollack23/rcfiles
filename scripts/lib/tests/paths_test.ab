@@ -1,0 +1,10 @@
+import { assert_eq } from "std/test"
+import { home_relative } from "../paths.ab"
+
+test "home_relative strips $HOME and rejects paths outside it" {
+    assert_eq(home_relative("/home/u/.config/btop", "/home/u"), ".config/btop")?
+    assert_eq(home_relative("/home/u/.zshrc", "/home/u"), ".zshrc")?
+    assert_eq(home_relative("/home/u", "/home/u"), "")?
+    assert_eq(home_relative("/home/user2/.zshrc", "/home/u"), "")?
+    assert_eq(home_relative("/etc/hosts", "/home/u"), "")?
+}

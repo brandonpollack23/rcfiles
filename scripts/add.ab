@@ -1,0 +1,45 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Move files or directories from $HOME into a package (new or existing) and link them back"
+//USAGE arg "<package>" help="Package name, e.g. btop"
+//USAGE arg "<path>..." var=#true help="Files or directories under $HOME, e.g. ~/.config/btop"
+
+import { env_var_get, echo_error } from "std/env"
+import { file_exists, dir_exists } from "std/fs"
+import { usage_words } from "./lib/run.ab"
+import { home, home_relative } from "./lib/paths.ab"
+import { dotfiles, stow } from "./lib/stow.ab"
+
+fun is_symlink(path: Text): Bool {
+    trust $ test -L "{path}" $
+    return status() == 0
+}
+
+// Moves `path` (under $HOME) to the same place under dotfiles/<package>,
+// keeping a symlink where it is (stow already owns it).
+fun move_into_package(package: Text, path: Text): Null? {
+    const abs = trust $ realpath -s "{path}" $
+    const rel = home_relative(abs, home())
+    if rel == "" {
+        echo_error("{path} is not under {home()}", 1)
+    }
+    if is_symlink(abs) {
+        const link = trust $ readlink "{abs}" $
+        echo("{path} is already a symlink (-> {link}); skipping")
+        return null
+    }
+    const target = "{dotfiles()}/{package}/{rel}"
+    if file_exists(target) or dir_exists(target) {
+        echo_error("{target} already exists", 1)
+    }
+    $ mkdir -p "\$(dirname "{target}")" $?
+    $ mv "{abs}" "{target}" $?
+    echo("Moved ~/{rel} into {package}")
+}
+
+main {
+    const package = trust env_var_get("usage_package")
+    for path in usage_words("usage_path") {
+        move_into_package(package, path)?
+    }
+    stow("", [package])?
+}

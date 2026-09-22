@@ -1,0 +1,114 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Log in to GitHub (gh), and check git, jj and neovim are ready to use (running deps, stow or plugins for whatever is missing)"
+//MISE wait_for=["deps", "stow", "plugins"]
+
+import { is_command } from "std/env"
+import { file_exists } from "std/fs"
+import { join } from "std/text"
+import { home } from "./lib/paths.ab"
+import { dotfiles } from "./lib/stow.ab"
+
+const COMMANDS = ["git", "git-lfs", "delta", "difft", "jj", "gh", "nvim", "lazygit", "fd", "rg", "node", "npm", "tree-sitter", "cc", "make", "starship", "starship-jj", "erl", "elixir"]
+
+fun source_cargo(): Null {
+    const env = "{home()}/.cargo/env"
+    if file_exists(env) {
+        trust $ source "{env}" $
+    }
+}
+
+fun missing(): [Text] {
+    let gone = [Text]
+    for cmd in COMMANDS {
+        if not is_command(cmd) {
+            gone += [cmd]
+        }
+    }
+    return gone
+}
+
+// True when `path` is stow's link to `target` in dotfiles/.
+fun linked(path: Text, target: Text): Bool {
+    const dir = dotfiles()
+    const actual = trust $ realpath "{path}" 2>/dev/null $
+    const wanted = trust $ realpath "{dir}/{target}" 2>/dev/null $
+    return actual != "" and actual == wanted
+}
+
+// True when every plugin in lazy-lock.json is installed.
+fun plugins_installed(): Bool {
+    trust $ nvim --headless "+lua os.exit(#vim.tbl_filter(function(p) return not p._.installed end, require('lazy').plugins()))" $
+    return status() == 0
+}
+
+// Anything missing that another task sets up: run that task.
+fun install_whats_missing(): Null? {
+    const base = home()
+    const gone = missing()
+    if len(gone) > 0 {
+        echo("setup: missing {join(gone, " ")}; running deps")
+        $ mise run deps $?
+        source_cargo()
+        $ eval "\$(mise env -s bash)" $?
+    }
+    if not linked("{base}/.gitconfig", "git/.gitconfig") or not linked("{base}/.config/nvim", "nvim/.config/nvim") {
+        $ mise run stow $?
+    }
+    if not plugins_installed() {
+        $ mise run plugins $?
+    }
+}
+
+// gh: log in, and let git use it for github.com. ~/.gitconfig is in this repo,
+// so the credential helper goes in ~/.gitconfig.local (which it includes).
+fun ensure_gh_login(): Null? {
+    trust $ gh auth status >/dev/null 2>&1 $
+    if status() != 0 {
+        $ gh auth login $?
+    }
+    const base = home()
+    $ GIT_CONFIG_GLOBAL="{base}/.gitconfig.local" gh auth setup-git $?
+}
+
+// What is still wrong after all that, one line each.
+fun problems(): [Text] {
+    const base = home()
+    let found = [Text]
+    for cmd in missing() {
+        found += ["{cmd} is not installed"]
+    }
+    for key in ["user.name", "user.email"] {
+        const in_git = trust $ git config --global "{key}" $
+        if in_git == "" {
+            found += ["git {key} is not set"]
+        }
+        const in_jj = trust $ jj config get "{key}" 2>/dev/null $
+        if in_jj == "" {
+            found += ["jj {key} is not set"]
+        }
+    }
+    if not linked("{base}/.gitconfig", "git/.gitconfig") {
+        found += ["~/.gitconfig is not linked from this repo"]
+    }
+    if not linked("{base}/.config/nvim", "nvim/.config/nvim") {
+        found += ["~/.config/nvim is not linked from this repo"]
+    }
+    if not plugins_installed() {
+        found += ["neovim plugins are missing"]
+    }
+    return found
+}
+
+main {
+    source_cargo()
+    install_whats_missing()?
+    ensure_gh_login()?
+    const found = problems()
+    if len(found) > 0 {
+        for problem in found {
+            $ echo "setup: {problem}" >&2 $?
+        }
+        exit(1)
+    }
+    echo("setup: gh, git, jj and neovim are ready. Neovim installs its parsers and language servers the first time you open it.")
+}

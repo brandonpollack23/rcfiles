@@ -3,7 +3,8 @@
 # rcfiles
 
 My dotfiles, linked into `$HOME` with [GNU Stow](https://www.gnu.org/software/stow/)
-and driven by [mise](https://mise.jdx.dev) tasks.
+and driven by [mise](https://mise.jdx.dev) tasks written in
+[Amber](https://amber-lang.com).
 
 ## Setup
 
@@ -14,13 +15,14 @@ cd ~/rcfiles
 ```
 
 `install.sh` installs mise (Homebrew on the Mac, installing Homebrew first if
-needed; pacman on Arch; mise's own installer on Debian and Fedora), trusts this repo's `mise.toml`, then runs `mise run install`.
-It's safe to run again.
+needed; pacman on Arch; mise's own installer on Debian and Fedora), trusts this
+repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
+`mise run install`. It's safe to run again.
 
 ### By hand
 
 1. Install mise: `brew install mise`, `sudo pacman -S mise`, or `curl https://mise.run | sh`.
-2. `mise trust`
+2. `mise trust && mise install` (fetches amber, which runs the tasks, and yq)
 3. `mise run install`, which depends on these tasks and runs them in order (each works on its own):
 
 | task             | does                                                          |
@@ -46,10 +48,10 @@ them, or pull them into the repo with `mise run adopt <package>`.
 | path                  | what it is                                                        |
 | --------------------- | ----------------------------------------------------------------- |
 | `dotfiles/<package>/` | stow packages; each mirrors `$HOME` (`dotfiles/nvim/.config/nvim` → `~/.config/nvim`) |
-| `scripts/`            | the mise tasks, one script each (`mise run <name>`)               |
+| `scripts/`            | the mise tasks, one Amber script each (`mise run <name>`); shared code in `scripts/lib/`, tests in `scripts/lib/tests/` |
 | `packages.toml`       | what `deps` installs, in groups, with each package's name per OS |
-| `mise.toml`           | env and task config                                               |
-| `install.sh`          | symlink to `scripts/install.sh`; run directly it installs mise, then runs `mise run install` |
+| `mise.toml`           | env, task config, and the amber and yq versions                   |
+| `install.sh`          | bash bootstrap: installs mise, `mise install` (amber, yq), then `mise run install` |
 | `fonts/`              | Consolas Nerd Font                                                |
 | `docs/`               | reference notes (ANSI escapes, Linux/SSH/nmap/fio tips)           |
 | `.sops.yaml`, `*.sops.*`, `.sops-master.key.age` | encrypted secrets (see below)          |
@@ -70,7 +72,13 @@ mise run add <pkg> <path…>    # move files from $HOME into a package and link 
 mise run adopt <pkg…>         # stow over existing files, pulling them into the repo
 mise run update               # update zsh, tmux and neovim plugins
 mise run secrets              # edit secrets.sops.env
+mise run lint                 # amber check on every script (after editing one)
+mise run test                 # the Amber tests in scripts/lib/tests
 ```
+
+The tasks are Amber scripts run from source (`amber run`, no build step);
+mise installs the pinned amber. `AGENTS.md` has the conventions and the
+compiler quirks to know about when editing them.
 
 ## Notes
 

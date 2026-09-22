@@ -1,0 +1,44 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Set up a new machine: dependencies, links, plugins, fonts, secrets, gh login"
+//MISE depends=["deps", "stow", "plugins", "fonts", "sops-bootstrap", "setup"]
+// Also ./install.sh at the repo root: run outside mise, it installs mise (and
+// with it amber), then runs this as the `install` task.
+
+import { env_var_get } from "std/env"
+import { detect_os } from "./lib/os.ab"
+import { is_interactive } from "./lib/run.ab"
+import { home } from "./lib/paths.ab"
+
+// This user's login shell, as a path.
+fun login_shell(): Text {
+    if detect_os() == "mac" {
+        const base = home()
+        return trust $ dscl . -read "{base}" UserShell | cut -d' ' -f2 $
+    }
+    const user = trust env_var_get("USER")
+    return trust $ getent passwd "{user}" | cut -d: -f7 $
+}
+
+// Makes `zsh` the login shell, listing it in /etc/shells first if needed.
+fun switch_login_shell(zsh: Text): Null? {
+    trust $ grep -qxF "{zsh}" /etc/shells $
+    if status() != 0 {
+        $ echo "{zsh}" | sudo tee -a /etc/shells >/dev/null $?
+    }
+    $ chsh -s "{zsh}" $?
+}
+
+main {
+    // mise depends handles the installations; what's left is the login shell.
+    const current = login_shell()
+    const shell_name = trust $ basename "{current}" $
+    if shell_name == "zsh" {
+        exit(0)
+    }
+    const zsh = trust $ command -v zsh $
+    if is_interactive() {
+        switch_login_shell(zsh)?
+    } else {
+        echo("Your login shell is {current}. Switch to zsh with: chsh -s {zsh}")
+    }
+}

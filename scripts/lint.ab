@@ -1,0 +1,23 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Type-check every Amber script in scripts/ (shows the compiler's warnings)"
+
+import { echo_error, echo_success } from "std/env"
+import { file_glob } from "std/fs"
+import { repo_root } from "./lib/run.ab"
+
+main {
+    const root = repo_root()
+    const sources = file_glob("{root}/scripts/*.ab") + file_glob("{root}/scripts/lib/*.ab") + file_glob("{root}/scripts/lib/tests/*.ab")
+    let bad = [Text]
+    for source in sources {
+        trust $ amber check --target bash-3.2 "{source}" $
+        if status() != 0 {
+            bad += [source]
+        }
+    }
+    const bad_count = len(bad)
+    if bad_count > 0 {
+        echo_error("lint: {bad_count} scripts don't compile", 1)
+    }
+    echo_success("lint: every script compiles")
+}
