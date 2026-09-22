@@ -11,14 +11,21 @@ spawn:
     toggle <n>     show or hide hidden-workspace slot n
     nightlight     night light on or off
     ping-phone     make the KDE Connect phone ring
+    announce <added|removed> <kind> <name>
+                   the sound and bubble for something udev does not report:
+                   a monitor, from ~/.config/hypr/conf/hotplug.lua
+    locked, unlocked
+                   no device sounds while the session is locked, from
+                   ~/.config/hypr/conf/lock.lua on hypridle's lock hooks
 """
 
 from . import hidden, ipc, layout, snapshot
 from .fifos import Bar
+from .hotplug import Hotplug
 from .status import Status
 
 
-def apply(command: str, bar: Bar, status: Status) -> bool:
+def apply(command: str, bar: Bar, status: Status, hotplug: Hotplug) -> bool:
     """Run one command. Returns True when the bar should be recomputed.
 
     Anything malformed is ignored: a click is not worth a traceback.
@@ -52,5 +59,14 @@ def apply(command: str, bar: Bar, status: Status) -> bool:
 
         case "ping-phone":
             status.ping_phone()
+
+        case "announce":
+            hotplug.announce(argument)
+
+        case "locked":
+            hotplug.silence(True)
+
+        case "unlocked":
+            hotplug.silence(False)
 
     return False

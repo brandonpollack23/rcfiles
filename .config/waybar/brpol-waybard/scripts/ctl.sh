@@ -7,6 +7,10 @@
 #   ctl.sh focus <n>    focus the window in taskbar slot n
 #   ctl.sh toggle <n>   show or hide hidden-workspace slot n
 #   ctl.sh nightlight   night light on or off
+#   ctl.sh ping-phone   make the KDE Connect phone ring
+#   ctl.sh announce added|removed monitor <name>
+#                       the device sound and bubble, for a monitor
+#   ctl.sh locked       no device sounds until `ctl.sh unlocked`
 #
 # Silently does nothing when the daemon is not running: the bar is not worth
 # blocking a click or the compositor over.

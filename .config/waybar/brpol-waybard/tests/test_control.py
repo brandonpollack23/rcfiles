@@ -36,6 +36,19 @@ class FakeStatus:
         self.pings += 1
 
 
+class FakeHotplug:
+    announced: list[str]
+
+    def __init__(self) -> None:
+        self.announced = []
+
+    def announce(self, argument: str) -> None:
+        self.announced.append(argument)
+
+    def silence(self, on: bool) -> None:
+        self.announced.append(f"silence {on}")
+
+
 class Calls:
     """What apply() asked of Hyprland, and how many snapshots it took."""
 
@@ -64,9 +77,17 @@ def calls(monkeypatch: pytest.MonkeyPatch) -> Calls:
 
 
 def apply(
-    command: str, bar: FakeBar | None = None, status: FakeStatus | None = None
+    command: str,
+    bar: FakeBar | None = None,
+    status: FakeStatus | None = None,
+    hotplug: FakeHotplug | None = None,
 ) -> bool:
-    return control.apply(command, bar or FakeBar(), status or FakeStatus())  # type: ignore[arg-type]
+    return control.apply(
+        command,
+        bar or FakeBar(),  # type: ignore[arg-type]
+        status or FakeStatus(),  # type: ignore[arg-type]
+        hotplug or FakeHotplug(),  # type: ignore[arg-type]
+    )
 
 
 def test_refresh_asks_for_a_render_without_taking_a_snapshot(calls: Calls) -> None:
@@ -120,3 +141,16 @@ def test_ping_phone_pings_and_redraws_nothing(calls: Calls) -> None:
     assert status.pings == 1
     assert bar.published == []
     assert calls.snapshots == 0
+
+
+def test_announce_hands_the_rest_of_the_line_to_hotplug(calls: Calls) -> None:
+    hotplug = FakeHotplug()
+    assert apply("announce added monitor Dell Inc. U2720Q\n", hotplug=hotplug) is False
+    assert hotplug.announced == ["added monitor Dell Inc. U2720Q"]
+
+
+def test_locked_and_unlocked_silence_the_device_sounds(calls: Calls) -> None:
+    hotplug = FakeHotplug()
+    assert apply("locked", hotplug=hotplug) is False
+    apply("unlocked", hotplug=hotplug)
+    assert hotplug.announced == ["silence True", "silence False"]

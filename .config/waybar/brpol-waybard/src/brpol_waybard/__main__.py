@@ -1,5 +1,6 @@
-"""The daemon: one event subscription, one snapshot, 39 buttons -- and the four
-status buttons of status.py, which have sources of their own.
+"""The daemon: one event subscription, one snapshot, 39 buttons -- and the
+status buttons of status.py and the device sounds of hotplug.py, which have
+sources of their own.
 
     brpol-waybard              run it
     brpol-waybard --once NAME  print what button NAME would show, and exit
@@ -22,6 +23,7 @@ from . import (
     control,
     fifos,
     hidden,
+    hotplug,
     ipc,
     layout,
     snapshot,
@@ -67,6 +69,7 @@ class Daemon:
     bar: fifos.Bar
     fader: Fader
     status: status.Status
+    hotplug: hotplug.Hotplug
     # Urgency has no "no longer urgent" event: a window raises it, and it
     # stays raised until its workspace is looked at. So unlike everything
     # else here, this is state the snapshot cannot rebuild.
@@ -80,6 +83,7 @@ class Daemon:
         self.bar = fifos.Bar(MODULES)
         self.fader = Fader()
         self.status = status.Status()
+        self.hotplug = hotplug.Hotplug()
         self.urgent = set()
         self.debounce = None
 
@@ -115,12 +119,16 @@ class Daemon:
             renders = [
                 t for t in (self.debounce, self.fader.next_render()) if t is not None
             ]
-            due = min([*renders, self.status.next_due()])
+            burst = self.hotplug.next_due()
+            due = min(
+                [*renders, self.status.next_due(), *([] if burst is None else [burst])]
+            )
             timeout = max(0.0, due - time.monotonic())
             watch: list[socket.socket | int] = [
                 self.events,
                 self.bar.control.fd,
                 *self.status.fds(),
+                *self.hotplug.fds(),
             ]
             ready, _, _ = select.select(watch, [], [], timeout)
 
@@ -128,6 +136,7 @@ class Daemon:
             # never need a snapshot.
             now = time.monotonic()
             self.bar.publish(self.status.step(ready, now))
+            self.hotplug.step(ready, now)
 
             if not ready:
                 if any(t <= now for t in renders):
@@ -140,7 +149,7 @@ class Daemon:
             dirty = False
             if self.bar.control.fd in ready:
                 for command in self.bar.commands():
-                    dirty |= control.apply(command, self.bar, self.status)
+                    dirty |= control.apply(command, self.bar, self.status, self.hotplug)
             if self.events in ready:
                 lines = self.read_events()
                 if lines is None:
@@ -175,6 +184,7 @@ class Daemon:
     def close(self) -> None:
         self.events.close()
         self.status.close()
+        self.hotplug.close()
         self.bar.close()
 
 

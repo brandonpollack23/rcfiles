@@ -4,7 +4,9 @@ The one process behind every scripted button in this waybar config: the 32
 taskbar slots and their overflow, the 20 workspace buttons, the 6 hidden
 (special) workspace buttons, and five status buttons -- PIA, weather, night
 light, the screen recording indicator and the KDE Connect phone -- that have nothing to do with windows but would otherwise each be a
-script of their own.
+script of their own. It also makes the sound and the notification when a USB
+device, the charger or a monitor comes or goes: not a button, but one more
+source for a loop that was already running.
 
 ## Why
 
@@ -61,6 +63,8 @@ has no event for:
     ctl.sh focus 3
     ctl.sh toggle 2
     ctl.sh nightlight
+    ctl.sh announce added monitor <name>
+    ctl.sh locked
 
 It is a silent no-op when the daemon is not running.
 
@@ -82,6 +86,7 @@ inside Hyprland, outside it, or over ssh.
 | `test_fifos.py` | real pipes in a temp directory, read the way `cat` reads them |
 | `test_control.py` | each control command, with Hyprland and the snapshot stubbed out |
 | `test_status.py` | the status buttons: the renderers, and `Status` against scripts standing in for `piactl`, `curl` and `gdbus`, a socket for hyprsunset, and a PID file for hyprcap |
+| `test_hotplug.py` | udev datagrams built the way udevd builds them, sent over a socketpair standing in for the netlink socket; a script for `notify-send` |
 | `test_daemon.py` | the whole daemon against `fake_hyprland.py`: real sockets, pipes, debounce and timers |
 
 `test_layout.py` also arranges a few hundred random workspaces and checks the
@@ -130,9 +135,17 @@ beside the event socket, and what `Status.step()` returns is published as is:
       -> status     Status.step(): the buttons that may have changed
       -> fifos      Bar.publish()
 
+`hotplug.py` is a third flow, with no button at the end of it. Its netlink
+socket sits in the same select, a burst of USB devices is a timer like any
+other, and monitors arrive on the control FIFO because Hyprland, not udev, is
+what knows about them:
+
+    udevd datagram, the burst timer, or `ctl.sh announce`, `ctl.sh locked`
+      -> hotplug    Hotplug.step() / announce(): `canberra-gtk-play`, `notify-send`
+
 `conftest.py` takes `piactl`, `curl`, `gdbus` and the l1p0-menus config away
 from every test, so none of them reaches the real VPN, network, API key or
-phone.
+phone, and the udev socket, `canberra-gtk-play` and `notify-send` likewise.
 
 | file | what |
 | --- | --- |
@@ -145,6 +158,7 @@ phone.
 | `src/brpol_waybard/workspaces.py` | the workspace buttons and the urgency set |
 | `src/brpol_waybard/hidden.py` | the special-workspace buttons |
 | `src/brpol_waybard/status.py` | the PIA, weather, night light, recording and phone buttons, and where each gets its state |
+| `src/brpol_waybard/hotplug.py` | the device sounds and bubbles: udev's netlink socket for USB and the charger, `ctl.sh announce` for monitors |
 | `src/brpol_waybard/fifos.py` | the pipes, and why they are opened O_RDWR |
 | `src/brpol_waybard/control.py` | what a line on the control FIFO means |
 | `src/brpol_waybard/fade.py` | fading a new window in, and holding the focus colours meanwhile |

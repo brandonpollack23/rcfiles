@@ -16,7 +16,7 @@ reload-hyprland|󰑓  Reload Hyprland config
 reload-plugins|󰑓  Reload Hyprland plugins (hyprpm; installs or enables them, asking for sudo)
 plugins|󰏗  Install/update Hyprland plugins (hyprpm, Hyprspace)
 restart-waybar|󰑓  Restart waybar, its taskbar daemon and its popups
-restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons)
+restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons, device sounds)
 reload-swaync|󰑓  Reload notification center config and style
 restart-swaync|󰑓  Restart notification center
 restart-swayosd|󰑓  Restart volume/brightness OSD (swayosd, reloads its style)

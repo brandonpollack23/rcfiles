@@ -29,10 +29,12 @@ Swappable: change the entry in `conf/programs.lua` and update this table.
 | `l1p0-menus-git` (AUR) | popups behind the waybar status modules (audio, network and Bluetooth, calendar and weather, brightness and night light, battery), autostarted through `~/.config/l1p0-menu/launch.sh`; see "Bar popups" below | `hyprland.lua` |
 | `hyprsunset` | night light daemon, autostarted; driven over its socket by the bar's night light module and the brightness popup | `hyprland.lua` |
 | `hyprlock` | lock screen, styled by `hyprlock.conf` | `SUPER+SHIFT+Escape` |
-| `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`, and restores keyboard focus on every unlock (`on_unlock_cmd`) | `hyprland.lua` |
+| `hypridle` | idle daemon, autostarted; dims, locks and turns screens off per `hypridle.conf`; its `on_lock_cmd` / `on_unlock_cmd` drive `conf/lock.lua`: no device sounds while locked (`ctl.sh locked`), keyboard focus back after, monitor hotplug quiet around the lock | `hyprland.lua` |
 | `hypr-persist` (AUR) | session save/restore daemon, autostarted through `scripts/session.sh`, which first restores the last session's windows at login (from the id-addressed copy `conf/workspaces/persist.lua` writes, so named workspaces survive); settings in `hypr-persist.toml` | `hyprland.lua`, `scripts/session.sh` |
 | `awww` | wallpaper daemon (`awww-daemon`), autostarted; `awww img` sets the Bing wallpaper | `hyprland.lua`, `scripts/bing-wallpaper.sh` |
 | `hyprcap` (AUR) | screenshots and recordings (pulls in `grim`, `slurp`, `hyprpicker` for the freeze, `wf-recorder`, `wl-clipboard`, `libnotify`, `jq`). `scripts/capture.py` is its panel: screenshot or record, region, window or screen, save folder, clipboard, delay; GTK4 on the same packages as the bar popups (`python-gobject`, `gtk4`, `gtk4-layer-shell`, `adwaita-icon-theme`), themed from `conf/gtk_colors.lua`, settings in `$XDG_STATE_HOME/hypr/capture.json`. While a recording runs, brpol-waybard shows a timer on the bar (`custom/recording`, from hyprcap's PID file) that opens the panel, or stops the recording on right-click | `Print` (panel), `SHIFT+Print` (region), `CTRL+Print` (window), `ALT+Print` (focused monitor) |
+| `libcanberra`, `sound-theme-freedesktop` | `canberra-gtk-play`; the `device-added` / `device-removed` sounds | brpol-waybard (`hotplug.py` there): a sound when a USB device, the charger or a monitor connects or disconnects. USB and the charger come from udev's netlink socket, monitors from Hyprland's events in `conf/hotplug.lua` via `ctl.sh announce` |
+| `libnotify` | `notify-send` | brpol-waybard (`hotplug.py`): the bubble naming what connected |
 | `rofimoji` | emoji picker; runs through `hyprlauncher --dmenu` (`--selector hyprlauncher`), copies with `wl-clipboard` and pastes with `ydotool` (`--typer ydotool`, since the autodetected `wtype` breaks Hyprland's binds) | `SUPER+SHIFT+semicolon` |
 
 ## Bing wallpaper (`scripts/bing-wallpaper.sh`)
@@ -179,7 +181,7 @@ sudo pacman -S --needed hyprland zenity coreutils procps-ng uv ghostty nautilus 
   hyprlauncher hyprlock hypridle waybar swaync wireplumber pipewire pipewire-pulse playerctl brightnessctl \
   systemd util-linux grep networkmanager bluez-utils pavucontrol nm-connection-editor blueman ydotool \
   ttf-jetbrains-mono-nerd noto-fonts-emoji curl kmod awww jq xdg-utils findutils rofimoji wl-clipboard swayosd gawk \
-  hyprsunset python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age \
+  hyprsunset libcanberra sound-theme-freedesktop libnotify python python-gobject gtk4 gtk4-layer-shell adwaita-icon-theme sops age \
   kdeconnect glib2 sshfs cmake meson cpio pkgconf gcc make git
 sudo systemctl enable --now swayosd-libinput-backend.service
 sudo pacman -S --needed fprintd  # only with a fingerprint reader

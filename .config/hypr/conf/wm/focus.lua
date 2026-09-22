@@ -7,9 +7,10 @@
 -- no focused window: keys go nowhere and the taskbar draws no active entry.
 --
 -- Neither `.socket2.sock` nor `hl.on` has an unlock event, but hypridle does:
--- its `on_unlock_cmd` (hypridle.conf) calls this on Hyprland's lock-notify
--- `unlocked`. Hyprland sends that just before running its own refocus in the
--- same call, so by the time the command gets back here the refocus is done.
+-- its `on_unlock_cmd` (hypridle.conf) reaches this through conf/lock.lua on
+-- Hyprland's lock-notify `unlocked`. Hyprland sends that just before running
+-- its own refocus in the same call, so by the time the command gets back here
+-- the refocus is done.
 
 local taskbar = require("conf.wm.taskbar")
 

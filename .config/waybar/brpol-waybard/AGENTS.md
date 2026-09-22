@@ -49,6 +49,9 @@ the live bar, because the tests fake that side:
   `../config.jsonc`, named for `status.MODULES`, and
   `~/.config/l1p0-menu/launch.sh`, which writes the `config.json` that
   `status.py` reads the weather key, city and night preset from
+- `~/.config/hypr/conf/hotplug.lua`, which sends `ctl.sh announce
+  added|removed monitor <name>` for `hotplug.KINDS`, and
+  `~/.config/hypr/conf/lock.lua`, which sends `ctl.sh locked` / `unlocked`
 
 ## Tests change with the code
 

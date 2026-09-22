@@ -8,9 +8,11 @@
 
 local M = {}
 
-local function shellQuote(str)
+-- Single-quotes a string for a shell command line.
+function M.shellQuote(str)
 	return "'" .. str:gsub("'", "'\\''") .. "'"
 end
+local shellQuote = M.shellQuote
 
 -- `confirm` and `cancel` are Lua expressions, evaluated back in the config
 -- state, so they name an entry point on `conf.wm` rather than a local.

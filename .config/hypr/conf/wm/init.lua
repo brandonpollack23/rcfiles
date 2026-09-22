@@ -39,7 +39,7 @@ M.confirmUngroup = group.confirmUngroup
 M.cancelUngroup = group.cancelUngroup
 M.moveInGroup = group.moveInGroup
 
--- Unlocking, called by hypridle's on_unlock_cmd
+-- Unlocking, called from conf/lock.lua on hypridle's on_unlock_cmd
 M.restoreFocus = focus.restore
 
 -- Undo/redo

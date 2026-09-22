@@ -39,3 +39,17 @@ def no_real_status_sources(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         status, "REC_PID", os.path.join(RUNTIME_DIR, "no-recording.pid")
     )
+
+
+@pytest.fixture(autouse=True)
+def no_real_hotplug(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Likewise hotplug.py: no test hears this machine's udev events or its
+    charger, and none makes a sound or a bubble on the real session."""
+    from brpol_waybard import hotplug
+
+    monkeypatch.setattr(hotplug, "open_monitor", lambda: None)
+    monkeypatch.setattr(hotplug, "CANBERRA", None)
+    monkeypatch.setattr(hotplug, "NOTIFY_SEND", None)
+    monkeypatch.setattr(
+        hotplug, "POWER_SUPPLIES", os.path.join(RUNTIME_DIR, "no-power-supplies")
+    )
