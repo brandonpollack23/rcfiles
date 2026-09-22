@@ -21,14 +21,19 @@
 
 set -euo pipefail
 
-REPO=$(dirname "$(dirname "$(readlink -f "$0")")")
+REPO=$(dirname "$(dirname "$(realpath "$0")")")
 RULES="$REPO/.sops.yaml"
 MASTER="$REPO/.sops-master.key.age"
 KEYS="${SOPS_AGE_KEY_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt}"
 
-for tool in sops age age-keygen; do
+# add_recipient needs GNU sed (-i without a suffix, \n in replacements). On the
+# Mac that is gsed, from the gnu-sed formula in packages.toml's mac group.
+gnu_sed="sed"
+[[ "$OSTYPE" != darwin* ]] || gnu_sed="gsed"
+for tool in sops age age-keygen "$gnu_sed"; do
   command -v "$tool" >/dev/null || { mise run deps; break; }
 done
+command -v "$gnu_sed" >/dev/null || { echo "sops-bootstrap: $gnu_sed is not installed" >&2; exit 1; }
 
 secrets() {
   git -C "$REPO" ls-files --cached --others --exclude-standard | grep -E '[^/]\.sops\.(json|ya?ml|env|ini)$' || true
@@ -37,7 +42,7 @@ secrets() {
 # Inserted above the master key, which stays last: every line but the last
 # ends in a comma.
 add_recipient() { # <public key> <label>
-  sed -i "s|^# Recipients:\$|&\n#   $1  $2|; s|^\( *\)\(age1[a-z0-9]*\)\$|\1$1,\n\1\2|" "$RULES"
+  "$gnu_sed" -i "s|^# Recipients:\$|&\n#   $1  $2|; s|^\( *\)\(age1[a-z0-9]*\)\$|\1$1,\n\1\2|" "$RULES"
 }
 
 if ! test -s "$KEYS"; then

@@ -1,7 +1,7 @@
 return {
   {
     "WillEhrendreich/datastar.nvim",
-    ft = { "html", "rs" },
+    ft = { "html", "rust" },
     opts = {},
   },
 }

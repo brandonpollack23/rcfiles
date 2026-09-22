@@ -2,33 +2,22 @@
 # To profile uncomment below and the last line of the config
 # zmodload zsh/zprof
 
-# Detect if in chroot (good for prompt and cros development)
-if [[ "$(ls -di /)" != "2 /" ]]; then
+# Detect if in chroot (good for prompt and cros development). Not by root's
+# inode: it is 2 on ext4 and APFS but 256 on btrfs.
+if command -v systemd-detect-virt >/dev/null && systemd-detect-virt --quiet --chroot; then
     export HOST="$HOST-chroot"
 fi
 
-# Fix dumb terminal usage for emacs TRAMP
-if [[ "$TERM" == "dumb" ]]; then
-    unsetopt zle
-    unsetopt prompt_cr
-    unsetopt prompt_subst
-    if whence -w precmd >/dev/null; then
-        unfunction precmd
+export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/.local/bin"
+# Homebrew: the Mac, or Linuxbrew on Debian and Fedora (where deps installs
+# everything through it). Same candidates as ensure_brew in scripts/lib/os.sh.
+for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    if [[ -x $_brew ]]; then
+        eval "$($_brew shellenv)"
+        break
     fi
-    if whence -w preexec >/dev/null; then
-        unfunction preexec
-    fi
-    if [[ "$UUID" -eq 0 ]]; then
-        PS1='# '
-    else
-        PS1='$ '
-    fi
-fi
-
-export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/.pulumi/bin:$HOME/.ghcup/bin:$HOME/.emacs.d/bin:$HOME/bin:/usr/games/:$HOME/.local/bin"
-if ! [[ "$OSTYPE" =~ darwin* ]]; then
-    export PATH=/opt/homebrew/bin:$PATH
-fi
+done
+unset _brew
 export MANPATH="$HOME/man/":$MANPATH
 
 #rustup
@@ -39,62 +28,8 @@ export ALTERNATE_EDITOR="vi"
 
 export CLOUDSDK_HOME=$HOME/bin/google-cloud-sdk
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="candy"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
+# Settings read by the oh-my-zsh lib (loaded by antidote below).
 COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
 HIST_STAMPS="mm/dd/yyyy"
 
 # Plugins are listed in ~/.zsh_plugins.txt and loaded by antidote below.
@@ -148,29 +83,6 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # The prompt is starship; see the bottom of this file and ~/.config/starship.toml.
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 alias pls='sudo $(fc -ln -1)'
 alias fuck=pls
 alias :q="exit"
@@ -181,8 +93,11 @@ alias ll="eza -l --group-directories-first --git"
 alias la="eza -la --group-directories-first --git"
 alias tree="eza -T --group-directories-first --git"
 
-export UNDERLYING_TERM=$(tmux display-message -p "#{client_termname}")
-alias cati='TERM=$UNDERLYING_TERM chafa'
+# Inside tmux, the outer terminal's TERM (so chafa picks the right image protocol).
+if [[ -n $TMUX ]]; then
+    export UNDERLYING_TERM=$(tmux display-message -p "#{client_termname}")
+fi
+alias cati='TERM=${UNDERLYING_TERM:-$TERM} chafa'
 
 # Used for neovim workspaces.
 export PROJECT_DIRS="$HOME/src"

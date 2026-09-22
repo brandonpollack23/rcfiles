@@ -2,10 +2,15 @@ _hn_cache="$HOME/.cache/hn_motd"
 _hn_default_max_age=${HN_MAX_AGE:-18000} # 5 hours, overridable via env
 _hn_default_count=${HN_COUNT:-30}        # top N stories to cache, overridable via env
 
+# File modification time in seconds since the epoch (GNU stat, then BSD stat).
+_hn_mtime() {
+  stat -c %Y "$1" 2>/dev/null || stat -f %m "$1"
+}
+
 _hn_stale() {
   local max_age=${1:-$_hn_default_max_age}
   [[ ! -f "$_hn_cache" ]] && return 0
-  local age=$(($(date +%s) - $(date -r "$_hn_cache" +%s)))
+  local age=$(($(date +%s) - $(_hn_mtime "$_hn_cache")))
   ((age > max_age))
 }
 
@@ -67,8 +72,10 @@ hn() {
   fi
 
   [[ -f "$_hn_cache" ]] || return
-  local entry title url comment
-  entry=$(jq -c '.[]' "$_hn_cache" | shuf -n1)
+  local n entry title url comment
+  n=$(jq length "$_hn_cache" 2>/dev/null) || return
+  ((n > 0)) || return
+  entry=$(jq -c ".[$((RANDOM % n))]" "$_hn_cache")
   title=$(echo "$entry" | jq -r '.title')
   url=$(echo "$entry" | jq -r '.url')
   comment=$(echo "$entry" | jq -r '.comment')

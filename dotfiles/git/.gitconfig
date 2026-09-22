@@ -1,6 +1,3 @@
-[include]
-  path = .gitconfig.local
-
 [user]
   email = brandonpollack23@gmail.com
   name = Brandon Pollack
@@ -53,11 +50,12 @@
   process = git-lfs filter-process
   required = true
 
-; local stuff
-[includeIf "gitdir:~/.gitconfig.local"]
 [init]
 	defaultBranch = master
 [branchless "test"]
 	jobs = 0
-[safe]
-	directory = /home/brpol/src/learn_nix/mnt/vm_nixos/home/brpol/nixos
+
+; Machine-only settings (credential helper from `mise run setup`, a work
+; email, safe.directory...). Last, so they override everything above.
+[include]
+  path = .gitconfig.local

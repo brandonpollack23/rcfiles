@@ -6,7 +6,11 @@ set -euo pipefail
 pkg=$usage_package
 eval "set -- $usage_path"
 for path in "$@"; do
-  abs=$(realpath -s "$path")
+  # Absolute, without resolving symlinks (realpath -s is GNU-only). mise runs
+  # this from the repo, so relative paths are taken from where it was invoked.
+  abs=$path
+  [[ "$abs" == /* ]] || abs="${MISE_ORIGINAL_CWD:-$PWD}/$abs"
+  abs=${abs%/}
   rel=${abs#"$HOME"/}
   if [[ "$rel" == "$abs" ]]; then
     echo "$path is not under $HOME" >&2; exit 1
