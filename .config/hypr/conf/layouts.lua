@@ -44,6 +44,10 @@ hl.config({
 	},
 })
 
+-- Hidden workspaces, the scratchpad included, tile with dwindle. The presets
+-- above are master settings, so conf/workspaces/layout.lua leaves them be.
+hl.workspace_rule({ workspace = "s[true]", layout = "dwindle" })
+
 -- See https://wiki.hypr.land/configuring/layouts/scrolling-layout/ for more
 hl.config({
 	scrolling = {
