@@ -32,6 +32,7 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
+| `gdrive`         | on Linux, mounts the personal and univalent Google Drives under `/mnt/google_drive` (rclone, systemd mount units, config in `/etc/rclone` from the `GDRIVE_*` secrets); skipped until the secrets are there |
 | `setup`          | logs in to GitHub (`gh auth login`, git credentials in `~/.gitconfig.local`) and checks git, jj and neovim are ready, running `deps`, `stow` or `plugins` for anything missing |
 
 `packages.toml` groups the packages: `core` (the shell, editor and git tools;

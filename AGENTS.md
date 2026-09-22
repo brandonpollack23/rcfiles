@@ -54,6 +54,8 @@ Each of these was hit writing this repo's scripts.
   In commands `$ ... $`, `\$` is a shell `$`, `\{` a brace, `\\` one backslash.
 - **`split` drops trailing empty fields** (`"a|b||"` gives 3); use `field`
   from `scripts/lib/packages.ab` to read fields that may be missing.
+- **`join` uses only the first character of its separator**: `"\n\n"` joins
+  with one newline. Put `""` elements between the items instead.
 - **Arrays word-split** when interpolated into a command, and a `Text` is one
   word. To pass several arguments, `join` them and go through `run()` (eval).
 - Reserved words that bite as names: `lines`, `lock`, `sudo`, `failed`.

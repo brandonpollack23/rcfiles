@@ -1,0 +1,45 @@
+import { assert, assert_eq } from "std/test"
+import { text_contains } from "std/text"
+import { secret_key, secret_value, missing_secrets, remote_section, rclone_config, mount_unit_name, mount_unit } from "../gdrive.ab"
+
+const ENV = "# comment\nGDRIVE_PERSONAL_CLIENT_ID=id.apps\nGDRIVE_PERSONAL_CLIENT_SECRET=s=cret\nGDRIVE_PERSONAL_TOKEN=\{\"access_token\":\"a\",\"expiry\":\"2026\"}\nOTHER=x"
+
+test "secret_key names a drive's secrets" {
+    assert_eq(secret_key("personal", "CLIENT_ID"), "GDRIVE_PERSONAL_CLIENT_ID")?
+}
+
+test "secret_value keeps everything after the first =" {
+    assert_eq(secret_value(ENV, "GDRIVE_PERSONAL_CLIENT_ID"), "id.apps")?
+    assert_eq(secret_value(ENV, "GDRIVE_PERSONAL_CLIENT_SECRET"), "s=cret")?
+    assert_eq(secret_value(ENV, "GDRIVE_PERSONAL_TOKEN"), "\{\"access_token\":\"a\",\"expiry\":\"2026\"}")?
+    assert_eq(secret_value(ENV, "GDRIVE_UNIVALENT_TOKEN"), "")?
+    assert_eq(secret_value(ENV, "OTHE"), "")?
+}
+
+test "missing_secrets lists the keys a drive lacks" {
+    const none = missing_secrets(ENV, "personal|r|d")
+    const none_count = len(none)
+    assert_eq(none_count, 0)?
+    const all = missing_secrets(ENV, "univalent|r|d")
+    const all_count = len(all)
+    assert_eq(all_count, 3)?
+    assert_eq(all[2], "GDRIVE_UNIVALENT_TOKEN")?
+}
+
+test "remote_section is an rclone drive remote" {
+    assert_eq(remote_section("r", "i", "s", "t"), "[r]\ntype = drive\nclient_id = i\nclient_secret = s\nscope = drive\ntoken = t\nteam_drive = ")?
+}
+
+test "rclone_config has every drive" {
+    const config = rclone_config(ENV)
+    assert(text_contains(config, "[google-drive-brandonpollack23]\ntype = drive\nclient_id = id.apps\n"))?
+    assert(text_contains(config, "\n\n[google-drive-univalent]\n"))?
+}
+
+test "mount_unit mounts the remote as the user" {
+    assert_eq(mount_unit_name("univalent"), "mnt-google_drive-univalent.mount")?
+    const unit = mount_unit("google-drive-univalent", "univalent", "1000", "1000")
+    assert(text_contains(unit, "\nWhat=google-drive-univalent:/\nWhere=/mnt/google_drive/univalent\nType=rclone\n"))?
+    assert(text_contains(unit, ",uid=1000,gid=1000,config=/etc/rclone/google_drive.conf\n"))?
+    assert(text_contains(unit, "\nWantedBy=multi-user.target"))?
+}

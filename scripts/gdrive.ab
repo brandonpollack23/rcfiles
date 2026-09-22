@@ -1,0 +1,143 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Mount the personal and univalent Google Drives under /mnt/google_drive (rclone and systemd, on Linux)"
+//MISE wait_for=["deps", "sops-bootstrap"]
+//USAGE flag "-n --dry-run" help="Print the commands instead of running them"
+//USAGE flag "-f --force" help="Rewrite /etc/rclone/google_drive.conf from the secrets (otherwise it is kept, with the tokens rclone refreshed)"
+// Each drive is an rclone remote in root's own config (/etc/rclone), filled
+// from secrets.sops.env (`mise run secrets`), and a systemd mount unit that
+// mounts it at boot, its files owned by this user.
+
+import { env_var_get, is_command, echo_error } from "std/env"
+import { file_exists, file_read, file_write } from "std/fs"
+import { join } from "std/text"
+
+import { detect_os } from "./lib/os.ab"
+import { repo_root, run, set_dry_run, is_dry_run, quoted } from "./lib/run.ab"
+import { DRIVES, CONFIG, MOUNT_ROOT, drive_remote, drive_dir, missing_secrets, rclone_config, mount_unit_name, mount_unit } from "./lib/gdrive.ab"
+
+// Exits (successfully) where there is nothing to mount with: the Mac has the
+// google-drive cask instead.
+fun ensure_supported(): Null {
+    if detect_os() == "mac" {
+        echo("gdrive: skipped on the Mac (the google-drive cask, in the desktop group, syncs it)")
+        exit(0)
+    }
+    if not is_command("systemctl") {
+        echo("gdrive: skipped, there is no systemd here")
+        exit(0)
+    }
+    for tool in ["rclone", "fusermount3", "sops"] {
+        if not is_command(tool) {
+            echo_error("gdrive: {tool} is not installed; run: mise run deps tools", 1)
+        }
+    }
+}
+
+fun decrypt_secrets(root: Text): Text {
+    return $ sops -d "{root}/secrets.sops.env" $ failed(code) {
+        echo_error("gdrive: could not decrypt secrets.sops.env; run: mise run sops-bootstrap", code)
+    }
+}
+
+// Exits (successfully, so `install` goes on) when a drive's secrets aren't
+// in secrets.sops.env yet, saying which to add.
+fun ensure_secrets(env_text: Text): Null {
+    let gone = [Text]
+    for drive in DRIVES {
+        gone += missing_secrets(env_text, drive)
+    }
+    const gone_count = len(gone)
+    if gone_count > 0 {
+        echo("gdrive: skipped, secrets.sops.env is missing {join(gone, " ")}")
+        echo("  add them with: mise run secrets (the values are rclone's client_id, client_secret and token)")
+        exit(0)
+    }
+}
+
+// Writes root's rclone config when it is missing (or with --force). rclone
+// rewrites it as it refreshes the tokens, so it is otherwise left alone.
+fun write_config(env_text: Text, force: Bool): Null? {
+    if file_exists(CONFIG) and not force {
+        return null
+    }
+    const cmd = "sudo install -D -o root -g root -m 600"
+    if is_dry_run() {
+        echo("{cmd} <the rclone config from secrets.sops.env> {CONFIG}")
+        return null
+    }
+    const tmp = $ mktemp $?
+    file_write(tmp, rclone_config(env_text)) failed {
+        trust $ rm -f "{tmp}" $
+        echo_error("gdrive: could not write {tmp}", 1)
+    }
+    run("{cmd} {quoted(tmp)} {CONFIG}") failed {
+        trust $ rm -f "{tmp}" $
+        echo_error("gdrive: could not install {CONFIG}", 1)
+    }
+    $ rm -f "{tmp}" $?
+    echo("gdrive: wrote {CONFIG}")
+}
+
+// A `Type=rclone` mount runs mount.rclone, which the Arch package links;
+// rclone from elsewhere (Homebrew) needs the link made.
+fun ensure_mount_helper(): Null? {
+    if file_exists("/sbin/mount.rclone") or file_exists("/usr/sbin/mount.rclone") {
+        return null
+    }
+    const rclone = trust $ command -v rclone $
+    run("sudo ln -s {quoted(rclone)} /sbin/mount.rclone")?
+}
+
+// Installs each drive's mount unit, then (re)starts the ones that changed and
+// makes sure the rest are enabled and mounted.
+fun mount_drives(): Null? {
+    const uid = $ id -u $?
+    const gid = $ id -g $?
+    let changed = [Text]
+    let unchanged = [Text]
+    for drive in DRIVES {
+        const dir = drive_dir(drive)
+        const name = mount_unit_name(dir)
+        const path = "/etc/systemd/system/{name}"
+        const unit = mount_unit(drive_remote(drive), dir, uid, gid)
+        run("sudo mkdir -p {MOUNT_ROOT}/{dir}")?
+        if unit_differs(path, unit) {
+            run("sudo tee {path} >/dev/null <<<{quoted(unit)}")?
+            changed += [name]
+        } else {
+            unchanged += [name]
+        }
+    }
+    const changed_count = len(changed)
+    if changed_count > 0 {
+        run("sudo systemctl daemon-reload")?
+        run("sudo systemctl enable {join(changed, " ")}")?
+        run("sudo systemctl restart {join(changed, " ")}")?
+    }
+    const unchanged_count = len(unchanged)
+    if unchanged_count > 0 {
+        run("sudo systemctl enable --now {join(unchanged, " ")}")?
+    }
+}
+
+fun unit_differs(path: Text, unit: Text): Bool {
+    if not file_exists(path) {
+        return true
+    }
+    const current = trust file_read(path)
+    return current != unit
+}
+
+main {
+    set_dry_run(trust env_var_get("usage_dry_run") == "true")
+    const force = trust env_var_get("usage_force") == "true"
+    ensure_supported()
+    const env_text = decrypt_secrets(repo_root())
+    ensure_secrets(env_text)
+    write_config(env_text, force)?
+    ensure_mount_helper()?
+    mount_drives()?
+    if not is_dry_run() {
+        echo("gdrive: the drives are mounted under {MOUNT_ROOT}")
+    }
+}

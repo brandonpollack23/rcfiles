@@ -1,0 +1,114 @@
+// The Google Drives `mise run gdrive` mounts: their rclone config and systemd
+// mount units. Not executable, so mise doesn't list it as a task.
+
+import { split, split_lines, join, starts_with, slice, count_chars, uppercase } from "std/text"
+import { field } from "./packages.ab"
+
+// "<secret prefix>|<rclone remote>|<directory under MOUNT_ROOT>" for each drive.
+pub const DRIVES = [
+    "personal|google-drive-brandonpollack23|brandonpollack23",
+    "univalent|google-drive-univalent|univalent",
+]
+
+// root's own rclone config, so that refreshing a token (which rewrites the
+// file) never touches the user's ~/.config/rclone/rclone.conf.
+pub const CONFIG = "/etc/rclone/google_drive.conf"
+pub const MOUNT_ROOT = "/mnt/google_drive"
+
+// What each drive needs from secrets.sops.env, as GDRIVE_<PREFIX>_<what>.
+pub const SECRETS = ["CLIENT_ID", "CLIENT_SECRET", "TOKEN"]
+
+pub fun drive_prefix(drive: Text): Text {
+    return field(split(drive, "|"), 0)
+}
+
+pub fun drive_remote(drive: Text): Text {
+    return field(split(drive, "|"), 1)
+}
+
+pub fun drive_dir(drive: Text): Text {
+    return field(split(drive, "|"), 2)
+}
+
+// GDRIVE_PERSONAL_CLIENT_ID and so on.
+pub fun secret_key(prefix: Text, what: Text): Text {
+    return "GDRIVE_{uppercase(prefix)}_{what}"
+}
+
+// The value of `key` in decrypted dotenv text, or "" when it isn't there.
+// Everything after the first "=", since a token is JSON.
+pub fun secret_value(env_text: Text, key: Text): Text {
+    const skip = count_chars(key) + 1
+    for line in split_lines(env_text) {
+        if starts_with(line, "{key}=") {
+            return slice(line, skip)
+        }
+    }
+    return ""
+}
+
+// The secrets a drive is missing, as their keys.
+pub fun missing_secrets(env_text: Text, drive: Text): [Text] {
+    let gone = [Text]
+    for what in SECRETS {
+        const key = secret_key(drive_prefix(drive), what)
+        if secret_value(env_text, key) == "" {
+            gone += [key]
+        }
+    }
+    return gone
+}
+
+// One remote in rclone's config.
+pub fun remote_section(remote: Text, client_id: Text, client_secret: Text, token: Text): Text {
+    return join([
+        "[{remote}]",
+        "type = drive",
+        "client_id = {client_id}",
+        "client_secret = {client_secret}",
+        "scope = drive",
+        "token = {token}",
+        "team_drive = ",
+    ], "\n")
+}
+
+// The whole config, every drive's remote from the decrypted secrets, a blank
+// line between them (join only uses the first character of its separator).
+pub fun rclone_config(env_text: Text): Text {
+    let sections = [Text]
+    for drive in DRIVES {
+        const prefix = drive_prefix(drive)
+        const client_id = secret_value(env_text, secret_key(prefix, "CLIENT_ID"))
+        const client_secret = secret_value(env_text, secret_key(prefix, "CLIENT_SECRET"))
+        const token = secret_value(env_text, secret_key(prefix, "TOKEN"))
+        if len(sections) > 0 {
+            sections += [""]
+        }
+        sections += [remote_section(drive_remote(drive), client_id, client_secret, token)]
+    }
+    return join(sections, "\n")
+}
+
+// systemd names a mount unit after its path; these directories need no escaping.
+pub fun mount_unit_name(dir: Text): Text {
+    return "mnt-google_drive-{dir}.mount"
+}
+
+// The mount unit for `remote` at MOUNT_ROOT/`dir`, its files owned by uid:gid.
+pub fun mount_unit(remote: Text, dir: Text, uid: Text, gid: Text): Text {
+    return join([
+        "[Unit]",
+        "Description=Mount rclone remote {remote}",
+        "After=network-online.target",
+        "Wants=network-online.target",
+        "",
+        "[Mount]",
+        "What={remote}:/",
+        "Where={MOUNT_ROOT}/{dir}",
+        "Type=rclone",
+        "Options=rw,_netdev,nofail,allow_other,args2env,vfs-cache-mode=full,uid={uid},gid={gid},config={CONFIG}",
+        "",
+        "[Install]",
+        "WantedBy=multi-user.target",
+    ], "\n")
+}
