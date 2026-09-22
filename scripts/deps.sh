@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#MISE description="Install the programs these dotfiles need (lists in scripts/packages: Homebrew and the Brewfile on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora), Rust (rustup), Erlang and Elixir (mise)"
+#MISE description="Install the programs these dotfiles need (lists in scripts/packages: Homebrew and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora), Rust (rustup), Erlang and Elixir (mise)"
 set -euo pipefail
 source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib/os.sh"
 
@@ -9,9 +9,9 @@ source "$scripts/packages/$OS.sh"
 
 mac_deps() {
   ensure_brew
-  brew install "${common[@]}" "${homebrew[@]}"
+  brew install "${common[@]}" "${homebrew[@]}" "${brew[@]}"
   brew install --cask "${cask[@]}"
-  brew bundle --file "$MISE_CONFIG_ROOT/Brewfile"
+  mas install "${mas[@]}"
 }
 
 # yay isn't in the official repos, so build yay-bin from the AUR.
@@ -57,6 +57,11 @@ if ! test -x ~/.cargo/bin/rustup && ! command -v rustup >/dev/null; then
 fi
 test -f ~/.cargo/env && source ~/.cargo/env
 rustup default >/dev/null 2>&1 || rustup default stable
+
+# The Mac's Rust tools (crates in scripts/packages/mac.sh).
+if [[ -n "${crates+set}" ]]; then
+  cargo binstall -y "${crates[@]}"
+fi
 
 # The prompt's jj module (see starship.toml) isn't packaged anywhere; it's a crate.
 if ! command -v starship-jj >/dev/null; then

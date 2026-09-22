@@ -44,7 +44,7 @@ features to carry over are in `hyprland_todo.md`.
         installers where they exist (Steam, dev envs, Ghostty, Chrome).
   - [ ] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
         packages) and move the ones I still want into `packages.ab`.
-- [ ] Make sure the Mac still works (Brewfile, stow on macOS,
+- [ ] Make sure the Mac still works (scripts/packages/mac.sh, stow on macOS,
       `./install.sh --dry-run` there).
 - [ ] zsh on Omarchy: `chsh` to zsh. Check what Omarchy's bash sets up
       (`/usr/share/omarchy/default/bash/*`: PATH, mise, starship, zoxide,

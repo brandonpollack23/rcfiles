@@ -25,7 +25,7 @@ It's safe to run again.
 
 | task             | does                                                          |
 | ---------------- | ------------------------------------------------------------- |
-| `deps`           | installs the programs the configs need (lists in `scripts/packages/`: Homebrew and the `Brewfile` on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`) |
+| `deps`           | installs the programs the configs need (lists in `scripts/packages/`: Homebrew, the App Store and cargo on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
@@ -44,7 +44,6 @@ them, or pull them into the repo with `mise run adopt <package>`.
 | `scripts/packages/`   | what `deps` installs: `common.sh` everywhere, plus `mac.sh`, `arch.sh`, `debian.sh` or `fedora.sh` |
 | `mise.toml`           | env and task config                                               |
 | `install.sh`          | symlink to `scripts/install.sh`; run directly it installs mise, then runs `mise run install` |
-| `Brewfile`            | everything else on the Mac                                        |
 | `fonts/`              | Consolas Nerd Font                                                |
 | `docs/`               | reference notes (ANSI escapes, Linux/SSH/nmap/fio tips)           |
 | `.sops.yaml`, `*.sops.*`, `.sops-master.key.age` | encrypted secrets (see below)          |
