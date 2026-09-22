@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins"
+#MISE wait_for=["stow"]
 set -euo pipefail
 antidote=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
 test -d "$antidote" || git clone --depth=1 https://github.com/mattmc3/antidote.git "$antidote"

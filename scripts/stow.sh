@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #MISE description="Link packages into $HOME (all of them if none are named)"
+#MISE wait_for=["deps"]
 #USAGE arg "[package]..." var=#true help="Packages to link (default: all)"
 set -euo pipefail
 eval "set -- ${usage_package:-}"

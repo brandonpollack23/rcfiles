@@ -13,23 +13,24 @@ cd ~/rcfiles
 ./install.sh
 ```
 
-`install.sh` installs mise with the OS package manager (Homebrew on the Mac,
-pacman on Arch), trusts this repo's `mise.toml`, then runs `mise run install`.
+`install.sh` installs mise (Homebrew on the Mac, installing Homebrew first if
+needed; pacman on Arch; mise's own installer on Debian and Fedora), trusts this repo's `mise.toml`, then runs `mise run install`.
 It's safe to run again.
 
 ### By hand
 
-1. Install mise: `brew install mise` or `sudo pacman -S mise`.
+1. Install mise: `brew install mise`, `sudo pacman -S mise`, or `curl https://mise.run | sh`.
 2. `mise trust`
-3. `mise run install`, which runs these tasks in order (each works on its own):
+3. `mise run install`, which depends on these tasks and runs them in order (each works on its own):
 
 | task             | does                                                          |
 | ---------------- | ------------------------------------------------------------- |
-| `deps`           | installs the programs the configs need (`Brewfile` on the Mac, pacman + yay/paru on Arch) |
+| `deps`           | installs the programs the configs need (lists in `scripts/packages/`: Homebrew and the `Brewfile` on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
+| `setup`          | logs in to GitHub (`gh auth login`, git credentials in `~/.gitconfig.local`) and checks git, jj and neovim are ready, running `deps`, `stow` or `plugins` for anything missing |
 
 If files already exist where the links go, `stow` stops and names them. Delete
 them, or pull them into the repo with `mise run adopt <package>`.
@@ -40,9 +41,10 @@ them, or pull them into the repo with `mise run adopt <package>`.
 | --------------------- | ----------------------------------------------------------------- |
 | `dotfiles/<package>/` | stow packages; each mirrors `$HOME` (`dotfiles/nvim/.config/nvim` → `~/.config/nvim`) |
 | `scripts/`            | the mise tasks, one script each (`mise run <name>`)               |
+| `scripts/packages/`   | what `deps` installs: `common.sh` everywhere, plus `mac.sh`, `arch.sh`, `debian.sh` or `fedora.sh` |
 | `mise.toml`           | env and task config                                               |
-| `install.sh`          | bootstrap: installs mise, then runs `mise run install`            |
-| `Brewfile`            | Mac packages                                                      |
+| `install.sh`          | symlink to `scripts/install.sh`; run directly it installs mise, then runs `mise run install` |
+| `Brewfile`            | everything else on the Mac                                        |
 | `fonts/`              | Consolas Nerd Font                                                |
 | `docs/`               | reference notes (ANSI escapes, Linux/SSH/nmap/fio tips)           |
 | `.sops.yaml`, `*.sops.*`, `.sops-master.key.age` | encrypted secrets (see below)          |

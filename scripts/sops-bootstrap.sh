@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #MISE description="Let this machine decrypt the secrets (asks for the master password)"
+#MISE wait_for=["deps"]
 # Lets this machine decrypt the repo's secrets (*.sops.*, rules in .sops.yaml).
 # Run by `mise run install`; safe to run again, it only does what is still missing.
 #
@@ -26,7 +27,7 @@ MASTER="$REPO/.sops-master.key.age"
 KEYS="${SOPS_AGE_KEY_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt}"
 
 for tool in sops age age-keygen; do
-  command -v "$tool" >/dev/null || { echo "sops-bootstrap: $tool is not installed, skipping" >&2; exit 0; }
+  command -v "$tool" >/dev/null || { mise run deps; break; }
 done
 
 secrets() {

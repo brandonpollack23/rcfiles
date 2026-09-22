@@ -9,3 +9,8 @@ DOTFILES = "{{config_root}}/dotfiles"
 
 [task_config]
 includes = ["scripts"]
+
+[settings]
+# Tasks here prompt (sudo, the sops password, $EDITOR), so give them the
+# terminal and run one at a time.
+raw = true
