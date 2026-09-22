@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins"
+#MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim + Mason) plugins"
 #MISE wait_for=["stow"]
 set -euo pipefail
 antidote=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
@@ -11,3 +11,5 @@ test -d ~/.tmux/plugins/tpm || git clone --depth=1 https://github.com/tmux-plugi
 
 # Installs the versions pinned in lazy-lock.json.
 nvim --headless "+Lazy! restore" +qa
+# Mason tools have no lockfile, so these install at the latest registry version.
+nvim --headless "+luafile $(dirname "$0")/lib/mason-install.lua"

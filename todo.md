@@ -29,7 +29,7 @@ features to carry over are in `hyprland_todo.md`.
       `nvim/`, `tmux/`, `ghostty/`, `jj/`, `git/`, `hypr/`…), so
       `stow -t ~ <pkg>` links it. Drop the linking in
       `scripts/installer/src/links.ab`.
-- [ ] reorganize packages to install into categories that will be asked on
+- [x] reorganize packages to install into categories that will be asked on
       install. eg steam is for gaming, servers wont need it. so there should be
       core, mac only, gaming, etc. if we can we should try to not have the
       brewfile and derive from a single source of truth.
@@ -43,9 +43,9 @@ features to carry over are in `hyprland_todo.md`.
         skips everything Omarchy already ships, and runs the Omarchy menu
         installers where they exist (Steam, dev envs, Ghostty, Chrome).
   - [ ] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
-        packages) and move the ones I still want into `packages.ab`.
-- [ ] Make sure the Mac still works (scripts/packages/mac.sh, stow on macOS,
-      `./install.sh --dry-run` there).
+        packages) and move the ones I still want into `packages.txt`.
+- [ ] Make sure the Mac still works (packages.txt, stow on macOS,
+      `mise run deps -n` there).
 - [ ] zsh on Omarchy: `chsh` to zsh. Check what Omarchy's bash sets up
       (`/usr/share/omarchy/default/bash/*`: PATH, mise, starship, zoxide,
       aliases) and redo anything I want in `scripts/zshrc`.

@@ -25,12 +25,18 @@ It's safe to run again.
 
 | task             | does                                                          |
 | ---------------- | ------------------------------------------------------------- |
-| `deps`           | installs the programs the configs need (lists in `scripts/packages/`: Homebrew, the App Store and cargo on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`) |
+| `deps`           | installs the programs in `packages.txt` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
 | `setup`          | logs in to GitHub (`gh auth login`, git credentials in `~/.gitconfig.local`) and checks git, jj and neovim are ready, running `deps`, `stow` or `plugins` for anything missing |
+
+`packages.txt` groups the packages: `core` (the shell, editor and git tools;
+every machine), `mac` (every Mac), and `dev`, `embedded`, `tools`, `desktop` and
+`gaming`, which `deps` asks about the first time and remembers in
+`~/.config/rcfiles/groups`. `mise run deps dev desktop` (or `all`) picks again;
+`mise run deps -n` prints the install commands without running them.
 
 If files already exist where the links go, `stow` stops and names them. Delete
 them, or pull them into the repo with `mise run adopt <package>`.
@@ -41,7 +47,7 @@ them, or pull them into the repo with `mise run adopt <package>`.
 | --------------------- | ----------------------------------------------------------------- |
 | `dotfiles/<package>/` | stow packages; each mirrors `$HOME` (`dotfiles/nvim/.config/nvim` → `~/.config/nvim`) |
 | `scripts/`            | the mise tasks, one script each (`mise run <name>`)               |
-| `scripts/packages/`   | what `deps` installs: `common.sh` everywhere, plus `mac.sh`, `arch.sh`, `debian.sh` or `fedora.sh` |
+| `packages.txt`        | what `deps` installs, in groups, with each package's name per OS |
 | `mise.toml`           | env and task config                                               |
 | `install.sh`          | symlink to `scripts/install.sh`; run directly it installs mise, then runs `mise run install` |
 | `fonts/`              | Consolas Nerd Font                                                |

@@ -1,0 +1,223 @@
+# Everything `mise run deps` installs, on every OS, in groups. `core` goes on
+# every machine and `mac` on every Mac; deps asks which of the others to
+# install and remembers the answer (`mise run deps <group>...` to change it).
+#
+# This is TOML, but deps.sh reads it with bash (no parser to install first), so
+# keep to this shape: each package is one line, an inline table of
+#   desc = "..."                what it is
+#   arch = "pkg" | ["a", "b"]   its name(s) on Arch (pacman or AUR), if not the key
+#   arch = false                not on Arch
+#   brew = "formula"            its Homebrew formula, if not the key
+#   brew = false                not from Homebrew
+#   cask = true | "cask"        a Homebrew cask instead (Mac only)
+#   mas = <id>                  a Mac App Store app instead (Mac only; sign in first)
+#   cargo = true | "crate"      a Rust crate, installed with cargo binstall everywhere
+# By default the key is the name in Homebrew (the Mac, Debian and Fedora) and on
+# Arch (through yay or paru). Formulae from other taps are named
+# "<user>/<tap>/<formula>"; brew taps them. mise itself comes from install.sh.
+
+# The groups, in the order deps asks about them.
+[groups]
+core     = "The shell, editor and git setup these dotfiles configure (every machine)"
+mac      = "GNU tools, Mac utilities and Apple's apps (every Mac)"
+dev      = "Languages, compilers, build tools and developer CLIs"
+embedded = "Flashing and debugging microcontrollers (ARM, RISC-V, ESP32)"
+tools    = "Command-line odds and ends: media, documents, networking, todos"
+desktop  = "GUI apps for a workstation: terminal, browser, chat, notes, music"
+gaming   = "Steam and voice chat"
+
+[packages.core]
+stow                 = { desc = "Symlink farm manager; links dotfiles/ into $HOME" }
+git                  = { desc = "Version control system" }
+git-delta            = { desc = "Syntax-highlighting pager for git diffs (.gitconfig)" }
+git-lfs              = { desc = "Git extension for versioning large files" }
+jj                   = { arch = "jujutsu", desc = "Jujutsu, a Git-compatible VCS, with its own config in dotfiles/jj" }
+gh                   = { arch = "github-cli", desc = "GitHub's official command line tool" }
+zsh                  = { desc = "Powerful shell with scripting language" }
+tmux                 = { desc = "Terminal multiplexer" }
+"morantron/tmux-fingers/tmux-fingers" = { arch = "tmux-fingers", desc = "Copy text from tmux panes by hint, like vimium" }
+tmux-mem-cpu-load    = { desc = "CPU, memory and load for the tmux status line" }
+neovim               = { desc = "Hyperextensible Vim-based text editor" }
+node                 = { arch = ["nodejs", "npm"], desc = "JavaScript runtime (with npm); neovim language servers need it" }
+tree-sitter-cli      = { desc = "Builds neovim's tree-sitter parsers" }
+lazygit              = { desc = "Terminal UI for git, opened from a neovim keymap" }
+starship             = { desc = "Cross-shell prompt (starship.toml)" }
+starship-jj          = { cargo = true, desc = "The prompt's jj module (see starship.toml)" }
+fzf                  = { desc = "General-purpose command-line fuzzy finder" }
+zoxide               = { desc = "Smarter cd that remembers the directories you use" }
+eza                  = { desc = "A replacement for ls with more features" }
+bat                  = { desc = "A clone of cat(1) with syntax highlighting and Git integration" }
+ripgrep              = { desc = "Recursively searches directories for a regex pattern" }
+fd                   = { desc = "A simple, fast and user-friendly alternative to find" }
+difftastic           = { desc = "Structural, syntax-aware diff (difft; git and jj diffs)" }
+jq                   = { desc = "Command-line JSON processor" }
+curl                 = { desc = "Command line tool for transferring data with URLs" }
+wget                 = { desc = "Retrieves files over HTTP, HTTPS and FTP" }
+unzip                = { desc = "Extracts .zip archives (neovim plugin and tool downloads)" }
+tree                 = { desc = "Display directories as trees" }
+htop                 = { desc = "Interactive process viewer" }
+ncdu                 = { desc = "Disk usage analyzer with a terminal UI" }
+chafa                = { desc = "Displays images in the terminal (the cati alias in .zshrc)" }
+lolcat               = { desc = "Rainbow-colors text; the .zshrc welcome message" }
+pay-respects         = { desc = "Suggests a fix for the last failed command (a thefuck replacement)" }
+sops                 = { desc = "Encrypts this repo's secrets (sops-bootstrap.sh)" }
+age                  = { desc = "Keys sops encrypts this repo's secrets to (sops-bootstrap.sh)" }
+cargo-binstall       = { desc = "Installs Rust binaries without building them (the cargo lines)" }
+base-devel           = { brew = false, desc = "Compiler, make and friends for building AUR and native packages" }
+
+[packages.mac]
+bash                 = { desc = "A current Bash (macOS ships 3.2)" }
+binutils             = { desc = "GNU binary tools (objdump, readelf...)" }
+coreutils            = { desc = "GNU file, shell and text utilities (g-prefixed)" }
+diffutils            = { desc = "GNU diff, cmp and friends" }
+file-formula         = { desc = "file(1), newer than macOS's" }
+findutils            = { desc = "GNU find, locate and xargs" }
+gawk                 = { desc = "GNU awk" }
+gnu-sed              = { desc = "GNU sed (gsed)" }
+gnu-tar              = { desc = "GNU tar (gtar)" }
+gnu-which            = { desc = "GNU which" }
+gpatch               = { desc = "GNU patch" }
+grep                 = { desc = "GNU grep (ggrep)" }
+gzip                 = { desc = "GNU gzip" }
+less                 = { desc = "A current less pager" }
+make                 = { desc = "GNU make (gmake)" }
+openssh              = { desc = "A current OpenSSH (with FIDO key support)" }
+rsync                = { desc = "A current rsync" }
+screen               = { desc = "Terminal multiplexer" }
+telnet               = { desc = "Telnet client" }
+mas                  = { desc = "Mac App Store CLI; installs the mas= lines" }
+alfred               = { cask = true, desc = "Launcher and productivity app" }
+alt-tab              = { cask = true, desc = "Windows-style alt-tab window switcher" }
+middleclick          = { cask = true, desc = "Middle click with a three-finger tap" }
+disk-inventory-x     = { cask = true, desc = "Disk usage visualizer" }
+quicklook-json       = { cask = true, desc = "Quick Look preview for JSON" }
+syntax-highlight     = { cask = true, desc = "Quick Look preview for source code, syntax highlighted" }
+hidden-bar           = { mas = 1452453066, desc = "Hides menu bar icons" }
+xcode                = { mas = 497799835, desc = "Apple's IDE and SDKs" }
+testflight           = { mas = 899247664, desc = "Beta iOS and Mac apps" }
+windows-app          = { mas = 1295203466, desc = "Remote desktop to Windows" }
+garageband           = { mas = 682658836, desc = "Music creation" }
+imovie               = { mas = 408981434, desc = "Video editing" }
+keynote              = { mas = 409183694, desc = "Presentations" }
+numbers              = { mas = 409203825, desc = "Spreadsheets" }
+pages                = { mas = 409201541, desc = "Word processor" }
+
+[packages.dev]
+autoconf             = { desc = "Generates configure scripts" }
+automake             = { desc = "Generates Makefile.in files for autoconf" }
+libtool              = { desc = "Generic library support script, for autoconf builds" }
+pkgconf              = { desc = "pkg-config: compiler and linker flags for libraries" }
+cmake                = { desc = "Cross-platform open-source make system" }
+gcc                  = { desc = "GNU compiler collection" }
+lld                  = { desc = "LLVM linker" }
+binaryen             = { desc = "Compiler and toolchain infrastructure for WebAssembly" }
+wasm-bindgen         = { desc = "Rust and JavaScript interop for WebAssembly" }
+wasm-pack            = { desc = "Builds Rust-generated WebAssembly packages" }
+rustup               = { desc = "Rust toolchain installer" }
+deno                 = { desc = "A secure runtime for JavaScript and TypeScript" }
+ghcup                = { arch = "ghcup-hs-bin", desc = "Installer for the Haskell toolchain (GHC, cabal, HLS)" }
+go                   = { desc = "The Go programming language" }
+gofumpt              = { desc = "Stricter gofmt" }
+golangci-lint        = { desc = "Runs Go linters" }
+openjdk              = { arch = "jdk-openjdk", desc = "Java Development Kit (latest)" }
+gradle               = { desc = "Build tool for Java, Kotlin and Android" }
+maven                = { desc = "Build automation tool used primarily for Java projects" }
+luajit               = { desc = "Just-In-Time compiler for Lua" }
+luarocks             = { desc = "Package manager for Lua modules" }
+"python@3.13"        = { arch = "python", desc = "Python (uv and mise handle other versions)" }
+uv                   = { desc = "Fast Python package and project manager" }
+pipx                 = { arch = "python-pipx", desc = "Installs Python apps in isolated environments" }
+poetry               = { arch = "python-poetry", desc = "Python packaging and dependency management" }
+ruff                 = { desc = "Fast Python linter and formatter" }
+pyright              = { desc = "Python type checker and language server" }
+pnpm                 = { desc = "Fast, disk-efficient Node package manager" }
+yarn                 = { desc = "JavaScript package manager" }
+typescript           = { desc = "TypeScript compiler (tsc)" }
+prettier             = { desc = "Code formatter for JavaScript, CSS, markdown..." }
+rebar3               = { desc = "Erlang build tool" }
+shellcheck           = { desc = "Static analysis tool for shell scripts" }
+tokei                = { desc = "Counts lines of code" }
+hex                  = { desc = "Colorized hexdump (hx)" }
+graphviz             = { desc = "Graph visualization (dot)" }
+docker               = { desc = "Docker CLI" }
+"postgresql@17"      = { arch = "postgresql", desc = "PostgreSQL database server" }
+terraform            = { desc = "Infrastructure as code" }
+flyctl               = { desc = "Fly.io command-line tool" }
+"pulumi/tap/esc"     = { arch = false, desc = "Pulumi ESC: secrets and config management" }
+codex                = { arch = "openai-codex", desc = "OpenAI's coding agent CLI" }
+ollama               = { desc = "Runs large language models locally" }
+cargo-expand         = { cargo = true, desc = "Shows code after macro expansion" }
+cargo-machete        = { cargo = true, desc = "Finds unused dependencies" }
+cargo-outdated       = { cargo = true, desc = "Lists outdated dependencies" }
+cargo-usage-rules    = { cargo = true, desc = "Gathers dependencies' usage rules for coding agents" }
+cargo-watch          = { cargo = true, desc = "Reruns cargo commands when files change" }
+flamegraph           = { cargo = true, desc = "Flame graphs of a program's CPU use (cargo flamegraph)" }
+tokio-console        = { cargo = true, desc = "Debugger for async Tokio programs" }
+evcxr_jupyter        = { cargo = true, desc = "Rust kernel for Jupyter" }
+evcxr_repl           = { cargo = true, desc = "Rust REPL" }
+create-tauri-app     = { cargo = true, desc = "Scaffolds Tauri apps" }
+tauri-cli            = { cargo = true, desc = "Tauri CLI (cargo tauri)" }
+dioxus-cli           = { cargo = true, desc = "Dioxus app framework CLI (dx)" }
+loco                 = { cargo = true, desc = "Loco, a Rails-like Rust web framework" }
+sea-orm-cli          = { cargo = true, desc = "SeaORM migrations and entity generation" }
+
+[packages.embedded]
+probe-rs-tools       = { arch = "probe-rs", desc = "Flash and debug embedded ARM and RISC-V chips" }
+flip-link            = { cargo = true, desc = "Stack overflow protection for embedded Rust" }
+espup                = { cargo = true, desc = "Installs the Rust toolchains for ESP chips" }
+espflash             = { cargo = true, desc = "Flashes ESP32 chips" }
+ldproxy              = { cargo = true, desc = "Linker proxy for esp-idf Rust builds" }
+
+[packages.tools]
+ffmpeg               = { desc = "Records, converts and streams audio and video" }
+imagemagick          = { desc = "Software suite to create, edit, compose, or convert images" }
+exiftool             = { arch = "perl-image-exiftool", desc = "Reads and writes image, audio and video metadata" }
+fontforge            = { desc = "Font editor" }
+pandoc               = { arch = "pandoc-cli", desc = "Universal document converter" }
+typst                = { desc = "Markup-based typesetting system" }
+presenterm           = { desc = "Slideshows from markdown in the terminal" }
+mdcat                = { cargo = true, desc = "Renders markdown in the terminal" }
+zola                 = { desc = "Static site generator" }
+asciinema            = { desc = "Record and share terminal sessions" }
+sevenzip             = { arch = "7zip", desc = "7-Zip archiver (7zz)" }
+watch                = { arch = "procps-ng", desc = "Runs a command repeatedly, showing its output" }
+wdiff                = { desc = "Word-by-word diff" }
+iperf3               = { desc = "Measures network bandwidth" }
+irssi                = { desc = "IRC client" }
+pwgen                = { desc = "Password generator" }
+qrencode             = { desc = "Makes QR codes" }
+task                 = { desc = "Taskwarrior, a command-line todo list" }
+taskwarrior-tui      = { desc = "Terminal UI for Taskwarrior" }
+timewarrior          = { arch = "timew", desc = "Command-line time tracking" }
+cowsay               = { desc = "Configurable talking cow (or other character) in terminal" }
+figlet               = { desc = "Large ASCII-art banners from text" }
+fortune              = { arch = "fortune-mod", desc = "Random quotations" }
+
+[packages.desktop]
+# Debian and Fedora skip casks, Ghostty included: https://ghostty.org/docs/install/binary
+ghostty              = { cask = true, desc = "Fast, native, GPU-accelerated terminal emulator" }
+font-jetbrains-mono  = { cask = true, arch = "ttf-jetbrains-mono", desc = "JetBrains Mono font" }
+google-chrome        = { cask = true, desc = "Web browser" }
+google-drive         = { cask = true, arch = false, desc = "Google Drive sync client" }
+nextcloud            = { cask = true, arch = "nextcloud-client", desc = "Nextcloud desktop sync client" }
+bitwarden            = { mas = 1352778147, desc = "Password manager" }
+keeweb               = { cask = true, desc = "KeePass-compatible password manager" }
+obsidian             = { cask = true, desc = "Markdown notes" }
+anki                 = { cask = true, desc = "Spaced-repetition flashcards" }
+discord              = { cask = true, desc = "Voice and text chat" }
+signal               = { cask = true, arch = "signal-desktop", desc = "Encrypted messenger" }
+slack                = { mas = 803453959, arch = "slack-desktop", desc = "Team chat" }
+whatsapp             = { mas = 310633997, arch = false, desc = "Messenger" }
+spotify              = { cask = true, arch = "spotify-launcher", desc = "Music streaming" }
+kindle               = { mas = 302584613, arch = false, desc = "Ebooks" }
+prime-video          = { mas = 545519333, arch = false, desc = "Streaming" }
+transmission         = { cask = true, arch = "transmission-gtk", desc = "BitTorrent client" }
+github               = { cask = true, arch = "github-desktop-bin", desc = "GitHub Desktop" }
+pgadmin4             = { cask = true, desc = "PostgreSQL admin UI" }
+multipass            = { cask = true, desc = "Ubuntu VMs on demand" }
+wireguard            = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
+keymapp              = { mas = 6472865291, arch = false, desc = "ZSA keyboard layout tool" }
+
+[packages.gaming]
+steam                = { cask = true, desc = "Games" }
+teamspeak-client     = { cask = true, arch = "teamspeak3", desc = "Voice chat" }
