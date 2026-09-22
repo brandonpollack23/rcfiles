@@ -23,8 +23,9 @@ mac = "GNU tools, Mac utilities and Apple's apps (every Mac)"
 dev = "Languages, compilers, build tools and developer CLIs"
 embedded = "Flashing and debugging microcontrollers (ARM, RISC-V, ESP32)"
 tools = "Command-line odds and ends: media, documents, networking, todos"
-desktop = "GUI apps for a workstation: terminal, browser, chat, notes, music"
-gaming = "Steam and voice chat"
+desktop = "GUI apps for a workstation: terminal, browser, notes, sync, VPN"
+communication = "Chat and voice apps: Discord, Signal, WhatsApp, TeamSpeak"
+gaming = "Steam"
 
 [packages.core]
 stow = { desc = "Symlink farm manager; links dotfiles/ into $HOME" }
@@ -66,6 +67,8 @@ pay-respects = { cargo = true, desc = "Suggests a fix for the last failed comman
 sops = { desc = "Encrypts this repo's secrets (sops-bootstrap.sh)" }
 age = { desc = "Keys sops encrypts this repo's secrets to (sops-bootstrap.sh)" }
 cargo-binstall = { desc = "Installs Rust binaries without building them (the cargo lines)" }
+bitwarden-cli = { desc = "Bitwarden password manager CLI (bw)" }
+tailscale = { desc = "Mesh VPN (tailscale and tailscaled)" }
 base-devel = { brew = false, desc = "Compiler, make and friends for building AUR and native packages" }
 
 [packages.mac]
@@ -183,15 +186,18 @@ google-drive = { cask = true, arch = false, desc = "Google Drive sync client" }
 nextcloud = { cask = true, arch = "nextcloud-client", desc = "Nextcloud desktop sync client" }
 bitwarden = { mas = 1352778147, desc = "Password manager" }
 obsidian = { cask = true, desc = "Markdown notes" }
-discord = { cask = true, desc = "Voice and text chat" }
-signal = { cask = true, arch = "signal-desktop", desc = "Encrypted messenger" }
-whatsapp = { mas = 310633997, arch = false, desc = "Messenger" }
 kindle = { mas = 302584613, arch = false, desc = "Ebooks" }
 transmission = { cask = true, arch = "transmission-gtk", desc = "BitTorrent client" }
 antigravity = { cask = true, desc = "Google Antigravity, an agent-first IDE" }
 github = { cask = true, arch = "github-desktop-bin", desc = "GitHub Desktop" }
 wireguard = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
+private-internet-access = { cask = true, arch = "piavpn-bin", desc = "Private Internet Access VPN client" }
+
+[packages.communication]
+discord = { cask = true, desc = "Voice and text chat" }
+signal = { cask = true, arch = "signal-desktop", desc = "Encrypted messenger" }
+whatsapp = { mas = 310633997, arch = false, desc = "Messenger" }
+teamspeak-client = { cask = true, arch = "teamspeak3", desc = "Voice chat" }
 
 [packages.gaming]
 steam = { cask = true, desc = "Games" }
-teamspeak-client = { cask = true, arch = "teamspeak3", desc = "Voice chat" }

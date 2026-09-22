@@ -35,8 +35,8 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 | `setup`          | logs in to GitHub (`gh auth login`, git credentials in `~/.gitconfig.local`) and checks git, jj and neovim are ready, running `deps`, `stow` or `plugins` for anything missing |
 
 `packages.toml` groups the packages: `core` (the shell, editor and git tools;
-every machine), `mac` (every Mac), and `dev`, `embedded`, `tools`, `desktop` and
-`gaming`, which `deps` asks about the first time and remembers in
+every machine), `mac` (every Mac), and `dev`, `embedded`, `tools`, `desktop`,
+`communication` and `gaming`, which `deps` asks about the first time and remembers in
 `~/.config/rcfiles/groups`. `mise run deps dev desktop` (or `all`) picks again;
 `mise run deps -n` prints the install commands without running them.
 
