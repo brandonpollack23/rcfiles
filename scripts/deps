@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#MISE description="Install the programs these dotfiles need (Brewfile on the Mac, pacman/AUR on Arch)"
+set -euo pipefail
+pkgs=(
+  stow git git-delta git-lfs jujutsu zsh tmux neovim ghostty starship
+  fzf zoxide eza bat ripgrep jq curl chafa lolcat sops age
+)
+aur=(pay-respects)
+if [[ "$OSTYPE" == darwin* ]]; then
+  brew bundle --file "$MISE_CONFIG_ROOT/Brewfile"
+elif command -v yay >/dev/null; then
+  yay -S --needed "${pkgs[@]}" "${aur[@]}"
+elif command -v paru >/dev/null; then
+  paru -S --needed "${pkgs[@]}" "${aur[@]}"
+elif command -v pacman >/dev/null; then
+  sudo pacman -S --needed "${pkgs[@]}"
+  echo "No AUR helper found; install these yourself: ${aur[*]}" >&2
+else
+  echo "deps only knows Arch and the Mac. Install these yourself: ${pkgs[*]} ${aur[*]}" >&2
+  exit 1
+fi
+
+# The prompt's jj module (see starship.toml) isn't packaged anywhere; it's a crate.
+if ! command -v starship-jj >/dev/null; then
+  if command -v cargo-binstall >/dev/null; then
+    cargo binstall -y starship-jj
+  elif command -v cargo >/dev/null; then
+    cargo install --locked starship-jj
+  else
+    echo "Install rust (rustup), then: cargo install --locked starship-jj" >&2
+  fi
+fi

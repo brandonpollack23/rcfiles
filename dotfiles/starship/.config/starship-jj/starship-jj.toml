@@ -1,0 +1,19 @@
+module_separator = " "
+reset_color = false
+
+[bookmarks]
+search_depth = 100
+exclude = []
+
+[[module]]
+type = "Symbol"
+symbol = "󱗆 "
+color = "Blue"
+
+[[module]]
+type = "Bookmarks"
+separator = " "
+color = "Magenta"
+behind_symbol = "⇡"
+surround_with_quotes = false
+ignore_empty_commits = "None"

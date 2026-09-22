@@ -1,0 +1,4 @@
+*.swp
+Brewfile.lock.json
+# jj keeps per-repo state here, next to its config.
+dotfiles/jj/.config/jj/repos/

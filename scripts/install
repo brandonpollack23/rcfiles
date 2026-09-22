@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Set up a new machine: dependencies, links, plugins, fonts, secrets"
+set -euo pipefail
+mise run deps
+mise run stow
+mise run plugins
+mise run fonts
+mise run sops-bootstrap
+test "$(basename "${SHELL:-}")" = zsh || echo "Your login shell is $SHELL. Switch to zsh with: chsh -s $(command -v zsh)"

@@ -1,0 +1,11 @@
+# Tasks for this repo: `mise run <task>` from anywhere inside it, `mise tasks`
+# to list them. Each task is a script in scripts/; its #MISE and #USAGE
+# comments give its description and arguments. Every directory under
+# dotfiles/ is a stow package that mirrors $HOME
+# (dotfiles/nvim/.config/nvim -> ~/.config/nvim).
+
+[env]
+DOTFILES = "{{config_root}}/dotfiles"
+
+[task_config]
+includes = ["scripts"]

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins"
+set -euo pipefail
+antidote=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
+test -d "$antidote" || git clone --depth=1 https://github.com/mattmc3/antidote.git "$antidote"
+zsh -c "source $antidote/antidote.zsh && antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh"
+
+test -d ~/.tmux/plugins/tpm || git clone --depth=1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+~/.tmux/plugins/tpm/bin/install_plugins
+
+# Installs the versions pinned in lazy-lock.json.
+nvim --headless "+Lazy! restore" +qa
