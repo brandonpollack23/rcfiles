@@ -858,15 +858,17 @@ scale trough slider:hover {
     min-height: 190px;
 }
 
-/* popups.py: the PIA and weather panels, built from upstream's classes
+/* popups.py: the PIA, weather and Bing panels, built from upstream's classes
    (network-card, network-switch, weather-*, upcoming-*) plus these. */
 .pia-window,
-.weather-window {
+.weather-window,
+.bing-window {
     background-color: transparent;
 }
 
 .pia-layer,
-.weather-layer {
+.weather-layer,
+.bing-layer {
     background: rgba(30, 30, 46, 0.8);
     padding: 20px;
     border-radius: 22px;
@@ -926,4 +928,17 @@ scale trough slider:hover {
 
 .weather-day-range {
     color: rgba(205, 214, 244, 0.6);
+}
+
+.bing-picture {
+    border-radius: 14px;
+}
+
+.bing-title {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.bing-description {
+    color: #cdd6f4;
 }

@@ -2,6 +2,7 @@
 -- Planned work and disabled snippets live in TODO.md.
 
 require("conf.animations")
+require("conf.focus_animation")
 require("conf.layouts")
 require("conf.input")
 require("conf.keymaps")
@@ -26,8 +27,9 @@ hl.monitor({
 
 -- See https://wiki.hypr.land/configuring/core/autostart/
 hl.on("hyprland.start", function()
-	-- Loads the hyprpm plugins (Hyprspace, conf/overview.lua), installing them
-	-- first on a machine that doesn't have them.
+	-- Loads the hyprpm plugins (Hyprspace, conf/overview.lua; hyprfocus,
+	-- conf/focus_animation.lua), installing them first on a machine that
+	-- doesn't have them.
 	hl.exec_cmd("~/.config/hypr/scripts/system.sh ensure-plugins")
 	-- Before the bar: its buttons block on the daemon's FIFOs until it is up.
 	hl.exec_cmd(programs.taskbar_daemon)

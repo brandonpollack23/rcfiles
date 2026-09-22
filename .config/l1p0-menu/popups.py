@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-"""The two bar popups l1p0-menus has no module for: PIA and weather.
+"""The bar popups l1p0-menus has no module for: PIA, weather and the Bing
+wallpaper.
 
-    popups.py pia | weather     toggle that popup
+    popups.py pia | weather | bing     toggle that popup
 
 Built the way l1p0-menus builds its own (GTK4 on gtk4-layer-shell, one
 namespace per popup, same stylesheet and class names), so they look and animate
@@ -26,12 +27,17 @@ CDLL("libgtk4-layer-shell.so")
 import gi
 
 gi.require_version("Gdk", "4.0")
+gi.require_version("GdkPixbuf", "2.0")
 gi.require_version("Gtk", "4.0")
 gi.require_version("Gtk4LayerShell", "1.0")
-from gi.repository import Gdk, Gio, GLib, Gtk, Gtk4LayerShell as LayerShell  # noqa: E402
+from gi.repository import Gdk, GdkPixbuf, Gio, GLib, Gtk, Gtk4LayerShell as LayerShell  # noqa: E402
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 WEATHER_TTL = 600  # seconds
+BING = os.path.expanduser("~/.config/hypr/scripts/bing-wallpaper.sh")
+# Where bing-wallpaper.sh keeps the image on screen and Bing's metadata for it.
+BING_DIR = os.path.join(os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache"), "bing-wallpaper")
+BING_WIDTH = 380
 
 # OpenWeatherMap icon codes to icon-theme names, as l1p0-menus maps them.
 WEATHER_ICONS = {
@@ -226,7 +232,7 @@ class PiaPopup(Popup):
 
 class WeatherPopup(Popup):
     def __init__(self, app):
-        super().__init__(app, "weather", LayerShell.Edge.LEFT, 185)  # centred on its module, right of the clock
+        super().__init__(app, "weather", LayerShell.Edge.LEFT, 240)  # centred on its module, right of the clock
         self.set_default_size(380, -1)
         self.fetched = 0
 
@@ -331,8 +337,90 @@ class WeatherPopup(Popup):
             box.remove(child)
 
 
+class BingPopup(Popup):
+    def __init__(self, app):
+        super().__init__(app, "bing", LayerShell.Edge.LEFT, 10)
+        self.set_default_size(BING_WIDTH, -1)
+        self.shown = None
+
+        self.picture = Gtk.Picture(content_fit=Gtk.ContentFit.COVER, can_shrink=True)
+        self.picture.set_size_request(BING_WIDTH, BING_WIDTH * 9 // 16)
+        self.picture.add_css_class("bing-picture")
+        self.picture.set_overflow(Gtk.Overflow.HIDDEN)  # so the corners round
+        self.content.append(self.picture)
+
+        self.title = label("No Bing wallpaper yet", "bing-title", halign=Gtk.Align.START, wrap=True, xalign=0)
+        self.description = label("", "bing-description", halign=Gtk.Align.START, wrap=True, xalign=0)
+        self.detail = label("", "pia-detail", halign=Gtk.Align.START, wrap=True, xalign=0)
+        for widget in (self.title, self.description, self.detail):
+            self.content.append(widget)
+
+        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
+        self.open_button = Gtk.Button(label="󰖟  Open on Bing")
+        self.open_button.connect("clicked", self.on_open)
+        refresh = Gtk.Button(label="󰑐  Refresh")
+        refresh.connect("clicked", lambda _: run([BING, "refresh"]))
+        for button in (self.open_button, refresh):
+            button.add_css_class("popup-button")
+            buttons.append(button)
+        self.content.append(buttons)
+
+        # A refresh (or the timer) repoints current.json; follow it while up.
+        os.makedirs(BING_DIR, exist_ok=True)
+        self.monitor = Gio.File.new_for_path(BING_DIR).monitor_directory(Gio.FileMonitorFlags.NONE, None)
+        self.monitor.connect("changed", self.on_changed)
+
+    def on_show(self):
+        self.load()
+
+    def on_changed(self, monitor, file, other, event):
+        if file.get_basename() == "current.json" and self.get_visible():
+            self.load()
+
+    def load(self):
+        try:
+            with open(os.path.join(BING_DIR, "current.json")) as meta:
+                meta = json.load(meta)
+        except (OSError, ValueError):
+            meta = {}
+        # "Sea otters, Monterey Bay (© Someone/Agency)": the credit on its own line.
+        about, _, credit = meta.get("copyright", "").partition(" (©")
+        date = meta.get("startdate", "")
+        if len(date) == 8:
+            date = time.strftime("%A, %B %d %Y", time.strptime(date, "%Y%m%d"))
+        self.title.set_label(meta.get("title") or "No Bing wallpaper yet")
+        self.description.set_label(about)
+        self.description.set_visible(bool(about))
+        run([BING, "frequency"], lambda frequency: self.detail.set_label(
+            "    ".join(part for part in (f"© {credit.strip(' )')}" if credit else "", date, f"checks {frequency}") if part)
+        ))
+        self.open_button.set_sensitive(bool(meta.get("copyrightlink")))
+
+        image = os.path.realpath(os.path.join(BING_DIR, "current.jpg"))
+        if image != self.shown:
+            try:
+                # The UHD original is 3840 wide; decode it at twice the popup's width.
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(image, BING_WIDTH * 2, -1, True)
+                texture = Gdk.MemoryTexture.new(
+                    pixbuf.get_width(),
+                    pixbuf.get_height(),
+                    Gdk.MemoryFormat.R8G8B8A8 if pixbuf.get_has_alpha() else Gdk.MemoryFormat.R8G8B8,
+                    pixbuf.read_pixel_bytes(),
+                    pixbuf.get_rowstride(),
+                )
+                self.picture.set_paintable(texture)
+                self.shown = image
+            except GLib.Error:
+                self.picture.set_paintable(None)
+                self.shown = None
+
+    def on_open(self, button):
+        run([BING, "open"])
+        self.set_visible(False)
+
+
 class App(Gtk.Application):
-    POPUPS = {"pia": PiaPopup, "weather": WeatherPopup}
+    POPUPS = {"pia": PiaPopup, "weather": WeatherPopup, "bing": BingPopup}
 
     def __init__(self):
         super().__init__(application_id="dev.brpol.BarPopups", flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)

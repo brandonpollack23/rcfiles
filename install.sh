@@ -69,7 +69,7 @@ ARCH_PACKAGES=(
   awww           # Wallpaper daemon for the Bing wallpaper (.config/hypr/scripts/bing-wallpaper.sh)
   bitwarden      # Secure, open source password manager for all of your devices
   bitwarden-cli  # Command-line interface for Bitwarden
-  cpio           # hyprpm builds plugins with it (Hyprspace, .config/hypr/conf/overview.lua)
+  cpio           # hyprpm builds plugins with it (Hyprspace, hyprfocus; .config/hypr/conf/overview.lua, focus_animation.lua)
   fd             # A simple, fast and user-friendly alternative to find
   git-branchless # Perform branchless version control operations with Git
   github-cli     # GitHub’s official command line tool
@@ -80,7 +80,7 @@ ARCH_PACKAGES=(
   jq             # JSON processor; parses Bing's image metadata (.config/hypr/scripts/bing-wallpaper.sh)
   kdeconnect     # Phone integration; the bar's phone module (.config/waybar/brpol-waybard)
   kio-gdrive     # KIO slave for Google Drive integration with KDE
-  meson          # hyprpm builds plugins with it (Hyprspace, .config/hypr/conf/overview.lua)
+  meson          # hyprpm builds plugins with it (Hyprspace, hyprfocus; .config/hypr/conf/overview.lua, focus_animation.lua)
   neovide        # Neovim client in a fully featured graphical user interface
   sops           # Decrypts *.sops.* secrets in this repo (sops-bootstrap.sh), e.g. the weather API key
   sshfs          # Browsing the phone's files from kdeconnect-app
@@ -473,7 +473,8 @@ mix escript.install hex livebook
 
 setup_home_dir
 
-# Hyprland plugins (hyprpm; Hyprspace for the SUPER+SHIFT+W overview). hyprpm
+# Hyprland plugins (hyprpm; Hyprspace for the SUPER+SHIFT+W overview, hyprfocus
+# for the focus bump). hyprpm
 # needs a running Hyprland; outside one, Hyprland installs them at its next
 # start (ensure-plugins in .config/hypr/scripts/system.sh).
 if [[ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]]; then

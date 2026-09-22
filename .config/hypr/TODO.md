@@ -2,9 +2,6 @@
 
 ## Features
 
-- hyprfocus bounce windows or some other focus indicator
-- Bing wallpaper title and link in waybar (`scripts/bing-wallpaper.sh title` /
-  `open`)
 - `super + alt + shift + w` for a new hidden workspace, so making one does not
   have to go through the picker (`conf/workspaces/hidden.lua`)
 - teamspeak should prefer right side and comms workspace

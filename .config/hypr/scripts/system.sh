@@ -14,7 +14,7 @@ poweroff|󰐥  Shut down'
 ALL="$POWER
 reload-hyprland|󰑓  Reload Hyprland config
 reload-plugins|󰑓  Reload Hyprland plugins (hyprpm; installs or enables them, asking for sudo)
-plugins|󰏗  Install/update Hyprland plugins (hyprpm, Hyprspace)
+plugins|󰏗  Install/update Hyprland plugins (hyprpm: Hyprspace, hyprfocus)
 restart-waybar|󰑓  Restart waybar, its taskbar daemon and its popups
 restart-taskbar-daemon|󰑓  Restart taskbar daemon (waybar buttons, device sounds)
 reload-swaync|󰑓  Reload notification center config and style
@@ -74,24 +74,31 @@ reload-plugins | ensure-plugins)
   # plugins, or first installs or enables them in a terminal, where hyprpm asks
   # for the sudo password.
   # hyprpm colors "true", so strip the escapes before matching it.
-  if hyprpm list | sed 's/\x1b\[[0-9;]*m//g' | grep -A2 "Hyprspace (by brandonpollack23)" | grep -q "enabled: true"; then
+  plugins=$(hyprpm list | sed 's/\x1b\[[0-9;]*m//g')
+  if printf '%s\n' "$plugins" | grep -A2 "Hyprspace (by brandonpollack23)" | grep -q "enabled: true" &&
+    printf '%s\n' "$plugins" | grep -A1 "Plugin hyprfocus$" | grep -q "enabled: true"; then
     hyprpm reload -n
   else
-    in_terminal sh -c 'echo "Hyprland plugins are missing or disabled; installing them (Hyprspace)."; "$0" install-plugins' "$0"
+    in_terminal sh -c 'echo "Hyprland plugins are missing or disabled; installing them (Hyprspace, hyprfocus)."; "$0" install-plugins' "$0"
   fi
   ;;
 install-plugins)
   # Not in the menu: "plugins" and "reload-plugins" run it in a terminal, and
-  # install.sh directly.
-  # Hyprspace from brandonpollack23/Hyprspace: the 0.56 fork in
-  # KZDKM/Hyprspace#238 plus workspace labels. Replaces any other Hyprspace
-  # repo. hyprpm asks for sudo to fetch the Hyprland headers.
-  hyprpm update && {
-    hyprpm list | grep -q "Hyprspace (by brandonpollack23)" || {
-      if hyprpm list | grep -q "Repository Hyprspace"; then hyprpm remove Hyprspace; fi &&
-        hyprpm add https://github.com/brandonpollack23/Hyprspace
+  # install.sh directly. hyprpm asks for sudo to fetch the Hyprland headers.
+  # - Hyprspace from brandonpollack23/Hyprspace: the 0.56 fork in
+  #   KZDKM/Hyprspace#238 plus workspace labels. Replaces any other Hyprspace
+  #   repo.
+  # - hyprfocus from hyprwm/hyprland-plugins, the official plugins repo.
+  add_plugin() { # <repository name> <owner> <url>
+    hyprpm list | grep -q "Repository $1 (by $2)" || {
+      if hyprpm list | grep -q "Repository $1"; then hyprpm remove "$1"; fi &&
+        hyprpm add "$3"
     }
-  } && hyprpm enable Hyprspace && hyprpm reload -n
+  }
+  hyprpm update &&
+    add_plugin Hyprspace brandonpollack23 https://github.com/brandonpollack23/Hyprspace &&
+    add_plugin hyprland-plugins hyprwm https://github.com/hyprwm/hyprland-plugins &&
+    hyprpm enable Hyprspace && hyprpm enable hyprfocus && hyprpm reload -n
   ;;
 restart-waybar)
   # The taskbar daemon too: a change to the bar's buttons usually changes both

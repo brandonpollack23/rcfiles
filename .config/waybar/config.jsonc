@@ -20,6 +20,7 @@
   "modules-left": [
     "custom/launcher",
     "custom/power",
+    "custom/bing",
     "hyprland/submap",
     "clock",
     "custom/weather",
@@ -41,6 +42,15 @@
     "on-click": "~/.config/hypr/scripts/system.sh power",
   },
 
+  // The Bing image of the day on the desktop (hypr/scripts/bing-wallpaper.sh):
+  // a click opens its title, description and a link to Bing's page about it.
+  "custom/bing": {
+    "format": "󰂤",
+    "tooltip": false,
+    "on-click": "~/.config/l1p0-menu/popups.py bing",
+    "on-click-right": "~/.config/hypr/scripts/bing-wallpaper.sh open",
+  },
+
   // Which submap the keyboard is in (conf/keymaps.lua in the hypr config).
   // Hidden entirely unless one is active, since that is a modal state worth
   // noticing; the name doubles as a CSS class, see #submap.<name> in style.css.
@@ -52,7 +62,7 @@
 
   // Popups: a click on a status module toggles its l1p0-menus popup
   // (~/.config/l1p0-menu, started by Hyprland), which opens above the bar in
-  // that module's corner. PIA and weather have no l1p0-menus module, so
+  // that module's corner. PIA, weather and Bing have no l1p0-menus module, so
   // popups.py there draws them. Their bar modules and the night light's are
   // fed by brpol-waybard like the taskbar (status.py there).
 

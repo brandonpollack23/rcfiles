@@ -49,7 +49,10 @@ units live in `.config/systemd/user/` in rcfiles and are symlinked by
 `install.sh`. The service skips its run when the Hyprland instance it was
 started from is gone. Images and metadata are cached in
 `$XDG_CACHE_HOME/bing-wallpaper` for 30 days. The system menu lists the current
-image as "Bing Wallpaper: <title>" and opens Bing's page about it.
+image as "Bing Wallpaper: <title>" and opens Bing's page about it; so does
+right-clicking the Bing logo in the bar, whose click opens a popup
+(`~/.config/l1p0-menu/popups.py bing`) with the image, its title, description,
+credit and date, and buttons to open the page or refresh.
 
 | Package | Provides | Used by |
 | --- | --- | --- |
@@ -88,8 +91,8 @@ repo's sops-encrypted dotenv, `secrets.sops.env` at the rcfiles root, read with
 menu, then "Restart waybar", which restarts the popups too.
 `sops-bootstrap.sh` there (run by `install.sh`) gives a new machine access with
 the master password. `style.css` is upstream's stylesheet recoloured to the
-bar's palette. `popups.py` draws the PIA and weather popups, which l1p0-menus
-has no module for. The PIA, weather and night light modules in waybar are fed
+bar's palette. `popups.py` draws the PIA, weather and Bing wallpaper popups,
+which l1p0-menus has no module for. The PIA, weather and night light modules in waybar are fed
 by brpol-waybard (`status.py` there), and `conf/popups.lua` closes an open popup
 on a click elsewhere or when another window takes focus.
 
@@ -161,8 +164,9 @@ from the tables above.
 
 | Package | Provides | Used by |
 | --- | --- | --- |
-| `hyprland` | `hyprpm`, the plugin manager | `ensure-plugins` in `scripts/system.sh` at startup (`hyprland.lua`): `hyprpm reload -n`, or the install in a terminal when Hyprspace is missing; install, update and reload actions in the same script, and `install.sh` runs the install when it runs inside Hyprland; `hyprpm update` after `paru -Syu` in the update action |
+| `hyprland` | `hyprpm`, the plugin manager | `ensure-plugins` in `scripts/system.sh` at startup (`hyprland.lua`): `hyprpm reload -n`, or the install in a terminal when Hyprspace or hyprfocus is missing; install, update and reload actions in the same script, and `install.sh` runs the install when it runs inside Hyprland; `hyprpm update` after `paru -Syu` in the update action |
 | Hyprspace (hyprpm plugin, not a package) | the overview, `hl.plugin.overview.toggle()` | `SUPER+SHIFT+W`. Installed from [brandonpollack23/Hyprspace](https://github.com/brandonpollack23/Hyprspace) (its `main`: upstream plus one commit) by the `plugins` action in `scripts/system.sh`: the 0.56 fork in [KZDKM/Hyprspace#238](https://github.com/KZDKM/Hyprspace/pull/238) plus the `id: name` labels under each workspace |
+| hyprfocus (hyprpm plugin, not a package) | focus animation; the focused window hops up and bounces back (its `slide` mode, with curves on the `hyprfocusIn` and `hyprfocusOut` leaves) | `conf/focus_animation.lua`. Installed from the official [hyprwm/hyprland-plugins](https://github.com/hyprwm/hyprland-plugins) by the `plugins` action in `scripts/system.sh` |
 | `cmake`, `meson`, `cpio`, `pkgconf`, `gcc`, `make`, `git` | what `hyprpm` needs to fetch the Hyprland headers and build plugins | `hyprpm update` / `hyprpm add` |
 
 ## Referenced only in `TODO.md`
@@ -172,7 +176,7 @@ into the config.
 
 - `hyprpaper`, `network-manager-applet` (`nm-applet`): autostart in `hyprland.lua`
 - `hyprshutdown`: exit bind in `conf/keymaps.lua`
-- `grim`, `xdg-desktop-portal-hyprland`, `hyprpm` (ships with `hyprland`, also loads the overview plugin): permissions in `hyprland.lua`
+- `grim`, `xdg-desktop-portal-hyprland`, `hyprpm` (ships with `hyprland`, also loads the overview and focus animation plugins): permissions in `hyprland.lua`
 
 ## Install
 
