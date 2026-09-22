@@ -5,21 +5,23 @@
 ## What do
 ```sh
 git clone --recursive https://github.com/brandonpollack23/rcfiles
-./install
+cd rcfiles
+./install.sh --dry-run   # see what it would do
+./install.sh
 ```
 
-### Bonus for administrators
-If you want every user account created to default use these settings/configs/etc
-you can run
+## Scripts
+
+The installer, the zsh environment and aliases, the Hacker News MOTD and the
+secrets bootstrap are written in [Amber](https://amber-lang.com) under
+`scripts/`, one project each, and compiled to shell that is committed (so
+`install.sh` runs on a machine without amber). `AGENTS.md` has the details.
+
+```sh
+mise run test    # run every project's tests
+mise run build   # recompile the committed shell
+mise run hooks   # pre-commit hook that does both (install.sh sets it up)
 ```
-install_skel
-```
-which copies the configs as is to skel
-and
-```
-update_root_prefs
-```
-which copies the current user's prefs over
 
 ## Anything else?
 It turns on modcgi in apache so you can go to:
@@ -37,9 +39,9 @@ for pretty docs
 * systemd user stuff (like timers)
 
 ## About systemd directory
-Sorry if you dont have systemd, manually disable that part of the script I guess, but I like systemd so i doubt it'll be an issue for me
-the files are templated to be replaced with $USER by sed in the install script.  delims are !~USER~!
-There is a way to make this more generic with awk, but its greek to me, see [here](https://stackoverflow.com/questions/39044603/sed-use-1-to-get-value-of-environment-variable)
+User units in `.config/systemd/user` are linked one by one into
+`~/.config/systemd/user`, which also holds units local to the machine. The
+installer skips the systemd steps where there is no `systemctl`.
 
 ## How to add vim plugins
 ```sh
@@ -48,12 +50,12 @@ git submodule add $PLUGIN
 ```
 
 ## How to add zsh plugins
-If it isn't already oh-my-zh
+If it isn't already in oh-my-zsh
 ```sh
-cd zsh-plugins
+cd zsh-custom/plugins
 git submodule add $PLUGIN
-echo "source $PWD/$PLUGIN_PATH_TO_DOT_ZSH_FILE" > ${ZDOTDIR:-$HOME}/.zshrc
 ```
+then add its name to `plugins=(...)` in `.zshrc`.
 
 ## Fonts
 

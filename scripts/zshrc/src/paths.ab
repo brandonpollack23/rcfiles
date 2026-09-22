@@ -1,0 +1,32 @@
+// Adding directories to PATH-style lists.
+//
+// .zshrc marks path, fpath and manpath `typeset -U`, so zsh itself keeps each
+// directory once, at its first position: prepending an entry that is already
+// there moves it to the front, appending one leaves it where it was. These
+// functions only add.
+//
+// Kept to inline commands on purpose: in zsh startup code every amber
+// comparison, env_var_get and $(...) forks a subshell, and a loop over PATH
+// entries here once cost 170 ms per shell.
+
+import { dir_exists } from "std/fs"
+
+pub fun path_prepend(dir: Text): Null {
+    if dir_exists(dir) {
+        trust $ export PATH="{dir}:\$PATH" $
+    }
+}
+
+pub fun path_append(dir: Text): Null {
+    if dir_exists(dir) {
+        trust $ export PATH="\$PATH:{dir}" $
+    }
+}
+
+// The trailing colon keeps man's default search path after ours.
+pub fun manpath_prepend(dir: Text): Null {
+    if dir_exists(dir) {
+        trust $ export MANPATH="{dir}:\$\{MANPATH#:}" $
+        trust $ case "\$MANPATH" in *:) ;; *) export MANPATH="\$MANPATH:" ;; esac $
+    }
+}

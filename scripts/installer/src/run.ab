@@ -1,0 +1,95 @@
+// Every change the installer makes to the machine goes through run(), so
+// --dry-run can print the whole sequence instead. Read-only probes (is a
+// program installed, does a unit exist) run directly.
+//
+// The dry-run flag and the list of problems live in exported variables and a
+// file, not in module variables: amber compiles a module once per import path
+// ("./src/run.ab" from main.ab, "./run.ab" from src/links.ab), and each copy
+// would get its own variables.
+
+import { is_root, env_var_get } from "std/env"
+import { file_append, file_read } from "std/fs"
+import { split_lines } from "std/text"
+
+// Call once, first thing in main: it also clears a flag inherited from the
+// environment and starts an empty problem list.
+pub fun init_run_state(dry: Bool): Null {
+    if dry {
+        trust $ export INSTALL_DRY_RUN=1 $
+    } else {
+        trust $ unset INSTALL_DRY_RUN $
+    }
+    const problems_file = trust $ mktemp -t install-problems.XXXXXX $
+    trust $ export INSTALL_PROBLEMS_FILE="{problems_file}" $
+}
+
+pub fun is_dry_run(): Bool {
+    return trust env_var_get("INSTALL_DRY_RUN") == "1"
+}
+
+// `text` as one shell word, safe to splice into a command line.
+pub fun quoted(text: Text): Text {
+    return trust $ printf '%q' "{text}" $
+}
+
+// "sudo " unless already root.
+pub fun root_prefix(root: Bool): Text {
+    if root {
+        return ""
+    }
+    return "sudo "
+}
+
+// `cmd` run as root: through sudo, or directly when the installer is root.
+pub fun as_root(cmd: Text): Text {
+    return root_prefix(is_root()) + cmd
+}
+
+// Runs a shell command line (in this shell, so `source` and `export` stick).
+pub fun run(cmd: Text): Null? {
+    if is_dry_run() {
+        echo("[dry-run] {cmd}")
+        return null
+    }
+    $ eval "{cmd}" $?
+}
+
+pub fun heading(text: Text): Null {
+    echo("")
+    trust $ printf '\\033[1;34m==> %s\\033[0m\n' "{text}" $
+}
+
+pub fun warn(text: Text): Null {
+    trust $ printf '\\033[1;33mwarning:\\033[0m %s\n' "{text}" >&2 $
+}
+
+// Problems the run carried on past, reported together at the end.
+pub fun note_problem(text: Text): Null {
+    warn(text)
+    const problems_file = trust env_var_get("INSTALL_PROBLEMS_FILE")
+    if problems_file != "" {
+        trust file_append(problems_file, text)
+    }
+}
+
+pub fun problems(): [Text] {
+    const problems_file = trust env_var_get("INSTALL_PROBLEMS_FILE")
+    if problems_file == "" {
+        return [Text]
+    }
+    const listed = file_read(problems_file) failed {
+        return [Text]
+    }
+    trust $ rm -f "{problems_file}" $
+    if listed == "" {
+        return [Text]
+    }
+    return split_lines(listed)
+}
+
+// Runs `cmd`, and on failure records `what` and carries on.
+pub fun step(what: Text, cmd: Text): Null {
+    run(cmd) failed {
+        note_problem("{what} failed: {cmd}")
+    }
+}

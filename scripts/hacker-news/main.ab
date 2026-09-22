@@ -1,0 +1,38 @@
+// Hacker News MOTD: prints a random top story from a local cache, refreshing
+// the cache in the background once it is older than --max-age seconds.
+//
+//   hacker-news.sh [--max-age SECONDS] [--count N]
+//   hacker-news.sh --refresh [--count N]     fetch now, in the foreground
+//
+// Defaults come from HN_MAX_AGE (5 hours) and HN_COUNT (30). The cache is
+// ~/.cache/hn_motd. .zshrc runs this on every new shell, so it never waits on
+// the network: a refresh runs detached and the next shell shows its result.
+
+import { has_flag, int_setting, DEFAULT_MAX_AGE, DEFAULT_COUNT } from "./src/args.ab"
+import { cache_path, cache_is_stale } from "./src/cache.ab"
+import { refresh } from "./src/fetch.ab"
+import { print_story } from "./src/render.ab"
+import { file_exists } from "std/fs"
+
+main(args) {
+    const count = int_setting(args, "--count", "HN_COUNT", DEFAULT_COUNT)
+    const max_age = int_setting(args, "--max-age", "HN_MAX_AGE", DEFAULT_MAX_AGE)
+    const cache = cache_path()
+
+    if has_flag(args, "--refresh") {
+        refresh(count, cache)?
+        exit(0)
+    }
+
+    let shown = false
+    if file_exists(cache) {
+        shown = print_story(cache)
+    }
+    if cache_is_stale(cache, max_age) {
+        // args[0] is this script; it refreshes itself detached from the shell.
+        trust $ nohup "{args[0]}" --refresh --count {count} >/dev/null 2>&1 & $
+        if not shown {
+            echo("⏳ Fetching the top {count} Hacker News stories in the background...")
+        }
+    }
+}

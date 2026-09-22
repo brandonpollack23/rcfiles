@@ -1,0 +1,88 @@
+// Downloads the top stories into the cache.
+
+import { split_lines, slice, trim } from "std/text"
+import { take_lock, release_lock } from "./cache.ab"
+
+const API = "https://hacker-news.firebaseio.com/v0"
+pub const SNIPPET_LENGTH = 100
+
+// Plain text from an HN comment or post body: tags dropped, the common
+// entities decoded, control characters removed.
+pub fun strip_html(html: Text): Text {
+    return trust $ printf '%s' "{html}" \
+        | sed -e 's/<[^>]*>/ /g' -e 's/&#x27;/'"'"'/g' -e 's/&#x2F;/\//g' \
+              -e 's/&quot;/"/g' -e 's/&gt;/>/g' -e 's/&lt;/</g' -e 's/&amp;/\&/g' \
+        | tr -d '\\000-\\037' | tr -s ' ' $
+}
+
+pub fun snippet(html: Text): Text {
+    return slice(trim(strip_html(html)), 0, SNIPPET_LENGTH)
+}
+
+// A field of a JSON document, or "" when it is missing or null.
+pub fun json_field(json: Text, field: Text): Text {
+    return trust $ printf '%s' "{json}" | jq -r ".{field} // empty" $
+}
+
+fun get_json(path: Text): Text? {
+    return $ curl -sf --max-time 10 "{API}/{path}" $?
+}
+
+// One cache entry for a story, or "" when the story has no title. Link posts
+// get their top comment, text posts their own body.
+pub fun story_entry(item: Text): Text {
+    const title = json_field(item, "title")
+    if title == "" {
+        return ""
+    }
+    const url = json_field(item, "url")
+    let comment = ""
+    if url != "" {
+        const kid = trust $ printf '%s' "{item}" | jq -r '.kids[0] // empty' $
+        if kid != "" {
+            const reply = get_json("item/{kid}.json") failed {
+                return entry_json(title, url, "")
+            }
+            comment = snippet(json_field(reply, "text"))
+        }
+    } else {
+        comment = snippet(json_field(item, "text"))
+    }
+    return entry_json(title, url, comment)
+}
+
+pub fun entry_json(title: Text, url: Text, comment: Text): Text {
+    return trust $ jq -cn --arg t "{title}" --arg u "{url}" --arg c "{comment}" \
+        '\{title: \$t, url: \$u, comment: \$c}' $
+}
+
+// Writes the top `count` stories to `dest` atomically. Returns quietly when
+// another refresh holds the lock or the network is down.
+pub fun refresh(count: Int, dest: Text): Null? {
+    if not take_lock(dest) {
+        return null
+    }
+    const ids = get_json("topstories.json") failed {
+        release_lock(dest)
+        fail 1
+    }
+    const entries = "{dest}.entries"
+    $ mkdir -p "\$(dirname "{dest}")" $?
+    $ : >"{entries}" $?
+    for id in split_lines(trust $ printf '%s' "{ids}" | jq -r '.[:{count}][]' $) {
+        const item = get_json("item/{id}.json") failed {
+            continue
+        }
+        const entry = story_entry(item)
+        if entry != "" {
+            $ printf '%s\n' "{entry}" >>"{entries}" $?
+        }
+    }
+    $ jq -s '.' "{entries}" >"{dest}.tmp" && mv -f "{dest}.tmp" "{dest}" $ failed {
+        trust $ rm -f "{entries}" "{dest}.tmp" $
+        release_lock(dest)
+        fail 1
+    }
+    trust $ rm -f "{entries}" $
+    release_lock(dest)
+}

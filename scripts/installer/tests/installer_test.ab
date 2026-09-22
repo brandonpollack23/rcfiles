@@ -1,0 +1,153 @@
+import { assert, assert_eq } from "std/test"
+import { root_prefix, quoted, init_run_state, is_dry_run, run, note_problem, problems } from "../src/run.ab"
+import { file_exists } from "std/fs"
+import { parse_mode } from "../src/cli.ab"
+import { os_from, is_fingerprint_vendor } from "../src/platform.ab"
+import { update_command, install_command, aur_install_command, platform_packages } from "../src/pkgmgr.ab"
+import { COMMON, ARCH, MANJARO, AUR, DEBIAN } from "../src/packages.ab"
+import { parent_dir, HOME_LINKS } from "../src/links.ab"
+import { CARGO_IF_MISSING_CRATES, CARGO_IF_MISSING_BINARIES } from "../src/toolchains.ab"
+
+// True when no name appears twice in `names`.
+fun all_distinct(names: [Text]): Bool {
+    for i, a in names {
+        for j, b in names {
+            if i < j and a == b {
+                echo("duplicate: {a}")
+                return false
+            }
+        }
+    }
+    return true
+}
+
+test "root_prefix" {
+    assert_eq(root_prefix(true), "")?
+    assert_eq(root_prefix(false), "sudo ")?
+}
+
+test "quoted survives spaces and quotes" {
+    assert_eq(quoted("plain"), "plain")?
+    assert_eq(quoted("two words"), "two\\ words")?
+    const back = trust $ eval "printf '%s' {quoted("it's \"x\"")}" $
+    assert_eq(back, "it's \"x\"")?
+}
+
+test "os_from" {
+    assert_eq(os_from("darwin24", false, false), "mac")?
+    assert_eq(os_from("linux-gnu", true, false), "debian")?
+    assert_eq(os_from("linux-gnu", false, true), "arch")?
+    assert_eq(os_from("linux-gnu", false, false), "linux")?
+    assert_eq(os_from("freebsd14", false, false), "unknown")?
+}
+
+test "install_command per package manager" {
+    assert_eq(install_command("debian", "", false), "sudo apt install -y")?
+    assert_eq(install_command("debian", "", true), "apt install -y")?
+    assert_eq(install_command("arch", "pamac", false), "sudo pamac install --no-confirm")?
+    assert_eq(install_command("arch", "paru", false), "paru -S --needed --noconfirm")?
+    assert_eq(install_command("arch", "yay", true), "yay -S --needed --noconfirm")?
+    assert_eq(install_command("arch", "", false), "sudo pacman -S --needed --noconfirm")?
+    assert_eq(install_command("arch", "", true), "pacman -S --needed --noconfirm")?
+    assert_eq(install_command("linux", "", false), "")?
+    assert_eq(install_command("mac", "", false), "")?
+}
+
+test "update_command per package manager" {
+    assert_eq(update_command("debian", "", false), "sudo apt update")?
+    assert_eq(update_command("arch", "pamac", false), "sudo pamac update --no-confirm")?
+    assert_eq(update_command("arch", "paru", false), "paru -Syu --noconfirm")?
+    assert_eq(update_command("arch", "yay", false), "yay -Syu --noconfirm")?
+    assert_eq(update_command("arch", "", true), "pacman -Syu --noconfirm")?
+    assert_eq(update_command("linux", "", false), "")?
+}
+
+test "aur_install_command needs an AUR helper" {
+    assert_eq(aur_install_command("arch", "pamac"), "pamac build --no-confirm")?
+    assert_eq(aur_install_command("arch", "paru"), "paru -S --needed --noconfirm")?
+    assert_eq(aur_install_command("arch", "yay"), "yay -S --needed --noconfirm")?
+    assert_eq(aur_install_command("arch", ""), "")?
+    assert_eq(aur_install_command("debian", "paru"), "")?
+}
+
+test "package lists have no duplicates across a platform" {
+    assert(all_distinct(COMMON + ARCH + MANJARO + AUR))?
+    assert(all_distinct(COMMON + DEBIAN))?
+}
+
+test "platform_packages picks the right lists" {
+    const debian = platform_packages("debian", false)
+    const arch = platform_packages("arch", false)
+    const manjaro = platform_packages("arch", true)
+    const other = platform_packages("linux", false)
+    assert(len(debian) == len(COMMON) + len(DEBIAN))?
+    assert(len(arch) == len(COMMON) + len(ARCH))?
+    assert(len(manjaro) == len(COMMON) + len(ARCH) + len(MANJARO))?
+    assert(len(other) == 0)?
+}
+
+test "fingerprint vendors" {
+    assert(is_fingerprint_vendor("06cb"))?
+    assert(is_fingerprint_vendor("27c6\n"))?
+    assert(not is_fingerprint_vendor("1d6b"))?
+    assert(not is_fingerprint_vendor(""))?
+}
+
+test "parent_dir" {
+    assert_eq(parent_dir("/home/u/.config/nvim"), "/home/u/.config")?
+    assert_eq(parent_dir("/home/u/.zshrc"), "/home/u")?
+    assert_eq(parent_dir("file"), ".")?
+}
+
+test "every home link exists in the repo" {
+    const root = trust $ git rev-parse --show-toplevel $
+    let missing = [Text]
+    for entry in HOME_LINKS {
+        $ test -e "{root}/{entry}" $ failed {
+            missing += [entry]
+        }
+    }
+    assert(len(missing) == 0)?
+    assert(all_distinct(HOME_LINKS))?
+}
+
+test "cargo fallbacks pair a crate with its binary" {
+    assert(len(CARGO_IF_MISSING_CRATES) == len(CARGO_IF_MISSING_BINARIES))?
+}
+
+test "parse_mode" {
+    assert_eq(parse_mode(["install.sh"]), "run")?
+    assert_eq(parse_mode(["install.sh", "--dry-run"]), "dry-run")?
+    assert_eq(parse_mode(["install.sh", "-n"]), "dry-run")?
+    assert_eq(parse_mode(["install.sh", "--dry-run", "--dry-run"]), "dry-run")?
+    assert_eq(parse_mode(["install.sh", "--help"]), "help")?
+    assert_eq(parse_mode(["install.sh", "--dry-run", "-h"]), "help")?
+    assert_eq(parse_mode(["install.sh", "--bogus"]), "bad")?
+    assert_eq(parse_mode(["install.sh", "--dry-run", "extra"]), "bad")?
+}
+
+test "dry run executes nothing" {
+    const marker = trust $ mktemp -u $
+    init_run_state(true)
+    assert(is_dry_run())?
+    run("touch {quoted(marker)}")?
+    run("false")?
+    assert(not file_exists(marker))?
+    init_run_state(false)
+    assert(not is_dry_run())?
+    run("touch {quoted(marker)}")?
+    assert(file_exists(marker))?
+    trust $ rm -f "{marker}" $
+}
+
+test "problems come back in order, one per line" {
+    init_run_state(true)
+    note_problem("first thing failed")
+    note_problem("second: with punctuation, \"quotes\" and spaces")
+    const found = problems()
+    assert(len(found) == 2)?
+    assert_eq(found[0], "first thing failed")?
+    assert_eq(found[1], "second: with punctuation, \"quotes\" and spaces")?
+    const again = problems()
+    assert(len(again) == 0)?
+}

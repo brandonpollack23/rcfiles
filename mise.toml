@@ -7,4 +7,22 @@ run = "sops {{config_root}}/secrets.sops.env"
 
 [tasks.sops-bootstrap]
 description = "Let this machine decrypt the secrets (asks for the master password)"
-run = "{{config_root}}/sops-bootstrap.sh"
+run = "{{config_root}}/scripts/sops/sops-bootstrap.sh"
+
+# The Amber projects under scripts/ (see AGENTS.md).
+
+[tasks.check]
+description = "Type-check every Amber entry point, showing warnings"
+run = "{{config_root}}/scripts/build.ab check"
+
+[tasks.test]
+description = "Run the tests of every Amber project"
+run = "{{config_root}}/scripts/build.ab test"
+
+[tasks.build]
+description = "Compile every Amber project to its committed shell output"
+run = "{{config_root}}/scripts/build.ab build"
+
+[tasks.hooks]
+description = "Use .githooks/ for this clone (pre-commit tests and rebuilds)"
+run = "{{config_root}}/scripts/build.ab hooks"

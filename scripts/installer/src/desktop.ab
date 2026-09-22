@@ -1,0 +1,28 @@
+// macOS packages, and the Hyprland plugins.
+
+import { env_var_get, is_command } from "std/env"
+import { run, step, heading, quoted, warn } from "./run.ab"
+
+pub fun setup_mac(rc_dir: Text): Null {
+    heading("Homebrew")
+    if not is_command("brew") {
+        step("Homebrew install", "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")
+        trust run("export PATH=/opt/homebrew/bin:\"$PATH\"")
+    }
+    // The Brewfile lists every package, so there is no list here.
+    step("brew bundle", "brew bundle --file={quoted("{rc_dir}/Brewfile")}")
+}
+
+// Hyprspace (SUPER+SHIFT+W overview) and hyprfocus (focus bump). hyprpm needs
+// a running Hyprland; outside one, Hyprland installs them at its next start
+// (ensure-plugins in .config/hypr/scripts/system.sh).
+pub fun install_hyprland_plugins(rc_dir: Text): Null {
+    if trust env_var_get("HYPRLAND_INSTANCE_SIGNATURE") == "" {
+        echo("Not in Hyprland: it installs its plugins when it next starts")
+        return null
+    }
+    heading("Hyprland plugins")
+    run("{quoted("{rc_dir}/.config/hypr/scripts/system.sh")} install-plugins") failed {
+        warn("Hyprland plugin install failed; retry with 'Install/update Hyprland plugins' in SUPER+SHIFT+R")
+    }
+}

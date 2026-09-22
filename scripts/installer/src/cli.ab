@@ -1,0 +1,28 @@
+// Command-line arguments.
+
+// What the arguments ask for: "run", "dry-run", "help", or "bad" for anything
+// else. args[0] is the script itself.
+//
+// No `continue` here: in `for i, x in ...` amber increments i at the end of the
+// body, so `continue` skips the increment and the loop never moves past i == 0.
+pub fun parse_mode(args: [Text]): Text {
+    let mode = "run"
+    for i, arg in args {
+        if i > 0 {
+            if {
+                arg == "--dry-run" or arg == "-n" {
+                    if mode == "run" {
+                        mode = "dry-run"
+                    }
+                }
+                arg == "--help" or arg == "-h" {
+                    return "help"
+                }
+                else {
+                    return "bad"
+                }
+            }
+        }
+    }
+    return mode
+}

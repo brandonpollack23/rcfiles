@@ -1,0 +1,57 @@
+// The story cache: a JSON array of {title, url, comment} objects.
+
+import { env_var_get } from "std/env"
+import { file_exists } from "std/fs"
+import { parse_int } from "std/text"
+
+pub fun cache_path(): Text {
+    const home = trust env_var_get("HOME")
+    return "{home}/.cache/hn_motd"
+}
+
+// Seconds since the file was last written. GNU stat first, then BSD/macOS.
+// A file that cannot be read counts as brand new.
+pub fun file_age(path: Text): Int {
+    const now = parse_int(trust $ date +%s $) failed {
+        return 0
+    }
+    const mtime = parse_int(trust $ stat -c %Y "{path}" 2>/dev/null || stat -f %m "{path}" 2>/dev/null $) failed {
+        return 0
+    }
+    return now - mtime
+}
+
+pub fun is_stale(age: Int, max_age: Int): Bool {
+    return age > max_age
+}
+
+pub fun cache_is_stale(path: Text, max_age: Int): Bool {
+    if not file_exists(path) {
+        return true
+    }
+    return is_stale(file_age(path), max_age)
+}
+
+// A refresh holds this directory so several shells opening at once start one
+// fetch between them. A lock older than 10 minutes is left from a killed run.
+pub fun lock_path(path: Text): Text {
+    return "{path}.lock"
+}
+
+pub fun take_lock(path: Text): Bool {
+    const dir = lock_path(path)
+    $ mkdir "{dir}" 2>/dev/null $ failed {
+        if file_age(dir) < 600 {
+            return false
+        }
+        trust $ rmdir "{dir}" $
+        $ mkdir "{dir}" 2>/dev/null $ failed {
+            return false
+        }
+    }
+    return true
+}
+
+pub fun release_lock(path: Text): Null {
+    trust $ rmdir "{lock_path(path)}" 2>/dev/null $
+}

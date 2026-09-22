@@ -1,0 +1,95 @@
+// Symlinks from $HOME into the repo.
+
+import { file_glob, dir_exists } from "std/fs"
+import { run, quoted, note_problem } from "./run.ab"
+import { split, join } from "std/text"
+
+// Linked to the same path under $HOME, so ~/.config/nvim -> rcfiles/.config/nvim.
+pub const HOME_LINKS = [
+    ".config/amp",
+    ".config/ghostty",
+    ".config/herdr",
+    ".config/hypr",
+    ".config/jj",
+    ".config/l1p0-menu",
+    ".config/nvim",
+    ".config/swaync",
+    ".config/swayosd",
+    ".config/waybar",
+    ".claude/agents",
+    ".cowfiles",
+    ".cowrc",
+    ".gitconfig",
+    ".golangci.yml",
+    ".iex.exs",
+    ".oh-my-zsh",
+    ".tmux",
+    ".tmux.conf",
+    ".vim/colors",
+    ".vimrc",
+    ".zshrc",
+    ".zshrc.githubcopilot",
+    "zsh-custom",
+    "zsh-my-completions",
+]
+
+// Created empty if missing: vim's backup and swap directories, the local vimrc.
+pub const HOME_DIRS = [".vim/backupdir", ".vim/swapdir", ".local", ".config/systemd/user"]
+pub const HOME_FILES = [".vimrc.local"]
+
+pub fun parent_dir(path: Text): Text {
+    const parts = split(path, "/")
+    if len(parts) < 2 {
+        return "."
+    }
+    let parent = [Text]
+    for i, part in parts {
+        if i < len(parts) - 1 {
+            parent += [part]
+        }
+    }
+    return join(parent, "/")
+}
+
+pub fun is_symlink(path: Text): Bool {
+    $ test -L "{path}" $ failed {
+        return false
+    }
+    return true
+}
+
+// ln -sfn would put the link inside a real directory rather than replace it,
+// so a real directory in the way is reported and left alone.
+pub fun link(source: Text, destination: Text): Null {
+    if dir_exists(destination) and not is_symlink(destination) {
+        note_problem("{destination} is a real directory, not linking it to {source}")
+        return null
+    }
+    run("mkdir -p {quoted(parent_dir(destination))} && ln -sfn {quoted(source)} {quoted(destination)}") failed {
+        note_problem("could not link {destination}")
+    }
+}
+
+pub fun link_home(rc_dir: Text, home: Text): Null {
+    for dir in HOME_DIRS {
+        run("mkdir -p {quoted("{home}/{dir}")}") failed {
+            note_problem("could not create {home}/{dir}")
+        }
+    }
+    for file in HOME_FILES {
+        run("touch {quoted("{home}/{file}")}") failed {
+            note_problem("could not create {home}/{file}")
+        }
+    }
+    for entry in HOME_LINKS {
+        link("{rc_dir}/{entry}", "{home}/{entry}")
+    }
+}
+
+// User units are linked one by one: ~/.config/systemd/user also holds local ones.
+pub fun link_systemd_units(rc_dir: Text, home: Text): Null {
+    for unit in file_glob("{rc_dir}/.config/systemd/user/*") {
+        const name = trust $ basename "{unit}" $
+        link(unit, "{home}/.config/systemd/user/{name}")
+    }
+}

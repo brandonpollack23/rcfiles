@@ -1,0 +1,13 @@
+#!/usr/bin/env -S amber run
+// Tests and rebuilds every Amber project under scripts/, then stages the
+// generated shell so each commit carries sources and outputs that match.
+// Installed by `mise run hooks` (install.sh does it too). Needs amber on PATH;
+// `git commit --no-verify` skips it.
+
+import { test_all, build_all, stage_outputs } from "../scripts/build.ab"
+
+main {
+    test_all()?
+    build_all()?
+    stage_outputs()?
+}

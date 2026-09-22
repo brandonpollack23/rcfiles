@@ -1,0 +1,129 @@
+// Sets up a machine from this repo: packages, toolchains, links from $HOME into
+// the repo, the Hyprland plugins, the secrets, and zsh as the login shell.
+//
+//   ./install.sh             do it
+//   ./install.sh --dry-run   print every command that changes something instead
+//
+// Safe to run again. The repo root's install.sh is a symlink to this project's
+// compiled output, scripts/installer/install.sh.
+
+import { env_var_get, is_root, input_confirm, echo_error, echo_success } from "std/env"
+import { file_exists } from "std/fs"
+import { join } from "std/text"
+import { init_run_state, is_dry_run, run, step, heading, quoted, problems, warn } from "./src/run.ab"
+import { os } from "./src/platform.ab"
+import { parse_mode } from "./src/cli.ab"
+import { install_linux_packages } from "./src/pkgmgr.ab"
+import { link_home, link_systemd_units } from "./src/links.ab"
+import { setup_systemd } from "./src/systemd.ab"
+import { setup_claude } from "./src/claude.ab"
+import { install_toolchains } from "./src/toolchains.ab"
+import { setup_mac, install_hyprland_plugins } from "./src/desktop.ab"
+
+// The repo root: $0 resolves through the root's install.sh symlink to
+// <root>/scripts/installer/install.sh.
+fun find_rc_dir(self: Text): Text {
+    return trust $ dirname "\$(dirname "\$(dirname "\$(realpath "{self}")")")" $
+}
+
+fun usage(): Null {
+    echo("usage: ./install.sh [--dry-run]")
+}
+
+fun set_login_shell(): Null {
+    const zsh = trust $ command -v zsh $
+    if zsh == "" {
+        warn("zsh is not installed; login shell unchanged")
+        return null
+    }
+    const user = trust env_var_get("USER")
+    // $SHELL is the login shell, not the one running this script.
+    if trust env_var_get("SHELL") == zsh {
+        echo("zsh is already the login shell")
+        return null
+    }
+    step("chsh", "chsh -s {quoted(zsh)} {quoted(user)}")
+}
+
+main(args) {
+    const mode = parse_mode(args)
+    if {
+        mode == "help" {
+            usage()
+            exit(0)
+        }
+        mode == "bad" {
+            usage()
+            exit(2)
+        }
+    }
+    init_run_state(mode == "dry-run")
+
+    if is_root() and not is_dry_run() {
+        if not input_confirm("You are running this script as root. Are you sure you want to continue?") {
+            echo("Exiting the script.")
+            exit(1)
+        }
+    }
+
+    const home = trust env_var_get("HOME")
+    if home == "" {
+        echo_error("install.sh: HOME is not set", 1)
+    }
+    const rc_dir = find_rc_dir(args[0])
+    if not file_exists("{rc_dir}/.zshrc") {
+        echo_error("install.sh: {rc_dir} does not look like the rcfiles repo", 1)
+    }
+    const user = trust env_var_get("USER")
+    echo("Executing install.sh for {user}")
+    echo("Installing to home directory: {home}")
+    echo("From: {rc_dir}")
+    if is_dry_run() {
+        echo("Dry run: nothing below is executed")
+    }
+
+    const this_os = os()
+    if {
+        this_os == "mac" { setup_mac(rc_dir) }
+        this_os == "unknown" {
+            const ostype = trust $ printf '%s' "\$OSTYPE" $
+            echo_error("install.sh: unknown OS: {ostype}", 1)
+        }
+        else { install_linux_packages() }
+    }
+
+    install_toolchains(home)
+
+    heading("Links from {home}")
+    link_home(rc_dir, home)
+    link_systemd_units(rc_dir, home)
+    setup_claude(rc_dir, home)
+    setup_systemd()
+
+    install_hyprland_plugins(rc_dir)
+
+    // Secrets (*.sops.*): gives this machine an age key and, with the master
+    // password, adds it to the recipients. Its changes to the repo need committing.
+    heading("Secrets")
+    run(quoted("{rc_dir}/scripts/sops/sops-bootstrap.sh")) failed {
+        warn("sops-bootstrap.sh failed; run `mise run sops-bootstrap` once sops and age are installed")
+    }
+
+    // The pre-commit hook rebuilds the Amber projects under scripts/.
+    heading("Git hooks")
+    step("git hooks", "git -C {quoted(rc_dir)} config core.hooksPath .githooks")
+
+    heading("Login shell")
+    set_login_shell()
+
+    echo("")
+    const found = problems()
+    if len(found) > 0 {
+        warn("finished with problems:")
+        for problem in found {
+            echo("  - {problem}")
+        }
+        exit(1)
+    }
+    echo_success("install.sh: done")
+}

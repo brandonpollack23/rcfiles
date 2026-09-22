@@ -1,0 +1,106 @@
+// Lets this machine decrypt the repo's secrets (*.sops.*, rules in .sops.yaml).
+// Run by install.sh and `mise run sops-bootstrap`; safe to run again, it only
+// does what is still missing.
+//
+// Every machine has its own age key in ~/.config/sops/age/keys.txt and is a
+// recipient in .sops.yaml. What lets a new machine in is the master key: an age
+// key that is also a recipient, committed as .sops-master.key.age, encrypted
+// with a passphrase (the master password). So, on a new machine:
+//
+//   1. make this machine's key, if it has none
+//   2. add its public key to .sops.yaml
+//   3. ask for the master password, and with the master key re-encrypt every
+//      secret to the new list of recipients (`sops updatekeys`)
+//
+// after which the master key is not needed here again. Commit and push what
+// changed (.sops.yaml and the secrets), or the next machine undoes it.
+//
+// The first run anywhere creates the master key and asks for a new password.
+
+import { is_command, echo_error } from "std/env"
+import { file_exists, file_read, file_write } from "std/fs"
+import { text_contains, join } from "std/text"
+import { keys_path, ensure_machine_key, machine_public_key } from "./src/keys.ab"
+import { secret_files, initial_rules, add_recipient } from "./src/rules.ab"
+
+// The repo root. This script lives two levels below it, in scripts/sops/.
+fun repo_root(self: Text): Text {
+    const here = trust $ dirname "\$(realpath "{self}")" $
+    const root = $ git -C "{here}" rev-parse --show-toplevel 2>/dev/null $ failed {
+        return trust $ realpath "{here}/../.." $
+    }
+    return root
+}
+
+// file_write ends the file with a newline itself.
+fun write_rules(path: Text, rules: Text): Null? {
+    file_write(path, rules)?
+}
+
+main(args) {
+    for tool in ["sops", "age", "age-keygen"] {
+        if not is_command(tool) {
+            echo_error("sops-bootstrap: {tool} is not installed, skipping", 0)
+            exit(0)
+        }
+    }
+
+    const repo = repo_root(args[0])
+    const rules_path = "{repo}/.sops.yaml"
+    const master_path = "{repo}/.sops-master.key.age"
+    const keys = keys_path()
+
+    ensure_machine_key(keys)?
+    const machine = machine_public_key(keys)?
+    const host = trust $ uname -n $
+
+    let rekey_with_machine_key = false
+    if not file_exists(master_path) {
+        echo("Creating the master key. Choose the master password: it is what adds new machines.")
+        const key = $ age-keygen 2>/dev/null $?
+        const master = $ age-keygen -y <<<"{key}" $?
+        $ age --passphrase --armor -o "{master_path}" <<<"{key}" $?
+        write_rules(rules_path, initial_rules(master))?
+        const existing = secret_files(repo)
+        if len(existing) > 0 {
+            echo("The existing secrets are not encrypted to the new master key yet: this machine must be able to decrypt them.")
+            rekey_with_machine_key = true
+        }
+    }
+
+    const files = secret_files(repo)
+    let rules = file_read(rules_path)?
+    if text_contains(rules, machine) {
+        if not rekey_with_machine_key {
+            echo("sops: this machine can already decrypt the secrets")
+            exit(0)
+        }
+    } else {
+        if len(files) > 0 and not rekey_with_machine_key {
+            // Before .sops.yaml changes, so a wrong password leaves nothing half
+            // done. The master key only ever lives in the environment of this
+            // process and the sops commands below.
+            echo("Adding this machine ({host}) to the repo's secrets. Master password:")
+            const master_key = $ age --decrypt "{master_path}" $ failed(code) {
+                echo_error("sops-bootstrap: could not decrypt the master key (wrong password?)", 0)
+                exit(code)
+            }
+            trust $ export SOPS_AGE_KEY="{master_key}" $
+        }
+        rules = add_recipient(rules, machine, host)
+        write_rules(rules_path, rules)?
+    }
+
+    if len(files) == 0 {
+        echo("sops: added this machine to .sops.yaml; there are no secrets to re-encrypt yet")
+        exit(0)
+    }
+
+    for file in files {
+        $ (cd "{repo}" && sops updatekeys --yes "{file}") $?
+    }
+    trust $ unset SOPS_AGE_KEY $
+
+    echo("sops: done. Commit and push .sops.yaml and the re-encrypted secrets:")
+    echo("  git -C {repo} add .sops.yaml .sops-master.key.age {join(files, " ")}")
+}

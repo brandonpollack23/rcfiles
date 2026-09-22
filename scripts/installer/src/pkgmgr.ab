@@ -1,0 +1,122 @@
+// Package manager commands, and installing lists of packages with them.
+
+import { run, as_root, root_prefix, heading, warn, note_problem } from "./run.ab"
+import { os, aur_helper, has_fingerprint_reader } from "./platform.ab"
+import { COMMON, ARCH, MANJARO, AUR, DEBIAN } from "./packages.ab"
+import { is_root } from "std/env"
+import { join } from "std/text"
+
+// The system upgrade to run first, or "" when there is no package manager.
+// paru and yay run as the user: they ask for sudo themselves and refuse to
+// build AUR packages as root.
+pub fun update_command(os: Text, helper: Text, root: Bool): Text {
+    const prefix = root_prefix(root)
+    if os == "debian" {
+        return "{prefix}apt update"
+    }
+    if os != "arch" {
+        return ""
+    }
+    if {
+        helper == "pamac" { return "{prefix}pamac update --no-confirm" }
+        helper == "paru" or helper == "yay" { return "{helper} -Syu --noconfirm" }
+    }
+    return "{prefix}pacman -Syu --noconfirm"
+}
+
+// The command that installs repository packages (append the names).
+pub fun install_command(os: Text, helper: Text, root: Bool): Text {
+    const prefix = root_prefix(root)
+    if os == "debian" {
+        return "{prefix}apt install -y"
+    }
+    if os != "arch" {
+        return ""
+    }
+    if {
+        helper == "pamac" { return "{prefix}pamac install --no-confirm" }
+        helper == "paru" or helper == "yay" { return "{helper} -S --needed --noconfirm" }
+    }
+    return "{prefix}pacman -S --needed --noconfirm"
+}
+
+// The command that builds AUR packages, or "" without an AUR helper.
+pub fun aur_install_command(os: Text, helper: Text): Text {
+    if os != "arch" {
+        return ""
+    }
+    if {
+        helper == "pamac" { return "pamac build --no-confirm" }
+        helper == "paru" or helper == "yay" { return "{helper} -S --needed --noconfirm" }
+    }
+    return ""
+}
+
+// The repository packages for `os`, shared ones first.
+pub fun platform_packages(os: Text, pamac: Bool): [Text] {
+    if os == "debian" {
+        return COMMON + DEBIAN
+    }
+    if os == "arch" {
+        if pamac {
+            return COMMON + ARCH + MANJARO
+        }
+        return COMMON + ARCH
+    }
+    return [Text]
+}
+
+// Installs one package at a time so one bad name does not stop the rest.
+// Returns the ones that failed.
+pub fun install_each(cmd: Text, packages: [Text]): [Text] {
+    let failed_packages = [Text]
+    for package in packages {
+        echo("Installing {package}")
+        run("{cmd} {package}") failed {
+            failed_packages += [package]
+        }
+    }
+    return failed_packages
+}
+
+pub fun install_linux_packages(): Null {
+    const this_os = os()
+    const helper = aur_helper()
+    const root = is_root()
+
+    const update = update_command(this_os, helper, root)
+    const install = install_command(this_os, helper, root)
+    if install == "" {
+        warn("no supported package manager on this Linux ({this_os}); skipping packages")
+        return null
+    }
+
+    heading("Updating the system")
+    run(update) failed {
+        note_problem("system update failed: {update}")
+    }
+
+    heading("Installing packages with: {install}")
+    let failed_packages = install_each(install, platform_packages(this_os, helper == "pamac"))
+
+    // fprintd for hyprlock's fingerprint unlock (.config/hypr/hyprlock.conf),
+    // only where there is a reader. Enroll from the SUPER+SHIFT+R menu after.
+    if has_fingerprint_reader() {
+        echo("Fingerprint reader found")
+        failed_packages += install_each(install, ["fprintd"])
+    }
+
+    const aur = aur_install_command(this_os, helper)
+    if this_os == "arch" {
+        if aur == "" {
+            note_problem("no AUR helper (pamac, paru or yay); skipped {join(AUR, " ")}")
+        } else {
+            heading("Installing AUR packages with: {aur}")
+            failed_packages += install_each(aur, AUR)
+        }
+    }
+
+    if len(failed_packages) > 0 {
+        note_problem("packages that failed to install: {join(failed_packages, " ")}")
+    }
+}

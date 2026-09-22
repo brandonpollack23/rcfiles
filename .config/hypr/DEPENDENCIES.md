@@ -89,7 +89,7 @@ OpenWeatherMap key and the city (located by IP). The key is `OWM_API_KEY` in the
 repo's sops-encrypted dotenv, `secrets.sops.env` at the rcfiles root, read with
 `sops exec-env`; edit it with `mise run secrets` or "Edit secrets" in the system
 menu, then "Restart waybar", which restarts the popups too.
-`sops-bootstrap.sh` there (run by `install.sh`) gives a new machine access with
+`scripts/sops/sops-bootstrap.sh` there (run by `install.sh`) gives a new machine access with
 the master password. `style.css` is upstream's stylesheet recoloured to the
 bar's palette. `popups.py` draws the PIA, weather and Bing wallpaper popups,
 which l1p0-menus has no module for. The PIA, weather and night light modules in waybar are fed

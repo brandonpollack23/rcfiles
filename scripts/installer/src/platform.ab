@@ -1,0 +1,62 @@
+// Which OS and package managers this machine has.
+
+import { file_exists, file_glob } from "std/fs"
+import { env_var_get, is_command } from "std/env"
+import { starts_with, trim } from "std/text"
+
+// "mac", "debian", "arch", "linux" (another distribution) or "unknown".
+pub fun os_from(ostype: Text, debian_version: Bool, arch_release: Bool): Text {
+    if starts_with(ostype, "darwin") {
+        return "mac"
+    }
+    if not starts_with(ostype, "linux") {
+        return "unknown"
+    }
+    if debian_version {
+        return "debian"
+    }
+    if arch_release {
+        return "arch"
+    }
+    return "linux"
+}
+
+pub fun os(): Text {
+    // $OSTYPE is a bash variable, not exported, so ask the running shell.
+    const ostype = trust $ printf '%s' "\$OSTYPE" $
+    return os_from(ostype, file_exists("/etc/debian_version"), file_exists("/etc/arch-release"))
+}
+
+// The AUR helper, in order of preference: "pamac" (Manjaro), "paru", "yay",
+// or "" for none.
+pub fun aur_helper(): Text {
+    for helper in ["pamac", "paru", "yay"] {
+        if is_command(helper) {
+            return helper
+        }
+    }
+    return ""
+}
+
+// USB vendors of the fingerprint readers libfprint supports: Synaptics, Goodix,
+// Validity, Elan, FPC, Egis, FocalTech, Upek, AuthenTec. Elan also makes
+// touchscreens, so a false positive just installs an unused fprintd.
+pub const FINGERPRINT_VENDORS = ["06cb", "27c6", "138a", "04f3", "10a5", "1c7a", "2808", "147e", "08ff"]
+
+pub fun is_fingerprint_vendor(id: Text): Bool {
+    for vendor in FINGERPRINT_VENDORS {
+        if trim(id) == vendor {
+            return true
+        }
+    }
+    return false
+}
+
+pub fun has_fingerprint_reader(): Bool {
+    for path in file_glob("/sys/bus/usb/devices/*/idVendor") {
+        if is_fingerprint_vendor(trust $ cat "{path}" 2>/dev/null $) {
+            return true
+        }
+    }
+    return false
+}

@@ -1,0 +1,44 @@
+// Prints one random story from the cache.
+
+import { split_lines, slice, starts_with } from "std/text"
+
+// Title, URL and comment of a random cached story, one per line and prefixed
+// with T, U and C so an empty field still has a line. One jq process: this runs
+// on every new shell. "" when the cache is empty or unreadable.
+pub fun random_story(path: Text): Text {
+    return trust $ jq -r --argjson r "\$RANDOM" \
+        '.[\$r % length] | "T" + .title, "U" + (.url // ""), "C" + (.comment // "")' \
+        "{path}" 2>/dev/null $
+}
+
+// The field with the given prefix letter from random_story's output.
+pub fun story_field(story: Text, prefix: Text): Text {
+    for line in split_lines(story) {
+        if starts_with(line, prefix) {
+            return slice(line, 1)
+        }
+    }
+    return ""
+}
+
+// The MOTD block for one story, with terminal styling.
+pub fun motd(title: Text, url: Text, comment: Text): Text {
+    let out = trust $ printf '\n🔥 \\033[2mHacker News MOTD\\033[22m\n\n📰 \\033[1m%s\\033[0m' "{title}" $
+    if url != "" {
+        out += "\n   {url}"
+    }
+    if comment != "" {
+        out += trust $ printf '\n   💬 \\033[3m%s\\033[23m…' "{comment}" $
+    }
+    return out + "\n"
+}
+
+pub fun print_story(path: Text): Bool {
+    const story = random_story(path)
+    const title = story_field(story, "T")
+    if title == "" {
+        return false
+    }
+    echo(motd(title, story_field(story, "U"), story_field(story, "C")))
+    return true
+}

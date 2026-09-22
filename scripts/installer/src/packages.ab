@@ -1,0 +1,128 @@
+// What the installer puts on each platform. Names were checked against the Arch
+// repositories, the AUR and Debian stable (trixie) in September 2026: a package
+// is in COMMON only when both call it the same thing.
+
+// Arch and Debian, same name on both.
+pub const COMMON = [
+    "asciinema",   // Record and share terminal sessions
+    "bat",         // cat(1) with syntax highlighting and Git integration
+    "bc",          // Calculator; amber's generated scripts use it for math
+    "chafa",       // Images in the terminal (the cati alias)
+    "cmake",       // Cross-platform build system
+    "coreutils",   // Basic file, shell and text utilities
+    "cowsay",      // Talking cow, with the characters in .cowfiles
+    "curl",        // Transfers data with URLs
+    "eza",         // ls replacement; the ls/ll/la/tree aliases
+    "fcitx5",      // Input method framework
+    "fcitx5-mozc", // Japanese input for fcitx5
+    "fzf",         // Fuzzy finder; zsh's fzf and fzf-tab plugins
+    "fzy",         // Another fuzzy finder
+    "git",         // Version control
+    "git-absorb",  // Automatic fixup commits
+    "gource",      // Visualizes Git history as a tree
+    "gum",         // Building blocks for fancy terminal scripts
+    "imagemagick", // Image conversion and editing
+    "jq",          // JSON processor; the Claude settings migration, hacker-news, the Bing wallpaper
+    "luajit",      // Lua JIT compiler
+    "luarocks",    // Lua package manager
+    "make",        // Build tool
+    "maven",       // Java build tool
+    "neovim",      // Editor
+    "ripgrep",     // Recursive regex search
+    "ruby",        // Ruby
+    "rustup",      // Rust toolchains; the cargo installs below
+    "shellcheck",  // Shell script linter
+    "starship",    // The prompt, from .zshrc
+    "tmux",        // Terminal multiplexer
+    "tree",        // Directory trees
+    "vim",         // Editor
+    "xclip",       // X clipboard from the command line
+    "zoxide",      // Smarter cd; zsh's zoxide plugin
+    "zsh",         // The login shell
+]
+
+// Arch only, or with an Arch-specific name.
+pub const ARCH = [
+    // Arch names of things Debian calls something else, or does not package.
+    "code",           // VS Code (Code - OSS); not in Debian
+    "deno",           // JavaScript/TypeScript runtime; not in Debian
+    "fd",             // find replacement; fd-find on Debian
+    "firefox",        // firefox-esr on Debian
+    "geckodriver",    // WebDriver for Firefox; not in Debian
+    "jdk-openjdk",    // OpenJDK; default-jdk on Debian
+    "mise",           // Tool versions and tasks; the toolchains below. Not in Debian
+    "pandoc-cli",     // Document converter; pandoc on Debian
+    "rofimoji",       // Emoji picker, SUPER+: in Hyprland; only Debian testing has it
+    "sqlite",         // SQLite shell; sqlite3 on Debian
+
+    "age",            // Keys sops encrypts this repo's secrets to (scripts/sops)
+    "alacritty",      // Terminal emulator
+    "awww",           // Wallpaper daemon for the Bing wallpaper (.config/hypr/scripts/bing-wallpaper.sh)
+    "bazelisk",       // Picks and runs the right Bazel
+    "bitwarden",      // Password manager
+    "bitwarden-cli",  // Bitwarden from the command line
+    "cpio",           // hyprpm builds plugins with it (.config/hypr/conf/overview.lua, focus_animation.lua)
+    "git-branchless", // Branchless Git workflow
+    "github-cli",     // gh
+    "hypridle",       // Idle daemon: dim, lock and screens off (.config/hypr/hypridle.conf)
+    "hyprlock",       // Lock screen (.config/hypr/hyprlock.conf)
+    "hyprsunset",     // Night light, driven from the bar and its popup (.config/l1p0-menu)
+    "inotify-tools",  // File system event tools
+    "kdeconnect",     // Phone integration; the bar's phone module (.config/waybar/brpol-waybard)
+    "kio-gdrive",     // Google Drive in KDE file dialogs
+    "meson",          // hyprpm builds plugins with it
+    "neovide",        // Neovim GUI
+    "obsidian",       // Markdown knowledge base
+    "sops",           // Decrypts *.sops.* secrets in this repo (scripts/sops), e.g. the weather API key
+    "sshfs",          // Browsing the phone's files from kdeconnect-app
+    "swayosd",        // Volume/brightness OSD, started by Hyprland (.config/swayosd)
+    "tlp",            // Power management
+    "tlpui",          // TLP settings GUI
+
+    // Erlang build dependencies, for mise's erlang.
+    "fop",            // XSL-FO print formatter
+    "glu",            // Mesa OpenGL utility library
+    "libpng",         // PNG library
+    "libxslt",        // XSLT library
+    "mesa",           // OpenGL
+    "unixodbc",       // ODBC
+    "wxwidgets-gtk3", // GUI library (observer, debugger)
+]
+
+// Only on Manjaro, where pamac is the package manager.
+pub const MANJARO = [
+    "libpamac-flatpak-plugin", // Flatpak support in pamac
+    "libpamac-snap-plugin",    // Snap support in pamac
+]
+
+// From the AUR, through pamac, paru or yay.
+pub const AUR = [
+    "amber-lang-bin",    // Compiles scripts/**/*.ab to the committed shell (mise run build)
+    "changie",           // Changelog generator used by pulumi
+    "hypr-persist",      // Hyprland session save/restore daemon (.config/hypr/hypr-persist.toml)
+    "l1p0-menus-git",    // Popups behind the waybar status modules (.config/l1p0-menu)
+    "neovim-nightly",    // Latest nightly Neovim
+    "pay-respects",      // Corrects the last command; eval'd in .zshrc
+    "tmux-mem-cpu-load", // CPU and memory in the tmux status line
+]
+
+// Debian only, or with a Debian-specific name.
+pub const DEBIAN = [
+    "default-jdk",            // OpenJDK; jdk-openjdk on Arch
+    "fd-find",                // find replacement, installed as fdfind; fd on Arch
+    "firefox-esr",            // firefox on Arch
+    "pandoc",                 // Document converter; pandoc-cli on Arch
+    "sqlite3",                // SQLite shell; sqlite on Arch
+
+    "apt-file",               // Which package has a file
+    "debian-handbook",        // Debian administration guide
+    "devscripts",             // Debian packaging scripts
+    "etherwake",              // Wake-on-LAN packets
+    "fortunes-debian-hints",  // Debian fortune cookies
+    "info",                   // Info documents
+    "libgraphicsmagick1-dev", // GraphicsMagick headers
+    "libmagickwand-dev",      // ImageMagick Wand headers
+    "net-tools",              // ifconfig, netstat
+    "texinfo",                // GNU documentation system
+    "wakeonlan",              // Wake-on-LAN packets
+]
