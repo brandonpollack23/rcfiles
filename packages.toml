@@ -148,7 +148,7 @@ graphviz = { desc = "Graph visualization (dot)" }
 docker = { desc = "Docker CLI" }
 "postgresql@17" = { arch = "postgresql", desc = "PostgreSQL database server" }
 terraform = { brew = "hashicorp/tap/terraform", desc = "Infrastructure as code (left Homebrew core in 2024)" }
-flyctl = { bin = "flyctl", desc = "Fly.io command-line tool" }
+flyctl = { arch = "flyctl-bin", bin = "flyctl", desc = "Fly.io command-line tool (prebuilt on Arch: the AUR flyctl builds from source and runs its test suite, which fails)" }
 gcloud-cli = { cask = true, arch = "google-cloud-cli", desc = "Google Cloud CLI (gcloud, gsutil, bq; a cask, so not on Debian or Fedora)" }
 "pulumi/tap/esc" = { arch = false, desc = "Pulumi ESC: secrets and config management" }
 claude-code = { cask = true, bin = "claude", desc = "Anthropic's Claude Code agent CLI (a cask, so not on Debian or Fedora)" }
