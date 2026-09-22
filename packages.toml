@@ -190,7 +190,6 @@ ghostty = { cask = true, desc = "Fast, native, GPU-accelerated terminal emulator
 font-jetbrains-mono = { cask = true, arch = "ttf-jetbrains-mono", desc = "JetBrains Mono font" }
 google-chrome = { cask = true, desc = "Web browser" }
 google-drive = { cask = true, arch = false, desc = "Google Drive sync client" }
-nextcloud = { cask = true, arch = "nextcloud-client", desc = "Nextcloud desktop sync client" }
 bitwarden = { mas = 1352778147, desc = "Password manager" }
 obsidian = { cask = true, desc = "Markdown notes" }
 kindle = { mas = 302584613, arch = false, desc = "Ebooks" }
