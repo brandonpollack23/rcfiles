@@ -112,8 +112,6 @@ binaryen = { desc = "Compiler and toolchain infrastructure for WebAssembly" }
 wasm-bindgen = { desc = "Rust and JavaScript interop for WebAssembly" }
 wasm-pack = { desc = "Builds Rust-generated WebAssembly packages" }
 rustup = { desc = "Rust toolchain installer" }
-deno = { desc = "A secure runtime for JavaScript and TypeScript" }
-ghcup = { arch = "ghcup-hs-bin", desc = "Installer for the Haskell toolchain (GHC, cabal, HLS)" }
 go = { desc = "The Go programming language" }
 gofumpt = { desc = "Stricter gofmt" }
 golangci-lint = { desc = "Runs Go linters" }
@@ -153,8 +151,6 @@ cargo-machete = { cargo = true, desc = "Finds unused dependencies" }
 cargo-outdated = { cargo = true, desc = "Lists outdated dependencies" }
 cargo-usage-rules = { cargo = true, desc = "Gathers dependencies' usage rules for coding agents" }
 cargo-watch = { cargo = true, desc = "Reruns cargo commands when files change" }
-flamegraph = { cargo = true, desc = "Flame graphs of a program's CPU use (cargo flamegraph)" }
-tokio-console = { cargo = true, desc = "Debugger for async Tokio programs" }
 
 [packages.tools]
 ffmpeg = { desc = "Records, converts and streams audio and video" }
