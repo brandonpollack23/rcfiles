@@ -198,7 +198,6 @@ obsidian = { cask = true, desc = "Markdown notes" }
 kindle = { mas = 302584613, arch = false, desc = "Ebooks" }
 transmission = { cask = true, arch = "transmission-gtk", desc = "BitTorrent client" }
 antigravity = { cask = true, bin = "antigravity", desc = "Google Antigravity, an agent-first IDE" }
-github = { cask = true, arch = "github-desktop-bin", desc = "GitHub Desktop" }
 wireguard = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
 private-internet-access = { cask = true, arch = "piavpn-bin", desc = "Private Internet Access VPN client" }
 
