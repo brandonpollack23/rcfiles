@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#MISE description="Install the programs in packages.txt (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
+#MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
 #USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
-#USAGE arg "[group]..." var=#true help="Groups from packages.txt to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
+#USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
 # Bash 3.2 compatible: this runs on a fresh Mac before Homebrew's bash is there.
 set -euo pipefail
 source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib/os.sh"
@@ -27,7 +27,7 @@ pick_groups() {
     [[ "$*" == all ]] && set -- $(all_groups | cut -f1 | grep -vxE 'core|mac')
     for name in "$@"; do
       all_groups | cut -f1 | grep -qxF "$name" || {
-        echo "deps: no group $name in packages.txt" >&2
+        echo "deps: no group $name in packages.toml" >&2
         exit 1
       }
     done

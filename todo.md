@@ -43,8 +43,8 @@ features to carry over are in `hyprland_todo.md`.
         skips everything Omarchy already ships, and runs the Omarchy menu
         installers where they exist (Steam, dev envs, Ghostty, Chrome).
   - [ ] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
-        packages) and move the ones I still want into `packages.txt`.
-- [ ] Make sure the Mac still works (packages.txt, stow on macOS,
+        packages) and move the ones I still want into `packages.toml`.
+- [ ] Make sure the Mac still works (packages.toml, stow on macOS,
       `mise run deps -n` there).
 - [ ] zsh on Omarchy: `chsh` to zsh. Check what Omarchy's bash sets up
       (`/usr/share/omarchy/default/bash/*`: PATH, mise, starship, zoxide,

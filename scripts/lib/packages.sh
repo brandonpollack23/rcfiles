@@ -1,57 +1,55 @@
-# Sourced by the scripts that read packages.txt (see its header for the format).
+# Sourced by the scripts that read packages.toml (see its header for the format).
 # Needs $OS from os.sh. Bash 3.2 compatible, like deps.sh.
 # Not executable, so mise doesn't list it as a task.
 
-packages_txt="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../packages.txt"
+packages_toml="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../packages.toml"
 
-# Every group in packages.txt, and its description, as "name<TAB>description".
+# yq (mikefarah's) on packages.toml. mise installs it the first time, the same
+# way on every OS, before there's a package manager to get it from.
+packages_yq() { # <expression>
+  mise exec yq@4 -- yq -p toml -o yaml "$1" "$packages_toml"
+}
+
+# Every group in packages.toml, and its description, as "name<TAB>description".
 all_groups() {
-  sed -n 's/^\[\([a-z-]*\)\][[:space:]]*#*[[:space:]]*/\1	/p' "$packages_txt"
+  packages_yq '.groups | to_entries[] | .key + "	" + .value'
 }
 
-# Sorts each packages.txt line in the given groups into the array for the
-# installer that installs it on this OS: brew, cask, mas, pacman or cargo.
+# Sorts each package in the given groups into the array for the installer that
+# installs it on this OS: brew, cask, mas, pacman or cargo.
 read_packages() { # <group>...
-  local groups=" $* " group="" line opt name arch formula as
-  local words
+  local groups=" $* " lines group name to_arch to_brew to_cask to_mas to_cargo
   brew=() cask=() mas=() pacman=() cargo=()
-  while read -r line; do
-    # read -a splits without globbing, so [core] and friends stay as they are.
-    read -ra words <<<"${line%%#*}"
-    ((${#words[@]})) || continue
-    if [[ "${words[0]}" == \[*\] ]]; then
-      group=${words[0]//[][]/}
-      continue
-    fi
+  # One line per package: group|name|arch|brew|cask|mas|cargo, each option
+  # empty when it isn't set, and a list of Arch names joined with commas.
+  lines=$(packages_yq '
+    .packages | to_entries[] | .key as $group | .value | to_entries[] |
+    [$group, .key] +
+    ({"arch": "", "brew": "", "cask": "", "mas": "", "cargo": ""} * .value
+      | [.arch, .brew, .cask, .mas, .cargo]
+      | (.[] | select(tag == "!!seq")) |= join(",")
+      | map(tostring))
+    | join("|")')
+  while IFS='|' read -r group name to_arch to_brew to_cask to_mas to_cargo; do
     [[ "$groups" == *" $group "* ]] || continue
-    name=${words[0]} arch=${words[0]} formula=${words[0]} as=brew
-    for opt in "${words[@]:1}"; do
-      case "$opt" in
-        arch=*) arch=${opt#*=} ;;
-        brew=*) formula=${opt#*=} ;;
-        cask) as=cask ;;
-        cask=*) as=cask formula=${opt#*=} ;;
-        mas=*) as=mas formula=${opt#*=} ;;
-        cargo) as=cargo ;;
-        cargo=*) as=cargo formula=${opt#*=} ;;
-        *) echo "packages.txt: $name: unknown option $opt" >&2 && exit 1 ;;
-      esac
-    done
-    if [[ "$as" == cargo ]]; then
-      _add_package cargo "$formula"
+    if [[ -n "$to_cargo" && "$to_cargo" != false ]]; then
+      [[ "$to_cargo" == true ]] && to_cargo=$name
+      _add_package cargo "$to_cargo"
     elif [[ "$OS" == arch ]]; then
-      _add_package pacman "$arch"
-    elif [[ "$OS" == mac ]]; then
-      _add_package "$as" "$formula"
-    elif [[ "$as" == brew ]]; then
-      _add_package brew "$formula"
+      [[ "$to_arch" == false ]] || _add_package pacman "${to_arch:-$name}"
+    elif [[ -n "$to_mas" ]]; then
+      [[ "$OS" != mac ]] || _add_package mas "$to_mas"
+    elif [[ -n "$to_cask" && "$to_cask" != false ]]; then
+      [[ "$to_cask" == true ]] && to_cask=$name
+      [[ "$OS" != mac ]] || _add_package cask "$to_cask"
+    elif [[ "$to_brew" != false ]]; then
+      _add_package brew "${to_brew:-$name}"
     fi
-  done <"$packages_txt"
+  done <<<"$lines"
 }
 
-_add_package() { # <array> <comma-separated names, or - for none>
+_add_package() { # <array> <comma-separated names>
   local names name
-  [[ "$2" == - ]] && return
   IFS=, read -ra names <<<"$2"
   for name in "${names[@]}"; do eval "$1+=(\"\$name\")"; done
 }

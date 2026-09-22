@@ -2,8 +2,8 @@
 # every machine and `mac` on every Mac; deps asks which of the others to
 # install and remembers the answer (`mise run deps <group>...` to change it).
 #
-# This is TOML, but deps.sh reads it with bash (no parser to install first), so
-# keep to this shape: each package is one line, an inline table of
+# deps.sh reads it with yq (scripts/lib/packages.sh; mise installs yq first).
+# Each package is a table of
 #   desc = "..."                what it is
 #   arch = "pkg" | ["a", "b"]   its name(s) on Arch (pacman or AUR), if not the key
 #   arch = false                not on Arch
