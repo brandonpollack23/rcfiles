@@ -30,6 +30,13 @@ pub fun is_interactive(): Bool {
     return status() == 0
 }
 
+// Asks for the sudo password now, then keeps it cached in the background
+// until this task's shell exits, so a long install doesn't ask again.
+pub fun keep_sudo(): Null? {
+    $ sudo -v $?
+    $ (while sudo -n -v 2>/dev/null && kill -0 \$\$ 2>/dev/null; do sleep 50; done) >/dev/null 2>&1 & $?
+}
+
 // `text` as one shell word, safe to splice into a command line.
 pub fun quoted(text: Text): Text {
     return trust $ printf '%q' "{text}" $

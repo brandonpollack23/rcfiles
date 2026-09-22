@@ -39,8 +39,10 @@ tmux = { desc = "Terminal multiplexer" }
 "morantron/tmux-fingers/tmux-fingers" = { arch = "tmux-fingers", desc = "Copy text from tmux panes by hint, like vimium" }
 tmux-mem-cpu-load = { desc = "CPU, memory and load for the tmux status line" }
 neovim = { desc = "Hyperextensible Vim-based text editor" }
+# The LTS node on Arch: bitwarden-cli depends on nodejs-lts-jod, which
+# conflicts with the current nodejs.
 node = { arch = [
-  "nodejs",
+  "nodejs-lts-jod",
   "npm",
 ], desc = "JavaScript runtime (with npm); neovim language servers need it" }
 tree-sitter-cli = { desc = "Builds neovim's tree-sitter parsers" }

@@ -1,6 +1,7 @@
 #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
 //MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
 //USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
+//USAGE flag "-y --yes" help="Install without asking first"
 //USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
 
 import { env_var_get, is_command, echo_error, input_confirm } from "std/env"
@@ -9,7 +10,7 @@ import { split, split_lines, join } from "std/text"
 import { array_contains } from "std/array"
 
 import { detect_os, ensure_brew } from "./lib/os.ab"
-import { repo_root, run, set_dry_run, is_dry_run, is_interactive, usage_words } from "./lib/run.ab"
+import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
 import { home, xdg_config_home } from "./lib/paths.ab"
 import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
 
@@ -102,6 +103,27 @@ fun save_groups(saved: Text, picked: [Text]): Null? {
     echo("deps: saved the groups in {saved}")
 }
 
+// Lists what's about to be installed and asks once (unless -y, or there's no
+// terminal to ask on); every installer after this runs without asking. Then
+// takes the sudo password, so that comes now too and not mid-install.
+fun confirm_install(packages: [Text]): Null? {
+    echo("deps: about to install")
+    for manager in ["pacman", "brew", "cask", "mas", "cargo"] {
+        const names = names_for(packages, manager)
+        if len(names) > 0 {
+            echo("  {manager}: {join(names, " ")}")
+        }
+    }
+    echo("  mise: erlang elixir")
+    const yes = trust env_var_get("usage_yes") == "true"
+    if not yes and is_interactive() {
+        if not input_confirm("Install these?") {
+            echo_error("deps: nothing installed", 1)
+        }
+    }
+    keep_sudo()?
+}
+
 fun mac_deps(packages: [Text]): Null? {
     brew_deps(packages)?
     const casks = names_for(packages, "cask")
@@ -122,9 +144,11 @@ fun arch_deps(packages: [Text]): Null? {
             install_yay()?
         }
     }
-    let aur_helper = "yay"
+    // confirm_install already asked, so neither helper should: no PKGBUILD
+    // review (clean-build, diff or edit questions), and pacman takes its defaults.
+    let aur_helper = "yay --noconfirm --answerclean None --answerdiff None --answeredit None"
     if not is_command("yay") {
-        aur_helper = "paru"
+        aur_helper = "paru --noconfirm --skipreview"
     }
     run("{aur_helper} -S --needed {join(names_for(packages, "pacman"), " ")}")?
 }
@@ -159,7 +183,7 @@ fun brew_deps(packages: [Text]): Null? {
 
 // yay isn't in the official repos, so build yay-bin from the AUR.
 fun install_yay(): Null? {
-    $ sudo pacman -S --needed git base-devel $?
+    $ sudo pacman -S --needed --noconfirm git base-devel $?
     const build = $ mktemp -d $?
     $ git clone https://aur.archlinux.org/yay-bin.git "{build}/yay-bin" $?
     $ (cd "{build}/yay-bin" && makepkg -si --noconfirm) $?
@@ -197,6 +221,9 @@ main {
     installing += picked
     echo("deps: installing {join(installing, " ")}")
     const packages = packages_for(root, os, installing)?
+    if not is_dry_run() {
+        confirm_install(packages)?
+    }
 
     if {
         os == "mac" {
