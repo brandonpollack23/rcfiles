@@ -10,37 +10,6 @@ import { dotfiles } from "./lib/stow.ab"
 
 const COMMANDS = ["git", "git-lfs", "delta", "difft", "jj", "gh", "nvim", "lazygit", "fd", "rg", "node", "npm", "tree-sitter", "cc", "make", "starship", "starship-jj", "erl", "elixir"]
 
-fun source_cargo(): Null {
-    const env = "{home()}/.cargo/env"
-    if file_exists(env) {
-        trust $ source "{env}" $
-    }
-}
-
-fun missing(): [Text] {
-    let gone = [Text]
-    for cmd in COMMANDS {
-        if not is_command(cmd) {
-            gone += [cmd]
-        }
-    }
-    return gone
-}
-
-// True when `path` is stow's link to `target` in dotfiles/.
-fun linked(path: Text, target: Text): Bool {
-    const dir = dotfiles()
-    const actual = trust $ realpath "{path}" 2>/dev/null $
-    const wanted = trust $ realpath "{dir}/{target}" 2>/dev/null $
-    return actual != "" and actual == wanted
-}
-
-// True when every plugin in lazy-lock.json is installed.
-fun plugins_installed(): Bool {
-    trust $ nvim --headless "+lua os.exit(#vim.tbl_filter(function(p) return not p._.installed end, require('lazy').plugins()))" $
-    return status() == 0
-}
-
 // Anything missing that another task sets up: run that task.
 fun install_whats_missing(): Null? {
     const base = home()
@@ -97,6 +66,37 @@ fun problems(): [Text] {
         found += ["neovim plugins are missing"]
     }
     return found
+}
+
+fun missing(): [Text] {
+    let gone = [Text]
+    for cmd in COMMANDS {
+        if not is_command(cmd) {
+            gone += [cmd]
+        }
+    }
+    return gone
+}
+
+// True when `path` is stow's link to `target` in dotfiles/.
+fun linked(path: Text, target: Text): Bool {
+    const dir = dotfiles()
+    const actual = trust $ realpath "{path}" 2>/dev/null $
+    const wanted = trust $ realpath "{dir}/{target}" 2>/dev/null $
+    return actual != "" and actual == wanted
+}
+
+// True when every plugin in lazy-lock.json is installed.
+fun plugins_installed(): Bool {
+    trust $ nvim --headless "+lua os.exit(#vim.tbl_filter(function(p) return not p._.installed end, require('lazy').plugins()))" $
+    return status() == 0
+}
+
+fun source_cargo(): Null {
+    const env = "{home()}/.cargo/env"
+    if file_exists(env) {
+        trust $ source "{env}" $
+    }
 }
 
 main {

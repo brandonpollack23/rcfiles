@@ -13,15 +13,28 @@ import { repo_root, run, set_dry_run, is_dry_run, is_interactive, usage_words } 
 import { home, xdg_config_home } from "./lib/paths.ab"
 import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
 
-// Every group but the ones every machine gets.
-fun optional_groups(names: [Text]): [Text] {
-    let optional = [Text]
-    for name in names {
-        if name != "core" and name != "mac" {
-            optional += [name]
-        }
+// Remembers `picked` for the next run (unless this one is a dry run).
+
+// The optional groups to install: named on the command line, else the ones
+// picked last time, else asked for. Saved either way, for next time.
+fun pick_groups(os: Text, groups: [Text], saved: Text): [Text]? {
+    const asked = usage_words("usage_group")
+    if len(asked) > 0 {
+        const picked = groups_from_args(asked, group_names(groups))
+        save_groups(saved, picked)?
+        return picked
     }
-    return optional
+    if file_exists(saved) {
+        return groups_from_file(saved)?
+    }
+    let picked = [Text]
+    if is_interactive() {
+        picked = ask_groups(os, groups)
+    } else {
+        echo("deps: installing core only; name more groups with: mise run deps <group>...")
+    }
+    save_groups(saved, picked)?
+    return picked
 }
 
 // The groups named on the command line: "all" for every optional one, else
@@ -36,6 +49,17 @@ fun groups_from_args(asked: [Text], names: [Text]): [Text] {
         }
     }
     return asked
+}
+
+// Every group but the ones every machine gets.
+fun optional_groups(names: [Text]): [Text] {
+    let optional = [Text]
+    for name in names {
+        if name != "core" and name != "mac" {
+            optional += [name]
+        }
+    }
+    return optional
 }
 
 // The groups an earlier run saved, one per line.
@@ -69,30 +93,6 @@ fun ask_groups(os: Text, groups: [Text]): [Text] {
     return picked
 }
 
-// Remembers `picked` for the next run (unless this one is a dry run).
-
-// The optional groups to install: named on the command line, else the ones
-// picked last time, else asked for. Saved either way, for next time.
-fun pick_groups(os: Text, groups: [Text], saved: Text): [Text]? {
-    const asked = usage_words("usage_group")
-    if len(asked) > 0 {
-        const picked = groups_from_args(asked, group_names(groups))
-        save_groups(saved, picked)?
-        return picked
-    }
-    if file_exists(saved) {
-        return groups_from_file(saved)?
-    }
-    let picked = [Text]
-    if is_interactive() {
-        picked = ask_groups(os, groups)
-    } else {
-        echo("deps: installing core only; name more groups with: mise run deps <group>...")
-    }
-    save_groups(saved, picked)?
-    return picked
-}
-
 fun save_groups(saved: Text, picked: [Text]): Null? {
     if is_dry_run() {
         return null
@@ -100,19 +100,6 @@ fun save_groups(saved: Text, picked: [Text]): Null? {
     $ mkdir -p "\$(dirname "{saved}")" $?
     file_write(saved, join(picked, "\n"))?
     echo("deps: saved the groups in {saved}")
-}
-
-// Homebrew, and the formulae (on the Mac, Debian and Fedora).
-fun brew_deps(packages: [Text]): Null? {
-    if is_dry_run() {
-        echo("ensure_brew")
-    } else {
-        ensure_brew()?
-    }
-    const formulae = names_for(packages, "brew")
-    if len(formulae) > 0 {
-        run("brew install {join(formulae, " ")}")?
-    }
 }
 
 fun mac_deps(packages: [Text]): Null? {
@@ -125,15 +112,6 @@ fun mac_deps(packages: [Text]): Null? {
     if len(apps) > 0 {
         run("mas install {join(apps, " ")}")?
     }
-}
-
-// yay isn't in the official repos, so build yay-bin from the AUR.
-fun install_yay(): Null? {
-    $ sudo pacman -S --needed git base-devel $?
-    const build = $ mktemp -d $?
-    $ git clone https://aur.archlinux.org/yay-bin.git "{build}/yay-bin" $?
-    $ (cd "{build}/yay-bin" && makepkg -si --noconfirm) $?
-    $ rm -rf "{build}" $?
 }
 
 fun arch_deps(packages: [Text]): Null? {
@@ -164,6 +142,28 @@ fun fedora_deps(packages: [Text]): Null? {
     run("sudo dnf group install -y development-tools")?
     run("sudo dnf install -y procps-ng curl file git")?
     brew_deps(packages)?
+}
+
+// Homebrew, and the formulae (on the Mac, Debian and Fedora).
+fun brew_deps(packages: [Text]): Null? {
+    if is_dry_run() {
+        echo("ensure_brew")
+    } else {
+        ensure_brew()?
+    }
+    const formulae = names_for(packages, "brew")
+    if len(formulae) > 0 {
+        run("brew install {join(formulae, " ")}")?
+    }
+}
+
+// yay isn't in the official repos, so build yay-bin from the AUR.
+fun install_yay(): Null? {
+    $ sudo pacman -S --needed git base-devel $?
+    const build = $ mktemp -d $?
+    $ git clone https://aur.archlinux.org/yay-bin.git "{build}/yay-bin" $?
+    $ (cd "{build}/yay-bin" && makepkg -si --noconfirm) $?
+    $ rm -rf "{build}" $?
 }
 
 // Rust, through rustup (its own installer, so it's the same on every OS).

@@ -9,11 +9,6 @@ import { usage_words } from "./lib/run.ab"
 import { home, home_relative } from "./lib/paths.ab"
 import { dotfiles, stow } from "./lib/stow.ab"
 
-fun is_symlink(path: Text): Bool {
-    trust $ test -L "{path}" $
-    return status() == 0
-}
-
 // Moves `path` (under $HOME) to the same place under dotfiles/<package>,
 // keeping a symlink where it is (stow already owns it).
 fun move_into_package(package: Text, path: Text): Null? {
@@ -34,6 +29,11 @@ fun move_into_package(package: Text, path: Text): Null? {
     $ mkdir -p "\$(dirname "{target}")" $?
     $ mv "{abs}" "{target}" $?
     echo("Moved ~/{rel} into {package}")
+}
+
+fun is_symlink(path: Text): Bool {
+    trust $ test -L "{path}" $
+    return status() == 0
 }
 
 main {

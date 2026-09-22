@@ -34,6 +34,11 @@ or `mise run install` for real from an agent session.
 
 Each of these was hit writing this repo's scripts.
 
+- **Order:** `main` goes last; it is compiled where it stands and can't call
+  a function defined below it. Above it, order the functions top-down: what
+  `main` calls first, their helpers after. Modules in `scripts/lib/` are the
+  other way round: a function there can't call one defined below it once
+  imported, so callees come before callers.
 - **Tests:** write `assert(...)?` and `assert_eq(...)?`, always with `?`.
   Without it a failed assert is forgotten as soon as a later statement runs.
 - **`len()` as an argument miscompiles.** `f(len(x))` breaks; bind it first
