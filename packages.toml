@@ -12,9 +12,17 @@
 #   cask = true | "cask"        a Homebrew cask instead (Mac only)
 #   mas = <id>                  a Mac App Store app instead (Mac only; sign in first)
 #   cargo = true | "crate"      a Rust crate, installed with cargo binstall everywhere
+#   bin = "command"             a command it puts on PATH; deps skips the package when
+#                               that's already there, installed some other way (its own
+#                               installer, mise, npm...)
 # By default the key is the name in Homebrew (the Mac, Debian and Fedora) and on
 # Arch (through yay or paru). Formulae from other taps are named
 # "<user>/<tap>/<formula>"; brew taps them. mise itself comes from install.sh.
+#
+# deps skips what's already installed, so a rerun picks up where a failed one
+# stopped. On Arch that's pacman's call, so a package providing the name counts:
+# Omarchy's repo has claude-code, opencode, ghostty and codex (openai-codex-bin,
+# which provides openai-codex), and yay/paru take those over the AUR's.
 
 # The groups, in the order deps asks about them.
 [groups]
@@ -65,7 +73,7 @@ htop = { desc = "Interactive process viewer" }
 ncdu = { desc = "Disk usage analyzer with a terminal UI" }
 chafa = { desc = "Displays images in the terminal (the cati alias in .zshrc)" }
 lolcat = { desc = "Rainbow-colors text; the .zshrc welcome message" }
-pay-respects = { cargo = true, desc = "Suggests a fix for the last failed command (a thefuck replacement); not in Homebrew" }
+pay-respects = { cargo = true, bin = "pay-respects", desc = "Suggests a fix for the last failed command (a thefuck replacement); not in Homebrew" }
 sops = { desc = "Encrypts this repo's secrets (sops-bootstrap.sh)" }
 age = { desc = "Keys sops encrypts this repo's secrets to (sops-bootstrap.sh)" }
 cargo-binstall = { desc = "Installs Rust binaries without building them (the cargo lines)" }
@@ -140,14 +148,14 @@ graphviz = { desc = "Graph visualization (dot)" }
 docker = { desc = "Docker CLI" }
 "postgresql@17" = { arch = "postgresql", desc = "PostgreSQL database server" }
 terraform = { brew = "hashicorp/tap/terraform", desc = "Infrastructure as code (left Homebrew core in 2024)" }
-flyctl = { desc = "Fly.io command-line tool" }
+flyctl = { bin = "flyctl", desc = "Fly.io command-line tool" }
 gcloud-cli = { cask = true, arch = "google-cloud-cli", desc = "Google Cloud CLI (gcloud, gsutil, bq; a cask, so not on Debian or Fedora)" }
 "pulumi/tap/esc" = { arch = false, desc = "Pulumi ESC: secrets and config management" }
-claude-code = { cask = true, desc = "Anthropic's Claude Code agent CLI (a cask, so not on Debian or Fedora)" }
-codex = { cask = true, arch = "openai-codex", desc = "OpenAI's coding agent CLI (a cask, so not on Debian or Fedora)" }
-gemini-cli = { desc = "Google's Gemini coding agent CLI" }
-opencode = { desc = "Open-source coding agent TUI (any model provider)" }
-ollama = { desc = "Runs large language models locally" }
+claude-code = { cask = true, bin = "claude", desc = "Anthropic's Claude Code agent CLI (a cask, so not on Debian or Fedora)" }
+codex = { cask = true, arch = "openai-codex", bin = "codex", desc = "OpenAI's coding agent CLI (a cask, so not on Debian or Fedora)" }
+gemini-cli = { bin = "gemini", desc = "Google's Gemini coding agent CLI" }
+opencode = { bin = "opencode", desc = "Open-source coding agent TUI (any model provider)" }
+ollama = { bin = "ollama", desc = "Runs large language models locally" }
 cargo-expand = { cargo = true, desc = "Shows code after macro expansion" }
 cargo-machete = { cargo = true, desc = "Finds unused dependencies" }
 cargo-outdated = { cargo = true, desc = "Lists outdated dependencies" }
@@ -189,7 +197,7 @@ bitwarden = { mas = 1352778147, desc = "Password manager" }
 obsidian = { cask = true, desc = "Markdown notes" }
 kindle = { mas = 302584613, arch = false, desc = "Ebooks" }
 transmission = { cask = true, arch = "transmission-gtk", desc = "BitTorrent client" }
-antigravity = { cask = true, desc = "Google Antigravity, an agent-first IDE" }
+antigravity = { cask = true, bin = "antigravity", desc = "Google Antigravity, an agent-first IDE" }
 github = { cask = true, arch = "github-desktop-bin", desc = "GitHub Desktop" }
 wireguard = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
 private-internet-access = { cask = true, arch = "piavpn-bin", desc = "Private Internet Access VPN client" }

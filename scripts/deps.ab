@@ -103,18 +103,121 @@ fun save_groups(saved: Text, picked: [Text]): Null? {
     echo("deps: saved the groups in {saved}")
 }
 
+// `packages` without the ones already installed, saying which those are, so a
+// rerun (after a failed install, say) doesn't reinstall or upgrade them. On
+// Arch pacman decides, so a package that provides the name counts too (Omarchy's
+// openai-codex-bin for openai-codex, neovim-nightly-bin for neovim); packages.toml's
+// `bin` catches ones installed outside any package manager.
+fun without_installed(packages: [Text]): [Text] {
+    const pacman_missing = missing_from_pacman(names_for(packages, "pacman"))
+    const formulae = brew_installed("--formula")
+    const casks = brew_installed("--cask")
+    const crates = cargo_installed()
+    const apps = mas_installed()
+    let kept = [Text]
+    let skipped = [Text]
+    for package in packages {
+        const f = split(package, "|")
+        const manager = field(f, 0)
+        const name = field(f, 1)
+        let installed = false
+        if {
+            manager == "installed" {
+                installed = true
+            }
+            manager == "pacman" {
+                installed = not array_contains(pacman_missing, name)
+            }
+            manager == "brew" {
+                installed = array_contains(formulae, last_part(name))
+            }
+            manager == "cask" {
+                installed = array_contains(casks, name)
+            }
+            manager == "cargo" {
+                installed = array_contains(crates, name)
+            }
+            manager == "mas" {
+                installed = array_contains(apps, name)
+            }
+            manager == "mise" {
+                trust $ mise where {name} >/dev/null 2>&1 $
+                installed = status() == 0
+            }
+        }
+        if installed {
+            skipped += [name]
+        } else {
+            kept += [package]
+        }
+    }
+    if len(skipped) > 0 {
+        echo("deps: already installed: {join(skipped, " ")}")
+    }
+    return kept
+}
+
+// The names pacman has nothing installed for (by name or by what it provides).
+fun missing_from_pacman(names: [Text]): [Text] {
+    if len(names) == 0 or not is_command("pacman") {
+        return names
+    }
+    const listed = trust $ eval "pacman -T {join(names, " ")}" $
+    let missing = [Text]
+    for name in split_lines(listed) {
+        if name != "" {
+            missing += [name]
+        }
+    }
+    return missing
+}
+
+// Installed formulae or casks (`kind` is --formula or --cask), by bare name.
+fun brew_installed(kind: Text): [Text] {
+    if not is_command("brew") {
+        return [Text]
+    }
+    return split_lines(trust $ brew list -1 {kind} 2>/dev/null $)
+}
+
+// The crates cargo install (or binstall) put in ~/.cargo/bin.
+fun cargo_installed(): [Text] {
+    if not is_command("cargo") {
+        return [Text]
+    }
+    return split_lines(trust $ cargo install --list 2>/dev/null | awk '/^[^ ]/ \{ print \$1 }' $)
+}
+
+// The App Store apps mas installed (or knows about), by id.
+fun mas_installed(): [Text] {
+    if not is_command("mas") {
+        return [Text]
+    }
+    return split_lines(trust $ mas list 2>/dev/null | awk '\{ print \$1 }' $)
+}
+
+// "tap/formula" names are listed by the formula alone.
+fun last_part(name: Text): Text {
+    const parts = split(name, "/")
+    const count = len(parts)
+    return parts[count - 1]
+}
+
 // Lists what's about to be installed and asks once (unless -y, or there's no
 // terminal to ask on); every installer after this runs without asking. Then
 // takes the sudo password, so that comes now too and not mid-install.
 fun confirm_install(packages: [Text]): Null? {
+    if len(packages) == 0 {
+        echo("deps: everything is installed already")
+        return null
+    }
     echo("deps: about to install")
-    for manager in ["pacman", "brew", "cask", "mas", "cargo"] {
+    for manager in ["pacman", "brew", "cask", "mas", "cargo", "mise"] {
         const names = names_for(packages, manager)
         if len(names) > 0 {
             echo("  {manager}: {join(names, " ")}")
         }
     }
-    echo("  mise: erlang elixir")
     const yes = trust env_var_get("usage_yes") == "true"
     if not yes and is_interactive() {
         if not input_confirm("Install these?") {
@@ -137,6 +240,10 @@ fun mac_deps(packages: [Text]): Null? {
 }
 
 fun arch_deps(packages: [Text]): Null? {
+    const names = names_for(packages, "pacman")
+    if len(names) == 0 {
+        return null
+    }
     if not is_command("yay") and not is_command("paru") {
         if is_dry_run() {
             echo("install_yay")
@@ -150,21 +257,43 @@ fun arch_deps(packages: [Text]): Null? {
     if not is_command("yay") {
         aur_helper = "paru --noconfirm --skipreview"
     }
-    run("{aur_helper} -S --needed {join(names_for(packages, "pacman"), " ")}")?
+    run("{aur_helper} -S --needed {join(names, " ")}")?
 }
 
 // Debian and Fedora: just what Homebrew needs from the system, then everything
 // else from Homebrew; their own repos lack or lag many of these (jj, starship,
 // sops, difftastic, lazygit...).
 fun debian_deps(packages: [Text]): Null? {
-    run("sudo apt-get update")?
-    run("sudo apt-get install -y build-essential procps curl file git")?
+    let missing = [Text]
+    for name in ["build-essential", "procps", "curl", "file", "git"] {
+        trust $ dpkg-query -W -f='\$\{Status}' {name} 2>/dev/null | grep -q "install ok installed" $
+        if status() != 0 {
+            missing += [name]
+        }
+    }
+    if len(missing) > 0 {
+        run("sudo apt-get update")?
+        run("sudo apt-get install -y {join(missing, " ")}")?
+    }
     brew_deps(packages)?
 }
 
 fun fedora_deps(packages: [Text]): Null? {
-    run("sudo dnf group install -y development-tools")?
-    run("sudo dnf install -y procps-ng curl file git")?
+    // dnf5 lists the group by its id (development-tools), dnf4 by its name.
+    trust $ dnf group list --installed 2>/dev/null | grep -Eqi '^ *development[- ]tools( |\$)' $
+    if status() != 0 {
+        run("sudo dnf group install -y development-tools")?
+    }
+    let missing = [Text]
+    for name in ["procps-ng", "curl", "file", "git"] {
+        trust $ rpm -q {name} >/dev/null 2>&1 $
+        if status() != 0 {
+            missing += [name]
+        }
+    }
+    if len(missing) > 0 {
+        run("sudo dnf install -y {join(missing, " ")}")?
+    }
     brew_deps(packages)?
 }
 
@@ -220,7 +349,9 @@ main {
     }
     installing += picked
     echo("deps: installing {join(installing, " ")}")
-    const packages = packages_for(root, os, installing)?
+    // Erlang and Elixir come from mise, whatever the OS.
+    const beam = ["mise|erlang", "mise|elixir"]
+    const packages = without_installed(packages_for(root, os, installing)? + beam)
     if not is_dry_run() {
         confirm_install(packages)?
     }
@@ -252,5 +383,11 @@ main {
     }
 
     // Erlang and Elixir: the latest stable releases, pinned in ~/.config/mise/config.toml.
-    run("mise use -g erlang@latest elixir@latest")?
+    let tools = [Text]
+    for tool in names_for(packages, "mise") {
+        tools += ["{tool}@latest"]
+    }
+    if len(tools) > 0 {
+        run("mise use -g {join(tools, " ")}")?
+    }
 }

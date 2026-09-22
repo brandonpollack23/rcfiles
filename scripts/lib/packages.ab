@@ -3,6 +3,7 @@
 
 import { split, split_lines, join } from "std/text"
 import { array_contains } from "std/array"
+import { is_command } from "std/env"
 
 // yq (mikefarah's, installed by mise) on packages.toml.
 fun packages_yq(root: Text, expr: Text): Text? {
@@ -15,6 +16,15 @@ pub fun all_groups(root: Text): [Text]? {
     return split_lines(listed)
 }
 
+// The field at `i`, or "" past the end: split drops trailing empty fields.
+pub fun field(fields: [Text], i: Int): Text {
+    const count = len(fields)
+    if i < count {
+        return fields[i]
+    }
+    return ""
+}
+
 // The group names alone.
 pub fun group_names(groups: [Text]): [Text] {
     let names = [Text]
@@ -24,26 +34,17 @@ pub fun group_names(groups: [Text]): [Text] {
     return names
 }
 
-// One line per package: group|name|arch|brew|cask|mas|cargo, each option
+// One line per package: group|name|arch|brew|cask|mas|cargo|bin, each option
 // empty when it isn't set, and a list of Arch names joined with commas.
 const FLATTEN = join([
     ".packages | to_entries[] | .key as $group | .value | to_entries[] |",
     "[$group, .key] +",
-    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\"} * .value",
-    "  | [.arch, .brew, .cask, .mas, .cargo]",
+    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\", \"bin\": \"\"} * .value",
+    "  | [.arch, .brew, .cask, .mas, .cargo, .bin]",
     "  | (.[] | select(tag == \"!!seq\")) |= join(\",\")",
     "  | map(tostring))",
     "| join(\"|\")",
 ], " ")
-
-// The field at `i`, or "" past the end: split drops trailing empty fields.
-pub fun field(fields: [Text], i: Int): Text {
-    const count = len(fields)
-    if i < count {
-        return fields[i]
-    }
-    return ""
-}
 
 // "<manager>|<name>" for each comma-separated name.
 fun named(manager: Text, names: Text): [Text] {
@@ -97,14 +98,22 @@ pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, m
     return named("brew", brew)
 }
 
-// Every package in `groups`, sorted for `os`, as "<manager>|<name>" lines.
+// Every package in `groups`, sorted for `os`, as "<manager>|<name>" lines;
+// "installed|<name>" instead for one whose `bin` is already on PATH (installed
+// some other way, like its own installer or mise).
 pub fun packages_for(root: Text, os: Text, groups: [Text]): [Text]? {
     const listed = packages_yq(root, FLATTEN)?
     let found = [Text]
     for line in split_lines(listed) {
         const f = split(line, "|")
         if array_contains(groups, field(f, 0)) {
-            found += sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6))
+            const sorted = sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6))
+            const bin = field(f, 7)
+            if len(sorted) > 0 and bin != "" and is_command(bin) {
+                found += ["installed|{field(f, 1)}"]
+            } else {
+                found += sorted
+            }
         }
     }
     return found
