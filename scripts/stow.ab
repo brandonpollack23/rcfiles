@@ -1,10 +1,43 @@
 #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
-//MISE description="Link packages into $HOME (all of them if none are named)"
+//MISE description="Link packages into $HOME (all of them if none are named), asking what to do about files already there"
 //MISE wait_for=["deps"]
 //USAGE arg "[package]..." var=#true help="Packages to link (default: all)"
 
-import { usage_words } from "./lib/run.ab"
-import { all_packages, ensure_shared_dirs, stow } from "./lib/stow.ab"
+import { echo_error, input_prompt } from "std/env"
+import { join } from "std/text"
+import { is_interactive, usage_words } from "./lib/run.ab"
+import { all_packages, back_up, conflicts_for, dereference, ensure_shared_dirs, new_backup_dir, stow } from "./lib/stow.ab"
+
+// Stows `package` over `conflicts` the way the user picks. False when they
+// skip it, or there's no terminal to ask on.
+fun resolve(package: Text, conflicts: [Text], backup: Text): Bool? {
+    echo("stow: {package} would replace what's already in $HOME:")
+    for target in conflicts {
+        echo("  ~/{target}")
+    }
+    if not is_interactive() {
+        return false
+    }
+    echo("  [r]eplace: move them to {backup} and link the repo's files")
+    echo("  [a]dopt: move their contents into the repo, to review with 'jj diff'")
+    echo("  [s]kip: leave {package} unstowed (the default)")
+    const answer = input_prompt("  [r]eplace, [a]dopt or [s]kip? ")
+    if {
+        answer == "r" or answer == "R" {
+            back_up(conflicts, backup)?
+            stow("-R", [package])?
+        }
+        answer == "a" or answer == "A" {
+            dereference(conflicts, backup)?
+            stow("--adopt", [package])?
+            echo("stow: adopted {package}; review it with 'jj diff' and restore what you don't want")
+        }
+        else {
+            return false
+        }
+    }
+    return true
+}
 
 main {
     let packages = usage_words("usage_package")
@@ -12,5 +45,20 @@ main {
         packages = all_packages()
     }
     ensure_shared_dirs()?
-    stow("-R", packages)?
+    const backup = new_backup_dir()
+    let skipped = [Text]
+    for package in packages {
+        const conflicts = conflicts_for(package)
+        if len(conflicts) == 0 {
+            stow("-R", [package])?
+        } else {
+            const stowed = resolve(package, conflicts, backup)?
+            if not stowed {
+                skipped += [package]
+            }
+        }
+    }
+    if len(skipped) > 0 {
+        echo_error("stow: skipped {join(skipped, " ")}; run 'mise run stow <package>' in a terminal to choose", 1)
+    }
 }

@@ -1,0 +1,20 @@
+import { assert_eq } from "std/test"
+import { stow_conflicts } from "../stow.ab"
+
+test "stow_conflicts reads the targets out of stow's warnings" {
+    const output = "WARNING! stowing starship would cause conflicts:
+  * cannot stow src/r/dotfiles/starship/.config/starship.toml over existing target .config/starship.toml since neither a link nor a directory and --adopt not specified
+  * existing target is not owned by stow: .zshrc
+All operations aborted."
+    const found = stow_conflicts(output)
+    const n = len(found)
+    assert_eq(n, 2)?
+    assert_eq(found[0], ".config/starship.toml")?
+    assert_eq(found[1], ".zshrc")?
+}
+
+test "stow_conflicts finds nothing in a clean dry run" {
+    const found = stow_conflicts("LINK: .tmux.conf => src/r/dotfiles/tmux/.tmux.conf")
+    const n = len(found)
+    assert_eq(n, 0)?
+}

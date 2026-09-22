@@ -3,10 +3,15 @@
 //USAGE arg "<package>..." var=#true
 
 import { usage_words } from "./lib/run.ab"
-import { ensure_shared_dirs, stow } from "./lib/stow.ab"
+import { conflicts_for, dereference, ensure_shared_dirs, new_backup_dir, stow } from "./lib/stow.ab"
 
 main {
     ensure_shared_dirs()?
-    stow("--adopt", usage_words("usage_package"))?
+    const packages = usage_words("usage_package")
+    const backup = new_backup_dir()
+    for package in packages {
+        dereference(conflicts_for(package), backup)?
+    }
+    stow("--adopt", packages)?
     echo("Adopted. The repo now has the files that were in $HOME; review them with 'jj diff' and restore what you don't want.")
 }

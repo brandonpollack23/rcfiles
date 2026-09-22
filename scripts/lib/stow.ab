@@ -3,6 +3,7 @@
 
 import { env_var_get } from "std/env"
 import { split_lines, join } from "std/text"
+import { dir_create } from "std/fs"
 import { run, quoted } from "./run.ab"
 import { home } from "./paths.ab"
 
@@ -31,4 +32,46 @@ pub fun ensure_shared_dirs(): Null? {
 pub fun stow(flags: Text, packages: [Text]): Null? {
     const dir = quoted(dotfiles())
     run("stow -v -d {dir} -t ~ {flags} {join(packages, " ")}")?
+}
+
+// The targets (relative to $HOME) that a dry run's output says are in the way.
+pub fun stow_conflicts(output: Text): [Text] {
+    const found = trust $ printf '%s\n' "{output}" | sed -n -e 's/.* over existing target \(.*\) since .*/\1/p' -e 's/.*existing target is not owned by stow: //p' -e 's/.*existing target is neither a link nor a directory: //p' $
+    return split_lines(found)
+}
+
+// What in $HOME would stop `package` from stowing.
+pub fun conflicts_for(package: Text): [Text] {
+    const dir = dotfiles()
+    const output = trust $ stow -n -v -d "{dir}" -t ~ -R "{package}" 2>&1 $
+    return stow_conflicts(output)
+}
+
+// A fresh directory to move replaced files into.
+pub fun new_backup_dir(): Text {
+    const stamp = trust $ date +%Y%m%d-%H%M%S $
+    return "{home()}/.local/state/rcfiles/backup/{stamp}"
+}
+
+// Moves each target out of $HOME into `backup`, keeping its path.
+pub fun back_up(targets: [Text], backup: Text): Null? {
+    const base = home()
+    for target in targets {
+        const parent = trust $ dirname "{backup}/{target}" $
+        dir_create(parent)?
+        $ mv "{base}/{target}" "{backup}/{target}" $?
+    }
+}
+
+// --adopt only takes plain files, so swap each symlinked target for a copy of
+// what it points at (the link itself goes to `backup`).
+pub fun dereference(targets: [Text], backup: Text): Null? {
+    const base = home()
+    for target in targets {
+        trust $ test -L "{base}/{target}" $
+        if status() == 0 {
+            back_up([target], backup)?
+            trust $ cp -RL "{backup}/{target}" "{base}/{target}" $
+        }
+    }
 }

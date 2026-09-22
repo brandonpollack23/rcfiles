@@ -59,6 +59,9 @@ Each of these was hit writing this repo's scripts.
 - **Arrays word-split** when interpolated into a command, and a `Text` is one
   word. To pass several arguments, `join` them and go through `run()` (eval).
 - Reserved words that bite as names: `lines`, `lock`, `sudo`, `failed`.
+- **A `?` call in a condition runs before the whole `if`**, not when that
+  branch is reached: `if { a { } f()? { } }` calls `f` even when `a` holds.
+  Bind the result first (`const ok = f()?`) inside the branch that needs it.
 - `if { cond { } cond { } else { } }` is the if-chain; `status()` needs the
   parentheses; `echo_error(msg, code)` exits when `code` is not 0.
 - Under `amber run`, `args[0]` is `bash`, not the script. Tasks get the repo
