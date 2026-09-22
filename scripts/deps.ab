@@ -335,6 +335,43 @@ fun ensure_rust(): Null? {
     }
 }
 
+// binstall asks the GitHub API for release assets, and without a token it gets
+// 60 requests an hour, which a handful of crates uses up. It only finds gh's
+// token in hosts.yml, and gh keeps it in the keyring, so export it here. On a
+// fresh machine gh isn't logged in yet (setup does that, after deps), so log
+// in now if there's a terminal to do it on.
+fun export_github_token(): Null {
+    const have = trust env_var_get("GITHUB_TOKEN") + trust env_var_get("GH_TOKEN")
+    if have != "" or not is_command("gh") {
+        return null
+    }
+    trust $ gh auth status >/dev/null 2>&1 $
+    if status() != 0 {
+        if not is_interactive() {
+            echo("deps: gh is not logged in, so cargo binstall may be rate limited by GitHub")
+            return null
+        }
+        echo("deps: log in to GitHub so cargo binstall isn't rate limited")
+        trust $ gh auth login $
+    }
+    const token = trust $ gh auth token 2>/dev/null $
+    if token != "" {
+        trust $ export GITHUB_TOKEN="{token}" $
+    }
+}
+
+// mise only has prebuilt Erlang for the Mac and Ubuntu; anywhere else it falls
+// back to building with kerl, which fails ("autoconf: no input file"). Bob's
+// Ubuntu 24.04 builds run on Arch, Debian and Fedora too (they need glibc,
+// OpenSSL 3 and ncurses 6). Never build: fail instead, so it's noticed.
+// These go in ~/.config/mise/config.toml, so `mise up` keeps using them.
+fun prebuilt_erlang(os: Text): Null? {
+    if os != "mac" {
+        run("mise settings set erlang.precompiled_os ubuntu-24.04")?
+    }
+    run("mise settings set erlang.compile false")?
+}
+
 main {
     set_dry_run(trust env_var_get("usage_dry_run") == "true")
     const root = repo_root()
@@ -379,6 +416,9 @@ main {
     }
     const crates = names_for(packages, "cargo")
     if len(crates) > 0 {
+        if not is_dry_run() {
+            export_github_token()
+        }
         run("cargo binstall -y {join(crates, " ")}")?
     }
 
@@ -388,6 +428,7 @@ main {
         tools += ["{tool}@latest"]
     }
     if len(tools) > 0 {
+        prebuilt_erlang(os)?
         run("mise use -g {join(tools, " ")}")?
     }
 }

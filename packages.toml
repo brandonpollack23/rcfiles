@@ -159,7 +159,6 @@ ollama = { bin = "ollama", desc = "Runs large language models locally" }
 cargo-expand = { cargo = true, desc = "Shows code after macro expansion" }
 cargo-machete = { cargo = true, desc = "Finds unused dependencies" }
 cargo-outdated = { cargo = true, desc = "Lists outdated dependencies" }
-cargo-usage-rules = { cargo = true, desc = "Gathers dependencies' usage rules for coding agents" }
 cargo-watch = { cargo = true, desc = "Reruns cargo commands when files change" }
 
 [packages.tools]
@@ -170,7 +169,6 @@ fontforge = { desc = "Font editor" }
 pandoc = { arch = "pandoc-cli", desc = "Universal document converter" }
 typst = { desc = "Markup-based typesetting system" }
 presenterm = { desc = "Slideshows from markdown in the terminal" }
-mdcat = { cargo = true, desc = "Renders markdown in the terminal" }
 asciinema = { desc = "Record and share terminal sessions" }
 sevenzip = { arch = "7zip", desc = "7-Zip archiver (7zz)" }
 watch = { arch = "procps-ng", desc = "Runs a command repeatedly, showing its output" }
