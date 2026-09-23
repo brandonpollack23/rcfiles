@@ -5,6 +5,7 @@
 #   rename  name the active workspace; an empty name puts its number back
 #   move    send the active window to a picked workspace, or to a new one
 #           named on the spot, and follow it
+#   move silent  the same, staying on this workspace
 
 set -euo pipefail
 
@@ -20,7 +21,7 @@ rename() {
 }
 
 move() {
-  hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$1' }))" >/dev/null
+  hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$1', follow = $FOLLOW }))" >/dev/null
 }
 
 case ${1:-} in
@@ -31,6 +32,8 @@ rename)
   rename "$id" "$name"
   ;;
 move)
+  FOLLOW=true
+  [[ ${2:-} == silent ]] && FOLLOW=false
   current=$(hyprctl activeworkspace -j | jq -r '.id')
   choice=$({
     hyprctl workspaces -j | jq -r --argjson current "$current" '
@@ -52,7 +55,7 @@ move)
   fi
   ;;
 *)
-  echo "usage: $0 rename|move" >&2
+  echo "usage: $0 rename|move [silent]" >&2
   exit 2
   ;;
 esac

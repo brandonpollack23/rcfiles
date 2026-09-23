@@ -61,11 +61,13 @@ o.bind("SUPER + I", "Passwords", { launch = "bitwarden-desktop", focus = "^Bitwa
 
 -- SUPER + $ names the workspace. Binds match the unshifted key, so that's
 -- SUPER + SHIFT + 4, taken from Omarchy's move to workspace 4; SUPER + M, or
--- SUPER + SHIFT + ALT + 4 without following the window, still get there.
+-- SUPER + ALT + M and SUPER + SHIFT + ALT + 4 without following the window,
+-- still get there.
 -- Omarchy binds the number row by keycode, and code:13 is the 4 key.
 hl.unbind("SUPER + SHIFT + code:13")
 o.bind("SUPER + SHIFT + code:13", "Name workspace", "hypr-workspace-menu rename")
 o.bind("SUPER + M", "Move window to a picked workspace", "hypr-workspace-menu move")
+o.bind("SUPER + ALT + M", "Move window silently to a picked workspace", "hypr-workspace-menu move silent")
 
 -- Move to the scratchpad on SUPER + SHIFT + S, next to SUPER + S that shows
 -- it, instead of Omarchy's SUPER + ALT + S. It replaces the Google Maps web app.
