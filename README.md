@@ -89,7 +89,7 @@ compiler quirks to know about when editing them.
   other programs' files stay out.
 - **Plugins** have no submodules or vendored copies. zsh plugins are listed in
   `dotfiles/zsh/.zsh_plugins.txt` (antidote; OMZ plugins via use-omz), tmux
-  plugins in `.tmux.conf` (tpm), neovim plugins in `lua/plugins/` (pinned by
+  plugins in `.config/tmux/tmux.conf` (tpm), neovim plugins in `lua/plugins/` (pinned by
   `lazy-lock.json`). Completions come from plugins, system packages, or
   `lazy_completion` in the zshrc.
 - **Prompt** is [starship](https://starship.rs) plus

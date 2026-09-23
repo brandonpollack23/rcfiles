@@ -1,12 +1,11 @@
 #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
 //MISE description="Update zsh, tmux and neovim plugins (neovim's new versions land in lazy-lock.json)"
 
-import { home, xdg_data_home } from "./lib/paths.ab"
+import { xdg_config_home, xdg_data_home } from "./lib/paths.ab"
 
 main {
     const antidote = "{xdg_data_home()}/antidote"
-    const base = home()
     $ zsh -c "source {antidote}/antidote.zsh && antidote update" $?
-    $ "{base}/.tmux/plugins/tpm/bin/update_plugins" all $?
+    $ "{xdg_config_home()}/tmux/plugins/tpm/bin/update_plugins" all $?
     $ nvim --headless "+Lazy! sync" +qa $?
 }
