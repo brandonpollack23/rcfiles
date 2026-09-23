@@ -17,7 +17,6 @@ ohmyzsh/ohmyzsh path:plugins/common-aliases
 ohmyzsh/ohmyzsh path:plugins/docker
 ohmyzsh/ohmyzsh path:plugins/docker-compose
 ohmyzsh/ohmyzsh path:plugins/emoji
-ohmyzsh/ohmyzsh path:plugins/fzf
 ohmyzsh/ohmyzsh path:plugins/gcloud
 ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/git-extras
@@ -48,6 +47,10 @@ MichaelAquilina/zsh-you-should-use
 digitalraven/omz-homebrew conditional:is-macos
 
 Aloxaf/fzf-tab pre:run-compinit
+# After fzf-tab: fzf-tab keeps whatever tab was bound to when it loads to do
+# the completing, and fzf's own tab widget hands back to fzf-tab, so fzf-tab
+# must not see it or tab recurses until FUNCNEST.
+ohmyzsh/ohmyzsh path:plugins/fzf
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search

@@ -3,8 +3,9 @@
 # zmodload zsh/zprof
 
 # Detect if in chroot (good for prompt and cros development). Not by root's
-# inode: it is 2 on ext4 and APFS but 256 on btrfs.
-if command -v systemd-detect-virt >/dev/null && systemd-detect-virt --quiet --chroot; then
+# inode: it is 2 on ext4 and APFS but 256 on btrfs. As a user it can't read
+# /proc/1/root and says "Permission denied"; that exits 1 (not a chroot) too.
+if command -v systemd-detect-virt >/dev/null && systemd-detect-virt --quiet --chroot 2>/dev/null; then
     export HOST="$HOST-chroot"
 fi
 
@@ -66,9 +67,12 @@ antidote load
 
 # Keybinds
 
-# vi-mode resets keymaps, so restore fzf-tab after all plugins have loaded.
-bindkey -M emacs '^I' fzf-tab-complete
-bindkey -M viins '^I' fzf-tab-complete
+# vi-mode resets keymaps, so restore tab after all plugins have loaded. Tab
+# goes to fzf's completion (the omz fzf plugin loads it), which handles the
+# `**<Tab>` trigger itself and hands every other tab to fzf-tab.
+fzf_default_completion=fzf-tab-complete
+bindkey -M emacs '^I' fzf-completion
+bindkey -M viins '^I' fzf-completion
 bindkey '^R' fzf-history-widget
 
 # History search
@@ -180,6 +184,8 @@ lazy_completion flyctl "flyctl completion zsh"
 lazy_completion fly "flyctl completion zsh"
 lazy_completion esc "esc completion zsh"
 lazy_completion pnpm "pnpm completion zsh"
+# fzf ships no completion for its own options; zsh reads them from --help.
+compdef _gnu_generic fzf
 # JJ Workspace switcher
 function jjws() {
   local selection
