@@ -63,10 +63,14 @@ function M.apply(id)
   pcall(hl.dispatch, hl.dsp.layout("mfact exact " .. mfact))
 end
 
--- Deferred so a changed rule or a new window is in the layout by then.
-function M.applySoon(id)
+-- Deferred so a changed rule or a new window is in the layout by then. `after`
+-- runs once it's sent.
+function M.applySoon(id, after)
   hl.timer(function()
     M.apply(id)
+    if after then
+      after()
+    end
   end, { timeout = 20, type = "oneshot" })
 end
 

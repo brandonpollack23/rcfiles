@@ -98,8 +98,11 @@ function M.cycle()
     end
   end
   M.use(id, next)
-  save(id, next)
-  master.applySoon(id)
+  -- Saved only after the preset is sent: writing the file makes Hyprland
+  -- reload its config, and the reload drops applySoon's pending timer.
+  master.applySoon(id, function()
+    save(id, next)
+  end)
   hl.notification.create({ text = "Workspace layout: " .. M.presets[next].label, duration = 1500 })
 end
 
