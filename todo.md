@@ -152,7 +152,7 @@ replacing is Omarchy's own, and it may carry more than the line I already have.
       include~~ — **removed**: I want `theme = Dark Modern`, not the Omarchy
       theme. Ghostty now ignores the theme picker. Still diff their
       `shell-integration-features` / `async-backend` (§6).
-- [ ] `dotfiles/nvim/.config/nvim/lua/plugins/theme.lua` — loads Omarchy's
+- [x] `dotfiles/nvim/.config/nvim/lua/plugins/theme.lua` — loads Omarchy's
       generated LazyVim spec when it exists. Theirs ships as a _relative
       symlink_ to the same file, which a stow package can't carry (the target
       would resolve from the repo), hence a `dofile`. **Against the backup:**
@@ -162,7 +162,7 @@ replacing is Omarchy's own, and it may carry more than the line I already have.
       the generated spec and my `colorschemes.lua` both set LazyVim's
       `colorscheme`. Keep sonokai (delete `theme.lua`) or let the theme picker
       drive nvim (drop the `colorscheme` opt). Can't have both.
-- [ ] Not pre-applied, because I don't package these: btop wants
+- [x] Not pre-applied, because I don't package these: btop wants
       `color_theme = "current"` plus a `themes/current.theme` symlink,
       alacritty/kitty/foot want their own include line. If I ever add a package
       for one, it needs that line too.
@@ -217,7 +217,7 @@ they want opposite fixes:
       (`post-boot`, `post-update`, `pre-refresh-pacman`, `theme-set`,
       `font-set`, `battery-low`) ship with a `.sample` inside, so they're real
       directories and my hook files link in individually. Nothing to do.
-- [ ] ⚠️ **Know the two ways Omarchy mutates a file, because they differ.**
+- [x] ⚠️ **Know the two ways Omarchy mutates a file, because they differ.**
       Verified in its scripts:
   - **Replaces the symlink** (`jq > tmp; mv`, plain `sed -i`): the link is gone,
     my repo file survives untouched, and the file quietly stops being stowed.
@@ -256,22 +256,22 @@ Memory Alpha, and the keys also to a password manager):
 
 ## 4. Install on the real machine
 
-- [ ] Check what's on `sda` ("Emotion_Chip"). Move anything worth keeping to
+- [x] Check what's on `sda` ("Emotion_Chip"). Move anything worth keeping to
       Memory Alpha, since the install wipes it.
-- [ ] recover stuff rom memory alpha backup dir
-- [ ] Turn Secure Boot off in firmware (Omarchy requires it off). Note: the
+- [x] recover stuff rom memory alpha backup dir
+- [x] Turn Secure Boot off in firmware (Omarchy requires it off). Note: the
       disk-encryption password can't be typed on a Bluetooth keyboard at boot.
-- [ ] Boot the ISO and do a full-disk install onto **sda: the 931.5G Samsung 870
+- [x] Boot the ISO and do a full-disk install onto **sda: the 931.5G Samsung 870
       QVO, not the 1.9T Sabrent.** Check size and model twice. Unplug the NVMe
       if that's easy.
-- [ ] Check that the old Arch install still boots from the firmware boot menu
+- [x] Check that the old Arch install still boots from the firmware boot menu
       (and `limine-scan` if I want it in Limine's menu).
-- [ ] NVIDIA (RTX 4080): the installer should pick `nvidia-open-dkms`. Check
+- [x] NVIDIA (RTX 4080): the installer should pick `nvidia-open-dkms`. Check
       Hyprland, a game and suspend/resume.
-- [ ] Clone rcfiles, run the installer, stow.
-- [ ] back up memory alpha on current disk and then obliterate it to new fs and
+- [x] Clone rcfiles, run the installer, stow.
+- [x] back up memory alpha on current disk and then obliterate it to new fs and
       copy back
-- [ ] run steam game installer
+- [x] run steam game installer
 
 ## 6. First hour: shell, terminal, defaults
 
