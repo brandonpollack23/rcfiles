@@ -206,3 +206,4 @@ teamspeak-client = { cask = true, arch = "teamspeak3", desc = "Voice chat" }
 
 [packages.gaming]
 steam = { cask = true, desc = "Games" }
+steamcmd = { desc = "Command line interface to steam" }
