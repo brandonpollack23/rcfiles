@@ -89,6 +89,10 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
 - [x] zsh: redo in `dotfiles/zsh/.zshrc` whatever Omarchy's bash sets up for me.
       The list of what that is, and what collides, is in §18.
 
+### restore backups
+
+in the memory alpha backups dir and clean it up.
+
 ### Stow packages for the Omarchy files
 
 The manual's dotfiles page says which files under `~/.config` are _mine_ rather
@@ -233,46 +237,27 @@ they want opposite fixes:
 Nothing on the NVMe gets touched by the plan, but back these up anyway (to
 Memory Alpha, and the keys also to a password manager):
 
-- [ ] Keys: `~/.ssh`, `~/.gnupg`, `~/.config/sops/age/keys.txt` (without it
+- [x] Keys: `~/.ssh`, `~/.gnupg`, `~/.config/sops/age/keys.txt` (without it
       `secrets.sops.env` can't be decrypted; the master password also works
       through `sops-bootstrap`).
-- [ ] Push every repo in `~/src`: find anything with uncommitted, unpushed or
+- [x] Push every repo in `~/src`: find anything with uncommitted, unpushed or
       jj-only work before it lives only on an old disk.
 - [ ] `~/.claude` (settings, memory), `~/Documents`, `~/Videos`, `~/Pictures`,
       `~/Android`, game saves outside Steam Cloud (`steamapps/compatdata` 8.4G,
       `~/.local/share/Larian Studios`, lutris, bottles).
-- [ ] Note the services I run so I can re-enable them:
+- [x] Note the services I run so I can re-enable them:
   - user: syncthing, timewsync timer, livebook, ydotool
   - system: docker, ollama, tailscaled, piavpn, sshd, nix-daemon (Determinate
     Nix), waydroid, the Google Drive mount unit
-- [ ] Copy `/etc/fstab` and the `mnt-google_drive-*.mount` unit for reference.
-- [ ] Look through libvirt VMs, docker volumes and ollama models, and keep the
+- [x] Copy `/etc/fstab` and the `mnt-google_drive-*.mount` unit for reference.
+- [x] Look through libvirt VMs, docker volumes and ollama models, and keep the
       ones worth keeping.
-
-## 3. Try Omarchy in a VM
-
-- [ ] Get the Omarchy 4 ISO (omarchy.org).
-- [ ] Create a virt-manager/QEMU VM: UEFI (OVMF, no Secure Boot), q35, host CPU,
-      8G+ RAM, 60G disk, Virtio video **with 3D acceleration** (Spice, OpenGL
-      on). Hyprland crashes at login without GL. Fallback:
-      `hl.env("LIBGL_ALWAYS_SOFTWARE", "1")` in `hyprland.lua`.
-- [ ] Set the scale to 1 in `~/.config/hypr/monitors.lua` (§17; Omarchy assumes
-      HiDPI).
-- [ ] Use it plain for a day to learn their keys (`SUPER+K`) before changing
-      anything.
-- [ ] Clone rcfiles, run the new installer and stow the configs. Stow will stop
-      on the files Omarchy already wrote — §1's table says which, and whether to
-      adopt or replace each. Confirm the real conflict list matches it.
-- [ ] Work through §§6-19 in order: terminal and shell, then bindings, then
-      layouts, then the rest. Commit as I go.
-- [ ] Test the hyprpm plugins (Hyprspace fork, hyprfocus) and hypr-persist.
-- [ ] Destroy the VM and install fresh from rcfiles once more, to prove it works
-      from zero.
 
 ## 4. Install on the real machine
 
 - [ ] Check what's on `sda` ("Emotion_Chip"). Move anything worth keeping to
       Memory Alpha, since the install wipes it.
+- [ ] recover stuff rom memory alpha backup dir
 - [ ] Turn Secure Boot off in firmware (Omarchy requires it off). Note: the
       disk-encryption password can't be typed on a Bluetooth keyboard at boot.
 - [ ] Boot the ISO and do a full-disk install onto **sda: the 931.5G Samsung 870
@@ -283,29 +268,9 @@ Memory Alpha, and the keys also to a password manager):
 - [ ] NVIDIA (RTX 4080): the installer should pick `nvidia-open-dkms`. Check
       Hyprland, a game and suspend/resume.
 - [ ] Clone rcfiles, run the installer, stow.
-
-## 5. Bring the data across (no re-downloads)
-
-- [ ] Mount the old NVMe partition read-write with an fstab line:
-      `UUID=f99f8c9a-c34c-4f80-8d75-7864b8c4860b /mnt/old ext4 defaults,nofail 0 2`.
-      My user should get uid 1000 again, so the file ownership matches.
-- [ ] Add Memory Alpha to fstab too (see the old fstab line).
-- [ ] Steam, keeping the games on the NVMe:
-  1. Install Steam (Install > Gaming > Steam) and log in.
-  2. Steam > Settings > Storage > add a library at `/mnt/old/SteamLibrary`
-     (Steam creates `steamapps/` in it).
-  3. Close Steam. Move the games into it (same filesystem, so this is instant):
-     `mv /mnt/old/home/brpol/.local/share/Steam/steamapps/{common,workshop,compatdata,appmanifest_*.acf} /mnt/old/SteamLibrary/steamapps/`
-     Skip `shadercache`; it rebuilds.
-  4. Start Steam. The games should show as installed; if one wants to download,
-     "Verify integrity" and it only fetches the differences. Try it with one
-     small game first.
-  - This breaks Steam on the old install. That's fine at this point; moving the
-    files back undoes it.
-- [ ] `~/src`: `rsync -a /mnt/old/home/brpol/src/ ~/src/` (25G, local and fast).
-      Recreate the mise, uv and pnpm caches rather than copying them.
-- [ ] Re-enable the services from §2, restore the keys, and log in to Chrome,
-      Tailscale, PIA and syncthing.
+- [ ] back up memory alpha on current disk and then obliterate it to new fs and
+      copy back
+- [ ] run steam game installer
 
 ## 6. First hour: shell, terminal, defaults
 
