@@ -2,11 +2,11 @@
 
 Goal: move this machine to Omarchy 4 (Arch + Hyprland) and restart the rcfiles
 from scratch, without losing anything or re-downloading Steam. §§0-5 are the
-move itself; §§6-19 are everything to set up once it boots, checked against
+move itself; §§6-18 are everything to set up once it boots, checked against
 **Omarchy 4.0.4 "Quattro"** (Sep 2026): repo `github.com/omacom/omarchy`, manual
 at omarchy.org/manual.
 
-In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerned:
+In §§6-18, where a feature of my old `.config/hypr` + waybar setup is concerned:
 
 - ✅ Omarchy does it: learn its version and drop mine
 - 🟡 partly: needs a setting or a small port
@@ -65,11 +65,11 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
       install. eg steam is for gaming, servers wont need it. so there should be
       core, mac only, gaming, etc. if we can we should try to not have the
       brewfile and derive from a single source of truth.
-- [ ] Hyprland bankruptcy: `.config/hypr`, waybar, swaync, swayosd, l1p0-menu,
+- [x] Hyprland bankruptcy: `.config/hypr`, waybar, swaync, swayosd, l1p0-menu,
       hyprlock/hypridle stay on this branch for reference only. The new `hypr/`
       stow package holds only the Omarchy override files (`bindings.lua`,
       `looknfeel.lua`, `input.lua`, `monitors.lua`, `autostart.lua`) plus the
-      modules ported in §§7-19.
+      modules ported in §§7-18.
 - [x] Installer that installs every package I always want (AUR included):
   - [x] Add an "Omarchy" platform next to Arch/Manjaro/Debian. It uses `yay` (or
         `omarchy pkg add` / `omarchy pkg drop`), skips everything Omarchy
@@ -91,8 +91,8 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
 
 ### restore backups
 
-- reformat both other drives same as nvme0n1
-- generate darcula theme
+- [ ] reformat both other drives same as nvme0n1
+- [x] generate darcula theme
 
 ### Stow packages for the Omarchy files
 
@@ -200,7 +200,7 @@ they want opposite fixes:
 | `~/.config/omarchy/` subdirs                      | **Silent-leak risk → fix `ensure_shared_dirs()`.** Omarchy writes `themes/`, `plugins/` and `backgrounds/` in here (the active-theme pointer is `~/.local/state/omarchy/current`, so that one is out of the way). With the parents pre-created, only the things I fully own get directory links (`themes/<mine>`, `plugins/<mine>`, `hooks/<event>.d`) and Omarchy's are siblings — which is what I want.                                                                                                                                                                    |
 | `~/.config/uwsm/env.d`                            | Same treatment: pre-create it, so my env file is a file link.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `~/.config/omarchy/extensions/omarchy-menu.jsonc` | **Expected conflict, adopt.** Omarchy ships this file, and my §12 entries are meant to extend it rather than replace it — so take theirs as the baseline and add to it.                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `~/.config/git/config`                            | **No conflict, and theirs is inert.** Omarchy ships aliases (`co`/`br`/`ci`/`st`) and `pull.rebase`, `push.autoSetupRemote`, `diff.algorithm=histogram`, `rerere.enabled` there — but git **ignores `$XDG_CONFIG_HOME/git/config` entirely when `~/.gitconfig` exists** (tested), and mine is stowed. So none of it applies. The ones I want (`pull.rebase`, histogram diff, `push.autoSetupRemote`, `rerere`) are in my `.gitconfig` now.                                                                                                                                                                      |
+| `~/.config/git/config`                            | **No conflict, and theirs is inert.** Omarchy ships aliases (`co`/`br`/`ci`/`st`) and `pull.rebase`, `push.autoSetupRemote`, `diff.algorithm=histogram`, `rerere.enabled` there — but git **ignores `$XDG_CONFIG_HOME/git/config` entirely when `~/.gitconfig` exists** (tested), and mine is stowed. So none of it applies. The ones I want (`pull.rebase`, histogram diff, `push.autoSetupRemote`, `rerere`) are in my `.gitconfig` now.                                                                                                                                   |
 | `~/.gitconfig`                                    | **Expected conflict, replace.** `install/user/git.sh` runs `git config --global user.name/email` during install, so the file is there before I stow. Afterwards any `git config --global` writes _through_ the symlink into the repo — that's the existing design, and `~/.gitconfig.local` is the escape hatch for machine-specific bits.                                                                                                                                                                                                                                   |
 | `~/.XCompose`                                     | **Expected conflict, and don't just replace.** `install/user/xcompose.sh` writes it with `include "/usr/share/omarchy/default/xcompose"` plus `<Multi_key><space>n/e` macros for my name and email. That include _is_ Omarchy's emoji compose access, so **my version has to keep it** or `SUPER+CTRL+E`-adjacent compose stops working. Adopt theirs first, then add my own lines under it.                                                                                                                                                                                 |
 | `~/.config/ghostty/config`                        | **Expected conflict, replace — then add one line.** See §6; this is the one that fails silently.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -314,60 +314,66 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
 
 ## 7. Keybindings (do this before the rest of Hyprland)
 
-- [ ] Decide: `omarchy_default_bindings = false` and port my `keymaps.lua`, or
-      keep Omarchy's and `hl.unbind` the ones that clash. **Recommended: keep
-      Omarchy's defaults and unbind the clashes.** You keep their app, capture
-      and panel binds, and `SUPER+K` still lists everything as long as I bind
-      with `o.bind(keys, description, cmd)`. The documented shape is
-      `hl.unbind("SUPER + SHIFT + O")` followed by my own `o.bind(...)`, both in
-      `bindings.lua`.
+- [x] Decide: `omarchy_default_bindings = false` and port my `keymaps.lua`, or
+      keep Omarchy's and `hl.unbind` the ones that clash. **Kept Omarchy's
+      defaults.** `bindings.lua` does `hl.unbind(...)` and then
+      `o.bind(keys, description, cmd)` for each clash, so the keybinding list
+      (now `SUPER+?`) still shows everything.
 - [ ] Clashes to resolve (mine → Omarchy's use of the key):
-  - `SUPER+h/j/k/l` focus → Omarchy: `SUPER+J` togglesplit, `SUPER+K` keybind
-    cheatsheet, `SUPER+L` dwindle/scrolling toggle
-  - `SUPER+V` float → Omarchy: paste (`SUPER+T` is float)
-  - `SUPER+T` terminal → Omarchy: `SUPER+Return` (my `SUPER+Return` is
-    swapwithmaster)
-  - `SUPER+S` my hidden-workspace toggle → Omarchy: scratchpad (same idea)
-  - `SUPER+TAB` next tab in group → Omarchy: next workspace
-  - `SUPER+/` keybind search → Omarchy: display scale
-  - `SUPER+R` launcher → Omarchy: `SUPER+Space`
-  - `SUPER+SHIFT+R` system menu → Omarchy: `SUPER+Escape`
-  - `SUPER+E` file manager → Omarchy: `SUPER+SHIFT+F`
-  - `SUPER+N` notification center → Omarchy: `SUPER+SHIFT+ALT+,` (history)
-  - `SUPER+SHIFT+Escape` lock → Omarchy: `SUPER+CTRL+L`
-  - `SUPER+Q` close: check what Omarchy binds for close
-  - `SUPER+W`, `SUPER+M`, `SUPER+O`, `SUPER+I`, `SUPER+D`, `SUPER+G`: check each
-    against `omarchy menu keybindings --print`
+  - [x] `SUPER+h/j/k/l` focus, `SUPER+SHIFT+h/j/k/l` swap. Omarchy's togglesplit
+        moved to `SUPER+ALT+J`, its dwindle/scrolling toggle to my layout cycle
+        on `SUPER+ALT+L` (§8), and its keybinding list to `SUPER+?`
+  - [x] `SUPER+/` keybind search → keybindings on `SUPER+?`; `SUPER+/` stays
+        Omarchy's display scale
+  - [x] `SUPER+R` launcher → `SUPER+R` opens the Omarchy menu; the launcher
+        stays on `SUPER+Space`
+  - [x] `SUPER+S` my hidden-workspace toggle → Omarchy's scratchpad does the
+        same job; moving a window there is `SUPER+SHIFT+S` (was Google Maps)
+  - [x] `SUPER+M` move window to a picked workspace (`SUPER+ALT+M` silently),
+        `SUPER+I` Bitwarden
+  - [ ] `SUPER+V` float → Omarchy: paste (`SUPER+T` is float)
+  - [ ] `SUPER+T` terminal → Omarchy: `SUPER+Return` (my `SUPER+Return` is
+        swapwithmaster, §8)
+  - [ ] `SUPER+TAB` next tab in group → Omarchy: next workspace.
+        `SUPER+CTRL+LEFT/RIGHT` now step through open workspaces too; group tabs
+        are on `SUPER+ALT+TAB`
+  - [ ] `SUPER+SHIFT+R` system menu → Omarchy: `SUPER+Escape`
+  - [ ] `SUPER+E` file manager → Omarchy: `SUPER+SHIFT+F`
+  - [ ] `SUPER+N` notification center → Omarchy: `SUPER+SHIFT+ALT+,` (history)
+  - [ ] `SUPER+SHIFT+Escape` lock → Omarchy: `SUPER+CTRL+L`
+  - [ ] `SUPER+Q` close: check what Omarchy binds for close
+  - [ ] `SUPER+W`, `SUPER+O`, `SUPER+D`, `SUPER+G`: check each against
+        `omarchy menu keybindings --print`
 
-## 8. Layouts
+## 8. Layouts and look
 
-- [ ] 🟡 **Master as the default layout.** Omarchy defaults to dwindle and no
-      binding uses master. Set `general.layout = "master"` in `looknfeel.lua`.
-- [ ] 🟡 **Master binds** (swapwithmaster, focusmaster, addmaster, removemaster,
-      orientation cycle): not bound in Omarchy. Port them from `keymaps.lua`.
+- [x] 🟡 **Master as the default layout** (`looknfeel.lua`): centered master at
+      half the screen even with no slaves, and new windows join the stack
+      instead of taking master.
 - [x] 🟡 **Per-workspace layouts kept by name** (`conf/layouts.lua`,
       `conf/workspaces/layout.lua`: "focus" center-master 0.6 vs
-      "work/reference" with a 25% reference column, `SUPER+ALT+O`). Omarchy
-      keeps a dwindle/scrolling choice per workspace in
-      `~/.local/state/omarchy/workspace-layouts/`. Either port mine or extend
-      theirs to cover my presets. Done in `hypr/layouts.lua`: `SUPER+ALT+L` cycles
-      focus, work/reference, dwindle and scrolling, kept by workspace id.
+      "work/reference" with a 25% reference column, `SUPER+ALT+O`). Done in
+      `hypr/layouts.lua`: `SUPER+ALT+L` cycles focus, work/reference, dwindle
+      and scrolling, kept by workspace id in Omarchy's
+      `~/.local/state/omarchy/workspace-layouts/`.
+- [ ] 🟡 **Master binds** (swapwithmaster, focusmaster, addmaster, removemaster,
+      orientation cycle): not bound in Omarchy. Port them from `keymaps.lua`.
 - [ ] ❌ **Center-master side columns stay put** when a window closes
-      (`conf/wm/columns.lua`): port it.
-- [ ] 🟡 **Special/hidden workspaces use dwindle**: a one-line
-      `hl.workspace_rule`.
-- [ ] ✅ **Scrolling layout** is built in (`SUPER+L`). Worth trying before
-      porting all my master work.
+      (`conf/wm/columns.lua`): port it. Right now closing a slave flips every
+      slave after it to the other side (see the comment in `looknfeel.lua`).
+- [ ] ✅ **Scrolling layout** is built in, and in my `SUPER+ALT+L` cycle.
 - [ ] ✅ **Pseudo (`SUPER+P`), float, and mouse drag/resize** are built in.
+- [x] **Opaque terminals:** `hyprland.lua` takes the `terminal` tag out of
+      Omarchy's default window opacity.
 - [ ] 🟡 **Look:** gaps 0, border 3, rounding 4, blur and shadow go in
-      `looknfeel.lua`.
+      `looknfeel.lua` (the blocks are there, still commented out).
 
 ## 9. Windows and groups
 
 - [ ] ✅ **Group toggle, next/prev tab, move into group by direction, ungroup**
       are built in (different keys: `SUPER+ALT+arrows`, `SUPER+ALT+G`).
 - [ ] ❌ **Group lock** (new windows don't join), `SUPER+SHIFT+G`: port
-      `conf/wm/group.lua`.
+      `conf/wm/group.lua`. The bar's taskbar (§11) shows the lock.
 - [ ] ❌ **Reorder tabs submap** (`SUPER+CTRL+G`, h/l): port it.
 - [ ] 🟡 **Group-with-direction submap** (`SUPER+ALT+G` h/j/k/l): Omarchy does
       this with `SUPER+ALT+arrows` and no submap. Probably just use theirs.
@@ -378,26 +384,41 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
 - [ ] 🟡 **Window rules:**
   - suppress maximize, the XWayland drag fix, float zenity: diff against
     Omarchy's `default/hypr/windows.lua`, keep what's missing
+  - TeamSpeak on the right side of the comms workspace
   - the Steam toast offset was for a bottom bar, so probably not needed
+- [ ] `enforce_permissions` snippet: only if still wanted.
 
 ## 10. Workspaces
+
+The Hyprland side of workspaces. The bar (§11) only draws what's here: it reads
+each workspace's id and name from Hyprland, so a name only shows in the bar once
+Hyprland has it, and only for as long as Hyprland keeps it.
 
 - [ ] ✅ **Workspaces 1-10, next/prev existing, scroll to switch** are built in.
 - [ ] ✅ **Move a workspace to another monitor** is built in
       (`SUPER+SHIFT+ALT+arrows`).
-- [ ] ❌ **Named workspaces** (`conf/workspaces/`, `scripts/workspace-menu.sh`):
-      a picker to create, rename and move a window to one, with placement order
-      and gap-free ids. Port it. It used hyprlauncher `--dmenu`, so swap in
-      Omarchy's menu (check whether `omarchy menu` has a dmenu mode) or use
-      `fzf` in a floating terminal. Partly done in `hypr-workspace-menu` with
-      `omarchy menu input`/`select`: rename (`SUPER+SHIFT+4`) and move a window
-      to a picked or new workspace (`SUPER+M`). Still missing: placement order,
-      gap-free ids, a focus picker, and names surviving an emptied workspace.
+- [ ] 🟡 **Named workspaces** (`conf/workspaces/`, `scripts/workspace-menu.sh`).
+      Done in `hypr-workspace-menu` with `omarchy-menu-input`/`select`: rename
+      (`SUPER+SHIFT+4`), and move a window to a picked or new, named workspace
+      (`SUPER+M`, `SUPER+ALT+M` without following). Still to port, in this
+      order:
+  - [ ] **Names survive an emptied workspace.** Hyprland drops an empty
+        workspace and its name with it, so a named workspace comes back as a
+        bare number. Keep the names by id (state, under `~/.local/state/`) and
+        put them back when the workspace is created again, or keep named
+        workspaces alive with a persistent workspace rule. Do this first:
+        without it, names flicker in and out of the bar.
+  - [ ] **Focus picker:** go to a workspace by name.
+  - [ ] **Placement order and gap-free ids:** a new workspace goes right after
+        the current one, and ids renumber so there are no gaps. The bar orders
+        by id, so this sets the bar's order too.
 - [ ] ❌ **Reorder workspaces** left/right (`SUPER+CTRL+SHIFT+arrows`): port it,
-      it comes with the above.
-- [ ] 🟡 **Hidden workspaces:** Omarchy has one scratchpad (`SUPER+S`,
-      `SUPER+ALT+S`). My named hidden workspaces H1, H2… and "move to hidden"
-      are ❌.
+      it comes with gap-free ids.
+- [ ] 🟡 **Hidden workspaces:** Omarchy has one scratchpad (`SUPER+S` shows it,
+      `SUPER+SHIFT+S` moves a window there, §7). My named hidden workspaces H1,
+      H2… are ❌. Port them with:
+  - "move to hidden" and a bind that creates a new hidden workspace directly
+  - dwindle on special workspaces: a one-line `hl.workspace_rule`
 - [ ] ❌ **Workspace overview** (Hyprspace fork, `SUPER+SHIFT+W`): Omarchy has
       none and doesn't use hyprpm. Try hyprpm with my fork in the VM, or go
       without.
@@ -407,30 +428,69 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
 
 ## 11. Bar (the biggest gap)
 
-- [ ] ❌ **Per-window taskbar** with group tabs and a lock icon, click to focus
-      (brpol-waybard). Omarchy has no window list, only `omarchy.active-window`
-      (the focused title). Decide: write an Omarchy shell plugin (QML, §18),
-      look at omarchyplugins.com, or live without it.
-- [ ] 🟡 **Workspace buttons with names and hidden-workspace buttons:**
-      Omarchy's bar shows numbers 1-5 plus any others in use. Names and hidden
-      buttons need a plugin.
-- [ ] ✅ **Weather** is built in (no OpenWeatherMap key, so the sops secret for
-      it can go).
-- [ ] ✅ **Audio, network, Bluetooth, calendar, display/brightness and power
-      panels** are built in (`SUPER+CTRL+A/W/B/D/P`) and replace l1p0-menus.
-- [ ] ✅ **Tailscale widget** is built in (optional).
-- [ ] 🟡 **Night light button:** hyprsunset with a toggle (`SUPER+CTRL+N`); no
-      bar widget, but schedules go in `~/.config/hypr/hyprsunset.conf`
-      (`profile { time = 20:00, temperature = 4000 }`) with
-      `o.launch_on_start("hyprsunset")` in `autostart.lua`.
+Every change here is a QML shell plugin, so the first two items are how plugins
+and `shell.json` work. Then the workspace widget (the thing I miss most), then
+the rest in order of how much I want it.
+
+- [ ] **Plugins:** a waybar module becomes a QML plugin in
+      `~/.config/omarchy/plugins/<id>/`: `manifest.json` (`schemaVersion`, `id`,
+      `name`, `version`, `kinds`, `entryPoints`, `barWidget`) plus QML. Kinds:
+      `bar-widget`, `panel`, `overlay`, `menu`, `service`, `bar`.
+      `omarchy plugin clone <id> --edit` forks a first-party widget; their QML
+      is in `/usr/share/omarchy/shell/plugins/bar/widgets/`. Also
+      `omarchy plugin add <git-url> --enable`, `list`, `validate <path>`. Mine
+      go in `dotfiles/omarchy/.config/omarchy/plugins/<id>/` (§1).
+- [ ] **`shell.json`** is
+      `{ "version": 1, "bar": { "position", "transparent", "centerAnchor", "layout": { "left": [], "center": [], "right": [] } }, "idle": { "screensaver": 150, "lock": 300 } }`
+      (idle in seconds; widget settings sit directly on the widget object). Once
+      I own the file, **future Omarchy widgets are not merged in**: re-diff it
+      after big updates. `omarchy bar set/move/position/defaults` edits it from
+      the CLI, but the menu's and CLI's edits replace the stowed symlink (§1's
+      table), so put my widgets in by editing the repo file. Needs the
+      `dotfiles/omarchy/` package (§1) first.
+- [ ] ❌ **Workspace widget that shows only the workspaces that exist, by
+      name.** Replace `omarchy.workspaces` in `shell.json`'s `left` with a fork
+      of it (`Workspaces.qml`, 72 lines). Theirs always draws 1-5, even empty,
+      adds others in use only up to 10, labels them with digits (the focused one
+      gets an icon), and never shows special workspaces. Mine:
+  - shows only workspaces that exist, plus the focused one even when it's empty:
+    no fixed 1-5 and no cap at 10
+  - labels each with its name (§10), or its number when it has none, and keeps
+    their focused/occupied styling
+  - orders by id, which becomes placement order once §10's gap-free ids land
+  - shows hidden workspaces (the scratchpad, later H1, H2…) as their own buttons
+    after a separator; clicking one toggles it
+  - click focuses, scroll steps through them like `SUPER+CTRL+arrows`,
+    right-click renames (`hypr-workspace-menu rename`)
+  - still works when the bar is vertical (theirs has a `vertical` mode)
+
+  The first two bullets can ship now. Names only stick once §10's "names survive
+  an emptied workspace" is done, and hidden buttons beyond the scratchpad need
+  §10's hidden workspaces.
+
+- [ ] ❌ **Per-window taskbar** with group tabs and a lock icon (§9), click to
+      focus (brpol-waybard). Omarchy has no window list, only
+      `omarchy.active-window` (the focused title). Build it in the same plugin
+      as the workspace widget, since together they replace brpol-waybard, or
+      look at omarchyplugins.com first, or live without it.
+- [ ] 🟡 **Submap indicator:** only needed if my submaps (§9) come along.
 - [ ] 🟡 **Recording indicator:** Omarchy records with gpu-screen-recorder.
       Check whether the bar shows a timer or stop button.
+- [ ] 🟡 **Night light:** hyprsunset with a toggle (`SUPER+CTRL+N`), no bar
+      widget. `hyprsunset.conf` is stowed with a no-tint profile but hyprsunset
+      isn't started; for a schedule add
+      `profile { time = 20:00, temperature = 4000 }` and
+      `o.launch_on_start("hyprsunset")` in `autostart.lua`.
 - [ ] ❌ **PIA VPN widget:** a plugin, or use Tailscale plus the PIA app's own
       tray icon.
 - [ ] ❌ **KDE Connect phone widget:** a plugin, or drop it (install
       `kdeconnect` either way; it has a tray icon).
 - [ ] ❌ **Bing logo button and popup:** see §15.
-- [ ] 🟡 **Submap indicator:** only needed if my submaps come along.
+- [ ] ✅ **Weather** is built in (no OpenWeatherMap key, so the sops secret for
+      it can go).
+- [ ] ✅ **Audio, network, Bluetooth, calendar, display/brightness and power
+      panels** are built in (`SUPER+CTRL+A/W/B/D/P`) and replace l1p0-menus.
+- [ ] ✅ **Tailscale widget** is built in (optional).
 
 ## 12. Launcher, menus, notifications, OSD
 
@@ -449,6 +509,8 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
   - journal errors
   - fcitx5 config
   - restart KDE Connect
+- [ ] `omarchy menu summon <path>` / `toggle` / `close` script the menu, so my
+      old menu scripts can drive Omarchy's UI instead of drawing their own.
 - [ ] 🟡 **Notifications:** dismiss, dismiss all, DND and history are built in.
       There is no swaync-style control center, and my vim keys for it are moot.
 - [ ] ✅ **Volume/brightness OSD and media keys** are built in, plus DDC
@@ -545,6 +607,7 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       TUI is still the fallback.
 - [ ] 🟡 **Terminal, browser and tmux:** see §6. tmux does _not_ just work once
       stowed.
+- [ ] ❌ **Pause background games** to free the GPU (wl freeze).
 - [ ] ✅ **Nautilus.**
 - [ ] ✅ **Nvim:** Omarchy ships LazyVim, and my `.config/nvim` is LazyVim too.
       Keep mine, just stow over it.
@@ -590,24 +653,6 @@ A sweep of omarchy.org/manual for everything the sections above don't cover.
 - [ ] Crash capture hands coredumps to the agent (`omarchy agent crash <pid>`);
       `omarchy toggle crash-capture` / `omarchy crash mute <program>` to stop
       it.
-
-### Bar, plugins and menus (follow-up to §11)
-
-- [ ] `shell.json` layout is
-      `{ "version": 1, "bar": { "position", "transparent",     "centerAnchor", "layout": { "left": [], "center": [], "right": [] } },     "idle": { "screensaver": 150, "lock": 300 } }`
-      (idle in seconds; widget settings sit directly on the widget object). Once
-      I own the file, **future Omarchy widgets are not merged in** — re-diff it
-      after big updates. `omarchy bar set/move/position/defaults` edits it from
-      the CLI.
-- [ ] A waybar module becomes a **QML plugin** in
-      `~/.config/omarchy/plugins/<id>/`: `manifest.json` (`schemaVersion`, `id`,
-      `name`, `version`, `kinds`, `entryPoints`, `barWidget`) plus QML. Kinds:
-      `bar-widget`, `panel`, `overlay`, `menu`, `service`, `bar`.
-      `omarchy plugin clone <id> --edit` forks a first-party widget — the way to
-      start brpol-waybard's replacement. Also
-      `omarchy plugin add <git-url> --enable`, `list`, `validate <path>`.
-- [ ] `omarchy menu summon <path>` / `toggle` / `close` script the menu, so my
-      old menu scripts can drive Omarchy's UI instead of drawing their own.
 
 ### Hooks instead of systemd units
 
@@ -663,18 +708,9 @@ A sweep of omarchy.org/manual for everything the sections above don't cover.
 - [ ] Windows VM, if I ever want it: `~/Windows` (shared) and `~/.windows`
       (disk) — keep both out of the repo.
 
-## 19. Leftovers from `.config/hypr/TODO.md`
+## 19. Settle in, then retire the old install
 
-- [ ] Bind to create a new hidden workspace directly (if hidden workspaces get
-      ported).
-- [ ] TeamSpeak: window rule for the right side and the comms workspace.
-- [ ] Pause background games to free the GPU (wl freeze).
-- [ ] Monitor arrangement profiles (see §17).
-- [ ] `enforce_permissions` snippet: only if still wanted.
-
-## 20. Settle in, then retire the old install
-
-- [ ] Use it for a couple of weeks and keep §§6-19 up to date.
+- [ ] Use it for a couple of weeks and keep §§6-18 up to date.
 - [ ] When nothing has needed the old install for a while: back up anything
       left, reformat the NVMe (btrfs or ext4) as a games/data drive, and move
       `SteamLibrary` onto it the same way.
