@@ -1,7 +1,7 @@
 // Which OS this is, and Homebrew. Imported by the tasks that do different
 // things per OS; not executable, so mise doesn't list it as a task.
 
-import { starts_with, split_words } from "std/text"
+import { starts_with, split, split_words, parse_int } from "std/text"
 import { file_exists } from "std/fs"
 import { is_command } from "std/env"
 
@@ -33,6 +33,30 @@ pub fun detect_os(): Text {
         ids = trust $ . /etc/os-release && printf '%s %s' "\$ID" "\$ID_LIKE" $
     }
     return os_from(ostype, ids)
+}
+
+// Whether `version`, as `omarchy version` prints it ("4.0.4-1", or "dev (<hash>)"
+// on the dev channel), is Omarchy 4 "Quattro" or later.
+pub fun is_quattro(version: Text): Bool {
+    if starts_with(version, "dev") {
+        return true
+    }
+    if version == "" {
+        return false
+    }
+    const major = parse_int(split(version, ".")[0]) failed {
+        return false
+    }
+    return major >= 4
+}
+
+// True on Omarchy 4 or later. Earlier Omarchy lived in ~/.local/share/omarchy
+// and had no `omarchy` command, only the omarchy-* scripts.
+pub fun is_omarchy(): Bool {
+    if not is_command("omarchy") {
+        return false
+    }
+    return is_quattro(trust $ omarchy version 2>/dev/null $)
 }
 
 // The brew command if Homebrew is installed, else "".

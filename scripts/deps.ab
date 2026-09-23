@@ -9,7 +9,7 @@ import { file_exists, file_read, file_write } from "std/fs"
 import { split, split_lines, join } from "std/text"
 import { array_contains } from "std/array"
 
-import { detect_os, ensure_brew } from "./lib/os.ab"
+import { detect_os, is_omarchy, ensure_brew } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
 import { home, xdg_config_home } from "./lib/paths.ab"
 import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
@@ -243,6 +243,13 @@ fun arch_deps(packages: [Text]): Null? {
     const names = names_for(packages, "pacman")
     if len(names) == 0 {
         return null
+    }
+    // yay -S is fine on Omarchy; only a system upgrade has to go through
+    // `omarchy update` (it snapshots, migrates and updates configs, and
+    // Omarchy blocks a plain -Syu). Update first so what yay installs matches
+    // the rest of the system; -y because confirm_install already asked.
+    if is_omarchy() {
+        run("omarchy update -y")?
     }
     if not is_command("yay") and not is_command("paru") {
         if is_dry_run() {

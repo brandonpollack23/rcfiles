@@ -92,18 +92,10 @@ return {
             },
           },
         },
-        elixirls = {
-          mason = false,
-          settings = {
-            elixirLS = {
-              -- Dialyzer is required for the Workspace Symbol index
-              -- dialyzerEnabled = true,
-              -- Allows ElixirLS to fetch/compile deps if needed
-              fetchDeps = true,
-              suggestSpecs = true,
-            },
-          },
-        },
+        -- Elixir goes through expert (installed in mason.lua) instead.
+        elixirls = { enabled = false },
+        -- The dotnet extra is here for C#; no F#.
+        fsautocomplete = { enabled = false },
       },
     },
   },

@@ -9,7 +9,6 @@ local tools = {
   -- it has to be listed here to get installed)
   "amber-lsp",
   -- elixir
-  "elixir-ls",
   "expert",
   -- lua
   "lua-language-server",
@@ -35,11 +34,18 @@ local tools = {
   "hadolint",
 }
 
+-- Tools the extras list that we don't want: fantomas is the dotnet extra's
+-- F# formatter, and that extra is here for C# only.
+local skip = { fantomas = true }
+
 return {
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
-      opts.ensure_installed = LazyVim.dedup(vim.list_extend(opts.ensure_installed or {}, tools))
+      local merged = LazyVim.dedup(vim.list_extend(opts.ensure_installed or {}, tools))
+      opts.ensure_installed = vim.tbl_filter(function(tool)
+        return not skip[tool]
+      end, merged)
     end,
   },
 }

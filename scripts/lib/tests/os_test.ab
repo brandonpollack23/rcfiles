@@ -1,5 +1,5 @@
 import { assert_eq } from "std/test"
-import { os_from } from "../os.ab"
+import { os_from, is_quattro } from "../os.ab"
 
 test "os_from: mac, the four Linux families, and anything else" {
     assert_eq(os_from("darwin24", ""), "mac")?
@@ -10,4 +10,15 @@ test "os_from: mac, the four Linux families, and anything else" {
     assert_eq(os_from("linux-gnu", "fedora"), "fedora")?
     assert_eq(os_from("linux-gnu", "nixos"), "linux")?
     assert_eq(os_from("linux-gnu", ""), "linux")?
+}
+
+test "is_quattro: Omarchy 4 and later, and the dev channel" {
+    assert_eq(is_quattro("4.0.4-1"), true)?
+    assert_eq(is_quattro("4.1.0-2"), true)?
+    assert_eq(is_quattro("12.0.0-1"), true)?
+    assert_eq(is_quattro("dev (1a2b3c4)"), true)?
+    assert_eq(is_quattro("dev"), true)?
+    assert_eq(is_quattro("3.2.1-1"), false)?
+    assert_eq(is_quattro(""), false)?
+    assert_eq(is_quattro("unknown"), false)?
 }
