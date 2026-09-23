@@ -6,6 +6,7 @@ import { split_lines, join, text_contains } from "std/text"
 import { dir_create } from "std/fs"
 import { run, quoted } from "./run.ab"
 import { home } from "./paths.ab"
+import { is_omarchy } from "./os.ab"
 
 // dotfiles/, from mise.toml.
 pub fun dotfiles(): Text {
@@ -25,6 +26,13 @@ pub fun ensure_shared_dirs(): Null? {
     const base = home()
     for dir in [".config", ".config/git", ".config/hypr", ".config/systemd/user", ".local/bin", ".local/share", ".claude"] {
         $ mkdir -p "{base}/{dir}" $?
+    }
+    // Omarchy writes its own themes, plugins and branding next to mine, and
+    // may not have made these yet when I stow.
+    if is_omarchy() {
+        for dir in [".config/omarchy/themes", ".config/omarchy/plugins", ".config/omarchy/branding", ".config/uwsm/env.d"] {
+            $ mkdir -p "{base}/{dir}" $?
+        }
     }
 }
 

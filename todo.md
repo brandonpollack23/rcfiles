@@ -198,20 +198,21 @@ they want opposite fixes:
 | `~/.config/omarchy/` subdirs                      | **Silent-leak risk → fix `ensure_shared_dirs()`.** Omarchy writes `themes/`, `plugins/` and `backgrounds/` in here (the active-theme pointer is `~/.local/state/omarchy/current`, so that one is out of the way). With the parents pre-created, only the things I fully own get directory links (`themes/<mine>`, `plugins/<mine>`, `hooks/<event>.d`) and Omarchy's are siblings — which is what I want.                                                                                                                                                                    |
 | `~/.config/uwsm/env.d`                            | Same treatment: pre-create it, so my env file is a file link.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `~/.config/omarchy/extensions/omarchy-menu.jsonc` | **Expected conflict, adopt.** Omarchy ships this file, and my §12 entries are meant to extend it rather than replace it — so take theirs as the baseline and add to it.                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `~/.config/git/config`                            | **No conflict, and theirs is inert.** Omarchy ships aliases (`co`/`br`/`ci`/`st`) and `pull.rebase`, `push.autoSetupRemote`, `diff.algorithm=histogram`, `rerere.enabled` there — but git **ignores `$XDG_CONFIG_HOME/git/config` entirely when `~/.gitconfig` exists** (tested), and mine is stowed. So none of it applies. If I want `rerere` and the histogram diff, copy them into my `.gitconfig`.                                                                                                                                                                      |
+| `~/.config/git/config`                            | **No conflict, and theirs is inert.** Omarchy ships aliases (`co`/`br`/`ci`/`st`) and `pull.rebase`, `push.autoSetupRemote`, `diff.algorithm=histogram`, `rerere.enabled` there — but git **ignores `$XDG_CONFIG_HOME/git/config` entirely when `~/.gitconfig` exists** (tested), and mine is stowed. So none of it applies. The ones I want (`pull.rebase`, histogram diff, `push.autoSetupRemote`, `rerere`) are in my `.gitconfig` now.                                                                                                                                                                      |
 | `~/.gitconfig`                                    | **Expected conflict, replace.** `install/user/git.sh` runs `git config --global user.name/email` during install, so the file is there before I stow. Afterwards any `git config --global` writes _through_ the symlink into the repo — that's the existing design, and `~/.gitconfig.local` is the escape hatch for machine-specific bits.                                                                                                                                                                                                                                   |
 | `~/.XCompose`                                     | **Expected conflict, and don't just replace.** `install/user/xcompose.sh` writes it with `include "/usr/share/omarchy/default/xcompose"` plus `<Multi_key><space>n/e` macros for my name and email. That include _is_ Omarchy's emoji compose access, so **my version has to keep it** or `SUPER+CTRL+E`-adjacent compose stops working. Adopt theirs first, then add my own lines under it.                                                                                                                                                                                 |
 | `~/.config/ghostty/config`                        | **Expected conflict, replace — then add one line.** See §6; this is the one that fails silently.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
-- [ ] Add these to `ensure_shared_dirs()`: `.config/hypr`, `.config/omarchy`,
+- [x] Add these to `ensure_shared_dirs()`: `.config/hypr`, `.config/omarchy`,
       `.config/omarchy/themes`, `.config/omarchy/plugins`,
-      `.config/omarchy/branding`, `.config/uwsm/env.d`. Verified two ways: with
-      them, each becomes a file link instead of a whole-directory link; and
-      Omarchy's own `config/omarchy/` ships only `shell.json`, `extensions/`,
-      `themed/` and `hooks/` — so `themes/`, `plugins/` and `branding/` are the
-      ones that may not exist when I stow, which is exactly when stow would link
-      mine whole and a later `omarchy theme install` / `omarchy plugin add`
-      would write into the repo.
+      `.config/omarchy/branding`, `.config/uwsm/env.d` (the Omarchy ones only
+      when `is_omarchy()`). Verified two ways: with them, each becomes a file
+      link instead of a whole-directory link; and Omarchy's own
+      `config/omarchy/` ships only `shell.json`, `extensions/`, `themed/` and
+      `hooks/` — so `themes/`, `plugins/` and `branding/` are the ones that may
+      not exist when I stow, which is exactly when stow would link mine whole
+      and a later `omarchy theme install` / `omarchy plugin add` would write
+      into the repo.
 - [x] ~~Check whether each `hooks/<event>.d/` is pre-created.~~ It is: all six
       (`post-boot`, `post-update`, `pre-refresh-pacman`, `theme-set`,
       `font-set`, `battery-low`) ship with a `.sample` inside, so they're real
@@ -227,7 +228,7 @@ they want opposite fixes:
     which at least shows up in `jj diff`.
   - So the safety net is both a `post-update` hook (§18) running
     `mise run stow`, _and_ `jj status` being clean before I update.
-- [ ] ⚠️ **`omarchy reinstall configs` is `cp -af /etc/skel/. ~/`** — it
+- [x] ⚠️ **`omarchy reinstall configs` is `cp -af /etc/skel/. ~/`** — it
       clobbers without backup, unlike `omarchy-refresh-config <file>`, which
       writes a `.bak.<epoch>` first. Prefer the per-file refresh; treat the full
       reinstall as "re-stow everything afterwards".
@@ -242,7 +243,7 @@ Memory Alpha, and the keys also to a password manager):
       through `sops-bootstrap`).
 - [x] Push every repo in `~/src`: find anything with uncommitted, unpushed or
       jj-only work before it lives only on an old disk.
-- [ ] `~/.claude` (settings, memory), `~/Documents`, `~/Videos`, `~/Pictures`,
+- [x] `~/.claude` (settings, memory), `~/Documents`, `~/Videos`, `~/Pictures`,
       `~/Android`, game saves outside Steam Cloud (`steamapps/compatdata` 8.4G,
       `~/.local/share/Larian Studios`, lutris, bottles).
 - [x] Note the services I run so I can re-enable them:
