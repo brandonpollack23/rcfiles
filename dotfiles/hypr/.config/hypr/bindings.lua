@@ -37,11 +37,15 @@ o.bind("SUPER + ALT + J", "Toggle window split", hl.dsp.layout("togglesplit"))
 
 -- SUPER + CTRL + arrows step through the open workspaces, like SUPER + TAB,
 -- instead of a group's tabs; SUPER + ALT + TAB and SUPER + ALT + 1-5 still do
--- those.
+-- those. Past the last one they make a new workspace (workspaces.lua).
 hl.unbind("SUPER + CTRL + LEFT")
 hl.unbind("SUPER + CTRL + RIGHT")
-o.bind("SUPER + CTRL + LEFT", "Previous workspace", hl.dsp.focus({ workspace = "e-1" }))
-o.bind("SUPER + CTRL + RIGHT", "Next workspace", hl.dsp.focus({ workspace = "e+1" }))
+o.bind("SUPER + CTRL + LEFT", "Previous workspace", function()
+  require("hypr.workspaces").step(-1)
+end)
+o.bind("SUPER + CTRL + RIGHT", "Next workspace", function()
+  require("hypr.workspaces").step(1)
+end)
 
 -- Cycle the workspace through focus, work/reference, dwindle and scrolling
 -- (layouts.lua) instead of Omarchy's dwindle/scrolling toggle.
