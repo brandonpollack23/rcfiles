@@ -146,7 +146,8 @@ they want opposite fixes:
 
 | target | verdict |
 | --- | --- |
-| `~/.claude/skills` | **No conflict, nothing to do.** Omarchy symlinks its skill in, but my `claude` package only holds `settings.shared.json` and `agents/`, and `.claude` is already in `ensure_shared_dirs()`, so stow links those two *individually* and Omarchy's `skills/` sits beside them. It would only break if I added `dotfiles/claude/.claude/skills/` — then stow links `skills` whole and Omarchy writes into the repo. Don't, or add `.claude/skills` to `ensure_shared_dirs()` first. |
+| `~/.claude/` | **No conflict, nothing to do.** Omarchy writes three things in here — a symlink to its skill at `skills/omarchy`, the generated theme at `themes/omarchy.json`, and (only with `--activate`) `settings.json` — and my `claude` package holds none of those names: just `settings.shared.json` and `agents/`. Since `.claude` is already in `ensure_shared_dirs()`, stow links those two *individually* and Omarchy's files sit beside them. |
+| ↳ what would break it | Adding `dotfiles/claude/.claude/skills/` or `themes/` — stow would link the directory whole and Omarchy would write into the repo. Add the path to `ensure_shared_dirs()` first if I ever do. Adding `settings.json` is worse: `omarchy-theme-set-claude` does `jq … > tmp; mv tmp settings.json`, and `mv` over a symlink **replaces** it, so the file would silently stop being stowed. Keep using `settings.shared.json`. |
 | `~/.local/bin` | **No conflict.** Already in `ensure_shared_dirs()`, so Omarchy's lazy agent stubs (`claude`, `codex`, …) sit next to my linked `hacker-news.sh`. |
 | `~/.bashrc`, `~/.config/btop`, `~/.config/herdr` | **No conflict:** Omarchy owns them and I don't package them. Only becomes one if I ever add a package for them. |
 | `~/.config/hypr/*.lua` | **Expected conflict, adopt it.** Omarchy writes all six files, so stow stops on each. Answer `[a]dopt` so Omarchy's defaults become the repo's baseline, then `jj diff` and edit down to my overrides. |
@@ -155,6 +156,7 @@ they want opposite fixes:
 | `~/.config/nvim` | **Probably no conflict.** Omarchy's repo has no `config/nvim`, so nothing is copied into `~/.config/nvim` at install — `omarchy-nvim` is its own package. Check on the VM whether the directory exists before stowing: if it doesn't, mine is linked whole and that's fine; if it does, `[r]eplace`. Mine is LazyVim too, so nothing is lost either way. |
 | `~/.config/omarchy/` subdirs | **Silent-leak risk → fix `ensure_shared_dirs()`.** Omarchy writes `themes/`, `plugins/` and `backgrounds/` in here (the active-theme pointer is `~/.local/state/omarchy/current`, so that one is out of the way). With the parents pre-created, only the things I fully own get directory links (`themes/<mine>`, `plugins/<mine>`, `hooks/<event>.d`) and Omarchy's are siblings — which is what I want. |
 | `~/.config/uwsm/env.d` | Same treatment: pre-create it, so my env file is a file link. |
+| `~/.config/omarchy/extensions/omarchy-menu.jsonc` | **Expected conflict, adopt.** Omarchy ships this file, and my §12 entries are meant to extend it rather than replace it — so take theirs as the baseline and add to it. |
 | `~/.config/git/config` | **No conflict, and theirs is inert.** Omarchy ships aliases (`co`/`br`/`ci`/`st`) and `pull.rebase`, `push.autoSetupRemote`, `diff.algorithm=histogram`, `rerere.enabled` there — but git **ignores `$XDG_CONFIG_HOME/git/config` entirely when `~/.gitconfig` exists** (tested), and mine is stowed. So none of it applies. If I want `rerere` and the histogram diff, copy them into my `.gitconfig`. |
 | `~/.gitconfig` | **Expected conflict, replace.** `install/user/git.sh` runs `git config --global user.name/email` during install, so the file is there before I stow. Afterwards any `git config --global` writes *through* the symlink into the repo — that's the existing design, and `~/.gitconfig.local` is the escape hatch for machine-specific bits. |
 | `~/.XCompose` | **Expected conflict, and don't just replace.** `install/user/xcompose.sh` writes it with `include "/usr/share/omarchy/default/xcompose"` plus `<Multi_key><space>n/e` macros for my name and email. That include *is* Omarchy's emoji compose access, so **my version has to keep it** or `SUPER+CTRL+E`-adjacent compose stops working. Adopt theirs first, then add my own lines under it. |
@@ -162,14 +164,17 @@ they want opposite fixes:
 
 - [ ] Add these to `ensure_shared_dirs()`: `.config/hypr`, `.config/omarchy`,
       `.config/omarchy/themes`, `.config/omarchy/plugins`,
-      `.config/omarchy/hooks`, `.config/omarchy/extensions`,
-      `.config/omarchy/branding`, `.config/omarchy/themed`,
-      `.config/uwsm/env.d`. Verified: with them, every one of those becomes a
-      file link instead of a whole-directory link.
-- [ ] Check on the real thing whether Omarchy pre-creates each
-      `hooks/<event>.d/` (the manual says each ships a `.sample`). If it does,
-      nothing more to do; if not, add the event dirs too, or my `hooks/` link
-      swallows their samples.
+      `.config/omarchy/branding`, `.config/uwsm/env.d`. Verified two ways:
+      with them, each becomes a file link instead of a whole-directory link;
+      and Omarchy's own `config/omarchy/` ships only `shell.json`,
+      `extensions/`, `themed/` and `hooks/` — so `themes/`, `plugins/` and
+      `branding/` are the ones that may not exist when I stow, which is
+      exactly when stow would link mine whole and a later
+      `omarchy theme install` / `omarchy plugin add` would write into the repo.
+- [x] ~~Check whether each `hooks/<event>.d/` is pre-created.~~ It is: all six
+      (`post-boot`, `post-update`, `pre-refresh-pacman`, `theme-set`,
+      `font-set`, `battery-low`) ship with a `.sample` inside, so they're real
+      directories and my hook files link in individually. Nothing to do.
 - [ ] ⚠️ **Omarchy rewrites the files it owns.** `omarchy update`,
       Update > Config and `omarchy reinstall configs` restore the defaults and
       leave my version as `.bak`. Find out in the VM what that does to a stow

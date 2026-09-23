@@ -1,0 +1,24 @@
+// Whether this machine's neovim setup was declined in `plugins`, so `setup`
+// doesn't run it anyway or report its plugins as missing.
+// Not executable, so mise doesn't list it as a task.
+
+import { file_exists, file_write } from "std/fs"
+import { xdg_config_home } from "./paths.ab"
+
+fun skip_file(): Text {
+    return "{xdg_config_home()}/rcfiles/skip-neovim"
+}
+
+pub fun nvim_skipped(): Bool {
+    return file_exists(skip_file())
+}
+
+pub fun set_nvim_skipped(skip: Bool): Null? {
+    const marker = skip_file()
+    if skip {
+        $ mkdir -p "\$(dirname "{marker}")" $?
+        file_write(marker, "")?
+    } else {
+        $ rm -f "{marker}" $?
+    }
+}

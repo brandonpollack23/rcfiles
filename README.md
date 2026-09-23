@@ -29,7 +29,7 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 | ---------------- | ------------------------------------------------------------- |
 | `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
-| `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins |
+| `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins, asking first whether to set up neovim and its Mason language servers |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
 | `gdrive`         | on Linux, mounts the personal and univalent Google Drives under `/mnt/google_drive` (rclone, systemd mount units, config in `/etc/rclone` from the `GDRIVE_*` secrets); skipped until the secrets are there |

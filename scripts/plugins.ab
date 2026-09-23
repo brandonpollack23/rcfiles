@@ -1,14 +1,33 @@
 #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
-//MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim + Mason) plugins"
+//MISE description="Install zsh (antidote), tmux (tpm) and neovim (lazy.nvim + Mason) plugins, asking first about neovim and Mason"
 //MISE wait_for=["stow"]
 
 import { dir_exists } from "std/fs"
-import { repo_root } from "./lib/run.ab"
+import { input_confirm } from "std/env"
+import { repo_root, is_interactive } from "./lib/run.ab"
 import { home, xdg_data_home } from "./lib/paths.ab"
+import { set_nvim_skipped } from "./lib/nvim.ab"
+
+// Yes unless the answer is no; without a terminal to ask on, yes.
+fun ask(prompt: Text): Bool {
+    if not is_interactive() {
+        return true
+    }
+    return input_confirm(prompt, true)
+}
 
 main {
     const base = home()
     const root = repo_root()
+
+    // Both questions up front, so the rest runs unattended. Whatever is
+    // skipped here, neovim installs the first time it's opened.
+    const nvim = ask("Set up neovim plugins now?")
+    let mason = false
+    if nvim {
+        mason = ask("Install Mason's language servers and tools now?")
+    }
+    set_nvim_skipped(not nvim)?
 
     const antidote = "{xdg_data_home()}/antidote"
     if not dir_exists(antidote) {
@@ -22,8 +41,12 @@ main {
     }
     $ "{tpm}/bin/install_plugins" $?
 
-    // Installs the versions pinned in lazy-lock.json.
-    $ nvim --headless "+Lazy! restore" +qa $?
-    // Mason tools have no lockfile, so these install at the latest registry version.
-    $ nvim --headless "+luafile {root}/scripts/lib/mason-install.lua" $?
+    if nvim {
+        // Installs the versions pinned in lazy-lock.json.
+        $ nvim --headless "+Lazy! restore" +qa $?
+    }
+    if mason {
+        // Mason tools have no lockfile, so these install at the latest registry version.
+        $ nvim --headless "+luafile {root}/scripts/lib/mason-install.lua" $?
+    }
 }

@@ -7,6 +7,7 @@ import { file_exists } from "std/fs"
 import { join } from "std/text"
 import { home } from "./lib/paths.ab"
 import { dotfiles } from "./lib/stow.ab"
+import { nvim_skipped } from "./lib/nvim.ab"
 
 const COMMANDS = ["git", "git-lfs", "delta", "difft", "jj", "gh", "nvim", "lazygit", "fd", "rg", "node", "npm", "tree-sitter", "cc", "make", "starship", "starship-jj", "erl", "elixir"]
 
@@ -23,7 +24,7 @@ fun install_whats_missing(): Null? {
     if not linked("{base}/.gitconfig", "git/.gitconfig") or not linked("{base}/.config/nvim", "nvim/.config/nvim") {
         $ mise run stow $?
     }
-    if not plugins_installed() {
+    if not nvim_skipped() and not plugins_installed() {
         $ mise run plugins $?
     }
 }
@@ -62,7 +63,7 @@ fun problems(): [Text] {
     if not linked("{base}/.config/nvim", "nvim/.config/nvim") {
         found += ["~/.config/nvim is not linked from this repo"]
     }
-    if not plugins_installed() {
+    if not nvim_skipped() and not plugins_installed() {
         found += ["neovim plugins are missing"]
     }
     return found
