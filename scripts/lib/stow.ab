@@ -2,7 +2,7 @@
 // it as a task.
 
 import { env_var_get } from "std/env"
-import { split_lines, join } from "std/text"
+import { split_lines, join, text_contains } from "std/text"
 import { dir_create } from "std/fs"
 import { run, quoted } from "./run.ab"
 import { home } from "./paths.ab"
@@ -40,11 +40,26 @@ pub fun stow_conflicts(output: Text): [Text] {
     return split_lines(found)
 }
 
+// Whether a `stow -n -v -S` run's output says the package is already linked:
+// nothing left to link and nothing in the way.
+pub fun nothing_to_stow(output: Text): Bool {
+    return not text_contains(output, "LINK: ") and not text_contains(output, "would cause conflicts")
+}
+
 // What in $HOME would stop `package` from stowing.
 pub fun conflicts_for(package: Text): [Text] {
     const dir = dotfiles()
     const output = trust $ stow -n -v -d "{dir}" -t ~ -R "{package}" 2>&1 $
     return stow_conflicts(output)
+}
+
+// Whether every file in `package` is linked into $HOME. Asks stow rather than
+// comparing paths: where a directory like ~/.config/nvim already existed, stow
+// links each entry inside it instead of the directory itself.
+pub fun is_stowed(package: Text): Bool {
+    const dir = dotfiles()
+    const output = trust $ stow -n -v -d "{dir}" -t ~ -S "{package}" 2>&1 $
+    return nothing_to_stow(output)
 }
 
 // A fresh directory to move replaced files into.

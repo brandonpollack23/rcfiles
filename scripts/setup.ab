@@ -5,14 +5,13 @@
 import { is_command } from "std/env"
 import { join } from "std/text"
 import { home, put_cargo_on_path } from "./lib/paths.ab"
-import { dotfiles } from "./lib/stow.ab"
+import { is_stowed } from "./lib/stow.ab"
 import { nvim_skipped } from "./lib/nvim.ab"
 
 const COMMANDS = ["git", "git-lfs", "delta", "difft", "jj", "gh", "nvim", "lazygit", "fd", "rg", "node", "npm", "tree-sitter", "cc", "make", "starship", "starship-jj", "erl", "elixir"]
 
 // Anything missing that another task sets up: run that task.
 fun install_whats_missing(): Null? {
-    const base = home()
     const gone = missing()
     if len(gone) > 0 {
         echo("setup: missing {join(gone, " ")}; running deps")
@@ -20,7 +19,7 @@ fun install_whats_missing(): Null? {
         put_cargo_on_path()
         $ eval "\$(mise env -s bash)" $?
     }
-    if not linked("{base}/.gitconfig", "git/.gitconfig") or not linked("{base}/.config/nvim", "nvim/.config/nvim") {
+    if not is_stowed("git") or not is_stowed("nvim") {
         $ mise run stow $?
     }
     if not nvim_skipped() and not plugins_installed() {
@@ -41,7 +40,6 @@ fun ensure_gh_login(): Null? {
 
 // What is still wrong after all that, one line each.
 fun problems(): [Text] {
-    const base = home()
     let found = [Text]
     for cmd in missing() {
         found += ["{cmd} is not installed"]
@@ -56,11 +54,10 @@ fun problems(): [Text] {
             found += ["jj {key} is not set"]
         }
     }
-    if not linked("{base}/.gitconfig", "git/.gitconfig") {
-        found += ["~/.gitconfig is not linked from this repo"]
-    }
-    if not linked("{base}/.config/nvim", "nvim/.config/nvim") {
-        found += ["~/.config/nvim is not linked from this repo"]
+    for package in ["git", "nvim"] {
+        if not is_stowed(package) {
+            found += ["the {package} package is not linked from this repo (mise run stow {package})"]
+        }
     }
     if not nvim_skipped() and not plugins_installed() {
         found += ["neovim plugins are missing"]
@@ -76,14 +73,6 @@ fun missing(): [Text] {
         }
     }
     return gone
-}
-
-// True when `path` is stow's link to `target` in dotfiles/.
-fun linked(path: Text, target: Text): Bool {
-    const dir = dotfiles()
-    const actual = trust $ realpath "{path}" 2>/dev/null $
-    const wanted = trust $ realpath "{dir}/{target}" 2>/dev/null $
-    return actual != "" and actual == wanted
 }
 
 // True when every plugin in lazy-lock.json is installed.

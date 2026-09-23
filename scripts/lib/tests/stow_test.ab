@@ -1,5 +1,5 @@
-import { assert_eq } from "std/test"
-import { stow_conflicts } from "../stow.ab"
+import { assert, assert_eq } from "std/test"
+import { nothing_to_stow, stow_conflicts } from "../stow.ab"
 
 test "stow_conflicts reads the targets out of stow's warnings" {
     const output = "WARNING! stowing starship would cause conflicts:
@@ -17,4 +17,19 @@ test "stow_conflicts finds nothing in a clean dry run" {
     const found = stow_conflicts("LINK: .tmux.conf => src/r/dotfiles/tmux/.tmux.conf")
     const n = len(found)
     assert_eq(n, 0)?
+}
+
+test "nothing_to_stow holds for a dry run over a package that's already linked" {
+    assert(nothing_to_stow("WARNING: in simulation mode so not modifying filesystem."))?
+}
+
+test "nothing_to_stow fails when something is left to link" {
+    assert(not nothing_to_stow("LINK: .config/nvim/init.lua => ../src/r/dotfiles/nvim/.config/nvim/init.lua
+WARNING: in simulation mode so not modifying filesystem."))?
+}
+
+test "nothing_to_stow fails when something is in the way" {
+    assert(not nothing_to_stow("WARNING! stowing nvim would cause conflicts:
+  * existing target is not owned by stow: .config/nvim
+All operations aborted."))?
 }
