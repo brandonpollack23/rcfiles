@@ -96,7 +96,7 @@ than Omarchy's. Each of these wants to be a stow package here, so the whole
 desktop comes back with `mise run stow`. Most can only be filled in once I've
 configured them in the VM (§3), but the layout can be decided now.
 
-- [ ] **`dotfiles/hypr/`** → `~/.config/hypr/`
+- [x] **`dotfiles/hypr/`** → `~/.config/hypr/`
   - `hyprland.lua` (the one that `require`s the rest), `bindings.lua`,
     `monitors.lua`, `input.lua`, `looknfeel.lua`, `autostart.lua`
   - plus whatever `conf/*.lua` modules survive §§7-10.
