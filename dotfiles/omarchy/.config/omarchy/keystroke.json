@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "palette": {
+    "density": "comfortable"
+  },
+  "providers": {
+    "timer": {
+      "enabled": true
+    },
+    "currency": {
+      "enabled": true
+    },
+    "gif-search": {
+      "enabled": true
+    },
+    "translate": {
+      "enabled": true
+    }
+  },
+  "matching": {
+    "model": "large"
+  }
+}

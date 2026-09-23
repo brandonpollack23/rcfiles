@@ -1,0 +1,6 @@
+# Third-party Omarchy shell plugins, one per line: id, git URL, commit.
+# shell.json only names them, so `mise run plugins` clones any that are missing
+# into plugins/<id> at the commit here, and fast-forwards one that's behind it.
+# Each one's directory is in .gitignore, since it's its own git repo.
+# After `omarchy plugin update <id>`, put its new `git rev-parse HEAD` here.
+evindor.keystroke https://github.com/evindor/keystroke.git 4ea4eede3bcee10c4f2c984843284cb2dcc8d4b7

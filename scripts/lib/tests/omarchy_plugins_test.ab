@@ -1,0 +1,17 @@
+import { assert, assert_eq } from "std/test"
+import { lock_entries, is_lock_entry } from "../omarchy_plugins.ab"
+
+test "lock_entries skips blank lines and comments" {
+    const text = "# id url commit\n\n  a.b https://x/a.git 123  \n# c.d https://x/c.git 456\ne.f https://x/e.git 789"
+    const entries = lock_entries(text)
+    const count = len(entries)
+    assert_eq(count, 2)?
+    assert_eq(entries[0], "a.b https://x/a.git 123")?
+    assert_eq(entries[1], "e.f https://x/e.git 789")?
+}
+
+test "is_lock_entry wants an id, a URL and a commit" {
+    assert(is_lock_entry("a.b https://x/a.git 123"))?
+    assert(not is_lock_entry("a.b https://x/a.git"))?
+    assert(not is_lock_entry("a.b https://x/a.git 123 extra"))?
+}

@@ -6,3 +6,6 @@ dotfiles/jj/.config/jj/repos/
 dotfiles/zsh/.zsh_plugins.zsh
 # The backups `omarchy refresh` leaves next to the file it resets.
 dotfiles/omarchy/.config/omarchy/**/*.bak.*
+# Plugins cloned from plugins.lock beside it by `mise run plugins`, each its
+# own git repo. Plugins made here (`omarchy plugin clone`) stay tracked.
+dotfiles/omarchy/.config/omarchy/plugins/evindor.keystroke/

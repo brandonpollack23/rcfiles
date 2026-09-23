@@ -1,0 +1,21 @@
+// Reading plugins.lock, the Omarchy shell plugins to clone and the commit
+// each is pinned to. Not executable, so mise doesn't list it as a task.
+
+import { split_lines, split_words, starts_with, trim } from "std/text"
+
+// The lines of a plugins.lock that aren't blank or a # comment, trimmed.
+pub fun lock_entries(text: Text): [Text] {
+    let entries = [Text]
+    for line in split_lines(text) {
+        const entry = trim(line)
+        if entry != "" and not starts_with(entry, "#") {
+            entries += [entry]
+        }
+    }
+    return entries
+}
+
+// Whether `entry` has exactly the three fields: id, git URL and commit.
+pub fun is_lock_entry(entry: Text): Bool {
+    return len(split_words(entry)) == 3
+}
