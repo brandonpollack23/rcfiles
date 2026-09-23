@@ -35,8 +35,15 @@ end
 
 o.bind("SUPER + ALT + J", "Toggle window split", hl.dsp.layout("togglesplit"))
 
--- SUPER + CTRL + arrows step through the open workspaces, like SUPER + TAB,
--- instead of a group's tabs; SUPER + ALT + TAB and SUPER + ALT + 1-5 still do
+-- SUPER + TAB and SUPER + SHIFT + TAB step through a group's windows, like
+-- SUPER + ALT + TAB, instead of the workspaces; SUPER + CTRL + arrows do those.
+hl.unbind("SUPER + TAB")
+hl.unbind("SUPER + SHIFT + TAB")
+o.bind("SUPER + TAB", "Next window in group", hl.dsp.group.next())
+o.bind("SUPER + SHIFT + TAB", "Previous window in group", hl.dsp.group.prev())
+
+-- SUPER + CTRL + arrows step through the open workspaces instead of a group's
+-- windows; SUPER + TAB, SUPER + ALT + TAB and SUPER + ALT + 1-5 still do
 -- those. Past the last one they make a new workspace (workspaces.lua).
 hl.unbind("SUPER + CTRL + LEFT")
 hl.unbind("SUPER + CTRL + RIGHT")
