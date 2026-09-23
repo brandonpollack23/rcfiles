@@ -60,6 +60,16 @@ o.bind("SUPER + ALT + L", "Cycle workspace layout", function()
   require("hypr.layouts").cycle()
 end)
 
+-- Yazi for the file manager instead of Nautilus, on SUPER + E as well. The
+-- cwd one opens in the focused terminal's directory, as nautilus-cwd does;
+-- { tui = ... } quotes its command whole, so that one is a plain string.
+local yazi_cwd = 'omarchy-launch-tui yazi "$(omarchy-cmd-terminal-cwd)"'
+hl.unbind("SUPER + SHIFT + F")
+hl.unbind("SUPER + ALT + SHIFT + F")
+o.bind("SUPER + SHIFT + F", "File manager", { tui = "yazi" })
+o.bind("SUPER + E", "File manager", { tui = "yazi" })
+o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)", yazi_cwd)
+
 -- The Omarchy menu on SUPER + R too, where my old launcher was.
 o.bind("SUPER + R", "Omarchy menu", "omarchy-menu toggle")
 

@@ -277,7 +277,7 @@ Memory Alpha, and the keys also to a password manager):
 
 Before touching Hyprland at all, get the terminal and shell I actually type in.
 
-- [ ] **Ghostty as the default terminal.** Omarchy ships foot. Install Ghostty
+- [x] **Ghostty as the default terminal.** Omarchy ships foot. Install Ghostty
       (Install > Terminal > Ghostty, or `packages.toml`'s `desktop` group) and
       make it the default in Setup > Defaults > Terminal, so `SUPER+Return` and
       every "open in terminal" action use it. (`omarchy default browser` and
@@ -286,15 +286,15 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       package and check `~/.config/ghostty/config` wins.
 - [x] ~~Add the theme hook to my ghostty config~~ — **decided against it**, see
       "Omarchy lines already in the dotfiles" in §1: ghostty keeps my own theme.
-- [ ] Diff the rest of Omarchy's ghostty config against mine and decide: they
+- [x] Diff the rest of Omarchy's ghostty config against mine and decide: they
       set `shell-integration-features = no-cursor,ssh-env` where I set
       `ssh-terminfo`, and `async-backend = epoll` as a Hyprland speed fix.
-- [ ] **Drop the foot config** from the manual's list: I don't use it, so no
+- [x] **Drop the foot config** from the manual's list: I don't use it, so no
       `foot/` stow package. Leave Omarchy's `~/.config/foot/foot.ini` alone in
       case something falls back to it.
-- [ ] **zsh:** `chsh -s /usr/bin/zsh`, then work through §18's shell list for
+- [x] **zsh:** `chsh -s /usr/bin/zsh`, then work through §18's shell list for
       what Omarchy's bash was doing for me.
-- [ ] **tmux splits.** ⚠️ Omarchy ships its own tmux config with prefix
+- [x] **tmux splits.** ⚠️ Omarchy ships its own tmux config with prefix
       `Ctrl+Space`; the Hotkeys page points at `~/.config/tmux/tmux.conf`, which
       tmux sources _after_ my `~/.tmux.conf`, so theirs would win on everything
       we both set. First `tmux display -p '#{config_files}'` to see what
@@ -303,10 +303,10 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       `tmux list-keys | grep split` has `|` → `split-window -h` and `-` →
       `split-window -v`, both with `-c "#{pane_current_path}"`. `SUPER+ALT+K`
       shows Omarchy's tmux cheatsheet, which will be wrong for my binds.
-- [ ] **tmux plugins:** `mise run plugins` (tpm) and `prefix + I` once, so
+- [x] **tmux plugins:** `mise run plugins` (tpm) and `prefix + I` once, so
       resurrect/continuum/dracula are there before I start living in it.
-- [ ] **Browser:** install Chrome and `omarchy default browser`.
-- [ ] **Font:** default is JetBrainsMono Nerd Font; my Consolas Nerd Font comes
+- [x] **Browser:** install Chrome and `omarchy default browser`.
+- [x] **Font:** default is JetBrainsMono Nerd Font; my Consolas Nerd Font comes
       from `mise run fonts`. Pick it in Style > Font if I want it everywhere
       (there's no config file for this, it's menu-only).
 

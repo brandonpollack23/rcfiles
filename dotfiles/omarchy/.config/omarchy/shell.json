@@ -4,7 +4,8 @@
     "layout": {
       "center": [
         {
-          "id": "omarchy.indicators"
+          "id": "omarchy.indicators",
+          "alwaysShow": true
         },
         {
           "format": "dddd HH:mm",
@@ -32,7 +33,11 @@
       ],
       "right": [
         {
-          "id": "omarchy.tray"
+          "id": "omarchy.tray",
+          "pinned": [
+            "chrome_status_icon_1"
+          ],
+          "hidden": []
         },
         {
           "id": "omarchy.tailscale"
