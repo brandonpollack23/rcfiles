@@ -23,7 +23,7 @@ import { is_command, echo_error } from "std/env"
 import { file_exists, file_read, file_write } from "std/fs"
 import { text_contains, join } from "std/text"
 import { repo_root } from "./lib/run.ab"
-import { keys_path, ensure_machine_key, machine_public_key, secret_files, initial_rules, add_recipient } from "./lib/sops.ab"
+import { keys_path, ensure_machine_key, machine_public_key, secret_files, can_decrypt, initial_rules, add_recipient } from "./lib/sops.ab"
 
 // sops and age come from `deps`; run it if they aren't here yet.
 fun ensure_tools(): Null? {
@@ -49,7 +49,7 @@ fun create_master_key(master_path: Text, rules_path: Text): Null? {
 // keys, for the rest of this run. Before .sops.yaml changes, so a wrong
 // password leaves nothing half done.
 fun unlock_master_key(master_path: Text, host: Text): Null {
-    echo("Adding this machine ({host}) to the repo's secrets. Master password:")
+    echo("This machine ({host}) cannot decrypt the repo's secrets yet. Enter Master password from for sops rcfiles decryption:")
     const master_key = $ age --decrypt "{master_path}" $ failed(code) {
         echo_error("sops-bootstrap: could not decrypt the master key (wrong password?)", code)
     }
@@ -89,14 +89,26 @@ main {
     const files = secret_files(repo)
     const rules = file_read(rules_path)?
     const is_recipient = text_contains(rules, machine)
-    if is_recipient and not rekey_with_machine_key {
+
+    // The master password is only needed to get at secrets this machine cannot
+    // read, so ask sops rather than trusting .sops.yaml: being listed there is
+    // neither necessary (another key this machine holds may be a recipient) nor
+    // enough (the secrets may not have been re-encrypted to it yet).
+    let can_read = true
+    if len(files) > 0 {
+        can_read = can_decrypt(repo, files[0])
+    }
+
+    if is_recipient and can_read and not rekey_with_machine_key {
         echo("sops: this machine can already decrypt the secrets")
         exit(0)
     }
+    // With a master key made moments ago the secrets aren't encrypted to it, so
+    // unlocking it would not help; this machine's own key is what decrypts them.
+    if not can_read and not rekey_with_machine_key {
+        unlock_master_key(master_path, host)
+    }
     if not is_recipient {
-        if len(files) > 0 and not rekey_with_machine_key {
-            unlock_master_key(master_path, host)
-        }
         file_write(rules_path, add_recipient(rules, machine, host))?
     }
     if len(files) == 0 {

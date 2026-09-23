@@ -50,6 +50,15 @@ pub fun secret_files(repo: Text): [Text] {
     return found
 }
 
+// Whether sops can decrypt `file` with the keys this machine already has.
+// What .sops.yaml says is only a guess at this: a key file can hold more keys
+// than the one `machine_public_key` reads, $SOPS_AGE_KEY can be set, and a
+// listed recipient means nothing until the secrets are re-encrypted to it.
+pub fun can_decrypt(repo: Text, file: Text): Bool {
+    trust $ (cd "{repo}" && sops --decrypt "{file}") > /dev/null 2>&1 $
+    return status() == 0
+}
+
 // .sops.yaml as the first run writes it, with only the master key.
 pub fun initial_rules(master: Text): Text {
     return join([

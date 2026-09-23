@@ -56,6 +56,7 @@ vim.g.trouble_lualine = true
 local opt = vim.opt
 
 opt.autowrite = true -- Enable auto write
+opt.autoread = true -- Auto reload when the file changes
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically.
 opt.clipboard = vim.env.SSH_CONNECTION and "" or "unnamedplus" -- Sync with system clipboard
