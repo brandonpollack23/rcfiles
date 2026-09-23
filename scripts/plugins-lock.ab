@@ -1,0 +1,40 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Write the Omarchy shell plugins cloned from git into plugins.lock, and keep their checkouts out of the repo"
+
+import { dir_exists, dir_create, file_write } from "std/fs"
+import { split_lines } from "std/text"
+import { repo_root } from "./lib/run.ab"
+import { xdg_config_home } from "./lib/paths.ab"
+import { lock_text, ignore_text } from "./lib/omarchy_plugins.ab"
+
+// The plugins in `dir` that are git checkouts, by id (their directory's name).
+fun git_plugins(dir: Text): [Text]? {
+    if not dir_exists(dir) {
+        return [Text]
+    }
+    const found = $ cd "{dir}" && for g in */.git; do if [ -e "\$g" ]; then echo "\$\{g%/.git}"; fi; done $?
+    return split_lines(found)
+}
+
+main {
+    const dir = "{xdg_config_home()}/omarchy/plugins"
+    let entries = [Text]
+    let ids = [Text]
+    for id in git_plugins(dir)? {
+        const url = trust $ git -C "{dir}/{id}" remote get-url origin 2>/dev/null $
+        if url == "" {
+            echo("{id} has no origin remote to clone it from, so it's left out.")
+        } else {
+            const commit = $ git -C "{dir}/{id}" rev-parse HEAD $?
+            entries += ["{id} {url} {commit}"]
+            ids += [id]
+        }
+    }
+
+    const config = "{repo_root()}/dotfiles/omarchy/.config/omarchy"
+    dir_create("{config}/plugins")?
+    file_write("{config}/plugins.lock", lock_text(entries))?
+    file_write("{config}/plugins/.gitignore", ignore_text(ids))?
+    const count = len(ids)
+    echo("plugins.lock: {count} plugins")
+}

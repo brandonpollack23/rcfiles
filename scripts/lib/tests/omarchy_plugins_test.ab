@@ -1,5 +1,5 @@
 import { assert, assert_eq } from "std/test"
-import { lock_entries, is_lock_entry } from "../omarchy_plugins.ab"
+import { lock_entries, is_lock_entry, lock_text, ignore_text } from "../omarchy_plugins.ab"
 
 test "lock_entries skips blank lines and comments" {
     const text = "# id url commit\n\n  a.b https://x/a.git 123  \n# c.d https://x/c.git 456\ne.f https://x/e.git 789"
@@ -14,4 +14,16 @@ test "is_lock_entry wants an id, a URL and a commit" {
     assert(is_lock_entry("a.b https://x/a.git 123"))?
     assert(not is_lock_entry("a.b https://x/a.git"))?
     assert(not is_lock_entry("a.b https://x/a.git 123 extra"))?
+}
+
+test "lock_text reads back as the entries it was given" {
+    const entries = lock_entries(lock_text(["a.b https://x/a.git 123", "c.d https://x/c.git 456"]))
+    const count = len(entries)
+    assert_eq(count, 2)?
+    assert_eq(entries[0], "a.b https://x/a.git 123")?
+    assert_eq(entries[1], "c.d https://x/c.git 456")?
+}
+
+test "ignore_text ignores each plugin's directory" {
+    assert_eq(ignore_text(["a.b", "c.d"]), "# Written by `mise run plugins-lock`: the plugins in plugins.lock.\n/a.b/\n/c.d/\n")?
 }

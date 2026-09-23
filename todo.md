@@ -329,18 +329,18 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
         same job; moving a window there is `SUPER+SHIFT+S` (was Google Maps)
   - [x] `SUPER+M` move window to a picked workspace (`SUPER+ALT+M` silently),
         `SUPER+I` Bitwarden
-  - [ ] `SUPER+V` float → Omarchy: paste (`SUPER+T` is float)
-  - [ ] `SUPER+T` terminal → Omarchy: `SUPER+Return` (my `SUPER+Return` is
+  - [x] `SUPER+V` float → Omarchy: paste (`SUPER+T` is float)
+  - [x] `SUPER+T` terminal → Omarchy: `SUPER+Return` (my `SUPER+Return` is
         swapwithmaster, §8)
-  - [ ] `SUPER+TAB` next tab in group → Omarchy: next workspace.
+  - [x] `SUPER+TAB` next tab in group → Omarchy: next workspace.
         `SUPER+CTRL+LEFT/RIGHT` now step through open workspaces too; group tabs
         are on `SUPER+ALT+TAB`
-  - [ ] `SUPER+SHIFT+R` system menu → Omarchy: `SUPER+Escape`
-  - [ ] `SUPER+E` file manager → Omarchy: `SUPER+SHIFT+F`
-  - [ ] `SUPER+N` notification center → Omarchy: `SUPER+SHIFT+ALT+,` (history)
-  - [ ] `SUPER+SHIFT+Escape` lock → Omarchy: `SUPER+CTRL+L`
-  - [ ] `SUPER+Q` close: check what Omarchy binds for close
-  - [ ] `SUPER+W`, `SUPER+O`, `SUPER+D`, `SUPER+G`: check each against
+  - [x] `SUPER+SHIFT+R` system menu → Omarchy: `SUPER+Escape`
+  - [x] `SUPER+E` file manager → Omarchy: `SUPER+SHIFT+F`
+  - [x] `SUPER+N` notification center → Omarchy: `SUPER+SHIFT+ALT+,` (history)
+  - [x] `SUPER+SHIFT+Escape` lock → Omarchy: `SUPER+CTRL+L`
+  - [x] `SUPER+Q` close: check what Omarchy binds for close
+  - [x] `SUPER+W`, `SUPER+O`, `SUPER+D`, `SUPER+G`: check each against
         `omarchy menu keybindings --print`
 
 ## 8. Layouts and look

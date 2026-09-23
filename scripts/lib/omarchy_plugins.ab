@@ -1,7 +1,7 @@
-// Reading plugins.lock, the Omarchy shell plugins to clone and the commit
+// plugins.lock, the Omarchy shell plugins cloned from git and the commit
 // each is pinned to. Not executable, so mise doesn't list it as a task.
 
-import { split_lines, split_words, starts_with, trim } from "std/text"
+import { split_lines, split_words, starts_with, trim, join } from "std/text"
 
 // The lines of a plugins.lock that aren't blank or a # comment, trimmed.
 pub fun lock_entries(text: Text): [Text] {
@@ -18,4 +18,26 @@ pub fun lock_entries(text: Text): [Text] {
 // Whether `entry` has exactly the three fields: id, git URL and commit.
 pub fun is_lock_entry(entry: Text): Bool {
     return len(split_words(entry)) == 3
+}
+
+// plugins.lock for `entries`, each "id url commit".
+pub fun lock_text(entries: [Text]): Text {
+    let out = [
+        "# Omarchy shell plugins cloned from git: id, git URL, commit. Written by",
+        "# `mise run plugins-lock`; run it after `omarchy plugin add`, `update` or",
+        "# `remove`. `mise run plugins` clones any that are missing at these commits."
+    ]
+    out += entries
+    return join(out, "\n") + "\n"
+}
+
+// The .gitignore in plugins/ for the plugins `ids`: each is its own git repo,
+// so rcfiles keeps only its line in plugins.lock. Plugins made here with
+// `omarchy plugin clone` aren't git repos, so they stay tracked.
+pub fun ignore_text(ids: [Text]): Text {
+    let out = ["# Written by `mise run plugins-lock`: the plugins in plugins.lock."]
+    for id in ids {
+        out += ["/{id}/"]
+    }
+    return join(out, "\n") + "\n"
 }

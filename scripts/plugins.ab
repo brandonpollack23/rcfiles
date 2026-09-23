@@ -55,7 +55,7 @@ fun restore_omarchy_plugin(target: Text, url: Text, commit: Text): Null? {
         return null
     }
     echo("{target} is at {head}, not {commit} as plugins.lock has it; left as is.")
-    echo("  To keep this version, put {head} in plugins.lock.")
+    echo("  To keep this version: mise run plugins-lock")
 }
 
 main {
