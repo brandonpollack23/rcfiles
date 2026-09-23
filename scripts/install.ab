@@ -26,6 +26,9 @@ fun switch_login_shell(zsh: Text): Null? {
         $ echo "{zsh}" | sudo tee -a /etc/shells >/dev/null $?
     }
     $ chsh -s "{zsh}" $?
+    // The desktop session keeps the SHELL it logged in with, and terminals
+    // like ghostty launch $SHELL, so they stay on the old shell until then.
+    echo("Login shell is now {zsh}. Log out and back in for new terminals to use it.")
 }
 
 main {
