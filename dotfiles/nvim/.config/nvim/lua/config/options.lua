@@ -6,6 +6,11 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- Let Omarchy's theme (`omarchy theme set`) drive the colorscheme, via
+-- lua/plugins/theme.lua. Off: use sonokai from lua/plugins/colorschemes.lua.
+-- Has no effect on machines without Omarchy.
+vim.g.omarchy_theme = false
+
 -- LazyVim auto format
 vim.g.autoformat = true
 

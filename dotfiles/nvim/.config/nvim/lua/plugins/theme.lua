@@ -6,14 +6,13 @@
 -- target would resolve from the repo, not from ~/.config/nvim), so load the
 -- file instead. Absent -- any machine that isn't Omarchy -- this is a no-op.
 --
--- NOTE: the generated spec sets LazyVim's `colorscheme` opt, and so does
--- colorschemes.lua (sonokai). Both loading is ambiguous, so pick one: keep
--- sonokai and delete this file, or let Omarchy drive it and drop the
--- `colorscheme` opt from colorschemes.lua. See todo.md §1.
+-- Only when `vim.g.omarchy_theme` is true (set in config/options.lua, which
+-- LazyVim loads before this spec is read). Otherwise colorschemes.lua's
+-- sonokai stays in charge.
 
 local generated = vim.fn.expand("~/.local/state/omarchy/current/theme/neovim.lua")
 
-if (vim.uv or vim.loop).fs_stat(generated) then
+if vim.g.omarchy_theme and (vim.uv or vim.loop).fs_stat(generated) then
   return dofile(generated)
 end
 

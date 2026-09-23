@@ -128,6 +128,7 @@ golangci-lint = { desc = "Runs Go linters" }
 openjdk = { arch = "jdk-openjdk", desc = "Java Development Kit (latest)" }
 gradle = { desc = "Build tool for Java, Kotlin and Android" }
 maven = { desc = "Build automation tool used primarily for Java projects" }
+dotnet = { arch = "dotnet-sdk", desc = ".NET SDK (Mason installs csharpier with dotnet tool; no bin, since the runtime alone also puts dotnet on PATH)" }
 luajit = { desc = "Just-In-Time compiler for Lua" }
 luarocks = { desc = "Package manager for Lua modules" }
 "python@3.13" = { arch = "python", desc = "Python (uv and mise handle other versions)" }

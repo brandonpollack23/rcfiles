@@ -75,9 +75,9 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
         `omarchy pkg add` / `omarchy pkg drop`), skips everything Omarchy
         already ships, and runs the Omarchy menu installers where they exist
         (Steam, dev envs, Ghostty, Chrome).
-  - [ ] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
+  - [x] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
         packages) and move the ones I still want into `packages.toml`.
-  - [ ] Create a list of installed steam games with multiselect and save them
+  - [x] Create a list of installed steam games with multiselect and save them
         here to install.
   - [x] Decide what to drop from `packages.toml`'s `core`, which Omarchy already
         ships: fzf, zoxide, ripgrep, eza, fd, bat, tldr, yt-dlp, lazygit,
@@ -91,7 +91,8 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
 
 ### restore backups
 
-in the memory alpha backups dir and clean it up.
+- reformat both other drives same as nvme0n1
+- generate darcula theme
 
 ### Stow packages for the Omarchy files
 
@@ -104,6 +105,7 @@ configured them in the VM (§3), but the layout can be decided now.
   - `hyprland.lua` (the one that `require`s the rest), `bindings.lua`,
     `monitors.lua`, `input.lua`, `looknfeel.lua`, `autostart.lua`
   - plus whatever `conf/*.lua` modules survive §§7-10.
+- [ ] custom theme files
 - [ ] **`dotfiles/omarchy/`** → `~/.config/omarchy/`
   - `shell.json` (bar, widgets, screensaver, idle; replaces the defaults
     wholesale rather than merging)

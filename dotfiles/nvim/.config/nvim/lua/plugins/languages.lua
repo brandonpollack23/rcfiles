@@ -94,6 +94,11 @@ return {
         },
         -- Elixir goes through expert (installed in mason.lua) instead.
         elixirls = { enabled = false },
+        -- Erlang goes through ELP instead of the erlang extra's erlang_ls:
+        -- erlang_ls is archived, and Mason builds it from source with rebar3,
+        -- which fails on current OTP. ELP is a prebuilt binary.
+        erlangls = { enabled = false },
+        elp = {},
         -- The dotnet extra is here for C#; no F#.
         fsautocomplete = { enabled = false },
       },

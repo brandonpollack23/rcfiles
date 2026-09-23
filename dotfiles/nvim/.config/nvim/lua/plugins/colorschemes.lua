@@ -5,7 +5,8 @@ return {
   "sainnhe/sonokai",
   {
     "LazyVim/LazyVim",
-    opts = {
+    -- With `vim.g.omarchy_theme` on, theme.lua sets the colorscheme instead.
+    opts = vim.g.omarchy_theme and {} or {
       colorscheme = "sonokai",
     },
   },
