@@ -149,11 +149,11 @@ committed here rather than left as a post-install chore. Each is commented
 in `~/.local/state/rcfiles/backup/<stamp>/` before moving on** — the file I am
 replacing is Omarchy's own, and it may carry more than the line I already have.
 
-- [ ] `dotfiles/ghostty/.config/ghostty/config` —
-      `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`, last
-      in the file so the generated colours beat my `theme = Dark Modern`.
-      **Against the backup:** confirm the include path still matches theirs, and
-      diff their `shell-integration-features` / `async-backend` (§6).
+- [x] ~~`dotfiles/ghostty/.config/ghostty/config` — the
+      `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`
+      include~~ — **removed**: I want `theme = Dark Modern`, not the Omarchy
+      theme. Ghostty now ignores the theme picker. Still diff their
+      `shell-integration-features` / `async-backend` (§6).
 - [ ] `dotfiles/nvim/.config/nvim/lua/plugins/theme.lua` — loads Omarchy's
       generated LazyVim spec when it exists. Theirs ships as a _relative
       symlink_ to the same file, which a stow package can't carry (the target
@@ -286,9 +286,8 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       `omarchy default agent` exist, so try `omarchy default terminal ghostty`
       first; the manual only documents the menu.) Then stow the `ghostty`
       package and check `~/.config/ghostty/config` wins.
-- [x] ~~Add the theme hook to my ghostty config~~ — **already in the repo**, see
-      "Omarchy lines already in the dotfiles" in §1. Verify it works: switch
-      theme and watch ghostty change.
+- [x] ~~Add the theme hook to my ghostty config~~ — **decided against it**, see
+      "Omarchy lines already in the dotfiles" in §1: ghostty keeps my own theme.
 - [ ] Diff the rest of Omarchy's ghostty config against mine and decide: they
       set `shell-integration-features = no-cursor,ssh-env` where I set
       `ssh-terminfo`, and `async-backend = epoll` as a Hyprland speed fix.

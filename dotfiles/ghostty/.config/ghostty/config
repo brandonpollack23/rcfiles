@@ -7,10 +7,6 @@ shell-integration-features = ssh-terminfo
 keybind = ctrl+shift+j=unbind
 keybind = ctrl+shift+k=unbind
 
-# For Omarchy: follow the theme chosen with `omarchy theme set` /
-# SUPER+CTRL+SHIFT+Space. Omarchy regenerates that file on every theme switch
-# and themes a terminal only through a line like this in the terminal's own
-# config, so without it the picker silently skips ghostty. The leading `?`
-# marks the include optional, so this is a no-op anywhere else (the Mac).
-# Last on purpose: the generated colours should win over `theme =` above.
-config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
+# No `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`
+# here on purpose: that include is how Omarchy's theme picker recolours
+# ghostty, and I want `theme =` above to win everywhere.
