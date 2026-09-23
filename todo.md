@@ -77,6 +77,8 @@ In §§6-19, where a feature of my old `.config/hypr` + waybar setup is concerne
         (Steam, dev envs, Ghostty, Chrome).
   - [ ] Go through `pacman -Qqe` / `pacman -Qqm` on this machine (387 + 71
         packages) and move the ones I still want into `packages.toml`.
+  - [ ] Create a list of installed steam games with multiselect and save them
+        here to install.
   - [x] Decide what to drop from `packages.toml`'s `core`, which Omarchy already
         ships: fzf, zoxide, ripgrep, eza, fd, bat, tldr, yt-dlp, lazygit,
         lazydocker, btop, fastfetch, neovim, docker + compose, gh, mise, tmux.
