@@ -4,3 +4,5 @@ dotfiles/jj/.config/jj/repos/
 # antidote compiles .zsh_plugins.txt into this beside it (in $HOME normally,
 # here only when ZDOTDIR points into the repo).
 dotfiles/zsh/.zsh_plugins.zsh
+# The backups `omarchy refresh` leaves next to the file it resets.
+dotfiles/omarchy/.config/omarchy/**/*.bak.*

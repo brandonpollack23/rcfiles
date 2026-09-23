@@ -1,5 +1,5 @@
 import { assert, assert_eq } from "std/test"
-import { nothing_to_stow, stow_conflicts } from "../stow.ab"
+import { nothing_to_stow, stow_conflicts, unfolded_dirs } from "../stow.ab"
 
 test "stow_conflicts reads the targets out of stow's warnings" {
     const output = "WARNING! stowing starship would cause conflicts:
@@ -32,4 +32,33 @@ test "nothing_to_stow fails when something is in the way" {
     assert(not nothing_to_stow("WARNING! stowing nvim would cause conflicts:
   * existing target is not owned by stow: .config/nvim
 All operations aborted."))?
+}
+
+test "unfolded_dirs finds a whole-linked directory that is real in $HOME" {
+    const tmp = trust $ mktemp -d $
+    trust $ mkdir -p "{tmp}/repo/omarchy/.config/omarchy" "{tmp}/home/.config/omarchy" $
+    const found = unfolded_dirs("omarchy", "{tmp}/repo", "{tmp}/home")
+    trust $ rm -rf "{tmp}" $
+    const n = len(found)
+    assert_eq(n, 1)?
+    assert_eq(found[0], ".config/omarchy")?
+}
+
+test "unfolded_dirs passes over a directory that is already one link" {
+    const tmp = trust $ mktemp -d $
+    trust $ mkdir -p "{tmp}/repo/omarchy/.config/omarchy" "{tmp}/home/.config" $
+    trust $ ln -s "{tmp}/repo/omarchy/.config/omarchy" "{tmp}/home/.config/omarchy" $
+    const found = unfolded_dirs("omarchy", "{tmp}/repo", "{tmp}/home")
+    trust $ rm -rf "{tmp}" $
+    const n = len(found)
+    assert_eq(n, 0)?
+}
+
+test "unfolded_dirs passes over packages without the directory" {
+    const tmp = trust $ mktemp -d $
+    trust $ mkdir -p "{tmp}/repo/nvim" "{tmp}/home/.config/omarchy" $
+    const found = unfolded_dirs("nvim", "{tmp}/repo", "{tmp}/home")
+    trust $ rm -rf "{tmp}" $
+    const n = len(found)
+    assert_eq(n, 0)?
 }

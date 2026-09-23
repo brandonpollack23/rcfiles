@@ -525,12 +525,15 @@ the rest in order of how much I want it.
       probably ❌: themed colours, weather, the NVIDIA "restart after driver
       update" hint, the greeting and uptime footer. Check what their LockView
       shows.
-- [ ] 🟡 **Idle:** mine dims at 9.5 min, locks at 10, screens off at 10.5, and
+- [x] 🟡 **Idle:** mine dims at 9.5 min, locks at 10, screens off at 10.5, and
       turns screens off 60 s into any lock. Omarchy has only
-      `"idle": { "screensaver": 150, "lock": 300 }` in `shell.json` (seconds).
-      Check whether dim and DPMS-off exist at all, or if `omarchy toggle idle`
-      plus a hook is the closest I get. Toggle state lives in
-      `~/.local/state/omarchy/toggles/` — state, not config.
+      `"idle": { "screensaver": 600, "lock": 900 }` in `shell.json` (seconds
+      since idle began, now screensaver at 10 min and lock at 15). No dim and
+      no DPMS-off of its own: the lock blanks the screens 5 s in. Screens off
+      before the lock would need a service plugin with an `IdleMonitor` that
+      runs `omarchy-brightness-display off`/`on`. Stay awake
+      (`omarchy toggle idle`) is the file
+      `~/.local/state/omarchy/indicators/stay-awake` — state, not config.
 - [ ] ✅ **Lock before sleep**: check it on real hardware.
 - [ ] ✅ **Fingerprint / FIDO2** (Setup > Security): not needed on the desktop.
 - [ ] 🟡 **Keyboard focus comes back after unlock** (`conf/wm/focus.lua` works
@@ -703,6 +706,9 @@ A sweep of omarchy.org/manual for everything the sections above don't cover.
       generated with `omarchy ascii "..."` or
       `omarchy transcode ascii ~/logo.svg ... --width 100`. Boot splash with
       `omarchy plymouth set '<bg>' '<fg>' logo.png`.
+- [ ] Find good ASCII art for the screensaver (it runs at 10 min idle, §13):
+      a PNG/SVG through Style > Screensaver or `omarchy transcode ascii`, or
+      hand-picked text into `branding/screensaver.txt`.
 - [ ] Gaming: only Moonlight is preinstalled; Steam et al. come from Install >
       Gaming (§5). RetroArch wants `~/Games/bios` and `~/Games/roms`.
 - [ ] Windows VM, if I ever want it: `~/Windows` (shared) and `~/.windows`

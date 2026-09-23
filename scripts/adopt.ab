@@ -3,13 +3,15 @@
 //USAGE arg "<package>..." var=#true
 
 import { usage_words } from "./lib/run.ab"
-import { conflicts_for, dereference, ensure_shared_dirs, new_backup_dir, stow } from "./lib/stow.ab"
+import { home } from "./lib/paths.ab"
+import { adopt_dirs, conflicts_for, dereference, dotfiles, ensure_shared_dirs, new_backup_dir, stow, unfolded_dirs } from "./lib/stow.ab"
 
 main {
     ensure_shared_dirs()?
     const packages = usage_words("usage_package")
     const backup = new_backup_dir()
     for package in packages {
+        adopt_dirs(package, unfolded_dirs(package, dotfiles(), home()), backup)?
         dereference(conflicts_for(package), backup)?
     }
     stow("--adopt", packages)?

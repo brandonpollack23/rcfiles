@@ -27,13 +27,25 @@ pub fun ensure_shared_dirs(): Null? {
     for dir in [".config", ".config/git", ".config/hypr", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".claude"] {
         $ mkdir -p "{base}/{dir}" $?
     }
-    // Omarchy writes its own themes, plugins and branding next to mine, and
-    // may not have made these yet when I stow.
+    // Omarchy may not have made this yet when I stow.
     if is_omarchy() {
-        for dir in [".config/omarchy/themes", ".config/omarchy/plugins", ".config/omarchy/branding", ".config/uwsm/env.d"] {
-            $ mkdir -p "{base}/{dir}" $?
+        $ mkdir -p "{base}/.config/uwsm/env.d" $?
+    }
+}
+
+// Directories stow has to link whole, as one symlink, not file by file:
+// Omarchy saves shell.json by moving a new file over it, which would swap a
+// per-file link for a plain file. Of these, the ones `package` (in `repo`)
+// has that are real directories under `base`, where stow would go inside.
+pub fun unfolded_dirs(package: Text, repo: Text, base: Text): [Text] {
+    let found = [Text]
+    for dir in [".config/omarchy"] {
+        trust $ [ -d "{repo}/{package}/{dir}" ] && [ -d "{base}/{dir}" ] && [ ! -L "{base}/{dir}" ] $
+        if status() == 0 {
+            found += [dir]
         }
     }
+    return found
 }
 
 // `stow -v <flags> <packages>` from dotfiles/ into $HOME.
@@ -84,6 +96,17 @@ pub fun back_up(targets: [Text], backup: Text): Null? {
         dir_create(parent)?
         $ mv "{base}/{target}" "{backup}/{target}" $?
     }
+}
+
+// Adopts whole directories from unfolded_dirs: copies each over its place in
+// `package`, then moves it to `backup` so stow can link the directory.
+pub fun adopt_dirs(package: Text, dirs: [Text], backup: Text): Null? {
+    const base = home()
+    const repo = dotfiles()
+    for dir in dirs {
+        $ cp -R "{base}/{dir}/." "{repo}/{package}/{dir}/" $?
+    }
+    back_up(dirs, backup)?
 }
 
 // --adopt only takes plain files, so swap each symlinked target for a copy of

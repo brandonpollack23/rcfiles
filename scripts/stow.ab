@@ -6,11 +6,13 @@
 import { echo_error, input_prompt } from "std/env"
 import { join } from "std/text"
 import { is_interactive, usage_words } from "./lib/run.ab"
-import { all_packages, back_up, conflicts_for, dereference, ensure_shared_dirs, new_backup_dir, stow } from "./lib/stow.ab"
+import { home } from "./lib/paths.ab"
+import { adopt_dirs, all_packages, back_up, conflicts_for, dereference, dotfiles, ensure_shared_dirs, new_backup_dir, stow, unfolded_dirs } from "./lib/stow.ab"
 
 // Stows `package` over `conflicts` the way the user picks. False when they
-// skip it, or there's no terminal to ask on.
-fun resolve(package: Text, conflicts: [Text], backup: Text): Bool? {
+// skip it, or there's no terminal to ask on. `whole` when the conflicts are
+// directories to link whole (unfolded_dirs), not files.
+fun resolve(package: Text, conflicts: [Text], whole: Bool, backup: Text): Bool? {
     echo("stow: {package} would replace what's already in $HOME:")
     for target in conflicts {
         echo("  ~/{target}")
@@ -28,8 +30,13 @@ fun resolve(package: Text, conflicts: [Text], backup: Text): Bool? {
             stow("-R", [package])?
         }
         answer == "a" or answer == "A" {
-            dereference(conflicts, backup)?
-            stow("--adopt", [package])?
+            if whole {
+                adopt_dirs(package, conflicts, backup)?
+                stow("-R", [package])?
+            } else {
+                dereference(conflicts, backup)?
+                stow("--adopt", [package])?
+            }
             echo("stow: adopted {package}; review it with 'jj diff' and restore what you don't want")
         }
         else {
@@ -48,11 +55,16 @@ main {
     const backup = new_backup_dir()
     let skipped = [Text]
     for package in packages {
-        const conflicts = conflicts_for(package)
+        let conflicts = conflicts_for(package)
+        const unfolded = unfolded_dirs(package, dotfiles(), home())
+        const whole = len(unfolded) > 0
+        if whole {
+            conflicts = unfolded
+        }
         if len(conflicts) == 0 {
             stow("-R", [package])?
         } else {
-            const stowed = resolve(package, conflicts, backup)?
+            const stowed = resolve(package, conflicts, whole, backup)?
             if not stowed {
                 skipped += [package]
             }
