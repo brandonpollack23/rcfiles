@@ -129,6 +129,42 @@ configured them in the VM (§3), but the layout can be decided now.
       either leave it alone or keep a two-line one that hands over to zsh.
 - [ ] Update `README.md`'s package list once these exist.
 
+### Omarchy lines already in the dotfiles
+
+Omarchy themes an app by regenerating a file under
+`~/.local/state/omarchy/current/theme/` and expecting the app's *own* config to
+pull it in. That is one line per app, it no-ops off Omarchy, so it is already
+committed here rather than left as a post-install chore. Each is commented
+`For Omarchy:` in place.
+
+**When `mise run stow` offers replace or adopt on one of these, check the
+backup in `~/.local/state/rcfiles/backup/<stamp>/` before moving on** — the
+file I am replacing is Omarchy's own, and it may carry more than the line I
+already have.
+
+- [ ] `dotfiles/ghostty/.config/ghostty/config` —
+      `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`,
+      last in the file so the generated colours beat my `theme = Dark Modern`.
+      **Against the backup:** confirm the include path still matches theirs,
+      and diff their `shell-integration-features` / `async-backend` (§6).
+- [ ] `dotfiles/nvim/.config/nvim/lua/plugins/theme.lua` — loads Omarchy's
+      generated LazyVim spec when it exists. Theirs ships as a *relative
+      symlink* to the same file, which a stow package can't carry (the target
+      would resolve from the repo), hence a `dofile`.
+      **Against the backup:** their `theme.lua` symlink is the thing being
+      replaced — check it still points at
+      `.local/state/omarchy/current/theme/neovim.lua`, and that
+      `omarchy-nvim-setup` hasn't re-created it beside mine.
+      **Also decide:** the generated spec and my `colorschemes.lua` both set
+      LazyVim's `colorscheme`. Keep sonokai (delete `theme.lua`) or let the
+      theme picker drive nvim (drop the `colorscheme` opt). Can't have both.
+- [ ] Not pre-applied, because I don't package these: btop wants
+      `color_theme = "current"` plus a `themes/current.theme` symlink,
+      alacritty/kitty/foot want their own include line. If I ever add a
+      package for one, it needs that line too.
+- [ ] Not pre-applied, because the file doesn't exist yet: `~/.XCompose` (see
+      the table) and `~/.config/omarchy/*`. Those get adopted on the VM.
+
 ### Where Omarchy and stow collide
 
 Checked by stowing the packages (with the new ones stubbed out) into a fake
@@ -147,13 +183,14 @@ they want opposite fixes:
 | target | verdict |
 | --- | --- |
 | `~/.claude/` | **No conflict, nothing to do.** Omarchy writes three things in here — a symlink to its skill at `skills/omarchy`, the generated theme at `themes/omarchy.json`, and (only with `--activate`) `settings.json` — and my `claude` package holds none of those names: just `settings.shared.json` and `agents/`. Since `.claude` is already in `ensure_shared_dirs()`, stow links those two *individually* and Omarchy's files sit beside them. |
-| ↳ what would break it | Adding `dotfiles/claude/.claude/skills/` or `themes/` — stow would link the directory whole and Omarchy would write into the repo. Add the path to `ensure_shared_dirs()` first if I ever do. Adding `settings.json` is worse: `omarchy-theme-set-claude` does `jq … > tmp; mv tmp settings.json`, and `mv` over a symlink **replaces** it, so the file would silently stop being stowed. Keep using `settings.shared.json`. |
+| ↳ what would break it | Adding `dotfiles/claude/.claude/skills/` or `themes/` — stow would link the directory whole, and `themes/omarchy.json` is rewritten on *every* theme switch, so that one would churn in the repo. Add the path to `ensure_shared_dirs()` first if I ever do. Adding `settings.json` would be worse still: `omarchy-theme-set-claude --activate` does `jq … > tmp; mv tmp settings.json`, replacing the symlink — though no shipped code path passes `--activate` today (only its tests), so this is a latent trap rather than a live one. Keep using `settings.shared.json`. |
 | `~/.local/bin` | **No conflict.** Already in `ensure_shared_dirs()`, so Omarchy's lazy agent stubs (`claude`, `codex`, …) sit next to my linked `hacker-news.sh`. |
 | `~/.bashrc`, `~/.config/btop`, `~/.config/herdr` | **No conflict:** Omarchy owns them and I don't package them. Only becomes one if I ever add a package for them. |
 | `~/.config/hypr/*.lua` | **Expected conflict, adopt it.** Omarchy writes all six files, so stow stops on each. Answer `[a]dopt` so Omarchy's defaults become the repo's baseline, then `jj diff` and edit down to my overrides. |
-| `~/.config/omarchy/shell.json` | Same: **adopt**, since I want their default bar as the starting point (and it is used instead of the defaults, not merged). |
+| `~/.config/omarchy/shell.json` | **Adopt — then watch it.** I want their default bar as the starting point (it replaces the defaults rather than merging). ⚠️ But every menu action that moves a widget or changes bar position runs `omarchy-shell-config`, which does `jq … > tmp; mv tmp shell.json` — and **`mv` over a symlink replaces it**, so the file silently stops being stowed and my repo goes stale. Either tweak the bar only by editing the repo file, or re-run `mise run stow` after using those menu items. |
+| `~/.config/ghostty/config` (font) | ⚠️ **Same trap, different command.** `omarchy-font-set` runs plain `sed -i` on the ghostty config, which also replaces the symlink with a real file. Picking a font from Style > Font un-stows it. Set the font in the repo instead, or re-stow after. |
 | `~/.config/starship.toml` | **Expected conflict, replace.** Omarchy ships its own; mine is the one I want. `[r]eplace` puts theirs in `~/.local/state/rcfiles/backup/<stamp>/`. |
-| `~/.config/nvim` | **Probably no conflict.** Omarchy's repo has no `config/nvim`, so nothing is copied into `~/.config/nvim` at install — `omarchy-nvim` is its own package. Check on the VM whether the directory exists before stowing: if it doesn't, mine is linked whole and that's fine; if it does, `[r]eplace`. Mine is LazyVim too, so nothing is lost either way. |
+| `~/.config/nvim` | **Expected conflict, replace.** Not from Omarchy's own `config/` — the separate `omarchy-nvim` package seeds a full LazyVim tree (plus a plugin cache in `~/.local/share/nvim`) through `/etc/skel`, so it's there before I ever log in. Mine is LazyVim too, so `[r]eplace` loses nothing but their `lua/plugins/theme.lua` symlink, which my own `theme.lua` stands in for. Careful with `omarchy-nvim-refresh`: it backs up and overwrites. |
 | `~/.config/omarchy/` subdirs | **Silent-leak risk → fix `ensure_shared_dirs()`.** Omarchy writes `themes/`, `plugins/` and `backgrounds/` in here (the active-theme pointer is `~/.local/state/omarchy/current`, so that one is out of the way). With the parents pre-created, only the things I fully own get directory links (`themes/<mine>`, `plugins/<mine>`, `hooks/<event>.d`) and Omarchy's are siblings — which is what I want. |
 | `~/.config/uwsm/env.d` | Same treatment: pre-create it, so my env file is a file link. |
 | `~/.config/omarchy/extensions/omarchy-menu.jsonc` | **Expected conflict, adopt.** Omarchy ships this file, and my §12 entries are meant to extend it rather than replace it — so take theirs as the baseline and add to it. |
@@ -175,14 +212,21 @@ they want opposite fixes:
       (`post-boot`, `post-update`, `pre-refresh-pacman`, `theme-set`,
       `font-set`, `battery-low`) ship with a `.sample` inside, so they're real
       directories and my hook files link in individually. Nothing to do.
-- [ ] ⚠️ **Omarchy rewrites the files it owns.** `omarchy update`,
-      Update > Config and `omarchy reinstall configs` restore the defaults and
-      leave my version as `.bak`. Find out in the VM what that does to a stow
-      symlink — replaces it (my repo file survives, the link is gone) or writes
-      through it (my repo file is overwritten, which `jj diff` would at least
-      show me). Either way the fix is a `post-update` hook (§18) that runs
-      `mise run stow`; the difference decides whether I also need to commit
-      before updating.
+- [ ] ⚠️ **Know the two ways Omarchy mutates a file, because they differ.**
+      Verified in its scripts:
+  - **Replaces the symlink** (`jq > tmp; mv`, plain `sed -i`): the link is
+    gone, my repo file survives untouched, and the file quietly stops being
+    stowed. This is the dangerous one — nothing looks wrong, and `jj diff`
+    shows nothing. `omarchy-shell-config` and `omarchy-font-set` do this.
+  - **Writes through the symlink** (`sed --follow-symlinks -i`, `touch`, and
+    the `migrations/*.sh` run by `omarchy update`): my repo file is edited in
+    place, which at least shows up in `jj diff`.
+  - So the safety net is both a `post-update` hook (§18) running
+    `mise run stow`, *and* `jj status` being clean before I update.
+- [ ] ⚠️ **`omarchy reinstall configs` is `cp -af /etc/skel/. ~/`** — it
+      clobbers without backup, unlike `omarchy-refresh-config <file>`, which
+      writes a `.bak.<epoch>` first. Prefer the per-file refresh; treat the
+      full reinstall as "re-stow everything afterwards".
 
 ## 2. Back up what isn't in git (on the current machine)
 
@@ -274,18 +318,12 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       `omarchy default agent` exist, so try `omarchy default terminal ghostty`
       first; the manual only documents the menu.) Then stow the `ghostty`
       package and check `~/.config/ghostty/config` wins.
-- [ ] ⚠️ **Add the theme hook to my ghostty config**, or the theme picker
-      silently skips the terminal. Omarchy's own ghostty config themes itself
-      with one line and nothing else:
-      `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`
-      (the `?` makes it optional). Mine has no such line, and it hard-codes
-      `theme = Dark Modern`, so `omarchy theme set` would change everything
-      *but* my terminal. Put that line in
-      `dotfiles/ghostty/.config/ghostty/config` and drop the `theme =` line —
-      or keep `theme =` and accept that ghostty stays on my colours. Worth
-      diffing the rest of their config too: they set
-      `shell-integration-features = no-cursor,ssh-env` where I set
-      `ssh-terminfo`, plus `async-backend = epoll` as a Hyprland speed fix.
+- [x] ~~Add the theme hook to my ghostty config~~ — **already in the repo**,
+      see "Omarchy lines already in the dotfiles" in §1. Verify it works:
+      switch theme and watch ghostty change.
+- [ ] Diff the rest of Omarchy's ghostty config against mine and decide: they
+      set `shell-integration-features = no-cursor,ssh-env` where I set
+      `ssh-terminfo`, and `async-backend = epoll` as a Hyprland speed fix.
 - [ ] **Drop the foot config** from the manual's list: I don't use it, so no
       `foot/` stow package. Leave Omarchy's `~/.config/foot/foot.ini` alone in
       case something falls back to it.

@@ -11,7 +11,7 @@ import { array_contains } from "std/array"
 
 import { detect_os, is_omarchy, ensure_brew } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
-import { home, xdg_config_home } from "./lib/paths.ab"
+import { home, xdg_config_home, put_cargo_on_path } from "./lib/paths.ab"
 import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
 
 // Remembers `picked` for the next run (unless this one is a dry run).
@@ -326,16 +326,15 @@ fun install_yay(): Null? {
     $ rm -rf "{build}" $?
 }
 
-// Rust, through rustup (its own installer, so it's the same on every OS).
-// ~/.cargo/env puts cargo on PATH; .zshrc sources it too.
+// Rust, through rustup (its own installer, unless a package manager already
+// put rustup there, like Arch's dev group). Crates go in ~/.cargo/bin, which
+// .zshrc puts on PATH too.
 fun ensure_rust(): Null? {
     const base = home()
     if not file_exists("{base}/.cargo/bin/rustup") and not is_command("rustup") {
         $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path $?
     }
-    if file_exists("{base}/.cargo/env") {
-        $ source "{base}/.cargo/env" $?
-    }
+    put_cargo_on_path()
     trust $ rustup default >/dev/null 2>&1 $
     if status() != 0 {
         $ rustup default stable $?

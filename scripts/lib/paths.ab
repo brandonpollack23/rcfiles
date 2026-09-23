@@ -1,6 +1,6 @@
 // Paths under $HOME. Not executable, so mise doesn't list it as a task.
 
-import { starts_with, slice, count_chars } from "std/text"
+import { starts_with, slice, count_chars, text_contains } from "std/text"
 import { env_var_get } from "std/env"
 
 pub fun home(): Text {
@@ -33,4 +33,29 @@ pub fun xdg_data_home(): Text {
         return set
     }
     return "{home()}/.local/share"
+}
+
+// Where cargo install and binstall put binaries: $CARGO_HOME/bin, defaulting
+// to ~/.cargo/bin.
+pub fun cargo_bin(): Text {
+    const set = trust env_var_get("CARGO_HOME")
+    if set != "" {
+        return "{set}/bin"
+    }
+    return "{home()}/.cargo/bin"
+}
+
+// `path` with `dir` in front, unless it's already in it.
+pub fun with_dir_first(path: Text, dir: Text): Text {
+    if text_contains(":{path}:", ":{dir}:") {
+        return path
+    }
+    return "{dir}:{path}"
+}
+
+// Puts cargo_bin() on this task's PATH. Not by sourcing ~/.cargo/env: only
+// rustup's own installer writes that, and Arch's rustup package doesn't.
+pub fun put_cargo_on_path(): Null {
+    const path = with_dir_first(trust env_var_get("PATH"), cargo_bin())
+    trust $ export PATH="{path}" $
 }

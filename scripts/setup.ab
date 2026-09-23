@@ -3,9 +3,8 @@
 //MISE wait_for=["deps", "stow", "plugins"]
 
 import { is_command } from "std/env"
-import { file_exists } from "std/fs"
 import { join } from "std/text"
-import { home } from "./lib/paths.ab"
+import { home, put_cargo_on_path } from "./lib/paths.ab"
 import { dotfiles } from "./lib/stow.ab"
 import { nvim_skipped } from "./lib/nvim.ab"
 
@@ -18,7 +17,7 @@ fun install_whats_missing(): Null? {
     if len(gone) > 0 {
         echo("setup: missing {join(gone, " ")}; running deps")
         $ mise run deps $?
-        source_cargo()
+        put_cargo_on_path()
         $ eval "\$(mise env -s bash)" $?
     }
     if not linked("{base}/.gitconfig", "git/.gitconfig") or not linked("{base}/.config/nvim", "nvim/.config/nvim") {
@@ -93,15 +92,8 @@ fun plugins_installed(): Bool {
     return status() == 0
 }
 
-fun source_cargo(): Null {
-    const env = "{home()}/.cargo/env"
-    if file_exists(env) {
-        trust $ source "{env}" $
-    }
-}
-
 main {
-    source_cargo()
+    put_cargo_on_path()
     install_whats_missing()?
     ensure_gh_login()?
     const found = problems()

@@ -9,6 +9,10 @@ if command -v systemd-detect-virt >/dev/null && systemd-detect-virt --quiet --ch
 fi
 
 export PATH="$PATH:$HOME/.local/scripts:$HOME/bin:$HOME/.local/bin"
+# Rust: cargo install and binstall put binaries in ~/.cargo/bin. Not through
+# ~/.cargo/env: only rustup's own installer writes it, Arch's rustup doesn't.
+[[ ":$PATH:" == *":${CARGO_HOME:-$HOME/.cargo}/bin:"* ]] || export PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
+
 # Homebrew: the Mac, or Linuxbrew on Debian and Fedora (where deps installs
 # everything through it). Same candidates as ensure_brew in scripts/lib/os.sh.
 for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
@@ -19,9 +23,6 @@ for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbr
 done
 unset _brew
 export MANPATH="$HOME/man/":$MANPATH
-
-#rustup
-[[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 export EDITOR="nvim" # opens in terminal
 export ALTERNATE_EDITOR="vi"

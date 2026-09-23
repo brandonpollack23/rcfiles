@@ -1,5 +1,5 @@
 import { assert_eq } from "std/test"
-import { home_relative } from "../paths.ab"
+import { home_relative, with_dir_first } from "../paths.ab"
 
 test "home_relative strips $HOME and rejects paths outside it" {
     assert_eq(home_relative("/home/u/.config/btop", "/home/u"), ".config/btop")?
@@ -7,4 +7,11 @@ test "home_relative strips $HOME and rejects paths outside it" {
     assert_eq(home_relative("/home/u", "/home/u"), "")?
     assert_eq(home_relative("/home/user2/.zshrc", "/home/u"), "")?
     assert_eq(home_relative("/etc/hosts", "/home/u"), "")?
+}
+
+test "with_dir_first adds a directory once" {
+    assert_eq(with_dir_first("/usr/bin:/bin", "/c/bin"), "/c/bin:/usr/bin:/bin")?
+    assert_eq(with_dir_first("/usr/bin:/c/bin", "/c/bin"), "/usr/bin:/c/bin")?
+    assert_eq(with_dir_first("/c/bin", "/c/bin"), "/c/bin")?
+    assert_eq(with_dir_first("/usr/bin:/c/bin2", "/c/bin"), "/c/bin:/usr/bin:/c/bin2")?
 }
