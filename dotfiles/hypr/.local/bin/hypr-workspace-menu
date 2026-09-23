@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Workspace prompts in Omarchy's menu. Special workspaces (the scratchpad and
+# the like) are left out of both.
+#   rename  name the active workspace; an empty name puts its number back
+#   move    send the active window to a picked workspace, or to a new one
+#           named on the spot, and follow it
+
+set -euo pipefail
+
+NEW="New workspace"
+
+workspace_ids() {
+  hyprctl workspaces -j | jq -r '.[] | select(.id > 0) | .id'
+}
+
+rename() {
+  local id=$1 name=$2
+  hyprctl eval "hl.dispatch(hl.dsp.workspace.rename({ workspace = '$id', name = [==[${name:-$id}]==] }))" >/dev/null
+}
+
+move() {
+  hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$1' }))" >/dev/null
+}
+
+case ${1:-} in
+rename)
+  id=$(hyprctl activeworkspace -j | jq -r '.id')
+  (( id > 0 )) || exit 0
+  name=$(omarchy-menu-input "Name workspace $id") || exit 0
+  rename "$id" "$name"
+  ;;
+move)
+  current=$(hyprctl activeworkspace -j | jq -r '.id')
+  choice=$({
+    hyprctl workspaces -j | jq -r --argjson current "$current" '
+      map(select(.id > 0 and .id != $current)) | sort_by(.id) | .[]
+      | if .name == (.id | tostring) then .name else "\(.id): \(.name)" end'
+    echo "$NEW"
+  } | omarchy-menu-select "Move window to") || exit 0
+
+  if [[ $choice == "$NEW" ]]; then
+    name=$(omarchy-menu-input "Name the new workspace") || exit 0
+    id=1
+    while workspace_ids | grep -qx "$id"; do
+      id=$((id + 1))
+    done
+    move "$id"
+    rename "$id" "$name"
+  else
+    move "${choice%%:*}"
+  fi
+  ;;
+*)
+  echo "usage: $0 rename|move" >&2
+  exit 2
+  ;;
+esac

@@ -345,12 +345,13 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       binding uses master. Set `general.layout = "master"` in `looknfeel.lua`.
 - [ ] 🟡 **Master binds** (swapwithmaster, focusmaster, addmaster, removemaster,
       orientation cycle): not bound in Omarchy. Port them from `keymaps.lua`.
-- [ ] 🟡 **Per-workspace layouts kept by name** (`conf/layouts.lua`,
+- [x] 🟡 **Per-workspace layouts kept by name** (`conf/layouts.lua`,
       `conf/workspaces/layout.lua`: "focus" center-master 0.6 vs
       "work/reference" with a 25% reference column, `SUPER+ALT+O`). Omarchy
       keeps a dwindle/scrolling choice per workspace in
       `~/.local/state/omarchy/workspace-layouts/`. Either port mine or extend
-      theirs to cover my presets.
+      theirs to cover my presets. Done in `hypr/layouts.lua`: `SUPER+ALT+L` cycles
+      focus, work/reference, dwindle and scrolling, kept by workspace id.
 - [ ] ❌ **Center-master side columns stay put** when a window closes
       (`conf/wm/columns.lua`): port it.
 - [ ] 🟡 **Special/hidden workspaces use dwindle**: a one-line
@@ -388,7 +389,10 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       a picker to create, rename and move a window to one, with placement order
       and gap-free ids. Port it. It used hyprlauncher `--dmenu`, so swap in
       Omarchy's menu (check whether `omarchy menu` has a dmenu mode) or use
-      `fzf` in a floating terminal.
+      `fzf` in a floating terminal. Partly done in `hypr-workspace-menu` with
+      `omarchy menu input`/`select`: rename (`SUPER+SHIFT+4`) and move a window
+      to a picked or new workspace (`SUPER+M`). Still missing: placement order,
+      gap-free ids, a focus picker, and names surviving an emptied workspace.
 - [ ] ❌ **Reorder workspaces** left/right (`SUPER+CTRL+SHIFT+arrows`): port it,
       it comes with the above.
 - [ ] 🟡 **Hidden workspaces:** Omarchy has one scratchpad (`SUPER+S`,

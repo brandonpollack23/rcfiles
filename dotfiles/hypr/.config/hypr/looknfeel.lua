@@ -1,7 +1,7 @@
 -- Change the default Omarchy look'n'feel.
 
 -- Master is the default layout, with the master window centered and half the
--- screen wide even when it has no slaves yet. SUPER + L cycles a workspace
+-- screen wide even when it has no slaves yet. SUPER + ALT + L cycles a workspace
 -- through master, dwindle and scrolling (see bindings.lua).
 -- https://wiki.hypr.land/Configuring/Layouts/Master-Layout/
 hl.config({
@@ -10,10 +10,15 @@ hl.config({
   },
 
   master = {
+    -- Slaves are dealt out right, left, right... by their place in the stack,
+    -- so closing one still flips every slave after it to the other side.
     orientation = "center",
     mfact = 0.5,
     -- Center the master however few slaves there are (0 = always).
     slave_count_for_center_master = 0,
+    -- New windows join the end of the stack instead of taking master (Omarchy
+    -- sets "master"), so opening one doesn't shift the others either.
+    new_status = "slave",
   },
 })
 
