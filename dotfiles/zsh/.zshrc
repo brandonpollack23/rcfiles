@@ -186,6 +186,8 @@ lazy_completion esc "esc completion zsh"
 lazy_completion pnpm "pnpm completion zsh"
 # fzf ships no completion for its own options; zsh reads them from --help.
 compdef _gnu_generic fzf
+# tdl, tds, tdlm and tsl: Omarchy's tmux dev layouts, with completion.
+[[ -f ~/.config/zsh/tmux-layouts.zsh ]] && source ~/.config/zsh/tmux-layouts.zsh
 # JJ Workspace switcher
 function jjws() {
   local selection
