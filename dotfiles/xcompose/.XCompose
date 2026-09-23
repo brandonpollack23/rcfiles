@@ -1,0 +1,8 @@
+# Run omarchy-restart-xcompose to apply changes
+
+# For Omarchy: its emoji compose sequences. Keep this line.
+include "/usr/share/omarchy/default/xcompose"
+
+# Identification
+<Multi_key> <space> <n> : "Brandon Pollack"
+<Multi_key> <space> <e> : "brandonpollack23@gmail.com"

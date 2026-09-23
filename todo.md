@@ -91,7 +91,7 @@ In §§6-18, where a feature of my old `.config/hypr` + waybar setup is concerne
 
 ### restore backups
 
-- [ ] reformat both other drives same as nvme0n1
+- [x] reformat both other drives same as nvme0n1
 - [x] generate darcula theme
 
 ### Stow packages for the Omarchy files
@@ -105,8 +105,8 @@ configured them in the VM (§3), but the layout can be decided now.
   - `hyprland.lua` (the one that `require`s the rest), `bindings.lua`,
     `monitors.lua`, `input.lua`, `looknfeel.lua`, `autostart.lua`
   - plus whatever `conf/*.lua` modules survive §§7-10.
-- [ ] custom theme files
-- [ ] **`dotfiles/omarchy/`** → `~/.config/omarchy/`
+- [x] custom theme files
+- [x] **`dotfiles/omarchy/`** → `~/.config/omarchy/`
   - `shell.json` (bar, widgets, screensaver, idle; replaces the defaults
     wholesale rather than merging)
   - `extensions/omarchy-menu.jsonc` (my menu entries, §12)
@@ -121,21 +121,19 @@ configured them in the VM (§3), but the layout can be decided now.
     (§15). Keep it out of the repo.
   - **not** `~/.local/state/omarchy/`: runtime state (toggles, workspace
     layouts), not config.
-- [ ] **Other single files that are mine:** `~/.config/hypr/hyprsunset.conf`
+- [x] **Other single files that are mine:** `~/.config/hypr/hyprsunset.conf`
       (night light profile, §11) and `~/.config/voxtype/config.toml` (dictation,
       §18) — both only once I've actually set them up.
-- [ ] **`dotfiles/uwsm/`** → `~/.config/uwsm/env.d/`: session environment
+- [x] **`dotfiles/uwsm/`** → `~/.config/uwsm/env.d/`: session environment
       variables, which is where `OMARCHY_SCREENSHOT_DIR` and
       `OMARCHY_SCREENRECORD_DIR` belong (create the directories first; takes a
       relogin).
-- [ ] **`~/.XCompose`**: the manual lists it as mine (emoji/text autocomplete).
+- [x] **`~/.XCompose`**: the manual lists it as mine (emoji/text autocomplete).
       Its own small package, since it isn't Omarchy-specific — but it must keep
       Omarchy's `include` line, see the table below.
-- [ ] **`~/.config/starship.toml`** is already the `starship` package, and
+- [x] **`~/.config/starship.toml`** is already the `starship` package, and
       Omarchy uses starship too, so nothing to do beyond stowing over theirs.
-- [ ] **`~/.bashrc`** is Omarchy's shell customization point. Going to zsh, so
-      either leave it alone or keep a two-line one that hands over to zsh.
-- [ ] Update `README.md`'s package list once these exist.
+- [x] Update `README.md`'s package list once these exist.
 
 ### Omarchy lines already in the dotfiles
 
@@ -168,7 +166,7 @@ replacing is Omarchy's own, and it may carry more than the line I already have.
       `color_theme = "current"` plus a `themes/current.theme` symlink,
       alacritty/kitty/foot want their own include line. If I ever add a package
       for one, it needs that line too.
-- [ ] Not pre-applied, because the file doesn't exist yet: `~/.XCompose` (see
+- [x] Not pre-applied, because the file doesn't exist yet: `~/.XCompose` (see
       the table) and `~/.config/omarchy/*`. Those get adopted on the VM.
 
 ### Where Omarchy and stow collide
@@ -528,8 +526,8 @@ the rest in order of how much I want it.
 - [x] 🟡 **Idle:** mine dims at 9.5 min, locks at 10, screens off at 10.5, and
       turns screens off 60 s into any lock. Omarchy has only
       `"idle": { "screensaver": 600, "lock": 900 }` in `shell.json` (seconds
-      since idle began, now screensaver at 10 min and lock at 15). No dim and
-      no DPMS-off of its own: the lock blanks the screens 5 s in. Screens off
+      since idle began, now screensaver at 10 min and lock at 15). No dim and no
+      DPMS-off of its own: the lock blanks the screens 5 s in. Screens off
       before the lock would need a service plugin with an `IdleMonitor` that
       runs `omarchy-brightness-display off`/`on`. Stay awake
       (`omarchy toggle idle`) is the file
@@ -706,8 +704,8 @@ A sweep of omarchy.org/manual for everything the sections above don't cover.
       generated with `omarchy ascii "..."` or
       `omarchy transcode ascii ~/logo.svg ... --width 100`. Boot splash with
       `omarchy plymouth set '<bg>' '<fg>' logo.png`.
-- [ ] Find good ASCII art for the screensaver (it runs at 10 min idle, §13):
-      a PNG/SVG through Style > Screensaver or `omarchy transcode ascii`, or
+- [ ] Find good ASCII art for the screensaver (it runs at 10 min idle, §13): a
+      PNG/SVG through Style > Screensaver or `omarchy transcode ascii`, or
       hand-picked text into `branding/screensaver.txt`.
 - [ ] Gaming: only Moonlight is preinstalled; Steam et al. come from Install >
       Gaming (§5). RetroArch wants `~/Games/bios` and `~/Games/roms`.

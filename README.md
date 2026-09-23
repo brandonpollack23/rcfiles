@@ -58,7 +58,9 @@ them, or pull them into the repo with `mise run adopt <package>`.
 | `.sops.yaml`, `*.sops.*`, `.sops-master.key.age` | encrypted secrets (see below)          |
 
 Packages: `claude`, `ghostty`, `git`, `iex`, `jj`, `nvim` (LazyVim), `starship`,
-`systemd`, `tmux`, `zsh`. Machine-only settings go in the untracked
+`systemd`, `tmux`, `xcompose`, `zsh`, and for [Omarchy](https://omarchy.org)
+`hypr` (Hyprland's Lua config) and `omarchy` (`~/.config/omarchy`: the bar,
+menu, themes, hooks, branding). Machine-only settings go in the untracked
 `~/.zshrc.local` and `~/.gitconfig.local`.
 
 ## Tasks
