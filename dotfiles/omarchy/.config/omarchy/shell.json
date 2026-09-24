@@ -4,8 +4,8 @@
     "layout": {
       "center": [
         {
-          "id": "omarchy.indicators",
-          "alwaysShow": true
+          "alwaysShow": true,
+          "id": "omarchy.indicators"
         },
         {
           "format": "dddd HH:mm",
@@ -28,16 +28,17 @@
           "id": "evindor.keystroke"
         },
         {
-          "id": "omarchy.workspaces"
+          "id": "brandonpollack23.beautiful-workspace-bar",
+          "previewSize": 320
         }
       ],
       "right": [
         {
+          "hidden": [],
           "id": "omarchy.tray",
           "pinned": [
             "chrome_status_icon_1"
-          ],
-          "hidden": []
+          ]
         },
         {
           "id": "omarchy.tailscale"
@@ -65,16 +66,16 @@
     "position": "bottom",
     "transparent": true
   },
+  "cloneSourceRestores": [
+    "evindor.keystroke"
+  ],
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
   "idle": {
     "lock": 900,
     "screensaver": 600
   },
   "plugins": [],
-  "version": 1,
-  "disabledPlugins": [
-    "omarchy.menu"
-  ],
-  "cloneSourceRestores": [
-    "evindor.keystroke"
-  ]
+  "version": 1
 }
