@@ -505,15 +505,14 @@ the rest in order of how much I want it.
   - edit secrets (sops)
   - failed units
   - journal errors
-  - fcitx5 config
-  - restart KDE Connect
-- [ ] `omarchy menu summon <path>` / `toggle` / `close` script the menu, so my
+  - fcitx5 config -krestart KDE Connect
+- [x] `omarchy menu summon <path>` / `toggle` / `close` script the menu, so my
       old menu scripts can drive Omarchy's UI instead of drawing their own.
 - [ ] 🟡 **Notifications:** dismiss, dismiss all, DND and history are built in.
       There is no swaync-style control center, and my vim keys for it are moot.
-- [ ] ✅ **Volume/brightness OSD and media keys** are built in, plus DDC
+- [x] ✅ **Volume/brightness OSD and media keys** are built in, plus DDC
       brightness on external monitors.
-- [ ] ❌ **Sound and notification on USB, charger or monitor plug/unplug**
+- [x] ❌ **Sound and notification on USB, charger or monitor plug/unplug**
       (brpol-waybard `hotplug.py`, `conf/hotplug.lua`): port it as a small
       standalone user service, or as an Omarchy hook (§18), if I still want it.
 

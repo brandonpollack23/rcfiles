@@ -41,40 +41,41 @@
       ],
       "right": [
         {
-          "hidden": [],
           "id": "omarchy.tray",
           "pinned": [
-            "chrome_status_icon_1",
             "discord_status_icon_1",
             "privateinternetaccess"
+          ],
+          "hidden": [
+            "chrome_status_icon_1"
           ]
-        },
-        {
-          "id": "ronald.input-sources"
-        },
-        {
-          "id": "io.github.orienw.fresh-wallpaper"
-        },
-        {
-          "id": "omaconnect"
         },
         {
           "id": "omarchy.tailscale"
         },
         {
-          "id": "omarchy.agents"
+          "id": "omarchy.network"
         },
         {
           "id": "omarchy.bluetooth"
         },
         {
-          "id": "omarchy.network"
+          "id": "ronald.input-sources"
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "io.github.orienw.fresh-wallpaper"
+        },
+        {
+          "id": "omarchy.monitor"
         },
         {
           "id": "omarchy.audio"
         },
         {
-          "id": "omarchy.monitor"
+          "id": "omaconnect"
         },
         {
           "id": "omarchy.power"
