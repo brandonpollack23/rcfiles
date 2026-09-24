@@ -49,6 +49,14 @@ function M.step(step)
   end
   local workspace = target and tostring(target) or (step > 0 and "e+1" or "e-1")
   hl.dispatch(hl.dsp.focus({ workspace = workspace }))
+
+  -- An open GloView overview (hyprland.lua) keeps showing the workspace it was
+  -- on, and goes back to it when it closes; show it the one we landed on. With
+  -- the overview closed, that's already the live one and nothing happens.
+  local landed = hl.get_active_workspace()
+  if hl.plugin.gloview and landed then
+    hl.plugin.gloview.setworkspace(landed.id)
+  end
 end
 
 -- Give open workspace `from` the free id `to`. Its layout rule goes first, in

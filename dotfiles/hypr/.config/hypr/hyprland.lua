@@ -13,6 +13,15 @@ dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/boo
 -- Load Omarchy defaults.
 require("default.hypr.omarchy")
 
+-- GloView, the Mission Control-style overview (gloview-git from the AUR); its
+-- bindings are in bindings.lua. Only where it's installed, so a machine
+-- without it still loads the config.
+local gloview = io.open("/usr/lib/gloview.so")
+if gloview then
+  gloview:close()
+  hl.plugin.load("/usr/lib/gloview.so")
+end
+
 -- Put your personal overrides in these files. They're loaded after Omarchy's
 -- defaults so package updates can improve the defaults without rewriting your
 -- ~/.config/hypr files.

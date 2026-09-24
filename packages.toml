@@ -80,6 +80,7 @@ cargo-binstall = { desc = "Installs Rust binaries without building them (the car
 bitwarden-cli = { desc = "Bitwarden password manager CLI (bw)" }
 tailscale = { desc = "Mesh VPN (tailscale and tailscaled)" }
 base-devel = { brew = false, desc = "Compiler, make and friends for building AUR and native packages" }
+gloview = { arch = "gloview-git", brew = false, desc = "Mission Control-style overview plugin for Hyprland (hyprland.lua loads it)" }
 
 [packages.mac]
 bash = { desc = "A current Bash (macOS ships 3.2)" }

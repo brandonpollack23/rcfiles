@@ -112,6 +112,24 @@ o.bind(
   hl.dsp.window.move({ workspace = "special:scratchpad", follow = false })
 )
 
+-- GloView (loaded in hyprland.lua): SUPER + SHIFT + D toggles the overview,
+-- taken from Omarchy's Docker. The function looks the plugin up when the key
+-- is pressed, since it may load after this, and says what to install when it
+-- isn't there. SUPER + CTRL + arrows keep stepping workspaces while it's open
+-- (workspaces.lua).
+hl.unbind("SUPER + SHIFT + D")
+o.bind("SUPER + SHIFT + D", "Overview", function()
+  if not hl.plugin.gloview then
+    hl.notification.create({
+      text = "GloView isn't loaded: install it with `yay -S gloview-git` (or `mise run deps`), then reload Hyprland",
+      timeout = 8000,
+      icon = "error",
+    })
+    return
+  end
+  hl.plugin.gloview.toggle()
+end)
+
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
 -- o.bind("SUPER + H", nil, "voxtype record toggle")
