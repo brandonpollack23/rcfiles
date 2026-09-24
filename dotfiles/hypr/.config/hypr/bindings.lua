@@ -95,10 +95,12 @@ o.bind("SUPER + D", "Go to a picked workspace", "hypr-workspace-menu go")
 o.bind("SUPER + M", "Move window to a picked workspace", "hypr-workspace-menu move")
 o.bind("SUPER + ALT + M", "Move window silently to a picked workspace", "hypr-workspace-menu move silent")
 -- SUPER + N makes a named workspace where you pick, the end first, and SUPER +
--- SHIFT + N takes the window there. That was Omarchy's Editor.
+-- SHIFT + N takes the window there. That was Omarchy's Editor. SUPER + ALT + N
+-- makes a named hidden (special) workspace and shows it.
 hl.unbind("SUPER + SHIFT + N")
 o.bind("SUPER + N", "New workspace", "hypr-workspace-menu new")
 o.bind("SUPER + SHIFT + N", "Move window to a new workspace", "hypr-workspace-menu new move")
+o.bind("SUPER + ALT + N", "New hidden workspace", "hypr-workspace-menu new hidden")
 
 -- Move to the scratchpad on SUPER + SHIFT + S, next to SUPER + S that shows
 -- it, instead of Omarchy's SUPER + ALT + S. It replaces the Google Maps web app.

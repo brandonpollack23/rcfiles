@@ -10,6 +10,7 @@
 #   new     name a new workspace, pick where it goes (first, or after a
 #           workspace, the last one by default), and go there
 #   new move  the same, taking the active window along
+#   new hidden  name a new special workspace and show it
 #
 # Workspaces are ordered by id, and hypr/workspaces.lua keeps them numbered
 # 1, 2, 3..., so one put between two others takes the id after the first and
@@ -31,6 +32,13 @@ rename() {
 
 move() {
   hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$1', follow = $FOLLOW }))" >/dev/null
+}
+
+# Show the special workspace NAME, making it if it isn't open. Toggling one
+# that's already shown would close it.
+show_special() {
+  hyprctl monitors -j | jq -e --arg name "special:$1" 'any(.specialWorkspace.name == $name)' >/dev/null ||
+    hyprctl eval "hl.dispatch(hl.dsp.workspace.toggle_special([==[$1]==]))" >/dev/null
 }
 
 # Ask where a new workspace goes and print its id: first, or after a picked
@@ -62,6 +70,15 @@ create() {
   hyprctl eval "require('hypr.workspaces').insert($id, [==[$name]==], $window, $FOLLOW)" >/dev/null
 }
 
+# Name a new hidden (special) workspace and show it. It needs a name, as
+# that's all a special workspace is known by.
+create_hidden() {
+  local name
+  name=$(omarchy-menu-input "Name the new hidden workspace" --width "$WIDTH") || return 0
+  [[ -n $name ]] || return 0
+  show_special "$name"
+}
+
 case ${1:-} in
 go)
   # Rows are "<glyph>\t<label>\t<subtext>", and the menu hands back the label
@@ -82,9 +99,8 @@ go)
 
   if [[ $label =~ ^[0-9]+ ]]; then
     hyprctl eval "hl.dispatch(hl.dsp.focus({ workspace = '${BASH_REMATCH[0]}' }))" >/dev/null
-  elif ! hyprctl monitors -j | jq -e --arg name "special:$label" 'any(.specialWorkspace.name == $name)' >/dev/null; then
-    # Toggling one that's already open would close it.
-    hyprctl eval "hl.dispatch(hl.dsp.workspace.toggle_special([==[$label]==]))" >/dev/null
+  else
+    show_special "$label"
   fi
   ;;
 rename)
@@ -111,10 +127,14 @@ move)
   ;;
 new)
   FOLLOW=true
-  create "${2:-}"
+  if [[ ${2:-} == hidden ]]; then
+    create_hidden
+  else
+    create "${2:-}"
+  fi
   ;;
 *)
-  echo "usage: $0 go|rename|move [silent]|new [move]" >&2
+  echo "usage: $0 go|rename|move [silent]|new [move|hidden]" >&2
   exit 2
   ;;
 esac
