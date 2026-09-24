@@ -44,6 +44,75 @@ hl.config({
   },
 })
 
+-- The current theme's palette, as "rrggbb" by name, read from the colors.toml
+-- Omarchy writes on every theme change (which reloads Hyprland, so this rereads
+-- it). Empty if the file is missing.
+local function theme_colors()
+  local colors = {}
+  local file = io.open(os.getenv("HOME") .. "/.local/state/omarchy/current/theme/colors.toml")
+  if file then
+    for line in file:lines() do
+      local name, hex = line:match('^%s*([%w_]+)%s*=%s*"#(%x%x%x%x%x%x)"')
+      if name then
+        colors[name] = hex:lower()
+      end
+    end
+    file:close()
+  end
+  return colors
+end
+
+local theme = theme_colors()
+local function color(name, fallback, alpha)
+  return "rgba(" .. (theme[name] or fallback) .. (alpha or "ff") .. ")"
+end
+
+-- Group tabs drawn like browser tabs: the active one filled with the theme's
+-- accent, the others with the selection gray, and a gap between each so they
+-- read as separate tabs (Omarchy's near-transparent black hides them). A
+-- locked group turns red, tabs and border, even when it isn't focused.
+-- Hyprland only draws a tab as active while its window has focus, so a group
+-- you've focused away from shows every tab inactive.
+-- https://wiki.hypr.land/Configuring/Basics/Variables/#groupbar
+hl.config({
+  group = {
+    col = {
+      border_locked_active = color("red", "f38ba8"),
+      border_locked_inactive = color("red", "f38ba8", "66"),
+    },
+
+    groupbar = {
+      blur = true,
+      font_size = 17,
+      indicator_height = 2,
+      indicator_gap = 3,
+      -- Space between tabs, and none against the window below.
+      gaps_in = 6,
+      gaps_out = 0,
+
+      col = {
+        active = color("accent", "89b4fa"),
+        inactive = color("selection", "45475a"),
+        locked_active = color("red", "f38ba8"),
+        locked_inactive = color("red", "f38ba8", "55"),
+      },
+
+      -- Dark text on the accent and the locked red, the normal foreground on
+      -- the others.
+      text_color = color("background", "1e1e2e"),
+      text_color_inactive = color("foreground", "cdd6f4"),
+      text_color_locked_active = color("background", "1e1e2e"),
+      text_color_locked_inactive = color("foreground", "cdd6f4"),
+
+      gradients = true,
+      gradient_rounding = 4,
+      gradient_round_only_edges = false,
+
+      rounding = 4,
+    },
+  },
+})
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#animations
 -- hl.config({
 --   animations = {

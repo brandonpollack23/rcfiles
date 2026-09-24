@@ -42,6 +42,12 @@ hl.unbind("SUPER + SHIFT + TAB")
 o.bind("SUPER + TAB", "Next window in group", hl.dsp.group.next())
 o.bind("SUPER + SHIFT + TAB", "Previous window in group", hl.dsp.group.prev())
 
+-- SUPER + SHIFT + G locks or unlocks the focused group, next to SUPER + G that
+-- makes it; a locked group's tabs and border turn red (looknfeel.lua). It was
+-- Signal.
+hl.unbind("SUPER + SHIFT + G")
+o.bind("SUPER + SHIFT + G", "Toggle group lock", hl.dsp.group.lock_active())
+
 -- SUPER + CTRL + arrows step through the open workspaces instead of a group's
 -- windows; SUPER + TAB, SUPER + ALT + TAB and SUPER + ALT + 1-5 still do
 -- those. Past the last one they make a new workspace (workspaces.lua).
