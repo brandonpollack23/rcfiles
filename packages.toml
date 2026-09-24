@@ -201,6 +201,7 @@ antigravity = { cask = true, bin = "antigravity", desc = "Google Antigravity, an
 wireguard = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
 private-internet-access = { cask = true, arch = "piavpn-bin", desc = "Private Internet Access VPN client" }
 kdeconnect = { mas = false, desc = "Linux phone control and connect utlility" }
+fcitx5-mozc = { brew = false, desc = "Japanese input for fcitx5, Omarchy's input method; ALT + SHIFT toggles it (hypr/input.lua)" }
 
 [packages.communication]
 discord = { cask = true, desc = "Voice and text chat" }

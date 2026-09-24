@@ -492,13 +492,13 @@ the rest in order of how much I want it.
 
 ## 12. Launcher, menus, notifications, OSD
 
-- [ ] ✅ **App launcher** is built in: `SUPER+Space`.
-- [ ] ✅ **Keybind search** is built in: `SUPER+K`.
-- [ ] ✅ **Emoji picker** is built in: `SUPER+CTRL+E`, which replaces rofimoji
+- [x] ✅ **App launcher** is built in: `SUPER+Space`.
+- [x] ✅ **Keybind search** is built in: `SUPER+K`.
+- [x] ✅ **Emoji picker** is built in: `SUPER+CTRL+E`, which replaces rofimoji
       and the ydotool paste hack.
-- [ ] ✅ **Clipboard history** is new for me: `SUPER+CTRL+V`. Copy/cut/paste are
+- [x] ✅ **Clipboard history** is new for me: `SUPER+CTRL+V`. Copy/cut/paste are
       system-wide on `SUPER+C/X/V`, terminal included.
-- [ ] 🟡 **System menu** (`scripts/system.sh`): Omarchy has System (power),
+- [x] 🟡 **System menu** (`scripts/system.sh`): Omarchy has System (power),
       Update (system, config, restart audio/wifi/bt/hyprsunset/shell) and Setup
       menus. Add what's missing through
       `~/.config/omarchy/extensions/omarchy-menu.jsonc`:

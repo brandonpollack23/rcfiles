@@ -56,3 +56,12 @@
 -- Enable touchpad gestures for moving focus (helpful on scrolling layout).
 -- hl.gesture({ fingers = 3, direction = "left", action = function() hl.dispatch(hl.dsp.focus({ direction = "l" })) end })
 -- hl.gesture({ fingers = 3, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ direction = "r" })) end })
+
+-- ALT + SHIFT on its own switches between English and Japanese (Mozc,
+-- fcitx5-mozc): fcitx5-remote -t toggles between the first input method in
+-- fcitx5's profile (keyboard-us) and the other one (mozc). It fires on release,
+-- whichever of the two was pressed second, and a key pressed in between (ALT +
+-- SHIFT + TAB) shadows it. On release Hyprland still counts the released key
+-- among the mods, hence ALT + SHIFT + SHIFT_L rather than ALT + SHIFT_L.
+o.bind("ALT + SHIFT + SHIFT_L", "Toggle Japanese input", "fcitx5-remote -t", { release = true })
+o.bind("ALT + SHIFT + ALT_L", "Toggle Japanese input", "fcitx5-remote -t", { release = true })
