@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Asks for some text in Omarchy's menu and copies it to the clipboard in
+# randomly cased SpOngEboB MOcKinG case, from the spongebob crate
+# (packages.toml's tools group).
+#
+#   spongebob-text           prompt in the menu, copy, and notify
+#   spongebob-text <text>    convert <text> instead of prompting
+
+set -euo pipefail
+
+# The menu's PATH may not have cargo's bin, where the crate installs.
+PATH="${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
+
+if ! command -v spongebob >/dev/null; then
+  notify-send -a "Spongebob Text" "spongebob isn't installed" "mise run deps tools"
+  exit 1
+fi
+
+if (( $# > 0 )); then
+  text="$*"
+else
+  text=$(omarchy-menu-input "SpOnGeBoB tExT" --width 600) || exit 0
+fi
+
+[[ -n $text ]] || exit 0
+
+mocked=$(printf '%s' "$text" | spongebob -)
+printf '%s' "$mocked" | wl-copy
+notify-send -a "Spongebob Text" "Copied to clipboard" "$mocked"

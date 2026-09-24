@@ -184,6 +184,7 @@ taskwarrior-tui = { desc = "Terminal UI for Taskwarrior" }
 timewarrior = { arch = "timew", desc = "Command-line time tracking" }
 cowsay = { desc = "Configurable talking cow (or other character) in terminal" }
 figlet = { desc = "Large ASCII-art banners from text" }
+spongebob = { cargo = true, desc = "tUrNs TeXt InTo MoCkInG sPoNgEbOb CaSe (the Omarchy menu's Spongebob Text)" }
 fortune = { arch = "fortune-mod", desc = "Random quotations" }
 
 [packages.desktop]

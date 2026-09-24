@@ -32,4 +32,7 @@
   "window": {"icon":"󰖷","label":"Window","description":"Search open windows"},
   "window.search": {"icon":"","label":"Search Windows","description":"Go to a window's workspace and focus it","action":"hypr-window-menu go"},
   "window.bring": {"icon":"󰾘","label":"Bring Window Here","description":"Move a window to this workspace","action":"hypr-window-menu bring"},
+
+  // Spongebob: type some text, get it back mocking in the clipboard.
+  "spongebob": {"icon":"󰱫","label":"Spongebob Text","description":"Copy text to the clipboard in SpOnGeBoB cAsE","action":"spongebob-text"},
 }
