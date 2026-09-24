@@ -23,6 +23,10 @@
           "id": "omarchy.system-update"
         },
         {
+          "id": "costafot.markets",
+          "stripShowPrice": true
+        },
+        {
           "id": "omarchy.spacer",
           "size": 24
         },
