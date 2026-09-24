@@ -1,0 +1,32 @@
+{
+  "env": {
+    "PATH": "$(PATH):$(HOME)/.local/bin"
+  },
+  "apps": [
+    {
+      "name": "Desktop",
+      "image-path": "$(HOME)/.config/sunshine/hand_of_zeus.png"
+    },
+    {
+      "name": "Desktop (Client Resolution)",
+      "image-path": "$(HOME)/.config/sunshine/hand_of_zeus.png",
+      "prep-cmd": [
+        {
+          "do": "$(HOME)/.config/sunshine/set-mode.sh",
+          "undo": "$(HOME)/.config/sunshine/set-mode.sh restore"
+        }
+      ]
+    },
+    {
+      "name": "Steam Big Picture",
+      "detached": ["setsid steam steam://open/bigpicture"],
+      "prep-cmd": [
+        {
+          "do": "",
+          "undo": "setsid steam steam://close/bigpicture"
+        }
+      ],
+      "image-path": "steam.png"
+    }
+  ]
+}

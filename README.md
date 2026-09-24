@@ -60,7 +60,8 @@ them, or pull them into the repo with `mise run adopt <package>`.
 Packages: `claude`, `ghostty`, `git`, `iex`, `jj`, `nvim` (LazyVim), `starship`,
 `systemd`, `tmux`, `xcompose`, `zsh`, and for [Omarchy](https://omarchy.org)
 `hypr` (Hyprland's Lua config) and `omarchy` (`~/.config/omarchy`: the bar,
-menu, themes, hooks, branding). Machine-only settings go in the untracked
+menu, themes, hooks, branding), and `sunshine` (the streaming apps, one of
+which sets the monitor to the Moonlight client's resolution). Machine-only settings go in the untracked
 `~/.zshrc.local` and `~/.gitconfig.local`.
 
 ## Tasks

@@ -24,7 +24,7 @@ pub fun all_packages(): [Text] {
 // sure they are real directories first.
 pub fun ensure_shared_dirs(): Null? {
     const base = home()
-    for dir in [".config", ".config/git", ".config/fcitx5", ".config/hypr", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".claude"] {
+    for dir in [".config", ".config/git", ".config/fcitx5", ".config/hypr", ".config/sunshine", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".claude"] {
         $ mkdir -p "{base}/{dir}" $?
     }
     // Omarchy may not have made this yet when I stow.
