@@ -48,6 +48,64 @@ o.bind("SUPER + SHIFT + TAB", "Previous window in group", hl.dsp.group.prev())
 hl.unbind("SUPER + SHIFT + G")
 o.bind("SUPER + SHIFT + G", "Toggle group lock", hl.dsp.group.lock_active())
 
+-- SUPER + CTRL + G enters the "group" submap, shown on the bar in the locked
+-- group red (the brandonpollack23.submap widget), until ESCAPE or ENTER:
+--   H / L                 move the tab left / right within its group, then
+--                         leave group mode 300ms after the last press
+--   X                     take the window out of its group
+--   SHIFT + H / SHIFT + L merge into the window on the left / right, making
+--                         that one a group first if it isn't
+local function merge_into_group(direction)
+  local window = hl.get_active_window()
+  if not window then
+    return
+  end
+  hl.dispatch(hl.dsp.focus({ direction = direction }))
+  local neighbor = hl.get_active_window()
+  if not neighbor or neighbor.address == window.address then
+    return
+  end
+  if not neighbor.group then
+    hl.dispatch(hl.dsp.group.toggle())
+  end
+  hl.dispatch(hl.dsp.focus({ window = "address:" .. window.address }))
+  hl.dispatch(hl.dsp.window.move({ into_group = direction }))
+end
+
+-- H and L restart the countdown, so pressing again keeps group mode open.
+local leave_group_mode = require("hypr.bindings.helpers").restartable_timeout(500, function()
+  if hl.get_current_submap() == "group" then
+    hl.dispatch(hl.dsp.submap("reset"))
+  end
+end)
+
+local function move_tab(forward)
+  hl.dispatch(hl.dsp.group.move_window({ forward = forward }))
+  leave_group_mode.restart()
+end
+
+o.bind("SUPER + CTRL + G", "Group mode", function()
+  leave_group_mode.cancel()
+  hl.dispatch(hl.dsp.submap("group"))
+end)
+hl.define_submap("group", function()
+  o.bind("H", "Move tab left in group", function()
+    move_tab(false)
+  end)
+  o.bind("L", "Move tab right in group", function()
+    move_tab(true)
+  end)
+  o.bind("X", "Move window out of group", hl.dsp.window.move({ out_of_group = true }))
+  o.bind("SHIFT + H", "Merge into group on left", function()
+    merge_into_group("l")
+  end)
+  o.bind("SHIFT + L", "Merge into group on right", function()
+    merge_into_group("r")
+  end)
+  o.bind("ESCAPE", "Leave group mode", hl.dsp.submap("reset"))
+  o.bind("RETURN", "Leave group mode", hl.dsp.submap("reset"))
+end)
+
 -- SUPER + CTRL + arrows step through the open workspaces instead of a group's
 -- windows; SUPER + TAB, SUPER + ALT + TAB and SUPER + ALT + 1-5 still do
 -- those. Past the last one they make a new workspace (workspaces.lua).

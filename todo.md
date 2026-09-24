@@ -417,7 +417,7 @@ Hyprland has it, and only for as long as Hyprland keeps it.
       H2… are ❌. Port them with:
   - "move to hidden" and a bind that creates a new hidden workspace directly
   - dwindle on special workspaces: a one-line `hl.workspace_rule`
-- [ ] ❌ **Workspace overview** (Hyprspace fork, `SUPER+SHIFT+W`): Omarchy has
+- [x] ❌ **Workspace overview** (Hyprspace fork, `SUPER+SHIFT+W`): Omarchy has
       none and doesn't use hyprpm. Try hyprpm with my fork in the VM, or go
       without.
 - [x] ❌ **Workspace names survive a session restore**
@@ -430,7 +430,7 @@ Every change here is a QML shell plugin, so the first two items are how plugins
 and `shell.json` work. Then the workspace widget (the thing I miss most), then
 the rest in order of how much I want it.
 
-- [ ] **Plugins:** a waybar module becomes a QML plugin in
+- [x] **Plugins:** a waybar module becomes a QML plugin in
       `~/.config/omarchy/plugins/<id>/`: `manifest.json` (`schemaVersion`, `id`,
       `name`, `version`, `kinds`, `entryPoints`, `barWidget`) plus QML. Kinds:
       `bar-widget`, `panel`, `overlay`, `menu`, `service`, `bar`.
@@ -438,7 +438,7 @@ the rest in order of how much I want it.
       is in `/usr/share/omarchy/shell/plugins/bar/widgets/`. Also
       `omarchy plugin add <git-url> --enable`, `list`, `validate <path>`. Mine
       go in `dotfiles/omarchy/.config/omarchy/plugins/<id>/` (§1).
-- [ ] **`shell.json`** is
+- [x] **`shell.json`** is
       `{ "version": 1, "bar": { "position", "transparent", "centerAnchor", "layout": { "left": [], "center": [], "right": [] } }, "idle": { "screensaver": 150, "lock": 300 } }`
       (idle in seconds; widget settings sit directly on the widget object). Once
       I own the file, **future Omarchy widgets are not merged in**: re-diff it
@@ -446,7 +446,7 @@ the rest in order of how much I want it.
       the CLI, but the menu's and CLI's edits replace the stowed symlink (§1's
       table), so put my widgets in by editing the repo file. Needs the
       `dotfiles/omarchy/` package (§1) first.
-- [ ] ❌ **Workspace widget that shows only the workspaces that exist, by
+- [x] ❌ **Workspace widget that shows only the workspaces that exist, by
       name.** Replace `omarchy.workspaces` in `shell.json`'s `left` with a fork
       of it (`Workspaces.qml`, 72 lines). Theirs always draws 1-5, even empty,
       adds others in use only up to 10, labels them with digits (the focused one
@@ -466,20 +466,20 @@ the rest in order of how much I want it.
   an emptied workspace" is done, and hidden buttons beyond the scratchpad need
   §10's hidden workspaces.
 
-- [ ] ❌ **Per-window taskbar** with group tabs and a lock icon (§9), click to
+- [x] ❌ **Per-window taskbar** with group tabs and a lock icon (§9), click to
       focus (brpol-waybard). Omarchy has no window list, only
       `omarchy.active-window` (the focused title). Build it in the same plugin
       as the workspace widget, since together they replace brpol-waybard, or
-      look at omarchyplugins.com first, or live without it.
-- [ ] 🟡 **Submap indicator:** only needed if my submaps (§9) come along.
-- [ ] 🟡 **Recording indicator:** Omarchy records with gpu-screen-recorder.
+      look at omarchyplugins.com tenth, or live without it.
+- [x] 🟡 **Submap indicator:** only needed if my submaps (§9) come along.
+- [x] 🟡 **Recording indicator:** Omarchy records with gpu-screen-recorder.
       Check whether the bar shows a timer or stop button.
-- [ ] 🟡 **Night light:** hyprsunset with a toggle (`SUPER+CTRL+N`), no bar
+- [x] 🟡 **Night light:** hyprsunset with a toggle (`SUPER+CTRL+N`), no bar
       widget. `hyprsunset.conf` is stowed with a no-tint profile but hyprsunset
       isn't started; for a schedule add
       `profile { time = 20:00, temperature = 4000 }` and
       `o.launch_on_start("hyprsunset")` in `autostart.lua`.
-- [ ] ❌ **PIA VPN widget:** a plugin, or use Tailscale plus the PIA app's own
+- [x] ❌ **PIA VPN widget:** a plugin, or use Tailscale plus the PIA app's own
       tray icon.
 - [ ] ❌ **KDE Connect phone widget:** a plugin, or drop it (install
       `kdeconnect` either way; it has a tray icon).

@@ -21,6 +21,13 @@
         },
         {
           "id": "omarchy.system-update"
+        },
+        {
+          "id": "omarchy.spacer",
+          "size": 24
+        },
+        {
+          "id": "brandonpollack23.submap"
         }
       ],
       "left": [
@@ -37,12 +44,16 @@
           "id": "omarchy.tray",
           "pinned": [
             "chrome_status_icon_1",
-            "discord_status_icon_1"
+            "discord_status_icon_1",
+            "privateinternetaccess"
           ],
           "hidden": []
         },
         {
           "id": "omarchy.tailscale"
+        },
+        {
+          "id": "brpol.nous-agent"
         },
         {
           "id": "omarchy.agents"
