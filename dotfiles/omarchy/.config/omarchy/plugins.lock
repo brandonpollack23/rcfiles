@@ -1,7 +1,9 @@
 # Omarchy shell plugins cloned from git: id, git URL, commit. Written by
 # `mise run plugins-lock`; run it after `omarchy plugin add`, `update` or
 # `remove`. `mise run plugins` clones any that are missing at these commits.
+brandonpollack23.beautiful-workspace-bar https://github.com/brandonpollack23/omarchy-beautiful-workspace-bar.git 401a7af12b03279d20796188a385698255eb1f0e
+brpol.nous-agent https://github.com/brandonpollack23/omarchy-nous-agent.git 3e5baefb7d6e265e298d611c989b67b1b2ffde20
 evindor.keystroke https://github.com/evindor/keystroke.git 4ea4eede3bcee10c4f2c984843284cb2dcc8d4b7
-io.github.brandonpollack23.beautiful-workspace-bar https://github.com/brandonpollack23/omarchy-beautiful-workspace-bar.git ab8badca11e1c1e002dec8f822a105b34380a4db
-
 io.github.asmyshlyaev177.last-session https://github.com/brandonpollack23/omarchy-last-session.git 051afb0f98f068fbe337ec9e9b26a8cbcde532b7
+omaconnect https://github.com/jitendradara12/omaconnect.git 3e4d99716560f0110012e28e148f8c4fe1b0cd21
+

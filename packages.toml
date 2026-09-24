@@ -200,6 +200,7 @@ transmission = { cask = true, arch = "transmission-gtk", desc = "BitTorrent clie
 antigravity = { cask = true, bin = "antigravity", desc = "Google Antigravity, an agent-first IDE" }
 wireguard = { mas = 1451685025, arch = "wireguard-tools", desc = "VPN" }
 private-internet-access = { cask = true, arch = "piavpn-bin", desc = "Private Internet Access VPN client" }
+kdeconnect = { mas = false, desc = "Linux phone control and connect utlility" }
 
 [packages.communication]
 discord = { cask = true, desc = "Voice and text chat" }

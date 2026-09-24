@@ -50,10 +50,10 @@
           "hidden": []
         },
         {
-          "id": "omarchy.tailscale"
+          "id": "omaconnect"
         },
         {
-          "id": "brpol.nous-agent"
+          "id": "omarchy.tailscale"
         },
         {
           "id": "omarchy.agents"
@@ -91,6 +91,9 @@
   "plugins": [
     {
       "id": "io.github.asmyshlyaev177.last-session"
+    },
+    {
+      "id": "brpol.nous-agent"
     }
   ],
   "version": 1
