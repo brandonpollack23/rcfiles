@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Window prompts in Omarchy's menu, for finding a window that got lost on a
+# forgotten workspace or a hidden (special) one.
+#   go     pick any open window by title or class, go to its workspace and
+#          focus it; a hidden workspace is shown
+#   bring  pick a window on another workspace and move it to this one
+#
+# Windows are listed most recently focused first.
+
+set -euo pipefail
+
+# Wide enough for a browser tab's title; the menu's own is 300.
+WIDTH=700
+
+# Print one menu row per window: "<glyph>\t<title>\t<class> · <workspace> ·
+# <address>". The menu searches the title and subtext and hands back both, so
+# the address at the end says which window was picked, even when two share a
+# title. Rows jq is given as $skip are left out.
+rows() {
+  hyprctl clients -j | jq -r "$1"'
+    def clean: gsub("[\t\n]"; " ");
+    map(select(.mapped and (skip | not))) | sort_by(.focusHistoryID) | .[]
+    | (.workspace.name | if startswith("special:") then ltrimstr("special:") + " (hidden)" else . end) as $ws
+    | [(if (.workspace.id < 0) then "" elif .floating then "" else "" end),
+       (.title | clean | if . == "" then "(untitled)" else . end),
+       "\(.class | clean) · \($ws) · \(.address)"]
+    | join("\t")'
+}
+
+# Show the picker and print the picked window's address.
+pick() {
+  local choice
+  choice=$(rows "$1" | omarchy-menu-select "$2" -- --width "$WIDTH") || return 1
+  echo "${choice##* · }"
+}
+
+case ${1:-} in
+go)
+  # Every window but the focused one.
+  address=$(pick 'def skip: .focusHistoryID == 0;' "Go to window") || exit 0
+  # Focusing a window on a hidden workspace shows that workspace.
+  hyprctl eval "hl.dispatch(hl.dsp.focus({ window = 'address:$address' }))" >/dev/null
+  ;;
+bring)
+  current=$(hyprctl activeworkspace -j | jq -r '.id')
+  address=$(pick "def skip: .workspace.id == $current;" "Bring window here") || exit 0
+  hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$current', window = 'address:$address' }))" >/dev/null
+  hyprctl eval "hl.dispatch(hl.dsp.focus({ window = 'address:$address' }))" >/dev/null
+  ;;
+*)
+  echo "usage: $0 go|bring" >&2
+  exit 2
+  ;;
+esac
