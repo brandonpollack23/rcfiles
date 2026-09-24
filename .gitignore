@@ -6,3 +6,5 @@ dotfiles/jj/.config/jj/repos/
 dotfiles/zsh/.zsh_plugins.zsh
 # The backups `omarchy refresh` leaves next to the file it resets.
 dotfiles/omarchy/.config/omarchy/**/*.bak.*
+# omarchy-last-session writes its config here on first run; it's per machine.
+dotfiles/omarchy/.config/omarchy/last-session.ini

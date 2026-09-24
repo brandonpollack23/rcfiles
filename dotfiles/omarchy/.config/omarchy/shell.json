@@ -34,11 +34,12 @@
       ],
       "right": [
         {
-          "hidden": [],
           "id": "omarchy.tray",
           "pinned": [
-            "chrome_status_icon_1"
-          ]
+            "chrome_status_icon_1",
+            "discord_status_icon_1"
+          ],
+          "hidden": []
         },
         {
           "id": "omarchy.tailscale"
@@ -76,6 +77,10 @@
     "lock": 900,
     "screensaver": 600
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "io.github.asmyshlyaev177.last-session"
+    }
+  ],
   "version": 1
 }
