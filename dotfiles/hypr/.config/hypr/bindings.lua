@@ -144,6 +144,10 @@ o.bind("SUPER + SHIFT + SLASH", "Keybindings", "omarchy-menu-keybindings")
 -- omarchy-launch-x, and Omarchy ships that for 1Password alone.
 o.bind("SUPER + I", "Passwords", { launch = "bitwarden-desktop", focus = "^Bitwarden$" })
 
+-- Google Calendar on SUPER + SHIFT + C instead of HEY's.
+hl.unbind("SUPER + SHIFT + C")
+o.bind("SUPER + SHIFT + C", "Calendar", { webapp = "https://calendar.google.com/" })
+
 -- The emoji picker on SUPER + : as well as SUPER + CTRL + E. Binds match the
 -- unshifted key, so that's SUPER + SHIFT + SEMICOLON.
 o.bind("SUPER + SHIFT + SEMICOLON", "Emojis", "omarchy-shell shell toggle omarchy.emojis")
