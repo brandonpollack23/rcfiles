@@ -41,13 +41,16 @@
       ],
       "right": [
         {
+          "hidden": [],
           "id": "omarchy.tray",
           "pinned": [
             "chrome_status_icon_1",
             "discord_status_icon_1",
             "privateinternetaccess"
-          ],
-          "hidden": []
+          ]
+        },
+        {
+          "id": "io.github.orienw.fresh-wallpaper"
         },
         {
           "id": "omaconnect"
@@ -76,7 +79,7 @@
       ]
     },
     "position": "bottom",
-    "transparent": true
+    "transparent": false
   },
   "cloneSourceRestores": [
     "evindor.keystroke"
