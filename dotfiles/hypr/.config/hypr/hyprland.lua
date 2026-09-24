@@ -30,7 +30,6 @@ require("default.hypr.toggles")
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
 
--- Opaque terminals: opt them out of Omarchy's default window opacity
--- (0.985 focused, 0.96 not). `terminal` is Omarchy's tag for every terminal
--- app-id, ghostty included.
-o.window({ tag = "terminal" }, { tag = "-default-opacity", opacity = "1 1" })
+-- Opaque windows everywhere: opt every window out of Omarchy's default
+-- window opacity (0.985 focused, 0.96 not) and the browsers' 0.985 unfocused.
+o.window(".*", { tag = "-default-opacity", opacity = "1 1" })
