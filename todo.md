@@ -392,27 +392,27 @@ The Hyprland side of workspaces. The bar (§11) only draws what's here: it reads
 each workspace's id and name from Hyprland, so a name only shows in the bar once
 Hyprland has it, and only for as long as Hyprland keeps it.
 
-- [ ] ✅ **Workspaces 1-10, next/prev existing, scroll to switch** are built in.
-- [ ] ✅ **Move a workspace to another monitor** is built in
+- [x] ✅ **Workspaces 1-10, next/prev existing, scroll to switch** are built in.
+- [x] ✅ **Move a workspace to another monitor** is built in
       (`SUPER+SHIFT+ALT+arrows`).
-- [ ] 🟡 **Named workspaces** (`conf/workspaces/`, `scripts/workspace-menu.sh`).
+- [x] 🟡 **Named workspaces** (`conf/workspaces/`, `scripts/workspace-menu.sh`).
       Done in `hypr-workspace-menu` with `omarchy-menu-input`/`select`: rename
       (`SUPER+SHIFT+4`), and move a window to a picked or new, named workspace
       (`SUPER+M`, `SUPER+ALT+M` without following). Still to port, in this
       order:
-  - [ ] **Names survive an emptied workspace.** Hyprland drops an empty
+  - [x] **Names survive an emptied workspace.** Hyprland drops an empty
         workspace and its name with it, so a named workspace comes back as a
         bare number. Keep the names by id (state, under `~/.local/state/`) and
         put them back when the workspace is created again, or keep named
         workspaces alive with a persistent workspace rule. Do this first:
         without it, names flicker in and out of the bar.
-  - [ ] **Focus picker:** go to a workspace by name.
-  - [ ] **Placement order and gap-free ids:** a new workspace goes right after
+  - [x] **Focus picker:** go to a workspace by name.
+  - [x] **Placement order and gap-free ids:** a new workspace goes right after
         the current one, and ids renumber so there are no gaps. The bar orders
         by id, so this sets the bar's order too.
-- [ ] ❌ **Reorder workspaces** left/right (`SUPER+CTRL+SHIFT+arrows`): port it,
+- [x] ❌ **Reorder workspaces** left/right (`SUPER+CTRL+SHIFT+arrows`): port it,
       it comes with gap-free ids.
-- [ ] 🟡 **Hidden workspaces:** Omarchy has one scratchpad (`SUPER+S` shows it,
+- [x] 🟡 **Hidden workspaces:** Omarchy has one scratchpad (`SUPER+S` shows it,
       `SUPER+SHIFT+S` moves a window there, §7). My named hidden workspaces H1,
       H2… are ❌. Port them with:
   - "move to hidden" and a bind that creates a new hidden workspace directly
@@ -420,7 +420,7 @@ Hyprland has it, and only for as long as Hyprland keeps it.
 - [ ] ❌ **Workspace overview** (Hyprspace fork, `SUPER+SHIFT+W`): Omarchy has
       none and doesn't use hyprpm. Try hyprpm with my fork in the VM, or go
       without.
-- [ ] ❌ **Workspace names survive a session restore**
+- [x] ❌ **Workspace names survive a session restore**
       (`conf/workspaces/persist.lua`): only matters if session restore comes
       along (§14).
 
