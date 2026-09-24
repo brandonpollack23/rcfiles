@@ -354,16 +354,16 @@ Before touching Hyprland at all, get the terminal and shell I actually type in.
       `hypr/layouts.lua`: `SUPER+ALT+L` cycles focus, work/reference, dwindle
       and scrolling, kept by workspace id in Omarchy's
       `~/.local/state/omarchy/workspace-layouts/`.
-- [ ] 🟡 **Master binds** (swapwithmaster, focusmaster, addmaster, removemaster,
+- [x] 🟡 **Master binds** (swapwithmaster, focusmaster, addmaster, removemaster,
       orientation cycle): not bound in Omarchy. Port them from `keymaps.lua`.
-- [ ] ❌ **Center-master side columns stay put** when a window closes
+- [x] ❌ **Center-master side columns stay put** when a window closes
       (`conf/wm/columns.lua`): port it. Right now closing a slave flips every
       slave after it to the other side (see the comment in `looknfeel.lua`).
-- [ ] ✅ **Scrolling layout** is built in, and in my `SUPER+ALT+L` cycle.
-- [ ] ✅ **Pseudo (`SUPER+P`), float, and mouse drag/resize** are built in.
+- [x] ✅ **Scrolling layout** is built in, and in my `SUPER+ALT+L` cycle.
+- [x] ✅ **Pseudo (`SUPER+P`), float, and mouse drag/resize** are built in.
 - [x] **Opaque terminals:** `hyprland.lua` takes the `terminal` tag out of
       Omarchy's default window opacity.
-- [ ] 🟡 **Look:** gaps 0, border 3, rounding 4, blur and shadow go in
+- [x] 🟡 **Look:** gaps 0, border 3, rounding 4, blur and shadow go in
       `looknfeel.lua` (the blocks are there, still commented out).
 
 ## 9. Windows and groups

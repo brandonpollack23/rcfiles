@@ -5,6 +5,9 @@
 -- reference in a narrow column beside it. layouts/master.lua keeps a master
 -- preset's orientation and mfact on the workspace.
 --
+-- An open special workspace (the scratchpad) is cycled rather than the one
+-- under it.
+--
 -- Each choice is saved where Omarchy's default/hypr/workspace-layouts.lua
 -- loads it from on every config load, as a call to M.use below.
 
@@ -34,7 +37,7 @@ M.CYCLE = { "focus", "reference", "dwindle", "scrolling" }
 
 local DIR = paths.state_home .. "/omarchy/workspace-layouts"
 
--- Preset keys by workspace id (a string, as in the rules).
+-- Preset keys by workspace key (master.key: the id, or a special one's name).
 local chosen = {}
 
 -- Pick a preset for a workspace: its rule, and what layouts/master.lua sends.
@@ -53,7 +56,8 @@ end
 
 local function save(id, key)
   os.execute("mkdir -p '" .. DIR .. "'")
-  local file = io.open(DIR .. "/" .. id .. ".lua", "w")
+  -- A special workspace's colon would read as part of a module name.
+  local file = io.open(DIR .. "/" .. id:gsub(":", "-") .. ".lua", "w")
   if file then
     file:write(string.format('require("hypr.layouts").use("%s", "%s")\n', id, key))
     file:close()
@@ -63,7 +67,7 @@ end
 -- The preset a workspace is in. The saved choice unless something else changed
 -- its layout since, then the first preset with the layout it has.
 local function current(workspace)
-  local key = chosen[tostring(workspace.id)]
+  local key = chosen[master.key(workspace)]
   if key and M.presets[key].layout == workspace.tiled_layout then
     return key
   end
@@ -83,13 +87,13 @@ master.presetOf = function(workspace)
   end
 end
 
--- SUPER + ALT + L: the active workspace's next preset.
+-- SUPER + ALT + L: the shown workspace's next preset.
 function M.cycle()
-  local workspace = hl.get_active_workspace()
-  if not workspace or workspace.special then
+  local workspace = master.shown()
+  if not workspace then
     return
   end
-  local id = tostring(workspace.id)
+  local id = master.key(workspace)
   local from = current(workspace)
   local next = M.CYCLE[1]
   for index, key in ipairs(M.CYCLE) do

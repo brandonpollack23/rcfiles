@@ -5,9 +5,20 @@
 -- layout message only reaches the focused workspace and is lost once the
 -- workspace empties. So both are sent when a preset is picked, and again on a
 -- workspace's first window or, if the workspace wasn't on screen then, when it
--- is next shown.
+-- is next shown. Special workspaces (the scratchpad) count as shown while open.
 
 local M = {}
+
+-- What a workspace goes by in rules and saved choices: its name for a special
+-- workspace, whose id is only its slot, and its id for the rest.
+function M.key(workspace)
+  return workspace.special and workspace.name or tostring(workspace.id)
+end
+
+-- The workspace layout messages reach: an open special one, else the active.
+function M.shown()
+  return hl.get_active_special_workspace() or hl.get_active_workspace()
+end
 
 -- Set by layouts.lua: the preset a workspace should have, with its
 -- `orientation` and `mfact` when they aren't the config's, or nil when it isn't
@@ -31,9 +42,9 @@ local function tiledCount(workspace)
 end
 
 -- Send the orientation and mfact, or mark the workspace stale when a layout
--- message can't reach it now: it isn't the one on screen, an open special
--- workspace would take the message, or it has no window for the message to
--- act on. Also held off while a window is fullscreen, because the orientation
+-- message can't reach it now: it isn't the one shown (an open special
+-- workspace takes the message over the one under it), or it has no window for
+-- the message to act on. Also held off while a window is fullscreen, because the orientation
 -- message takes the focused window out of it.
 function M.apply(id)
   local workspace = hl.get_workspace(id)
@@ -45,11 +56,10 @@ function M.apply(id)
     stale[id] = nil
     return
   end
-  local active = hl.get_active_workspace()
+  local shown = M.shown()
   if
-    not active
-    or active.id ~= workspace.id
-    or hl.get_active_special_workspace()
+    not shown
+    or shown.id ~= workspace.id
     or workspace.has_fullscreen
     or tiledCount(workspace) == 0
   then
@@ -77,14 +87,14 @@ end
 -- A first window gets the config's mfact, so a preset with its own is sent
 -- again then.
 local function arrived(workspace)
-  if not workspace or workspace.special then
+  if not workspace then
     return
   end
   local preset = M.presetOf(workspace)
   if not preset or not preset.mfact then
     return
   end
-  local id = tostring(workspace.id)
+  local id = M.key(workspace)
   hl.timer(function()
     local now = hl.get_workspace(id)
     if now and tiledCount(now) == 1 then
@@ -94,9 +104,9 @@ local function arrived(workspace)
 end
 
 local function catchUp()
-  local workspace = hl.get_active_workspace()
-  if workspace and stale[tostring(workspace.id)] then
-    M.applySoon(tostring(workspace.id))
+  local workspace = M.shown()
+  if workspace and stale[M.key(workspace)] then
+    M.applySoon(M.key(workspace))
   end
 end
 
