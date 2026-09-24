@@ -37,8 +37,10 @@ M.CYCLE = { "focus", "reference", "dwindle", "scrolling" }
 
 local DIR = paths.state_home .. "/omarchy/workspace-layouts"
 
--- Preset keys by workspace key (master.key: the id, or a special one's name).
+-- Preset keys by workspace key (master.key: the id, or a special one's name),
+-- and the rules they made.
 local chosen = {}
+local rules = {}
 
 -- Pick a preset for a workspace: its rule, and what layouts/master.lua sends.
 function M.use(id, key)
@@ -51,16 +53,45 @@ function M.use(id, key)
   if preset.orientation then
     rule.layout_opts = { orientation = preset.orientation }
   end
-  hl.workspace_rule(rule)
+  if rules[id] then
+    rules[id]:set_enabled(false)
+  end
+  rules[id] = hl.workspace_rule(rule)
+end
+
+-- A special workspace's colon would read as part of a module name.
+local function path(id)
+  return DIR .. "/" .. id:gsub(":", "-") .. ".lua"
 end
 
 local function save(id, key)
   os.execute("mkdir -p '" .. DIR .. "'")
-  -- A special workspace's colon would read as part of a module name.
-  local file = io.open(DIR .. "/" .. id:gsub(":", "-") .. ".lua", "w")
+  local file = io.open(path(id), "w")
   if file then
     file:write(string.format('require("hypr.layouts").use("%s", "%s")\n', id, key))
     file:close()
+  end
+end
+
+-- Drop a workspace's choice, rule and saved file, for the config's layout.
+function M.forget(id)
+  if rules[id] then
+    rules[id]:set_enabled(false)
+  end
+  rules[id] = nil
+  chosen[id] = nil
+  os.remove(path(id))
+end
+
+-- A workspace renumbered from `from` to `to` (workspaces.lua) takes its choice
+-- along, and one saved for a workspace that had `to` before goes.
+function M.move(from, to)
+  local key = chosen[from]
+  M.forget(from)
+  M.forget(to)
+  if key then
+    M.use(to, key)
+    save(to, key)
   end
 end
 

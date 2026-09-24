@@ -87,12 +87,18 @@ o.bind("SUPER + SHIFT + SEMICOLON", "Emojis", "omarchy-shell shell toggle omarch
 -- SUPER + $ names the workspace. Binds match the unshifted key, so that's
 -- SUPER + SHIFT + 4, taken from Omarchy's move to workspace 4; SUPER + M, or
 -- SUPER + ALT + M and SUPER + SHIFT + ALT + 4 without following the window,
--- still get there.
+-- still get there. SUPER + D picks any open workspace, the scratchpad too.
 -- Omarchy binds the number row by keycode, and code:13 is the 4 key.
 hl.unbind("SUPER + SHIFT + code:13")
 o.bind("SUPER + SHIFT + code:13", "Name workspace", "hypr-workspace-menu rename")
+o.bind("SUPER + D", "Go to a picked workspace", "hypr-workspace-menu go")
 o.bind("SUPER + M", "Move window to a picked workspace", "hypr-workspace-menu move")
 o.bind("SUPER + ALT + M", "Move window silently to a picked workspace", "hypr-workspace-menu move silent")
+-- SUPER + N makes a named workspace where you pick, the end first, and SUPER +
+-- SHIFT + N takes the window there. That was Omarchy's Editor.
+hl.unbind("SUPER + SHIFT + N")
+o.bind("SUPER + N", "New workspace", "hypr-workspace-menu new")
+o.bind("SUPER + SHIFT + N", "Move window to a new workspace", "hypr-workspace-menu new move")
 
 -- Move to the scratchpad on SUPER + SHIFT + S, next to SUPER + S that shows
 -- it, instead of Omarchy's SUPER + ALT + S. It replaces the Google Maps web app.

@@ -1,19 +1,28 @@
 #!/bin/bash
 
 # Workspace prompts in Omarchy's menu. Special workspaces (the scratchpad and
-# the like) are left out of both.
+# the like) are only offered by go.
+#   go      pick any open workspace, with its windows and layout, and show it
 #   rename  name the active workspace; an empty name puts its number back
-#   move    send the active window to a picked workspace, or to a new one
-#           named on the spot, and follow it
+#   move    send the active window to a picked workspace, or to a new one,
+#           and follow it
 #   move silent  the same, staying on this workspace
+#   new     name a new workspace, pick where it goes (first, or after a
+#           workspace, the last one by default), and go there
+#   new move  the same, taking the active window along
+#
+# Workspaces are ordered by id, and hypr/workspaces.lua keeps them numbered
+# 1, 2, 3..., so one put between two others takes the id after the first and
+# the ones after it move up.
 
 set -euo pipefail
 
 NEW="New workspace"
+# Wide enough for the prompts and a named workspace; the menu's own is 300.
+WIDTH=450
 
-workspace_ids() {
-  hyprctl workspaces -j | jq -r '.[] | select(.id > 0) | .id'
-}
+# jq: a workspace as the menus show it, its id with its name if it has one.
+SHOWN='def shown: if .name == (.id | tostring) then .name else "\(.id): \(.name)" end;'
 
 rename() {
   local id=$1 name=$2
@@ -24,11 +33,64 @@ move() {
   hyprctl eval "hl.dispatch(hl.dsp.window.move({ workspace = '$1', follow = $FOLLOW }))" >/dev/null
 }
 
+# Ask where a new workspace goes and print its id: first, or after a picked
+# workspace. After the last one is listed first, so it's what Enter picks.
+position() {
+  local choice after
+  choice=$(hyprctl workspaces -j | jq -r "$SHOWN"'
+    map(select(.id > 0)) | sort_by(.id)
+    | "After \(last | shown)",
+      "First",
+      (.[:-1][] | "After \(shown)")' | omarchy-menu-select "Put the new workspace" -- --width "$WIDTH") || return 1
+
+  if [[ $choice == First ]]; then
+    echo 1
+  else
+    after=${choice#After }
+    echo $((${after%%:*} + 1))
+  fi
+}
+
+# Name a new workspace, pick where it goes and make it there: go to it, or
+# with `move` send the active window to it, following it when FOLLOW is true.
+create() {
+  local name id
+  name=$(omarchy-menu-input "Name the new workspace" --width "$WIDTH") || return 0
+  id=$(position) || return 0
+  local window=false
+  [[ ${1:-} == move ]] && window=true
+  hyprctl eval "require('hypr.workspaces').insert($id, [==[$name]==], $window, $FOLLOW)" >/dev/null
+}
+
 case ${1:-} in
+go)
+  # Rows are "<glyph>\t<label>\t<subtext>", and the menu hands back the label
+  # and subtext. A regular workspace's label starts with its id; a special
+  # one's is its name without "special:".
+  current=$(hyprctl activeworkspace -j | jq -r '.id')
+  choice=$(hyprctl workspaces -j | jq -r --argjson current "$current" '
+    sort_by(.id < 0, .id) | .[]
+    | (if .id < 0 then (.name | ltrimstr("special:"))
+       elif .name == (.id | tostring) then .name
+       else "\(.id): \(.name)" end) as $label
+    | "\(.windows) window\(if .windows == 1 then "" else "s" end) · \(.tiledLayout)" as $info
+    | [(if .id == $current then "\uf00c" elif .id < 0 then "\uf070" else "\uf108" end),
+       $label,
+       (if .id == $current then "current · " + $info else $info end)]
+    | join("\t")' | omarchy-menu-select "Go to workspace" -- --width "$WIDTH") || exit 0
+  label=${choice%%$'\t'*}
+
+  if [[ $label =~ ^[0-9]+ ]]; then
+    hyprctl eval "hl.dispatch(hl.dsp.focus({ workspace = '${BASH_REMATCH[0]}' }))" >/dev/null
+  elif ! hyprctl monitors -j | jq -e --arg name "special:$label" 'any(.specialWorkspace.name == $name)' >/dev/null; then
+    # Toggling one that's already open would close it.
+    hyprctl eval "hl.dispatch(hl.dsp.workspace.toggle_special([==[$label]==]))" >/dev/null
+  fi
+  ;;
 rename)
   id=$(hyprctl activeworkspace -j | jq -r '.id')
   (( id > 0 )) || exit 0
-  name=$(omarchy-menu-input "Name workspace $id") || exit 0
+  name=$(omarchy-menu-input "Name workspace $id" --width "$WIDTH") || exit 0
   rename "$id" "$name"
   ;;
 move)
@@ -36,26 +98,23 @@ move)
   [[ ${2:-} == silent ]] && FOLLOW=false
   current=$(hyprctl activeworkspace -j | jq -r '.id')
   choice=$({
-    hyprctl workspaces -j | jq -r --argjson current "$current" '
-      map(select(.id > 0 and .id != $current)) | sort_by(.id) | .[]
-      | if .name == (.id | tostring) then .name else "\(.id): \(.name)" end'
+    hyprctl workspaces -j | jq -r --argjson current "$current" "$SHOWN"'
+      map(select(.id > 0 and .id != $current)) | sort_by(.id) | .[] | shown'
     echo "$NEW"
-  } | omarchy-menu-select "Move window to") || exit 0
+  } | omarchy-menu-select "Move window to" -- --width "$WIDTH") || exit 0
 
   if [[ $choice == "$NEW" ]]; then
-    name=$(omarchy-menu-input "Name the new workspace") || exit 0
-    id=1
-    while workspace_ids | grep -qx "$id"; do
-      id=$((id + 1))
-    done
-    move "$id"
-    rename "$id" "$name"
+    create move
   else
     move "${choice%%:*}"
   fi
   ;;
+new)
+  FOLLOW=true
+  create "${2:-}"
+  ;;
 *)
-  echo "usage: $0 rename|move [silent]" >&2
+  echo "usage: $0 go|rename|move [silent]|new [move]" >&2
   exit 2
   ;;
 esac
