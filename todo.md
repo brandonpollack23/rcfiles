@@ -481,14 +481,14 @@ the rest in order of how much I want it.
       `o.launch_on_start("hyprsunset")` in `autostart.lua`.
 - [x] ❌ **PIA VPN widget:** a plugin, or use Tailscale plus the PIA app's own
       tray icon.
-- [ ] ❌ **KDE Connect phone widget:** a plugin, or drop it (install
+- [x] ❌ **KDE Connect phone widget:** a plugin, or drop it (install
       `kdeconnect` either way; it has a tray icon).
-- [ ] ❌ **Bing logo button and popup:** see §15.
+- [x] ❌ **Bing logo button and popup:** see §15.
 - [ ] ✅ **Weather** is built in (no OpenWeatherMap key, so the sops secret for
       it can go).
-- [ ] ✅ **Audio, network, Bluetooth, calendar, display/brightness and power
+- [x] ✅ **Audio, network, Bluetooth, calendar, display/brightness and power
       panels** are built in (`SUPER+CTRL+A/W/B/D/P`) and replace l1p0-menus.
-- [ ] ✅ **Tailscale widget** is built in (optional).
+- [x] ✅ **Tailscale widget** is built in (optional).
 
 ## 12. Launcher, menus, notifications, OSD
 
