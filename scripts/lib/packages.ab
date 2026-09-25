@@ -34,13 +34,14 @@ pub fun group_names(groups: [Text]): [Text] {
     return names
 }
 
-// One line per package: group|name|arch|brew|cask|mas|cargo|bin, each option
-// empty when it isn't set, and a list of Arch names joined with commas.
+// One line per package: group|name|arch|brew|cask|mas|cargo|bin|script|env,
+// each option empty when it isn't set, and a list of Arch names joined with
+// commas.
 const FLATTEN = join([
     ".packages | to_entries[] | .key as $group | .value | to_entries[] |",
     "[$group, .key] +",
-    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\", \"bin\": \"\"} * .value",
-    "  | [.arch, .brew, .cask, .mas, .cargo, .bin]",
+    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\", \"bin\": \"\", \"script\": \"\", \"env\": \"\"} * .value",
+    "  | [.arch, .brew, .cask, .mas, .cargo, .bin, .script, .env]",
     "  | (.[] | select(tag == \"!!seq\")) |= join(\",\")",
     "  | map(tostring))",
     "| join(\"|\")",
@@ -56,9 +57,13 @@ fun named(manager: Text, names: Text): [Text] {
 }
 
 // Which installer gets one package on `os`, as "<manager>|<name>" lines
-// (several for a list of names), or none: cargo wherever it's set, else
-// pacman on Arch, else mas or a cask on the Mac, else Homebrew.
-pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text): [Text] {
+// (several for a list of names), or none: its own script wherever it's set
+// ("script|<name>|<url>|<env>"), else cargo wherever that's set, else pacman
+// on Arch, else mas or a cask on the Mac, else Homebrew.
+pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text, script: Text, env: Text): [Text] {
+    if script != "" {
+        return ["script|{name}|{script}|{env}"]
+    }
     if cargo != "" and cargo != "false" {
         if cargo == "true" {
             return named("cargo", name)
@@ -107,7 +112,7 @@ pub fun packages_for(root: Text, os: Text, groups: [Text]): [Text]? {
     for line in split_lines(listed) {
         const f = split(line, "|")
         if array_contains(groups, field(f, 0)) {
-            const sorted = sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6))
+            const sorted = sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6), field(f, 8), field(f, 9))
             const bin = field(f, 7)
             if len(sorted) > 0 and bin != "" and is_command(bin) {
                 found += ["installed|{field(f, 1)}"]
@@ -129,4 +134,16 @@ pub fun names_for(packages: [Text], manager: Text): [Text] {
         }
     }
     return names
+}
+
+// The command line that installs a "script|<name>|<url>|<env>" package: its
+// installer from <url>, piped to sh with <env> set. pipefail, so a failed
+// download fails the install instead of piping sh nothing.
+pub fun script_command(package: Text): Text {
+    const f = split(package, "|")
+    let env = field(f, 3)
+    if env != "" {
+        env = "{env} "
+    }
+    return "(set -o pipefail; curl -fsSL '{field(f, 2)}' | {env}sh)"
 }

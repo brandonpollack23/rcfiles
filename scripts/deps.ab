@@ -12,7 +12,7 @@ import { array_contains } from "std/array"
 import { detect_os, is_omarchy, ensure_brew } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
 import { home, xdg_config_home, put_cargo_on_path } from "./lib/paths.ab"
-import { all_groups, group_names, packages_for, names_for, field } from "./lib/packages.ab"
+import { all_groups, group_names, packages_for, names_for, field, script_command } from "./lib/packages.ab"
 
 // Remembers `picked` for the next run (unless this one is a dry run).
 
@@ -204,15 +204,16 @@ fun last_part(name: Text): Text {
 }
 
 // Lists what's about to be installed and asks once (unless -y, or there's no
-// terminal to ask on); every installer after this runs without asking. Then
-// takes the sudo password, so that comes now too and not mid-install.
+// terminal to ask on); every installer after this runs without asking except
+// install scripts, which script_deps asks about one by one. Then takes the sudo
+// password, so that comes now too and not mid-install.
 fun confirm_install(packages: [Text]): Null? {
     if len(packages) == 0 {
         echo("deps: everything is installed already")
         return null
     }
     echo("deps: about to install")
-    for manager in ["pacman", "brew", "cask", "mas", "cargo", "mise"] {
+    for manager in ["pacman", "brew", "cask", "mas", "cargo", "mise", "script"] {
         const names = names_for(packages, manager)
         if len(names) > 0 {
             echo("  {manager}: {join(names, " ")}")
@@ -366,6 +367,36 @@ fun export_github_token(): Null {
     }
 }
 
+// Packages that install with their own script, downloaded and run as it is:
+// ask about each on its own, showing the command, even with -y. With no
+// terminal to ask on, skip them and say how to run them.
+fun script_deps(packages: [Text]): Null? {
+    for package in packages {
+        const f = split(package, "|")
+        if field(f, 0) == "script" {
+            const name = field(f, 1)
+            const cmd = script_command(package)
+            if {
+                is_dry_run() {
+                    echo(cmd)
+                }
+                not is_interactive() {
+                    echo("deps: skipped {name}, which installs with its own script: {cmd}")
+                }
+                else {
+                    echo("deps: {name} installs with its own script, run as it is from the internet:")
+                    echo("  {cmd}")
+                    if input_confirm("Run {name}'s install script?") {
+                        run(cmd)?
+                    } else {
+                        echo("deps: skipped {name}")
+                    }
+                }
+            }
+        }
+    }
+}
+
 // mise only has prebuilt Erlang for the Mac and Ubuntu; anywhere else it falls
 // back to building with kerl, which fails ("autoconf: no input file"). Bob's
 // Ubuntu 24.04 builds run on Arch, Debian and Fedora too (they need glibc,
@@ -427,6 +458,7 @@ main {
         }
         run("cargo binstall -y {join(crates, " ")}")?
     }
+    script_deps(packages)?
 
     // Erlang and Elixir: the latest stable releases, pinned in ~/.config/mise/config.toml.
     let tools = [Text]

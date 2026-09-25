@@ -1,10 +1,21 @@
 import { assert_eq } from "std/test"
 import { join } from "std/text"
-import { sort_package, names_for, field, group_names } from "../packages.ab"
+import { sort_package, names_for, field, group_names, script_command } from "../packages.ab"
 
 // sort_package's lines, space separated, for short assertions.
 fun sorted(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text): Text {
-    return join(sort_package(os, name, arch, brew, cask, mas, cargo), " ")
+    return join(sort_package(os, name, arch, brew, cask, mas, cargo, "", ""), " ")
+}
+
+test "a script wins on every OS, keeping its url and env" {
+    const url = "https://example.com/install.sh"
+    assert_eq(join(sort_package("arch", "tool", "", "", "", "", "true", url, "REF=v1"), " "), "script|tool|{url}|REF=v1")?
+    assert_eq(join(sort_package("mac", "tool", "", "", "true", "", "", url, ""), " "), "script|tool|{url}|")?
+}
+
+test "script_command pipes the installer to sh, with its env" {
+    assert_eq(script_command("script|tool|https://x/i.sh|REF=v1 A=b"), "(set -o pipefail; curl -fsSL 'https://x/i.sh' | REF=v1 A=b sh)")?
+    assert_eq(script_command("script|tool|https://x/i.sh|"), "(set -o pipefail; curl -fsSL 'https://x/i.sh' | sh)")?
 }
 
 test "cargo wins on every OS" {

@@ -15,6 +15,10 @@
 #   bin = "command"             a command it puts on PATH; deps skips the package when
 #                               that's already there, installed some other way (its own
 #                               installer, mise, npm...)
+#   script = "url"              its own install script instead, on every OS: deps pipes
+#                               it to sh, after asking about it on its own (even with -y).
+#                               Give it a `bin` too, or deps runs it every time
+#   env = "NAME=value ..."      variables set for the script, e.g. to pin a version
 # By default the key is the name in Homebrew (the Mac, Debian and Fedora) and on
 # Arch (through yay or paru). Formulae from other taps are named
 # "<user>/<tap>/<formula>"; brew taps them. mise itself comes from install.sh.
@@ -185,6 +189,8 @@ timewarrior = { arch = "timew", desc = "Command-line time tracking" }
 cowsay = { desc = "Configurable talking cow (or other character) in terminal" }
 figlet = { desc = "Large ASCII-art banners from text" }
 spongebob = { cargo = true, desc = "tUrNs TeXt InTo MoCkInG sPoNgEbOb CaSe (the Omarchy menu's Spongebob Text)" }
+# The script and the release it installs are both pinned to v0.3.3.
+meme-maker = { script = "https://raw.githubusercontent.com/kartikkabadi/meme-maker/v0.3.3/install.sh", env = "MEME_MAKER_REF=v0.3.3", bin = "meme", desc = "Renders memes from 600-odd templates (meme; the Omarchy menu's Meme Maker)" }
 fortune = { arch = "fortune-mod", desc = "Random quotations" }
 
 [packages.desktop]
