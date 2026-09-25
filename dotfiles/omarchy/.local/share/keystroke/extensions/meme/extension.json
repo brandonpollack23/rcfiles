@@ -1,0 +1,16 @@
+{
+  "name": "Meme Maker",
+  "version": "1.0.0",
+  "author": "Brandon Pollack",
+  "description": "Find a meme-maker template by name or tag, fill in its text, and copy the meme: meme drake",
+  "apiVersion": 1,
+  "icon": "󰋩",
+  "color": "#e5c07b",
+  "license": "MIT",
+  "commands": [{
+    "id": "make", "prefix": "meme", "title": "Make a meme",
+    "summary": "Caption a meme template and copy it to the clipboard",
+    "args": [{ "name": "template", "hint": "a template's name, id or tag", "optional": true, "rest": true }],
+    "examples": ["meme drake", "meme distracted", "meme reaction", "meme"]
+  }]
+}

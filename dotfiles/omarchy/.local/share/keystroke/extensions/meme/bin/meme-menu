@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Makes a meme in Omarchy's menu with meme-maker's `meme` CLI (packages.toml's
+# tools group, from its own installer): pick one of its templates, fill in
+# each text slot, and the meme is saved and copied to the clipboard. Escape at
+# any prompt gives up; Enter on an empty one leaves that slot blank. The Meme
+# Maker Keystroke extension around this script runs it for the template picked
+# on its screen, with the save folder from its settings.
+#
+#   meme-menu [--dir <folder>]              pick a template: on the extension's
+#                                           screen (fuzzy, with previews) when
+#                                           Keystroke has it on, else from a
+#                                           list searched by name, id and tags
+#   meme-menu [--dir <folder>] <template>   use that template id (`meme
+#                                           templates list`)
+#
+# --dir is where memes are saved, ~/Pictures/memes by default.
+
+set -euo pipefail
+
+TITLE="Meme Maker"
+# Wide enough for a slot's hint; the menu's own is 300.
+WIDTH=700
+
+templates="${MEME_MAKER_HOME:-$HOME/.meme-maker}/assets/templates"
+manifest="$templates/manifest.json"
+out_dir="$HOME/Pictures/memes"
+if [[ ${1:-} == --dir ]]; then
+  (( $# >= 2 )) || { echo "usage: meme-menu [--dir <folder>] [template]" >&2; exit 2; }
+  # A leading ~ (as the settings screen shows it) is the home folder.
+  out_dir=${2/#\~/$HOME}
+  shift 2
+fi
+
+fail() {
+  notify-send -u critical -a "$TITLE" "$1" "${2:-}"
+  exit 1
+}
+
+# Keystroke (the evindor.keystroke shell plugin, standing in for Omarchy's
+# menu) with its meme extension turned on.
+keystroke_memes() {
+  local config="${XDG_CONFIG_HOME:-$HOME/.config}/omarchy"
+  [[ -d $config/plugins/evindor.keystroke ]] &&
+    jq -e '(.disabledPlugins // []) | index("omarchy.menu")' "$config/shell.json" >/dev/null 2>&1 &&
+    jq -e '.providers.meme.enabled == true' "$config/keystroke.json" >/dev/null 2>&1
+}
+
+# Pick a template from a list in the menu: "<name>" over "<id> · <tags>",
+# both searched. Prints the id.
+pick_template() {
+  local choice
+  choice=$(jq -r '.templates[] | ["󰋩", .name, "\(.id) · \((.tags // []) | join(", "))"] | join("\t")' "$manifest" |
+    omarchy-menu-select "Meme template" -- --width "$WIDTH") || return 0
+  choice=${choice#*$'\t'}
+  echo "${choice%% · *}"
+}
+
+command -v meme >/dev/null || fail "meme-maker isn't installed" "mise run deps tools"
+[[ -f $manifest ]] || fail "meme-maker's templates are missing" "No $manifest"
+
+if (( $# > 0 )); then
+  id=$1
+elif keystroke_memes; then
+  # Keystroke runs `meme-menu --dir <its setting> <template>` for the one
+  # picked there.
+  omarchy-shell shell summon omarchy.menu '{"scope":"meme","title":"Memes"}' >/dev/null
+  exit 0
+else
+  id=$(pick_template)
+fi
+[[ -n $id ]] || exit 0
+
+template=$(meme templates show "$id" --json 2>&1) ||
+  fail "No meme template $id" "$(jq -r '.error.message | sub(";.*"; "")' <<<"$template" 2>/dev/null || echo "$template")"
+
+# One "<name><TAB><hint>" line per slot, asked for in order.
+mapfile -t slots < <(jq -r '.slots[] | [.name, (.hint // "")] | @tsv' <<<"$template")
+texts=()
+for i in "${!slots[@]}"; do
+  IFS=$'\t' read -r name hint <<<"${slots[i]}"
+  prompt="$name ($((i + 1))/${#slots[@]})"
+  if [[ -n $hint ]]; then
+    prompt+=": $hint"
+  fi
+  # The menu hands back "" for Enter on an empty prompt, and fails on Escape.
+  text=$(omarchy-menu-input "$prompt" --width "$WIDTH") || exit 0
+  if [[ -n $text ]]; then
+    # meme splits "slot=text" on the first unescaped =.
+    texts+=(--text "$name=${text//=/\\=}")
+  fi
+done
+
+ext=png
+if [[ $(jq -r '.type' <<<"$template") == gif ]]; then
+  ext=gif
+fi
+mkdir -p "$out_dir"
+out="$out_dir/$id-$(date +%Y%m%d-%H%M%S).$ext"
+
+result=$(meme render --template "$id" "${texts[@]}" -o "$out" --json 2>&1) ||
+  fail "Couldn't render $id" "$(jq -r '.error.message | sub(";.*"; "")' <<<"$result" 2>/dev/null || echo "$result")"
+
+wl-copy --type "image/$ext" <"$out"
+# Text too long for its slot still renders, just shrunk or cut off.
+warnings=$(jq -r '.warnings | map(.message // tostring) | join("\n")' <<<"$result" 2>/dev/null || true)
+notify-send -a "$TITLE" -i "$out" "Meme copied to the clipboard" "${out/#$HOME/\~}${warnings:+$'\n'$warnings}"

@@ -35,4 +35,10 @@
 
   // Spongebob: type some text, get it back mocking in the clipboard.
   "spongebob": {"icon":"󰱫","label":"Spongebob Text","description":"Copy text to the clipboard in SpOnGeBoB cAsE","action":"spongebob-text"},
+
+  // Meme: pick a meme-maker template, fill in its text, and get the meme in
+  // ~/Pictures/memes and on the clipboard. The script lives in the Keystroke
+  // extension, whose screen this opens under Keystroke (fuzzy search,
+  // previews, a Save folder setting; also `meme <name>`).
+  "meme": {"icon":"󰋩","label":"Meme Maker","description":"Caption a meme template and copy it to the clipboard","action":"~/.local/share/keystroke/extensions/meme/bin/meme-menu"},
 }

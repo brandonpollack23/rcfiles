@@ -15,6 +15,9 @@
     },
     "translate": {
       "enabled": true
+    },
+    "meme": {
+      "enabled": true
     }
   },
   "matching": {
