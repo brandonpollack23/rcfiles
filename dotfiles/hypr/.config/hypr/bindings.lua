@@ -214,6 +214,20 @@ o.bind("SUPER + CTRL + ALT + S", "Stocks/Market Ticker", "omarchy-shell costafot
 hl.unbind("SUPER + CTRL + ALT + W")
 o.bind("SUPER + CTRL + ALT + W", "Toggle weather", "omarchy-shell shell toggle io.github.guiestrela.weather")
 
+-- The notification center is the jankeesvw.notification-center plugin
+-- (plugins.lock): SUPER + SHIFT + comma opens its panel, and SUPER + SHIFT +
+-- ALT + comma, Omarchy's history, dismisses every toast and clears the panel
+-- instead. SUPER + comma, SUPER + ALT + comma and SUPER + CTRL + comma stay
+-- Omarchy's dismiss, invoke and Do Not Disturb, which is the plugin's bell too.
+hl.unbind("SUPER + SHIFT + comma")
+hl.unbind("SUPER + SHIFT + ALT + comma")
+o.bind("SUPER + SHIFT + comma", "Notification center", "omarchy-shell jankeesvw.notification-center toggle")
+o.bind(
+  "SUPER + SHIFT + ALT + comma",
+  "Dismiss all notifications",
+  "omarchy-shell notifications dismissAll; omarchy-shell jankeesvw.notification-center.test clear"
+)
+
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
 -- o.bind("SUPER + H", nil, "voxtype record toggle")

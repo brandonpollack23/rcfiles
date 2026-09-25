@@ -101,6 +101,9 @@
         },
         {
           "id": "omarchy.power"
+        },
+        {
+          "id": "jankeesvw.notification-center"
         }
       ]
     },
@@ -108,10 +111,12 @@
     "transparent": false
   },
   "cloneSourceRestores": [
-    "evindor.keystroke"
+    "evindor.keystroke",
+    "brpol.notifications"
   ],
   "disabledPlugins": [
-    "omarchy.menu"
+    "omarchy.menu",
+    "omarchy.notifications"
   ],
   "idle": {
     "lock": 900,
@@ -126,6 +131,9 @@
     },
     {
       "id": "bobbynicholas.omaland"
+    },
+    {
+      "id": "brpol.notifications"
     }
   ],
   "version": 1
