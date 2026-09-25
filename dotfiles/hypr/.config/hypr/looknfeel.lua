@@ -119,8 +119,11 @@ hl.config({
 -- Only keyboard focus changes, since focus follows the mouse and every window
 -- the pointer crosses would bump too.
 -- https://github.com/hyprwm/hyprland-plugins/tree/main/hyprfocus
+-- pairs, not ipairs: omarchy-menu-keybindings runs this config against a stub
+-- hl whose every lookup is non-nil, and ipairs over that never ends, which
+-- hung the keybindings menu.
 local function plugin_loaded(name)
-  for _, plugin in ipairs(hl.get_loaded_plugins()) do
+  for _, plugin in pairs(hl.get_loaded_plugins()) do
     if plugin.name == name then
       return true
     end
