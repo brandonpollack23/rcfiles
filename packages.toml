@@ -19,6 +19,13 @@
 #                               it to sh, after asking about it on its own (even with -y).
 #                               Give it a `bin` too, or deps runs it every time
 #   env = "NAME=value ..."      variables set for the script, e.g. to pin a version
+#   github = "owner/repo"       a GitHub release asset instead, off the Mac (the Mac
+#   tag = "..."                 goes by the other keys): deps downloads `asset` from the
+#   asset = "..."               release tagged `tag`, checks its `sha256` and installs it
+#   sha256 = "..."              as ~/.local/bin/<key>, with a desktop entry and icon for
+#                               an AppImage. All four are needed; a new pin reinstalls it.
+#                               The sha256s (after "sha256:"): gh api --jq '.assets[] |
+#                               .name + " " + .digest' repos/<owner>/<repo>/releases/tags/<tag>
 # By default the key is the name in Homebrew (the Mac, Debian and Fedora) and on
 # Arch (through yay or paru). Formulae from other taps are named
 # "<user>/<tap>/<formula>"; brew taps them. mise itself comes from install.sh.
@@ -201,6 +208,7 @@ google-chrome = { cask = true, desc = "Web browser" }
 google-drive = { cask = true, arch = false, desc = "Google Drive sync client" }
 bitwarden = { mas = 1352778147, desc = "Password manager" }
 obsidian = { cask = true, desc = "Markdown notes" }
+feedflow = { cask = true, github = "prof18/feed-flow", tag = "1.17.0-all", asset = "FeedFlow-1.17.0-x86_64.AppImage", sha256 = "2408147d440da2de9424a221fe560b6f0191ffcc9d342325f1c20ff0aeae9fc8", desc = "RSS reader (the AppImage from its GitHub release off the Mac)" }
 kindle = { mas = 302584613, arch = false, desc = "Ebooks" }
 transmission = { cask = true, arch = "transmission-gtk", desc = "BitTorrent client" }
 antigravity = { cask = true, bin = "antigravity", desc = "Google Antigravity, an agent-first IDE" }

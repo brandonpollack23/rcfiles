@@ -1,9 +1,9 @@
 // packages.toml: what `deps` installs (see its header for the format).
 // Not executable, so mise doesn't list it as a task.
 
-import { split, split_lines, join } from "std/text"
+import { split, split_lines, join, starts_with } from "std/text"
 import { array_contains } from "std/array"
-import { is_command } from "std/env"
+import { is_command, echo_error } from "std/env"
 
 // yq (mikefarah's, installed by mise) on packages.toml.
 fun packages_yq(root: Text, expr: Text): Text? {
@@ -34,14 +34,16 @@ pub fun group_names(groups: [Text]): [Text] {
     return names
 }
 
-// One line per package: group|name|arch|brew|cask|mas|cargo|bin|script|env,
+// One line per package:
+// group|name|arch|brew|cask|mas|cargo|bin|script|env|github|tag|asset|sha256,
 // each option empty when it isn't set, and a list of Arch names joined with
 // commas.
 const FLATTEN = join([
     ".packages | to_entries[] | .key as $group | .value | to_entries[] |",
     "[$group, .key] +",
-    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\", \"bin\": \"\", \"script\": \"\", \"env\": \"\"} * .value",
-    "  | [.arch, .brew, .cask, .mas, .cargo, .bin, .script, .env]",
+    "(\{\"arch\": \"\", \"brew\": \"\", \"cask\": \"\", \"mas\": \"\", \"cargo\": \"\", \"bin\": \"\", \"script\": \"\", \"env\": \"\",",
+    "  \"github\": \"\", \"tag\": \"\", \"asset\": \"\", \"sha256\": \"\"} * .value",
+    "  | [.arch, .brew, .cask, .mas, .cargo, .bin, .script, .env, .github, .tag, .asset, .sha256]",
     "  | (.[] | select(tag == \"!!seq\")) |= join(\",\")",
     "  | map(tostring))",
     "| join(\"|\")",
@@ -58,11 +60,16 @@ fun named(manager: Text, names: Text): [Text] {
 
 // Which installer gets one package on `os`, as "<manager>|<name>" lines
 // (several for a list of names), or none: its own script wherever it's set
-// ("script|<name>|<url>|<env>"), else cargo wherever that's set, else pacman
-// on Arch, else mas or a cask on the Mac, else Homebrew.
-pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text, script: Text, env: Text): [Text] {
+// ("script|<name>|<url>|<env>"), else a GitHub release off the Mac wherever
+// that's set (`release` is "<repo>|<tag>|<asset>|<sha256>", making
+// "github|<name>|<repo>|<tag>|<asset>|<sha256>"), else cargo wherever that's
+// set, else pacman on Arch, else mas or a cask on the Mac, else Homebrew.
+pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text, script: Text, env: Text, release: Text): [Text] {
     if script != "" {
         return ["script|{name}|{script}|{env}"]
+    }
+    if release != "" and os != "mac" {
+        return ["github|{name}|{release}"]
     }
     if cargo != "" and cargo != "false" {
         if cargo == "true" {
@@ -103,6 +110,23 @@ pub fun sort_package(os: Text, name: Text, arch: Text, brew: Text, cask: Text, m
     return named("brew", brew)
 }
 
+// A package's GitHub release as "<repo>|<tag>|<asset>|<sha256>", or "" when
+// it has none. All four are needed: the release is pinned and checked.
+fun release_of(f: [Text]): Text {
+    const name = field(f, 1)
+    const repo = field(f, 10)
+    if repo == "" {
+        return ""
+    }
+    const tag = field(f, 11)
+    const asset = field(f, 12)
+    const sha256 = field(f, 13)
+    if tag == "" or asset == "" or sha256 == "" {
+        echo_error("deps: {name} needs a tag, an asset and a sha256 with its github", 1)
+    }
+    return "{repo}|{tag}|{asset}|{sha256}"
+}
+
 // Every package in `groups`, sorted for `os`, as "<manager>|<name>" lines;
 // "installed|<name>" instead for one whose `bin` is already on PATH (installed
 // some other way, like its own installer or mise).
@@ -112,7 +136,7 @@ pub fun packages_for(root: Text, os: Text, groups: [Text]): [Text]? {
     for line in split_lines(listed) {
         const f = split(line, "|")
         if array_contains(groups, field(f, 0)) {
-            const sorted = sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6), field(f, 8), field(f, 9))
+            const sorted = sort_package(os, field(f, 1), field(f, 2), field(f, 3), field(f, 4), field(f, 5), field(f, 6), field(f, 8), field(f, 9), release_of(f))
             const bin = field(f, 7)
             if len(sorted) > 0 and bin != "" and is_command(bin) {
                 found += ["installed|{field(f, 1)}"]
@@ -146,4 +170,43 @@ pub fun script_command(package: Text): Text {
         env = "{env} "
     }
     return "(set -o pipefail; curl -fsSL '{field(f, 2)}' | {env}sh)"
+}
+
+// Where a "github|<name>|<repo>|<tag>|<asset>|<sha256>" package downloads from.
+pub fun release_url(package: Text): Text {
+    const f = split(package, "|")
+    return "https://github.com/{field(f, 2)}/releases/download/{field(f, 3)}/{field(f, 4)}"
+}
+
+// The arguments on an Exec= line, with the space before them, or "".
+fun exec_args(line: Text): Text {
+    let args = ""
+    for i, word in split(line, " ") {
+        if i > 0 {
+            args += " {word}"
+        }
+    }
+    return args
+}
+
+// An AppImage's desktop entry, pointed at where deps installed it: every Exec=
+// runs `bin` with the entry's own arguments, Icon= is the `icon` file, and
+// TryExec= goes (it names a program inside the AppImage), and so do blank
+// lines (split_lines drops them).
+pub fun desktop_entry(entry: Text, bin: Text, icon: Text): Text {
+    let out = [Text]
+    for line in split_lines(entry) {
+        if {
+            starts_with(line, "Exec=") {
+                out += ["Exec={bin}{exec_args(line)}"]
+            }
+            starts_with(line, "Icon=") {
+                out += ["Icon={icon}"]
+            }
+            not starts_with(line, "TryExec=") {
+                out += [line]
+            }
+        }
+    }
+    return join(out, "\n")
 }

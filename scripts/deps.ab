@@ -1,18 +1,18 @@
 #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
-//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
+//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
 //USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
 //USAGE flag "-y --yes" help="Install without asking first"
 //USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
 
 import { env_var_get, is_command, echo_error, input_confirm } from "std/env"
 import { file_exists, file_read, file_write } from "std/fs"
-import { split, split_lines, join } from "std/text"
+import { split, split_lines, join, ends_with } from "std/text"
 import { array_contains } from "std/array"
 
 import { detect_os, is_omarchy, ensure_brew } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
-import { home, xdg_config_home, put_cargo_on_path } from "./lib/paths.ab"
-import { all_groups, group_names, packages_for, names_for, field, script_command } from "./lib/packages.ab"
+import { home, xdg_config_home, xdg_data_home, put_cargo_on_path } from "./lib/paths.ab"
+import { all_groups, group_names, packages_for, names_for, field, script_command, release_url, desktop_entry } from "./lib/packages.ab"
 
 // Remembers `picked` for the next run (unless this one is a dry run).
 
@@ -140,6 +140,9 @@ fun without_installed(packages: [Text]): [Text] {
             manager == "mas" {
                 installed = array_contains(apps, name)
             }
+            manager == "github" {
+                installed = release_installed(package)
+            }
             manager == "mise" {
                 trust $ mise where {name} >/dev/null 2>&1 $
                 installed = status() == 0
@@ -196,6 +199,23 @@ fun mas_installed(): [Text] {
     return split_lines(trust $ mas list 2>/dev/null | awk '\{ print \$1 }' $)
 }
 
+// A GitHub release is installed when its binary is in ~/.local/bin and it's the
+// one packages.toml pins (the same sha256), so a new pin reinstalls it.
+fun release_installed(package: Text): Bool {
+    const f = split(package, "|")
+    const name = field(f, 1)
+    const pinned = "{releases_dir()}/{name}"
+    if not file_exists("{home()}/.local/bin/{name}") or not file_exists(pinned) {
+        return false
+    }
+    return trust file_read(pinned) == field(f, 5)
+}
+
+// Where deps notes the sha256 of each GitHub release it installed.
+fun releases_dir(): Text {
+    return "{xdg_data_home()}/rcfiles/releases"
+}
+
 // "tap/formula" names are listed by the formula alone.
 fun last_part(name: Text): Text {
     const parts = split(name, "/")
@@ -213,7 +233,7 @@ fun confirm_install(packages: [Text]): Null? {
         return null
     }
     echo("deps: about to install")
-    for manager in ["pacman", "brew", "cask", "mas", "cargo", "mise", "script"] {
+    for manager in ["pacman", "brew", "cask", "mas", "cargo", "github", "mise", "script"] {
         const names = names_for(packages, manager)
         if len(names) > 0 {
             echo("  {manager}: {join(names, " ")}")
@@ -367,6 +387,74 @@ fun export_github_token(): Null {
     }
 }
 
+// Packages from GitHub releases (off the Mac; there they're casks or formulae).
+fun release_deps(packages: [Text]): Null? {
+    for package in packages {
+        const f = split(package, "|")
+        if field(f, 0) == "github" {
+            if is_dry_run() {
+                echo("install_release {field(f, 1)} {release_url(package)}")
+            } else {
+                install_release(package)?
+            }
+        }
+    }
+}
+
+// Downloads a "github|<name>|<repo>|<tag>|<asset>|<sha256>" package's asset,
+// checks it against the sha256 packages.toml pins, and installs it as
+// ~/.local/bin/<name>. An AppImage gets its desktop entry and icon too.
+fun install_release(package: Text): Null? {
+    const f = split(package, "|")
+    const name = field(f, 1)
+    const asset = field(f, 4)
+    const sha256 = field(f, 5)
+    const bin = "{home()}/.local/bin/{name}"
+    const tmp = $ mktemp -d $?
+    const download = "{tmp}/{asset}"
+    echo("deps: downloading {asset} from {field(f, 2)} {field(f, 3)}")
+    // Retrying where it stopped: GitHub's CDN drops long downloads now and then.
+    $ curl -fL --retry 5 --retry-all-errors -C - --progress-bar -o "{download}" "{release_url(package)}" $?
+    $ echo "{sha256}  {download}" | sha256sum -c --quiet - $ failed {
+        $ rm -rf "{tmp}" $?
+        echo_error("deps: {asset} doesn't match the sha256 packages.toml pins for {name}", 1)
+    }
+    // The desktop entry first, from the download, so a failure leaves no
+    // half-installed binary behind.
+    if ends_with(asset, ".AppImage") {
+        $ chmod +x "{download}" $?
+        appimage_desktop_entry(name, bin, download, tmp)?
+    }
+    $ install -Dm755 "{download}" "{bin}" $?
+    $ rm -rf "{tmp}" $?
+    $ mkdir -p "{releases_dir()}" $?
+    file_write("{releases_dir()}/{name}", sha256)?
+    echo("deps: installed {name} in {bin}")
+}
+
+// The AppImage's own desktop entry, pointed at `bin`, as
+// ~/.local/share/applications/<name>.desktop, with its icon (.DirIcon, after
+// any symlinks) in applications/icons/, where Omarchy's web apps keep theirs.
+// Extracted from `appimage` into `tmp`.
+fun appimage_desktop_entry(name: Text, bin: Text, appimage: Text, tmp: Text): Null? {
+    // Captured, so it runs in a subshell and the cd doesn't stick.
+    const icon_in = $ cd "{tmp}" \
+        && "{appimage}" --appimage-extract '*.desktop' >/dev/null \
+        && f=.DirIcon && "{appimage}" --appimage-extract "\$f" >/dev/null \
+        && while [ -L "squashfs-root/\$f" ]; do f=\$(readlink "squashfs-root/\$f") && "{appimage}" --appimage-extract "\$f" >/dev/null; done \
+        && echo "\$f" $?
+    const entry_in = $ ls "{tmp}"/squashfs-root/*.desktop | head -n 1 $?
+    let ext = "png"
+    if ends_with(icon_in, ".svg") {
+        ext = "svg"
+    }
+    const apps = "{xdg_data_home()}/applications"
+    const icon = "{apps}/icons/{name}.{ext}"
+    $ mkdir -p "{apps}/icons" $?
+    $ cp "{tmp}/squashfs-root/{icon_in}" "{icon}" $?
+    file_write("{apps}/{name}.desktop", desktop_entry(file_read(entry_in)?, bin, icon))?
+}
+
 // Packages that install with their own script, downloaded and run as it is:
 // ask about each on its own, showing the command, even with -y. With no
 // terminal to ask on, skip them and say how to run them.
@@ -458,6 +546,7 @@ main {
         }
         run("cargo binstall -y {join(crates, " ")}")?
     }
+    release_deps(packages)?
     script_deps(packages)?
 
     // Erlang and Elixir: the latest stable releases, pinned in ~/.config/mise/config.toml.

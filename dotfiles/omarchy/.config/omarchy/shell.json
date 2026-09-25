@@ -55,6 +55,14 @@
           ]
         },
         {
+          "id": "io.github.elevate08.qs-bitwarden-cli",
+          "closeOnCopy": true,
+          "colorizeIcon": true,
+          "autoLockMinutes": 0,
+          "lockOnScreenLock": false,
+          "pinUnlock": true
+        },
+        {
           "id": "omarchy.tailscale"
         },
         {

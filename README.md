@@ -27,7 +27,7 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 
 | task             | does                                                          |
 | ---------------- | ------------------------------------------------------------- |
-| `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere, and install scripts, each asked about on its own), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
+| `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere, pinned GitHub release assets (AppImages and binaries) in `~/.local/bin` off the Mac, and install scripts, each asked about on its own), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins, asking first whether to set up neovim and its Mason language servers |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |

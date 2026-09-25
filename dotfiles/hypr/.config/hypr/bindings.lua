@@ -140,9 +140,8 @@ o.bind("SUPER + R", "Omarchy menu", "omarchy-menu toggle")
 -- Keybindings on SUPER + ?, the help key, and Passwords from there to SUPER + I.
 hl.unbind("SUPER + SHIFT + SLASH")
 o.bind("SUPER + SHIFT + SLASH", "Keybindings", "omarchy-menu-keybindings")
--- Bitwarden, focused if it's already open. { omarchy = "x" } only runs
--- omarchy-launch-x, and Omarchy ships that for 1Password alone.
-o.bind("SUPER + I", "Passwords", { launch = "bitwarden-desktop", focus = "^Bitwarden$" })
+-- Bitwarden's panel from the qs-bitwarden-cli shell plugin (plugins.lock).
+o.bind("SUPER + I", "Passwords", "omarchy-shell io.github.elevate08.qs-bitwarden-cli toggle")
 
 -- Google Calendar on SUPER + SHIFT + C instead of HEY's.
 hl.unbind("SUPER + SHIFT + C")
