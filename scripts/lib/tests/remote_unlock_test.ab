@@ -1,0 +1,33 @@
+import { assert, assert_eq } from "std/test"
+import { cmdline_line, has_ip_param, parse_flags, DEFAULT_IP } from "../remote_unlock.ab"
+
+test "parse_flags defaults to a real run on eth0, skipping args[0]" {
+    assert_eq(parse_flags(["bash"]), ["false", "false", DEFAULT_IP])?
+    assert_eq(parse_flags(["-n"]), ["false", "false", DEFAULT_IP])?
+}
+
+test "parse_flags reads the short and long flags" {
+    assert_eq(parse_flags(["bash", "-n", "-f"]), ["true", "true", DEFAULT_IP])?
+    assert_eq(parse_flags(["bash", "--dry-run", "--ip", "dhcp"]), ["true", "false", "dhcp"])?
+    assert_eq(parse_flags(["bash", "--ip=:::::eth1:dhcp", "--force"]), ["false", "true", ":::::eth1:dhcp"])?
+}
+
+test "parse_flags rejects unknown arguments and a bare --ip" {
+    assert_eq(parse_flags(["bash", "--bogus"])[0], "error")?
+    assert_eq(parse_flags(["bash", "--ip"])[0], "error")?
+}
+
+test "cmdline_line appends ip= and the netconf timeout to the default entry" {
+    assert_eq(cmdline_line(DEFAULT_IP), "KERNEL_CMDLINE[default]+=\" ip=:::::eth0:dhcp netconf_timeout=15\"")?
+}
+
+test "has_ip_param finds ip= in a KERNEL_CMDLINE line" {
+    assert(has_ip_param("TARGET_OS_NAME=\"Omarchy\"\nKERNEL_CMDLINE[default]+=\" ip=dhcp\""))?
+    assert(has_ip_param("KERNEL_CMDLINE[default]+=\"ip=:::::eth0:dhcp quiet\""))?
+}
+
+test "has_ip_param ignores comments and look-alikes" {
+    assert(not has_ip_param("# KERNEL_CMDLINE[default]+=\" ip=dhcp\""))?
+    assert(not has_ip_param("KERNEL_CMDLINE[default]+=\" resume=/dev/mapper/root skip=1 zswap.enabled=0\""))?
+    assert(not has_ip_param(""))?
+}

@@ -19,6 +19,34 @@ Limine with unified kernel images (UKIs), plymouth, and a busybox-based
 initramfs using the `encrypt` hook. It also assumes a **wired** network
 connection: nothing here brings up Wi-Fi before the disk is unlocked.
 
+## Quick setup
+
+A script does steps 1–6 below and skips anything already done. From a clone
+of this repo:
+
+```sh
+mise run remote-unlock -n   # print what it would do
+mise run remote-unlock
+```
+
+Without the repo's mise setup, run the compiled copy. It finds the hook files
+in the directory it sits in:
+
+```sh
+bash initrd-remote-unlock/remote-unlock.sh -n
+bash initrd-remote-unlock/remote-unlock.sh
+```
+
+Flags: `-n` (dry run), `-f` (rebuild the boot image even when nothing
+changed), `--ip <value>` (the `ip=` parameter, default `:::::eth0:dhcp`;
+see step 5). The script asks you to log in to Tailscale once, when it
+registers the initramfs machine. The admin-console settings in step 2 are up
+to you.
+
+The script is `scripts/remote-unlock.ab` ([Amber](https://amber-lang.com));
+`remote-unlock.sh` is compiled from it, and `mise run lint` checks the two
+match.
+
 ---
 
 ## How booting works here, and what we change

@@ -5,6 +5,19 @@ import { echo_error, echo_success } from "std/env"
 import { file_glob } from "std/fs"
 import { repo_root } from "./lib/run.ab"
 
+// The one task also committed compiled, for machines without this repo's mise
+// setup: its .sh has to match a fresh build of the .ab. Built from the repo
+// root with a relative path, which amber writes into its error messages.
+const COMPILED_SOURCE = "scripts/remote-unlock.ab"
+const COMPILED_OUTPUT = "initrd-remote-unlock/remote-unlock.sh"
+
+fun check_compiled(root: Text): Null {
+    trust $ (cd "{root}" && amber build --target bash-3.2 {COMPILED_SOURCE} - 2>/dev/null | cmp -s - {COMPILED_OUTPUT}) $
+    if status() != 0 {
+        echo_error("lint: {COMPILED_OUTPUT} is stale; run: amber build --target bash-3.2 {COMPILED_SOURCE} {COMPILED_OUTPUT}", 1)
+    }
+}
+
 main {
     const root = repo_root()
     const sources = file_glob("{root}/scripts/*.ab") + file_glob("{root}/scripts/lib/*.ab") + file_glob("{root}/scripts/lib/tests/*.ab")
@@ -19,5 +32,6 @@ main {
     if bad_count > 0 {
         echo_error("lint: {bad_count} scripts don't compile", 1)
     }
+    check_compiled(root)
     echo_success("lint: every script compiles")
 }

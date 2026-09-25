@@ -1,0 +1,81 @@
+// What `mise run remote-unlock` installs to unlock the LUKS root over
+// Tailscale SSH at boot (initrd-remote-unlock/README.md explains it).
+// Not executable, so mise doesn't list it as a task.
+
+import { split_lines, trim, starts_with, text_contains, slice } from "std/text"
+
+// mkinitcpio-tailscale (AUR) has the tailscale hook, mkinitcpio-extras netconf.
+pub const PACKAGES = ["mkinitcpio-tailscale", "mkinitcpio-extras"]
+
+// Omarchy's drop-in, which sets HOOKS= outright, and the kernel command line
+// limine-update bakes into the UKI.
+pub const OMARCHY_HOOKS = "/etc/mkinitcpio.conf.d/omarchy_hooks.conf"
+pub const LIMINE_DEFAULTS = "/etc/default/limine"
+
+// setup-initcpio-tailscale writes the initrd node's key here.
+pub const NODE_STATE = "/etc/initcpio/tailscale/tailscaled.state"
+
+// DHCP on the one wired port, which is eth0 in the initramfs: it has no udev
+// rule to rename interfaces. Capped at 15s so a boot with no cable doesn't
+// hold the passphrase prompt back for netconf's default 120.
+pub const DEFAULT_IP = ":::::eth0:dhcp"
+
+// The line appended to /etc/default/limine.
+pub fun cmdline_line(ip: Text): Text {
+    return "KERNEL_CMDLINE[default]+=\" ip={ip} netconf_timeout=15\""
+}
+
+// The task's flags, read from its own arguments rather than mise's usage_*
+// variables, so the compiled initrd-remote-unlock/remote-unlock.sh takes them
+// too (mise passes them through as well as parsing them). args[0] is the
+// script, or bash under `amber run`. Returns [dry_run, force, ip], the first
+// two "true" or "false"; or ["error", <message>, ""].
+pub fun parse_flags(args: [Text]): [Text] {
+    let dry_run = "false"
+    let force = "false"
+    let ip = DEFAULT_IP
+    let wants_ip = false
+    for i, arg in args {
+        if i > 0 {
+            if {
+                wants_ip {
+                    ip = arg
+                    wants_ip = false
+                }
+                arg == "-n" or arg == "--dry-run" {
+                    dry_run = "true"
+                }
+                arg == "-f" or arg == "--force" {
+                    force = "true"
+                }
+                arg == "--ip" {
+                    wants_ip = true
+                }
+                starts_with(arg, "--ip=") {
+                    ip = slice(arg, 5)
+                }
+                else {
+                    return ["error", "unknown argument {arg} (flags: -n/--dry-run, -f/--force, --ip <ip>)", ""]
+                }
+            }
+        }
+    }
+    if wants_ip {
+        return ["error", "--ip needs a value, like :::::eth0:dhcp or dhcp", ""]
+    }
+    return [dry_run, force, ip]
+}
+
+// Whether a /etc/default/limine already passes ip= (in any form), outside
+// comments. Looks for " ip=" and "\"ip=", so skip= and the like don't count.
+pub fun has_ip_param(limine: Text): Bool {
+    for line in split_lines(limine) {
+        const stripped = trim(line)
+        if not starts_with(stripped, "#") {
+            if text_contains(stripped, " ip=") or text_contains(stripped, "\"ip=") {
+                return true
+            }
+        }
+    }
+    return false
+}

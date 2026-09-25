@@ -1,0 +1,149 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Unlock Omarchy's LUKS root over Tailscale SSH at boot: installs the initramfs hooks in initrd-remote-unlock/ and rebuilds the boot image"
+//USAGE flag "-n --dry-run" help="Print the commands instead of running them"
+//USAGE flag "-f --force" help="Rebuild the boot image even when nothing changed"
+//USAGE flag "--ip <ip>" default=":::::eth0:dhcp" help="The ip= kernel parameter for the initramfs network (netconf); ip=dhcp tries every port"
+// Safe to run again: each step is skipped when it is already done. The steps,
+// and what they do to the boot, are in initrd-remote-unlock/README.md.
+//
+// Also compiled to initrd-remote-unlock/remote-unlock.sh, for a machine
+// without this repo's mise setup; `mise run lint` checks that it is current.
+
+import { env_var_get, is_command, echo_error } from "std/env"
+import { file_exists, file_read } from "std/fs"
+import { split_lines, join } from "std/text"
+
+import { run, set_dry_run, is_dry_run, keep_sudo, quoted } from "./lib/run.ab"
+import { is_omarchy } from "./lib/os.ab"
+import { PACKAGES, OMARCHY_HOOKS, LIMINE_DEFAULTS, NODE_STATE, cmdline_line, has_ip_param, parse_flags } from "./lib/remote_unlock.ab"
+
+// The hooks and the kernel command line here are Omarchy's: a busybox
+// initramfs with the encrypt hook, built into a UKI by limine-update.
+fun ensure_supported(): Null {
+    if not is_omarchy() {
+        echo_error("remote-unlock: this is for Omarchy (4 or later)", 1)
+    }
+    if not file_exists(OMARCHY_HOOKS) or not file_exists(LIMINE_DEFAULTS) or not is_command("limine-update") {
+        echo_error("remote-unlock: expected {OMARCHY_HOOKS}, {LIMINE_DEFAULTS} and limine-update, Omarchy's Limine UKI setup", 1)
+    }
+    trust $ grep -Eq '^HOOKS=.*[( ]encrypt[ )]' {OMARCHY_HOOKS} $
+    if status() != 0 {
+        echo_error("remote-unlock: {OMARCHY_HOOKS} has no busybox 'encrypt' hook, so there is no LUKS prompt to answer", 1)
+    }
+    if not is_command("yay") {
+        echo_error("remote-unlock: needs yay for the AUR package mkinitcpio-tailscale", 1)
+    }
+}
+
+// True when it installed something, so the image needs a rebuild.
+fun install_packages(): Bool? {
+    const listed = trust $ eval "pacman -T {join(PACKAGES, " ")}" $
+    const missing = split_lines(listed)
+    if len(missing) == 0 {
+        return false
+    }
+    run("yay -S --needed {join(missing, " ")}")?
+    return true
+}
+
+// Registers the initramfs as its own tailnet node (<hostname>-initrd), which
+// asks you to log in. The node's key is root-only, hence sudo to look for it.
+fun register_node(): Bool? {
+    trust $ sudo -n test -s {NODE_STATE} 2>/dev/null $
+    if status() == 0 {
+        return false
+    }
+    // A dry run doesn't ask for the sudo password, so it can't tell.
+    if is_dry_run() {
+        echo("sudo setup-initcpio-tailscale  # unless registered already")
+        return true
+    }
+    run("sudo setup-initcpio-tailscale")?
+    return true
+}
+
+// The remote-unlock hook, and the drop-in that puts netconf, remote-unlock and
+// tailscale before encrypt.
+fun install_hooks(): Bool? {
+    const dir = files_dir()
+    const hook = install_file("{dir}/remote-unlock.install", "/etc/initcpio/install/remote-unlock", "644")?
+    const login = install_file("{dir}/remote-unlock.login", "/etc/initcpio/remote-unlock/login", "755")?
+    const drop_in = install_file("{dir}/zz_tailscale.conf", "/etc/mkinitcpio.conf.d/zz_tailscale.conf", "644")?
+    return hook or login or drop_in
+}
+
+// initrd-remote-unlock/ in the repo mise runs the task from, or else the
+// directory the compiled remote-unlock.sh sits in.
+fun files_dir(): Text {
+    const root = trust env_var_get("MISE_CONFIG_ROOT")
+    if root != "" {
+        return "{root}/initrd-remote-unlock"
+    }
+    return trust $ cd "\$(dirname "\$0")" && pwd $
+}
+
+fun install_file(src: Text, dst: Text, mode: Text): Bool? {
+    trust $ cmp -s {src} {dst} $
+    if status() == 0 {
+        return false
+    }
+    run("sudo install -Dm{mode} {quoted(src)} {quoted(dst)}")?
+    return true
+}
+
+// Appends the ip= line to /etc/default/limine, unless it already has one
+// (which is kept, even if it differs from --ip). The leading newline keeps
+// it off the last line when the file doesn't end in one.
+fun add_ip_param(ip: Text): Bool? {
+    const limine = trust file_read(LIMINE_DEFAULTS)
+    if has_ip_param(limine) {
+        echo("remote-unlock: {LIMINE_DEFAULTS} already sets ip=, keeping it")
+        return false
+    }
+    run("sudo tee -a {LIMINE_DEFAULTS} >/dev/null <<<{quoted("\n" + cmdline_line(ip))}")?
+    return true
+}
+
+// limine-update rebuilds the initramfs and the UKI it goes in, with the kernel
+// command line from /etc/default/limine; mkinitcpio -P does nothing here.
+// --check then says the image can't be inspected: it looks for a separate
+// initramfs file, not one inside the UKI.
+fun rebuild(changed: Bool): Null? {
+    if changed {
+        run("sudo limine-update")?
+    } else {
+        echo("remote-unlock: nothing changed, the boot image is up to date (--force rebuilds it anyway)")
+    }
+    run("sudo setup-initcpio-tailscale --check")?
+}
+
+fun remind(): Null {
+    echo("")
+    echo("remote-unlock: done. In the Tailscale admin console, make sure <hostname>-initrd")
+    echo("  has key expiry disabled and that your SSH policy lets you in as root.")
+    echo("  Then reboot and, at the passphrase prompt, from another machine:")
+    echo("    ssh root@<hostname>-initrd")
+    echo("  Test it at the machine first: typing the passphrase there still works.")
+}
+
+main(args) {
+    const flags = parse_flags(args)
+    if flags[0] == "error" {
+        echo_error("remote-unlock: {flags[1]}", 1)
+    }
+    set_dry_run(flags[0] == "true")
+    const force = flags[1] == "true"
+    const ip = flags[2]
+    ensure_supported()
+    if not is_dry_run() {
+        keep_sudo()?
+    }
+    const installed = install_packages()?
+    const registered = register_node()?
+    const hooks = install_hooks()?
+    const cmdline = add_ip_param(ip)?
+    rebuild(force or installed or registered or hooks or cmdline)?
+    if not is_dry_run() {
+        remind()
+    }
+}

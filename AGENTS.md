@@ -11,6 +11,15 @@ ahead of time or committed as shell. Shared code is in `scripts/lib/*.ab`
 `scripts/lib/tests/`. The only bash is the root `install.sh`, which installs
 mise and runs `mise install` before anything needs amber.
 
+One exception: `initrd-remote-unlock/remote-unlock.sh` is committed compiled
+from `scripts/remote-unlock.ab`, for machines without this repo's mise setup.
+After changing that task or anything it imports, rebuild it from the repo
+root (a relative path, since amber writes the source path into the output):
+
+    amber build --target bash-3.2 scripts/remote-unlock.ab initrd-remote-unlock/remote-unlock.sh
+
+`mise run lint` fails while it is stale.
+
 Every task starts with
 
     #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
