@@ -112,11 +112,13 @@
   },
   "cloneSourceRestores": [
     "evindor.keystroke",
-    "brpol.notifications"
+    "brpol.notifications",
+    "io.github.sirjul1337.lock-explorer"
   ],
   "disabledPlugins": [
     "omarchy.menu",
-    "omarchy.notifications"
+    "omarchy.notifications",
+    "omarchy.lock"
   ],
   "idle": {
     "lock": 900,
@@ -134,6 +136,12 @@
     },
     {
       "id": "brpol.notifications"
+    },
+    {
+      "id": "io.github.sirjul1337.lock-explorer",
+      "design": "cipher",
+      "unlock": "fade",
+      "blankMs": 60000
     }
   ],
   "version": 1
