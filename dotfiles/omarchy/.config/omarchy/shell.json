@@ -36,6 +36,12 @@
         },
         {
           "id": "brandonpollack23.submap"
+        },
+        {
+          "id": "meviusisback.hw-monitor",
+          "mode": "icons",
+          "ramFormat": "used/total",
+          "tempFormat": "degree"
         }
       ],
       "left": [
