@@ -199,6 +199,10 @@ end)
 
 -- Taskbar
 o.bind("SUPER + CTRL + ALT + S", "Stocks/Market Ticker", "omarchy-shell costafot.markets toggle")
+-- Weather opens the Better Weather plugin (plugins.lock), which replaces
+-- omarchy.weather on the bar; Omarchy's binding toggles the built-in panel.
+hl.unbind("SUPER + CTRL + ALT + W")
+o.bind("SUPER + CTRL + ALT + W", "Toggle weather", "omarchy-shell shell toggle io.github.guiestrela.weather")
 
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")

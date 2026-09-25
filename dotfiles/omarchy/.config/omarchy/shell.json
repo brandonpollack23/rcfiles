@@ -17,7 +17,8 @@
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.weather"
+          "id": "io.github.guiestrela.weather",
+          "unit": "metric"
         },
         {
           "id": "com.omastorm.radar"
