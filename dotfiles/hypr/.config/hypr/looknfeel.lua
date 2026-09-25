@@ -136,3 +136,25 @@ hl.config({
 --     column_width = 0.97,
 --   },
 -- })
+
+-- >>> omaland managed block >>>
+-- Written by Omaland. Safe to hand-edit: Omaland re-reads this block
+-- every time it opens, and only ever rewrites what's between the fences.
+hl.config({
+  decoration = {
+    blur = {
+      enabled = true,
+    },
+
+    shadow = {
+      enabled = true,
+    },
+  },
+
+  general = {
+    snap = {
+      enabled = true,
+    },
+  },
+})
+-- <<< omaland managed block <<<
