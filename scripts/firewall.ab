@@ -1,0 +1,56 @@
+#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+//MISE description="Open Steam's streaming ports (Remote Play, and Steam Link VR for the Steam Frame) to the LAN in ufw, on Linux"
+//MISE wait_for=["deps"]
+//USAGE flag "-n --dry-run" help="Print the commands instead of running them"
+// The ports go in a ufw application profile in /etc/ufw/applications.d, and
+// each private IPv4 range is allowed to it, so nothing is open to the internet.
+
+import { env_var_get, is_command } from "std/env"
+import { file_exists, file_read } from "std/fs"
+
+import { run, set_dry_run, is_dry_run, quoted } from "./lib/run.ab"
+import { APP, PROFILE, LANS, profile } from "./lib/firewall.ab"
+
+// Exits (successfully, so `install` goes on) where there is nothing to open:
+// no ufw (the Mac, or a Linux without it), or no Steam.
+fun ensure_supported(): Null {
+    if not is_command("ufw") {
+        echo("firewall: skipped, ufw is not installed")
+        exit(0)
+    }
+    if not is_command("steam") {
+        echo("firewall: skipped, Steam is not installed (it is in the gaming group: mise run deps gaming)")
+        exit(0)
+    }
+}
+
+// Writes the profile when it is missing or has changed; `ufw app update` then
+// rereads it and updates the rules that use it.
+fun install_profile(): Null? {
+    const text = profile()
+    if file_exists(PROFILE) {
+        const current = trust file_read(PROFILE)
+        if current == text {
+            return null
+        }
+    }
+    run("sudo tee {PROFILE} >/dev/null <<<{quoted(text)}")?
+    run("sudo ufw app update {quoted(APP)}")?
+}
+
+// ufw skips a rule it already has, so this is safe to run again.
+fun allow_lans(): Null? {
+    for lan in LANS {
+        run("sudo ufw allow from {lan} to any app {quoted(APP)} comment rcfiles")?
+    }
+}
+
+main {
+    set_dry_run(trust env_var_get("usage_dry_run") == "true")
+    ensure_supported()
+    install_profile()?
+    allow_lans()?
+    if not is_dry_run() {
+        echo("firewall: Steam's streaming ports are open to the LAN")
+    }
+}

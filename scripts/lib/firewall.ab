@@ -1,0 +1,20 @@
+// The ufw rules `mise run firewall` adds: Steam's streaming ports, open to the
+// LAN. Not executable, so mise doesn't list it as a task.
+
+// The ufw application profile, and the file it lives in.
+pub const APP = "Steam Streaming"
+pub const PROFILE = "/etc/ufw/applications.d/steam-streaming"
+
+// The private IPv4 ranges: the home network, and the Steam Frame's own Wi-Fi
+// adapter, which gets an address of its own (10.x).
+pub const LANS = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+
+// Remote Play finds hosts on UDP 27036 and streams over UDP 27031-27036 and
+// TCP 27036-27037; Steam Link VR (the Steam Frame) uses UDP 10400-10401. The
+// same ports as firewalld's steam-streaming service.
+pub const PORTS = "27036:27037/tcp|27031:27036/udp|10400:10401/udp"
+
+// Without the last newline: `tee <<<` adds it, and file_read drops it.
+pub fun profile(): Text {
+    return "[{APP}]\ntitle=Steam streaming\ndescription=Steam Remote Play and Steam Link VR (Steam Frame)\nports={PORTS}"
+}

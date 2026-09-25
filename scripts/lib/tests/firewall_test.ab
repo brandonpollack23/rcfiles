@@ -1,0 +1,6 @@
+import { assert_eq } from "std/test"
+import { profile } from "../firewall.ab"
+
+test "profile is a ufw application profile for Steam streaming" {
+    assert_eq(profile(), "[Steam Streaming]\ntitle=Steam streaming\ndescription=Steam Remote Play and Steam Link VR (Steam Frame)\nports=27036:27037/tcp|27031:27036/udp|10400:10401/udp")?
+}
