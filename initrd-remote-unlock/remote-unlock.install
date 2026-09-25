@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Makes root's login shell in the image /usr/bin/remote-unlock, so an SSH login
+# goes straight to unlocking the root volume. List it before 'tailscale' in
+# HOOKS=: that hook writes its own /etc/passwd, with /bin/sh as root's shell,
+# only when the image has none yet.
+
+build() {
+    add_file /etc/initcpio/remote-unlock/login /usr/bin/remote-unlock 755
+
+    # Tailscale SSH looks the user up through getent, hence nsswitch.conf.
+    printf 'root:x:0:0:root:/root:/usr/bin/remote-unlock\n' | add_file - /etc/passwd 0644
+    printf 'root:*:::::::\n' | add_file - /etc/shadow 0400
+    printf 'root:x:0:\n' | add_file - /etc/group 0644
+    printf 'passwd: files\ngroup: files\nshadow: files\n' | add_file - /etc/nsswitch.conf 0644
+    add_dir /root
+}
+
+help() {
+    cat <<HELPEOF
+Logging in as root over SSH (Tailscale SSH) asks for the LUKS passphrase of
+cryptdevice=, opens it, and lets the encrypt hook's waiting prompt go on with
+the boot. Type "shell" at the passphrase prompt for a plain shell. Needs a
+busybox image with the 'encrypt' and 'plymouth' hooks; list it before
+'tailscale'.
+HELPEOF
+}
