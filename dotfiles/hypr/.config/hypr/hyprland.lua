@@ -22,6 +22,14 @@ if gloview then
   hl.plugin.load("/usr/lib/gloview.so")
 end
 
+-- hyprfocus (hyprland-plugin-hyprfocus from the AUR) animates the window
+-- taking focus; looknfeel.lua sets it up. Also only where it's installed.
+local hyprfocus = io.open("/usr/lib/libhyprfocus.so")
+if hyprfocus then
+  hyprfocus:close()
+  hl.plugin.load("/usr/lib/libhyprfocus.so")
+end
+
 -- Put your personal overrides in these files. They're loaded after Omarchy's
 -- defaults so package updates can improve the defaults without rewriting your
 -- ~/.config/hypr files.

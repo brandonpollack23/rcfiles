@@ -113,6 +113,38 @@ hl.config({
   },
 })
 
+-- hyprfocus (loaded in hyprland.lua) bumps the window taking focus: up a few
+-- pixels, then back down into place. Hyprland loads plugins after reading the
+-- config and then rereads it, so this sees the plugin on that second pass.
+-- Only keyboard focus changes, since focus follows the mouse and every window
+-- the pointer crosses would bump too.
+-- https://github.com/hyprwm/hyprland-plugins/tree/main/hyprfocus
+local function plugin_loaded(name)
+  for _, plugin in ipairs(hl.get_loaded_plugins()) do
+    if plugin.name == name then
+      return true
+    end
+  end
+  return false
+end
+
+if plugin_loaded("hyprfocus") then
+  hl.config({
+    plugin = {
+      hyprfocus = {
+        keyboard_focus_animation = "slide",
+        mouse_focus_animation = "none",
+        slide_height = 8,
+      },
+    },
+  })
+
+  -- A quick rise, then the drop back. The window keeps hyprfocusOut for its
+  -- next moves too, so that one matches Omarchy's windows animation.
+  hl.animation({ leaf = "hyprfocusIn", enabled = true, speed = 1.5, bezier = "easeOutQuint" })
+  hl.animation({ leaf = "hyprfocusOut", enabled = true, speed = 3.79, bezier = "easeOutQuint" })
+end
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#animations
 -- hl.config({
 --   animations = {
