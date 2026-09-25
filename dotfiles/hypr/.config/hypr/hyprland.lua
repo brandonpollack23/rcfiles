@@ -50,3 +50,7 @@ require("default.hypr.toggles")
 -- Opaque windows everywhere: opt every window out of Omarchy's default
 -- window opacity (0.985 focused, 0.96 not) and the browsers' 0.985 unfocused.
 o.window(".*", { tag = "-default-opacity", opacity = "1 1" })
+
+-- Tile Steam's main window and Friends List. Omarchy floats every Steam
+-- window (default/hypr/apps/steam.lua); its dialogs still float.
+o.window({ class = "steam", title = "^(Steam|Friends List)$" }, { tile = true })
