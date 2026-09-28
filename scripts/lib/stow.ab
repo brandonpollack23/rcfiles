@@ -21,11 +21,18 @@ pub fun all_packages(): [Text] {
 
 // Stow links a whole directory when it doesn't exist in $HOME yet. For these
 // shared ones that would put other programs' files into this repo, so make
-// sure they are real directories first.
+// sure they are real directories first. A dangling link in the way (left by
+// this repo's old layout, say) holds nothing, so it goes; mkdir fails on it.
 pub fun ensure_shared_dirs(): Null? {
     const base = home()
     for dir in [".config", ".config/git", ".config/fcitx5", ".config/hypr", ".config/sunshine", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".local/share/keystroke/extensions", ".claude"] {
-        $ mkdir -p "{base}/{dir}" $?
+        const path = "{base}/{dir}"
+        trust $ [ -L "{path}" ] && [ ! -e "{path}" ] $
+        if status() == 0 {
+            echo("stow: removing dangling link ~/{dir}")
+            $ rm "{path}" $?
+        }
+        $ mkdir -p "{path}" $?
     }
     // Omarchy may not have made this yet when I stow.
     if is_omarchy() {
