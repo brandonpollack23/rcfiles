@@ -144,8 +144,10 @@ fun without_installed(packages: [Text]): [Text] {
                 installed = release_installed(package)
             }
             manager == "mise" {
-                trust $ mise where {name} >/dev/null 2>&1 $
-                installed = status() == 0
+                // Installed and in the global config: an install nothing
+                // selects (say, left behind by another project) isn't on PATH.
+                const active = trust $ mise ls --global --current --installed {name} 2>/dev/null $
+                installed = active != ""
             }
         }
         if installed {
