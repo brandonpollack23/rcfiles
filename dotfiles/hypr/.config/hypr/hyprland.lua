@@ -34,6 +34,15 @@ end
 -- defaults so package updates can improve the defaults without rewriting your
 -- ~/.config/hypr files.
 require("hypr.monitors")
+-- While Sunshine streams, its prep command (sunshine/set-mode.sh) keeps the
+-- stream's headless output mode and the physical monitors being off here, so
+-- a config reload doesn't undo them.
+local sunshine = (os.getenv("XDG_RUNTIME_DIR") or "/tmp") .. "/sunshine-monitors.lua"
+local streaming = io.open(sunshine)
+if streaming then
+  streaming:close()
+  dofile(sunshine)
+end
 require("hypr.input")
 require("hypr.bindings")
 require("hypr.looknfeel")
