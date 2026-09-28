@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Update zsh, tmux, neovim and Omarchy shell plugins (the new versions land in lazy-lock.json and plugins.lock)"
 
 import { dir_exists } from "std/fs"

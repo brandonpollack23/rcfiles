@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Open Steam's streaming ports (Remote Play, and Steam Link VR for the Steam Frame) to the LAN in ufw, on Linux"
 //MISE wait_for=["deps"]
 //USAGE flag "-n --dry-run" help="Print the commands instead of running them"

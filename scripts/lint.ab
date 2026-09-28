@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Type-check every Amber script in scripts/ (shows the compiler's warnings)"
 
 import { echo_error, echo_success } from "std/env"

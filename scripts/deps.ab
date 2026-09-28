@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
 //USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
 //USAGE flag "-y --yes" help="Install without asking first"

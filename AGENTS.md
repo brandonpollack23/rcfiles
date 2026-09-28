@@ -22,13 +22,15 @@ root (a relative path, since amber writes the source path into the output):
 
 Every task starts with
 
-    #!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+    #!/usr/bin/env -S amber run --target bash-3.2 --
 
-The `--` keeps amber from parsing the task's own flags (`deps -n`), and the
-target keeps the tasks working on a fresh Mac, whose bash is 3.2. Task
-metadata is `//MISE ...` and `//USAGE ...` comments right after the shebang
-(amber rejects `#` lines); read arguments with `env_var_get("usage_<name>")`
-or `usage_words` from `scripts/lib/run.ab` for `var=#true` ones.
+No quotes: the macOS kernel splits a shebang line on spaces itself, so
+`env -S` never sees them. The script path lands after the `--`, which keeps
+amber from parsing the task's own flags (`deps -n`), and the target keeps
+the tasks working on a fresh Mac, whose bash is 3.2. Task metadata is
+`//MISE ...` and `//USAGE ...` comments right after the shebang (amber rejects
+`#` lines); read arguments with `env_var_get("usage_<name>")` or `usage_words`
+from `scripts/lib/run.ab` for `var=#true` ones.
 
 ## Always lint and test after a change
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Link packages into $HOME (all of them if none are named), asking what to do about files already there"
 //MISE wait_for=["deps"]
 //USAGE arg "[package]..." var=#true help="Packages to link (default: all)"

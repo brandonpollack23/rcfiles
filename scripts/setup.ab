@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Log in to GitHub (gh), and check git, jj and neovim are ready to use (running deps, stow or plugins for whatever is missing)"
 //MISE wait_for=["deps", "stow", "plugins"]
 

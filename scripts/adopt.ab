@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Stow a package over existing files in $HOME, moving them into the repo (review with `jj diff` after)"
 //USAGE arg "<package>..." var=#true
 

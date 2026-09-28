@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Unlock Omarchy's LUKS root over Tailscale SSH at boot: installs the initramfs hooks in initrd-remote-unlock/ and rebuilds the boot image"
 //USAGE flag "-n --dry-run" help="Print the commands instead of running them"
 //USAGE flag "-f --force" help="Rebuild the boot image even when nothing changed"

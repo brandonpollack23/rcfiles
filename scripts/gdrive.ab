@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Mount the personal and univalent Google Drives under /mnt/google_drive (rclone and systemd, on Linux)"
 //MISE wait_for=["deps", "sops-bootstrap"]
 //USAGE flag "-n --dry-run" help="Print the commands instead of running them"

@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Write the Omarchy shell plugins cloned from git into plugins.lock, and keep their checkouts out of the repo"
 
 import { dir_exists, dir_create, file_write } from "std/fs"

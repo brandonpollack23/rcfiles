@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Move files or directories from $HOME into a package (new or existing) and link them back"
 //USAGE arg "<package>" help="Package name, e.g. btop"
 //USAGE arg "<path>..." var=#true help="Files or directories under $HOME, e.g. ~/.config/btop"

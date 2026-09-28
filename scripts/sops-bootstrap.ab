@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Let this machine decrypt the secrets (asks for the master password)"
 //MISE wait_for=["deps"]
 // Lets this machine decrypt the repo's secrets (*.sops.*, rules in .sops.yaml).

@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh -c 'exec amber run --target bash-3.2 "$0" -- "$@"'
+#!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE description="Install zsh (antidote), tmux (tpm), neovim (lazy.nvim + Mason) and Omarchy shell plugins, asking first about neovim and Mason"
 //MISE wait_for=["stow"]
 

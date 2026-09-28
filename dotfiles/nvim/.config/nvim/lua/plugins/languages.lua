@@ -126,7 +126,7 @@ return {
     "amber-lang/amber-vim",
     init = function()
       -- amber-vim's ftdetect uses setfiletype, which loses to shebang detection
-      -- (`#!/usr/bin/env -S sh -c 'exec amber run ...'` reads as sh).
+      -- (`#!/usr/bin/env -S amber run ...` names env, not amber).
       vim.filetype.add({ extension = { ab = "amber" } })
     end,
   },
