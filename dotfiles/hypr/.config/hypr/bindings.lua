@@ -168,6 +168,8 @@ hl.unbind("SUPER + SHIFT + SLASH")
 o.bind("SUPER + SHIFT + SLASH", "Keybindings", "omarchy-menu-keybindings")
 -- Bitwarden's panel from the qs-bitwarden-cli shell plugin (plugins.lock).
 o.bind("SUPER + I", "Passwords", "omarchy-shell io.github.elevate08.qs-bitwarden-cli toggle")
+-- The omamail shell plugin's inbox window.
+o.bind("SUPER + CTRL + ALT + E", "Omamail", "omarchy shell shell toggle omamail '{}'")
 
 -- Google Calendar on SUPER + SHIFT + C instead of HEY's.
 hl.unbind("SUPER + SHIFT + C")
