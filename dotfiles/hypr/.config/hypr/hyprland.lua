@@ -36,13 +36,21 @@ end
 require("hypr.monitors")
 -- While Sunshine streams, its prep command (sunshine/set-mode.sh) keeps the
 -- stream's headless output mode and the physical monitors being off here, so
--- a config reload doesn't undo them.
+-- a config reload doesn't undo them. A physical monitor that comes back on
+-- mid-stream anyway gets them again when it's added: one did on reconnecting
+-- after a reload, and a reconnect doesn't run the prep command again. The
+-- file is checked each time, since "restore" removes it before turning the
+-- monitors back on.
 local sunshine = (os.getenv("XDG_RUNTIME_DIR") or "/tmp") .. "/sunshine-monitors.lua"
-local streaming = io.open(sunshine)
-if streaming then
-  streaming:close()
-  dofile(sunshine)
+local function apply_sunshine_monitors()
+  local streaming = io.open(sunshine)
+  if streaming then
+    streaming:close()
+    dofile(sunshine)
+  end
 end
+apply_sunshine_monitors()
+hl.on("monitor.added", apply_sunshine_monitors)
 require("hypr.input")
 require("hypr.bindings")
 require("hypr.looknfeel")

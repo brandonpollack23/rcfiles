@@ -32,7 +32,8 @@ focus_workspace() {
 
 # Monitor rules take effect a moment after they're sent, and a workspace
 # focused before then is on the wrong monitor once they do. Wait (up to 5s)
-# until the physical monitors saved in $state are all <on|off>.
+# until the physical monitors saved in $state are all <on|off>; fails if they
+# aren't by then.
 wait_monitors() {
   names=$(tail -n +2 "$state" | cut -d ' ' -f 1 | jq -R . | jq -s -c .)
   tries=0
@@ -44,6 +45,7 @@ wait_monitors() {
     sleep 0.1
     tries=$((tries + 1))
   done
+  return 1
 }
 
 if [ "${1:-}" = restore ]; then
@@ -54,7 +56,13 @@ if [ "${1:-}" = restore ]; then
     tail -n +2 "$state" | while read -r name mode position scale transform; do
       monitor "output = '$name', mode = '$mode', position = '$position', scale = $scale, transform = $transform"
     done
-    wait_monitors on
+    # A monitor can stay off despite its rule (seen after reloads mid-stream).
+    # With $rules gone, a reload applies the config without the stream, which
+    # turns them all back on.
+    if ! wait_monitors on; then
+      hyprctl reload > /dev/null
+      wait_monitors on || true
+    fi
   fi
   hyprctl output remove "$headless" > /dev/null || true
   [ -n "$workspace" ] && focus_workspace "$workspace"
@@ -89,5 +97,5 @@ hyprctl eval "dofile('$rules')" > /dev/null
 # The new headless output came with an empty workspace of its own. Focusing
 # the saved one once the physical monitors are gone, and so it's on the
 # headless output too, shows it there in place of the empty one, which closes.
-wait_monitors off
+wait_monitors off || true
 focus_workspace "$(head -n 1 "$state")"
