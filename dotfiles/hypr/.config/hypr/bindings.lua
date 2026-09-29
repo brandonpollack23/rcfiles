@@ -134,17 +134,31 @@ o.bind("SUPER + ALT + L", "Cycle workspace layout", function()
   require("hypr.layouts").cycle()
 end)
 
--- Yazi for the file manager instead of Nautilus, on SUPER + E as well. The
--- cwd one opens in the focused terminal's directory, as nautilus-cwd does;
--- { tui = ... } quotes its command whole, so that one is a plain string.
--- SUPER + E opens it in foot rather than the default terminal, with the app
--- id omarchy-launch-tui would give it.
-local yazi_cwd = 'omarchy-launch-tui yazi "$(omarchy-cmd-terminal-cwd)"'
+-- TUIs open in foot rather than the default terminal (ghostty), with the app
+-- id omarchy-launch-tui would give them. The command goes through a shell, so
+-- $(...) in it runs when the key is pressed.
+local function foot(app, command)
+  return "uwsm-app -- foot --app-id=org.omarchy." .. app .. " " .. command
+end
+
+-- Yazi for the file manager instead of Nautilus, on SUPER + E, and on
+-- SUPER + ALT + E in the focused terminal's directory, as nautilus-cwd does.
+-- Omarchy's SUPER + SHIFT + F and SUPER + ALT + SHIFT + F are gone.
 hl.unbind("SUPER + SHIFT + F")
 hl.unbind("SUPER + ALT + SHIFT + F")
-o.bind("SUPER + SHIFT + F", "File manager", { tui = "yazi" })
-o.bind("SUPER + E", "File manager", "setsid uwsm-app -- foot --app-id=org.omarchy.yazi yazi")
-o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)", yazi_cwd)
+o.bind("SUPER + E", "File manager", "setsid " .. foot("yazi", "yazi"))
+o.bind("SUPER + ALT + E", "File manager (cwd)", "setsid " .. foot("yazi", 'yazi "$(omarchy-cmd-terminal-cwd)"'))
+
+-- Omarchy's btop and music TUI in foot too. omarchy-launch-or-focus runs its
+-- command under setsid itself.
+hl.unbind("SUPER + CTRL + T")
+hl.unbind("SUPER + SHIFT + ALT + M")
+o.bind("SUPER + CTRL + T", "Activity", "setsid " .. foot("btop", "btop"))
+o.bind(
+  "SUPER + SHIFT + ALT + M",
+  "Music TUI",
+  "omarchy-launch-or-focus org.omarchy.cliamp '" .. foot("cliamp", "cliamp") .. "'"
+)
 
 -- The Omarchy menu on SUPER + R too, where my old launcher was.
 o.bind("SUPER + R", "Omarchy menu", "omarchy-menu toggle")
