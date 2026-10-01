@@ -188,6 +188,7 @@ sevenzip = { arch = "7zip", desc = "7-Zip archiver (7zz)" }
 watch = { arch = "procps-ng", desc = "Runs a command repeatedly, showing its output" }
 wdiff = { desc = "Word-by-word diff" }
 iperf3 = { desc = "Measures network bandwidth" }
+mosh = { desc = "Mobile shell: SSH that survives roaming, sleep and lag" }
 rclone = { desc = "Syncs and mounts cloud storage; mounts the Google Drives (mise run gdrive)" }
 fuse3 = { brew = false, desc = "FUSE, for rclone's mounts (mise run gdrive)" }
 qrencode = { desc = "Makes QR codes" }
