@@ -1,0 +1,57 @@
+# The qmd index "brain" (qmd --index brain, the qmd-brain alias in .zshrc):
+# the Obsidian vault in ~/Obsidian. `mise run qmd` writes this to
+# ~/.config/qmd/brain.yml with ~ spelled out (qmd doesn't expand it), and the
+# qmd-brain service re-indexes when either changes. From deepspace9's
+# docker/appdata/qmd/config/index.yml, where the vault is mounted at /vault.
+
+global_context: >
+  Personal knowledge base.  Consisting of Obsidian notes and other sources.
+  Search this collection when the user asks about their notes,
+  projects, people, past thoughts, plans, decisions, meetings, or other
+  information likely to have been recorded in the vault.
+  INDEX.md at the vault root describes what each folder contains.
+
+models:
+  embed: "hf:Qwen/Qwen3-Embedding-0.6B-GGUF/Qwen3-Embedding-0.6B-Q8_0.gguf"
+  rerank: "hf:ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/qwen3-reranker-0.6b-q8_0.gguf"
+  generate: "hf:tobil/qmd-query-expansion-1.7B-gguf/qmd-query-expansion-1.7B-q4_k_m.gguf"
+
+collections:
+  notes:
+    path: ~/Obsidian
+    pattern: "**/*.md"
+
+    ignore:
+      - ".obsidian/**"
+      - ".trash/**"
+      - ".qmd/**"
+      - "templates/**"
+
+    includeByDefault: true
+
+    # path prefix -> description; longest match wins. Mirrors INDEX.md.
+    context:
+      "/": "Personal Obsidian notes and knowledge base"
+      "/INDEX.md": "Vault map: what each top-level folder and notable subfolder contains"
+      "/people": "One note per person: how we met, who they know, open asks both ways, personal facts, running notes"
+      "/Programming": "Programming languages, infra tools, opinion pieces, ML concepts, blog drafts"
+      "/Programming/Projects": "Active personal software projects (Evee, Shizen, Goldsmith), engineering process, and project ideas"
+      "/Programming/Blog": "Drafts of blog articles about personal projects"
+      "/Univalent": "Univalent (company) projects, blog post ideas, and corporate/legal documents"
+      "/Business ideas": "Business and startup ideas"
+      "/Library of Alexandria": "Notes for the Library of Alexandria project"
+      "/Home Server": "Home server setup: networking, IPs, self-hosted services, Obsidian sync"
+      "/Health": "Personal health: overview, mental health (CBT, thought records), physical checkups"
+      "/Life Philosophy": "Personal opinion essays: housing, human rights, privilege, modern software, critiques of modern tech"
+      "/Books": "Reading notes on fiction and nonfiction books, and collected quotes"
+      "/Games": "Notes on games, series, studios, and flight/space/racing simulators and hardware"
+      "/DCC": "Digital content creation: Blender, Adobe, Affinity, GIMP, ZBrush, videography and video plans"
+      "/DIY_Projects_Art": "Woodworking, metalworking, crafts, interior design, and shopping lists"
+      "/Travel": "Japan travel notes, motorcycle touring, and past trip write-ups"
+      "/Software": "Software and tools: editors, Neovim, apps, mobile apps, Linux distros and package managers"
+      "/obsidian": "Obsidian plugins and workflow notes; Inbox holds timestamped fleeting notes from 2024"
+      "/Glossary": "Short definitions of terms and acronyms"
+      "/Entertainment": "Movie watchlist and what is currently being watched"
+      "/Knowledge and Fact Database": "Japanese history notes (duplicates Social Sciences/History)"
+      "/Social Sciences": "History, mainly Japan: civil war, cities and wards, historical figures"
+      "/Inbox": "Capture spot for unsorted notes"

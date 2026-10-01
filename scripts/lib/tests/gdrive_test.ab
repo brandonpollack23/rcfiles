@@ -1,6 +1,7 @@
 import { assert, assert_eq } from "std/test"
 import { text_contains } from "std/text"
-import { secret_key, secret_value, missing_secrets, remote_section, rclone_config, mount_unit_name, mount_unit } from "../gdrive.ab"
+import { secret_value } from "../sops.ab"
+import { secret_key, missing_secrets, remote_section, rclone_config, mount_unit_name, mount_unit } from "../gdrive.ab"
 
 const ENV = "# comment\nGDRIVE_PERSONAL_CLIENT_ID=id.apps\nGDRIVE_PERSONAL_CLIENT_SECRET=s=cret\nGDRIVE_PERSONAL_TOKEN=\{\"access_token\":\"a\",\"expiry\":\"2026\"}\nOTHER=x"
 

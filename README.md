@@ -27,12 +27,14 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 
 | task             | does                                                          |
 | ---------------- | ------------------------------------------------------------- |
-| `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere, pinned GitHub release assets (AppImages and binaries) in `~/.local/bin` off the Mac, and install scripts, each asked about on its own), Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
+| `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere, pinned GitHub release assets (AppImages and binaries) in `~/.local/bin` off the Mac, and install scripts, each asked about on its own), npm CLIs and other mise tools at their pins, Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins, asking first whether to set up neovim and its Mason language servers |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
 | `gdrive`         | on Linux, mounts the personal and univalent Google Drives under `/mnt/google_drive` (rclone, systemd mount units, config in `/etc/rclone` from the `GDRIVE_*` secrets); skipped until the secrets are there |
+| `obsidian`       | syncs the Obsidian vault to `~/Obsidian` in the background with Obsidian Headless (`ob sync --continuous`, a launchd agent on the Mac, a systemd user service on Linux), logging in and connecting the vault from the `OBSIDIAN_*` secrets. Where the desktop app is installed it first asks whether `ob` or the app's own Sync does it (Obsidian says not to run both), remembered in `~/.config/rcfiles/obsidian-sync`; `--sync headless\|app` picks again |
+| `qmd`            | writes `~/.config/qmd/brain.yml` (from `scripts/lib/qmd-brain.yml`) and runs a watchexec launchd agent / systemd user service that re-indexes `~/Obsidian` with qmd whenever a note changes; search it with `qmd-brain search\|vsearch\|query "..."` |
 | `firewall`       | on Linux with ufw and Steam, opens Steam's streaming ports (Remote Play: UDP 27031-27036, TCP 27036-27037; Steam Link VR for the Steam Frame: UDP 10400-10401) to the private IPv4 ranges, through a ufw app profile in `/etc/ufw/applications.d` |
 | `setup`          | logs in to GitHub (`gh auth login`, git credentials in `~/.gitconfig.local`) and checks git, jj and neovim are ready, running `deps`, `stow` or `plugins` for anything missing |
 

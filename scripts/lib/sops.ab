@@ -1,12 +1,14 @@
 // This machine's age key, and .sops.yaml: the list of keys every secret is
 // encrypted to. Not executable, so mise doesn't list it as a task.
 
-import { env_var_get } from "std/env"
+import { env_var_get, echo_error } from "std/env"
 import { split_lines, join, trim, starts_with, ends_with, slice, count_chars, match_regex } from "std/text"
 import { xdg_config_home } from "./paths.ab"
 
-// Where sops looks for age keys: $SOPS_AGE_KEY_FILE, else
-// ${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt.
+// Where this machine's age key goes: $SOPS_AGE_KEY_FILE, else
+// ${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt. That's where sops looks
+// on Linux; on the Mac it looks in ~/Library/Application Support/sops, so
+// mise.toml (for the tasks) and .zshrc.mac set $SOPS_AGE_KEY_FILE to this.
 pub fun keys_path_from(sops_key_file: Text, config_home: Text): Text {
     if sops_key_file != "" {
         return sops_key_file
@@ -48,6 +50,26 @@ pub fun secret_files(repo: Text): [Text] {
         }
     }
     return found
+}
+
+// The value of `key` in decrypted dotenv text (secrets.sops.env), or "" when
+// it isn't there. Everything after the first "=", since a token is JSON.
+pub fun secret_value(env_text: Text, key: Text): Text {
+    const skip = count_chars(key) + 1
+    for line in split_lines(env_text) {
+        if starts_with(line, "{key}=") {
+            return slice(line, skip)
+        }
+    }
+    return ""
+}
+
+// secrets.sops.env, decrypted. Exits when this machine can't decrypt it,
+// naming the task (`who`) that needed it.
+pub fun decrypt_secrets(repo: Text, who: Text): Text {
+    return $ sops -d "{repo}/secrets.sops.env" $ failed(code) {
+        echo_error("{who}: could not decrypt secrets.sops.env; run: mise run sops-bootstrap", code)
+    }
 }
 
 // Whether sops can decrypt `file` with the keys this machine already has.

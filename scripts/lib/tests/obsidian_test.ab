@@ -1,0 +1,34 @@
+import { assert_eq } from "std/test"
+import { join } from "std/text"
+import { vault_dir, missing_secrets, auth_token_file, sync_owner, sync_command } from "../obsidian.ab"
+
+test "the vault is ~/Obsidian" {
+    assert_eq(vault_dir("/h"), "/h/Obsidian")?
+}
+
+test "missing_secrets lists what login and setup still need" {
+    const all = missing_secrets("OTHER=x")
+    assert_eq(join(all, " "), "OBSIDIAN_EMAIL OBSIDIAN_PASSWORD OBSIDIAN_VAULT")?
+    const some = missing_secrets("OBSIDIAN_EMAIL=a@b\nOBSIDIAN_PASSWORD=p=w\nOBSIDIAN_ENCRYPTION_PASSWORD=k")
+    assert_eq(join(some, " "), "OBSIDIAN_VAULT")?
+    const none = missing_secrets("OBSIDIAN_EMAIL=a@b\nOBSIDIAN_PASSWORD=pw\nOBSIDIAN_VAULT=Notes")
+    const none_count = len(none)
+    assert_eq(none_count, 0)?
+}
+
+test "auth_token_file follows ob's config directory" {
+    assert_eq(auth_token_file("mac", "/h", "/h/.config"), "/h/.obsidian-headless/auth_token")?
+    assert_eq(auth_token_file("arch", "/h", "/x"), "/x/obsidian-headless/auth_token")?
+}
+
+test "sync_owner: the flag, else the saved answer, else ob without the app" {
+    assert_eq(sync_owner("app", "headless", true), "app")?
+    assert_eq(sync_owner("", "app", false), "app")?
+    assert_eq(sync_owner("", "", false), "headless")?
+    assert_eq(sync_owner("", "", true), "")?
+}
+
+test "sync_command runs ob on the vault" {
+    assert_eq(sync_command("/h/Obsidian"), "exec ob sync --continuous --path /h/Obsidian")?
+    assert_eq(sync_command("/h/My Vault"), "exec ob sync --continuous --path /h/My\\ Vault")?
+}

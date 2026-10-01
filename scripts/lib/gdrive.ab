@@ -1,8 +1,9 @@
 // The Google Drives `mise run gdrive` mounts: their rclone config and systemd
 // mount units. Not executable, so mise doesn't list it as a task.
 
-import { split, split_lines, join, starts_with, slice, count_chars, uppercase } from "std/text"
+import { split, join, uppercase } from "std/text"
 import { field } from "./packages.ab"
+import { secret_value } from "./sops.ab"
 
 // "<secret prefix>|<rclone remote>|<directory under MOUNT_ROOT>" for each drive.
 pub const DRIVES = [
@@ -33,18 +34,6 @@ pub fun drive_dir(drive: Text): Text {
 // GDRIVE_PERSONAL_CLIENT_ID and so on.
 pub fun secret_key(prefix: Text, what: Text): Text {
     return "GDRIVE_{uppercase(prefix)}_{what}"
-}
-
-// The value of `key` in decrypted dotenv text, or "" when it isn't there.
-// Everything after the first "=", since a token is JSON.
-pub fun secret_value(env_text: Text, key: Text): Text {
-    const skip = count_chars(key) + 1
-    for line in split_lines(env_text) {
-        if starts_with(line, "{key}=") {
-            return slice(line, skip)
-        }
-    }
-    return ""
 }
 
 // The secrets a drive is missing, as their keys.

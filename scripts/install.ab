@@ -1,6 +1,6 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
-//MISE description="Set up a new machine: dependencies, links, plugins, fonts, secrets, Google Drive mounts, firewall, gh login"
-//MISE depends=["deps", "stow", "plugins", "fonts", "sops-bootstrap", "gdrive", "firewall", "setup"]
+//MISE description="Set up a new machine: dependencies, links, plugins, fonts, secrets, Google Drive mounts, Obsidian sync and search, firewall, gh login"
+//MISE depends=["deps", "stow", "plugins", "fonts", "sops-bootstrap", "gdrive", "obsidian", "qmd", "firewall", "setup"]
 // Also ./install.sh at the repo root: run outside mise, it installs mise (and
 // with it amber), then runs this as the `install` task.
 

@@ -1,0 +1,19 @@
+import { assert, assert_eq } from "std/test"
+import { text_contains } from "std/text"
+import { config_file, brain_config, watch_command } from "../qmd.ab"
+
+test "config_file is the brain index's" {
+    assert_eq(config_file("/h/.config"), "/h/.config/qmd/brain.yml")?
+}
+
+test "brain_config spells out the vault's path" {
+    const template = "collections:\n  notes:\n    path: ~/Obsidian\n    pattern: \"**/*.md\"\n"
+    assert_eq(brain_config(template, "/h/Obsidian"), "collections:\n  notes:\n    path: /h/Obsidian\n    pattern: \"**/*.md\"\n")?
+}
+
+test "watch_command watches the vault and the config, then indexes" {
+    const command = watch_command("/h/Obsidian", "/h/.config/qmd")
+    assert(text_contains(command, "exec watchexec --watch /h/Obsidian --watch /h/.config/qmd --filter '*.md' --filter 'brain.yml' "))?
+    assert(text_contains(command, " --debounce 10s --on-busy-update queue "))?
+    assert(text_contains(command, " -- sh -c 'qmd --index brain update && qmd --index brain embed --timeout 0'"))?
+}

@@ -140,6 +140,10 @@ fi
 alias mdless="mdless -I"
 export LESS="-R -I"
 
+# qmd search over the Obsidian vault in ~/Obsidian, which `mise run qmd` indexes
+# (and keeps indexed) as the named index "brain": qmd-brain query "...".
+alias qmd-brain="qmd --index brain"
+
 # Override some common aliases
 alias -g G='| rg'
 alias -g L='| bat'

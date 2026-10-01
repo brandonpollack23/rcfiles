@@ -1,0 +1,26 @@
+// The qmd index "brain" over the Obsidian vault, for `mise run qmd`. Not
+// executable, so mise doesn't list it as a task.
+
+import { replace } from "std/text"
+import { quoted } from "./run.ab"
+
+pub const INDEX = "brain"
+
+// qmd reads a named index's collections from <config dir>/<name>.yml.
+pub fun config_file(config_home: Text): Text {
+    return "{config_home}/qmd/{INDEX}.yml"
+}
+
+// The config template (qmd-brain.yml) with the vault's real path: qmd takes a
+// collection's path as it is, without expanding ~.
+pub fun brain_config(template: Text, vault: Text): Text {
+    return replace(template, "\n    path: ~/Obsidian\n", "\n    path: {vault}\n")
+}
+
+// The service's command: watchexec indexing once at startup, then again ten
+// seconds after notes (or the config) stop changing, and once more after a run
+// if anything changed while it ran. qmd update and embed only redo changed
+// notes, so a run after a small edit is quick.
+pub fun watch_command(vault: Text, config_dir: Text): Text {
+    return "exec watchexec --watch {quoted(vault)} --watch {quoted(config_dir)} --filter '*.md' --filter '{INDEX}.yml' --ignore '**/.obsidian/**' --ignore '**/.trash/**' --no-vcs-ignore --no-project-ignore --no-global-ignore --debounce 10s --on-busy-update queue --shell none -- sh -c 'qmd --index {INDEX} update && qmd --index {INDEX} embed --timeout 0'"
+}

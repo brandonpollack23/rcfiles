@@ -1,23 +1,40 @@
 import { assert_eq } from "std/test"
 import { join } from "std/text"
-import { sort_package, names_for, field, group_names, script_command, release_url, desktop_entry } from "../packages.ab"
+import { sort_package, names_for, field, group_names, script_command, release_url, desktop_entry, mise_version, mise_tool } from "../packages.ab"
 
 // sort_package's lines, space separated, for short assertions.
 fun sorted(os: Text, name: Text, arch: Text, brew: Text, cask: Text, mas: Text, cargo: Text): Text {
-    return join(sort_package(os, name, arch, brew, cask, mas, cargo, "", "", ""), " ")
+    return join(sort_package(os, name, arch, brew, cask, mas, cargo, "", "", "", ""), " ")
 }
 
 test "a script wins on every OS, keeping its url and env" {
     const url = "https://example.com/install.sh"
-    assert_eq(join(sort_package("arch", "tool", "", "", "", "", "true", url, "REF=v1", "o/r|v1|a|abc"), " "), "script|tool|{url}|REF=v1")?
-    assert_eq(join(sort_package("mac", "tool", "", "", "true", "", "", url, "", ""), " "), "script|tool|{url}|")?
+    assert_eq(join(sort_package("arch", "tool", "", "", "", "", "true", url, "REF=v1", "o/r|v1|a|abc", ""), " "), "script|tool|{url}|REF=v1")?
+    assert_eq(join(sort_package("mac", "tool", "", "", "true", "", "", url, "", "", ""), " "), "script|tool|{url}|")?
 }
 
 test "a GitHub release wins off the Mac; the Mac falls back to the rest" {
     const release = "prof18/feed-flow|1.17.0-all|FeedFlow-1.17.0-x86_64.AppImage|abc"
-    assert_eq(join(sort_package("arch", "feedflow", "", "", "true", "", "", "", "", release), " "), "github|feedflow|{release}")?
-    assert_eq(join(sort_package("debian", "feedflow", "", "", "true", "", "", "", "", release), " "), "github|feedflow|{release}")?
-    assert_eq(join(sort_package("mac", "feedflow", "", "", "true", "", "", "", "", release), " "), "cask|feedflow")?
+    assert_eq(join(sort_package("arch", "feedflow", "", "", "true", "", "", "", "", release, ""), " "), "github|feedflow|{release}")?
+    assert_eq(join(sort_package("debian", "feedflow", "", "", "true", "", "", "", "", release, ""), " "), "github|feedflow|{release}")?
+    assert_eq(join(sort_package("mac", "feedflow", "", "", "true", "", "", "", "", release, ""), " "), "cask|feedflow")?
+}
+
+test "mise wins on every OS but to a script" {
+    assert_eq(join(sort_package("arch", "qmd", "", "", "", "", "true", "", "", "o/r|v1|a|abc", "npm:@tobilu/qmd@2.8.3"), " "), "mise|npm:@tobilu/qmd@2.8.3")?
+    assert_eq(join(sort_package("mac", "ob", "", "", "true", "1", "", "", "", "", "npm:obsidian-headless"), " "), "mise|npm:obsidian-headless")?
+    assert_eq(join(sort_package("mac", "x", "", "", "", "", "", "https://x/i.sh", "", "", "npm:x"), " "), "script|x|https://x/i.sh|")?
+}
+
+test "mise_version and mise_tool split a pinned version off" {
+    assert_eq(mise_version("npm:@tobilu/qmd@2.8.3"), "2.8.3")?
+    assert_eq(mise_tool("npm:@tobilu/qmd@2.8.3"), "npm:@tobilu/qmd")?
+    assert_eq(mise_version("npm:@tobilu/qmd"), "")?
+    assert_eq(mise_tool("npm:@tobilu/qmd"), "npm:@tobilu/qmd")?
+    assert_eq(mise_version("npm:obsidian-headless@0.0.14"), "0.0.14")?
+    assert_eq(mise_tool("npm:obsidian-headless@0.0.14"), "npm:obsidian-headless")?
+    assert_eq(mise_version("erlang"), "")?
+    assert_eq(mise_tool("erlang"), "erlang")?
 }
 
 test "release_url is the pinned asset's download" {

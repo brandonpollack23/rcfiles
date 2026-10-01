@@ -1,0 +1,39 @@
+import { assert, assert_eq } from "std/test"
+import { text_contains } from "std/text"
+import { service_path, xml_escaped, unit_escaped, agent_file, agent_log, unit_file, launch_agent, user_unit } from "../services.ab"
+
+test "service_path puts mise's shims first" {
+    assert_eq(service_path("/h", "/h/.local/share"), "/h/.local/share/mise/shims:/h/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")?
+}
+
+test "xml_escaped escapes what a plist string can't hold" {
+    assert_eq(xml_escaped("a && b < c > d"), "a &amp;&amp; b &lt; c &gt; d")?
+}
+
+test "unit_escaped keeps quotes, variables and specifiers from systemd" {
+    assert_eq(unit_escaped("a \"b\" \\ $HOME 100%"), "a \\\"b\\\" \\\\ $$HOME 100%%")?
+}
+
+test "service files are named after the service" {
+    assert_eq(agent_file("/h", "qmd-brain"), "/h/Library/LaunchAgents/rcfiles.qmd-brain.plist")?
+    assert_eq(agent_log("/h", "qmd-brain"), "/h/Library/Logs/rcfiles/qmd-brain.log")?
+    assert_eq(unit_file("/h/.config", "qmd-brain"), "/h/.config/systemd/user/qmd-brain.service")?
+}
+
+test "launch_agent runs the command with sh, kept alive" {
+    const agent = launch_agent("obsidian-sync", "exec ob sync && true", "/p:/q", "/h/x.log")
+    assert(text_contains(agent, "<key>Label</key>\n  <string>rcfiles.obsidian-sync</string>"))?
+    assert(text_contains(agent, "<string>/bin/sh</string>\n    <string>-c</string>\n    <string>exec ob sync &amp;&amp; true</string>"))?
+    assert(text_contains(agent, "<key>PATH</key>\n    <string>/p:/q</string>"))?
+    assert(text_contains(agent, "<key>KeepAlive</key>\n  <true/>"))?
+    assert(text_contains(agent, "<key>StandardErrorPath</key>\n  <string>/h/x.log</string>"))?
+}
+
+test "user_unit runs the command with sh, restarted" {
+    const unit = user_unit("Sync", "exec ob sync --path \"/h/O\"", "/p:/q")
+    assert(text_contains(unit, "Description=Sync\n"))?
+    assert(text_contains(unit, "\nEnvironment=\"PATH=/p:/q\"\n"))?
+    assert(text_contains(unit, "\nExecStart=/bin/sh -c \"exec ob sync --path \\\"/h/O\\\"\"\n"))?
+    assert(text_contains(unit, "\nRestart=always\n"))?
+    assert(text_contains(unit, "\nWantedBy=default.target"))?
+}

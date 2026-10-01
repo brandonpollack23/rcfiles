@@ -1,0 +1,76 @@
+#!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE description="Index ~/Obsidian for qmd search (the qmd-brain alias), re-indexed in the background whenever a note changes"
+//MISE wait_for=["deps", "stow", "obsidian"]
+//USAGE flag "-n --dry-run" help="Print the commands instead of running them"
+// Writes ~/.config/qmd/brain.yml from scripts/lib/qmd-brain.yml, and runs a
+// launchd agent (the Mac) or systemd user service (Linux) that indexes the
+// vault with watchexec and qmd. The first run downloads qmd's models (about
+// 2.4 GB) and embeds the whole vault, which takes a while; its log is in
+// ~/Library/Logs/rcfiles/qmd-brain.log on the Mac (journalctl --user -u
+// qmd-brain elsewhere).
+
+import { env_var_get, is_command } from "std/env"
+import { file_exists, file_read, file_write } from "std/fs"
+import { join } from "std/text"
+
+import { detect_os } from "./lib/os.ab"
+import { repo_root, run, set_dry_run, is_dry_run, quoted } from "./lib/run.ab"
+import { home, xdg_config_home, xdg_data_home } from "./lib/paths.ab"
+import { services_supported, service_path, install_service } from "./lib/services.ab"
+import { vault_dir } from "./lib/obsidian.ab"
+import { config_file, brain_config, watch_command } from "./lib/qmd.ab"
+
+const SERVICE = "qmd-brain"
+
+// Exits (successfully, so `install` goes on) where there's nothing to run it.
+fun ensure_supported(os: Text): Null {
+    if not services_supported(os) {
+        echo("qmd: skipped, there is no launchd or systemd here to run the indexer")
+        exit(0)
+    }
+    let gone = [Text]
+    for tool in ["qmd", "watchexec"] {
+        if not is_command(tool) {
+            gone += [tool]
+        }
+    }
+    const gone_count = len(gone)
+    if gone_count > 0 {
+        echo("qmd: skipped, {join(gone, " ")} not installed; run: mise run deps tools")
+        exit(0)
+    }
+}
+
+// Writes the config when it differs from the template's.
+fun write_config(root: Text, file: Text, vault: Text): Null? {
+    const config = brain_config(file_read("{root}/scripts/lib/qmd-brain.yml")?, vault)
+    if file_exists(file) {
+        const current = file_read(file)?
+        if current == config {
+            return null
+        }
+    }
+    if is_dry_run() {
+        echo("write {file}")
+        return null
+    }
+    $ mkdir -p "\$(dirname "{file}")" $?
+    file_write(file, config)?
+    echo("qmd: wrote {file}")
+}
+
+main {
+    set_dry_run(trust env_var_get("usage_dry_run") == "true")
+    const os = detect_os()
+    ensure_supported(os)
+    const vault = vault_dir(home())
+    const file = config_file(xdg_config_home())
+    write_config(repo_root(), file, vault)?
+    // watchexec won't start on a directory that isn't there yet.
+    run("mkdir -p {quoted(vault)}")?
+    const config_dir = trust $ dirname "{file}" $
+    install_service(os, SERVICE, "Index {vault} for qmd-brain as it changes", watch_command(vault, config_dir), service_path(home(), xdg_data_home()))?
+    if not is_dry_run() {
+        echo("qmd: indexing {vault} in the background; search it with qmd-brain search|vsearch|query \"...\"")
+    }
+}

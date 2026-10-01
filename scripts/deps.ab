@@ -1,18 +1,18 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
-//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere), Rust (rustup), Erlang and Elixir (mise)"
+//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere, mise tools), Rust (rustup), Erlang and Elixir (mise)"
 //USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
 //USAGE flag "-y --yes" help="Install without asking first"
 //USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
 
 import { env_var_get, is_command, echo_error, input_confirm } from "std/env"
 import { file_exists, file_read, file_write } from "std/fs"
-import { split, split_lines, join, ends_with } from "std/text"
+import { split, split_lines, join, ends_with, text_contains } from "std/text"
 import { array_contains } from "std/array"
 
 import { detect_os, is_omarchy, ensure_brew } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, is_interactive, keep_sudo, usage_words } from "./lib/run.ab"
 import { home, xdg_config_home, xdg_data_home, put_cargo_on_path } from "./lib/paths.ab"
-import { all_groups, group_names, packages_for, names_for, field, script_command, release_url, desktop_entry } from "./lib/packages.ab"
+import { all_groups, group_names, packages_for, names_for, field, script_command, release_url, desktop_entry, mise_version, mise_tool } from "./lib/packages.ab"
 
 // Remembers `picked` for the next run (unless this one is a dry run).
 
@@ -144,10 +144,7 @@ fun without_installed(packages: [Text]): [Text] {
                 installed = release_installed(package)
             }
             manager == "mise" {
-                // Installed and in the global config: an install nothing
-                // selects (say, left behind by another project) isn't on PATH.
-                const active = trust $ mise ls --global --current --installed {name} 2>/dev/null $
-                installed = active != ""
+                installed = mise_installed(name)
             }
         }
         if installed {
@@ -160,6 +157,18 @@ fun without_installed(packages: [Text]): [Text] {
         echo("deps: already installed: {join(skipped, " ")}")
     }
     return kept
+}
+
+// Installed and in the global config: an install nothing selects (say, left
+// behind by another project) isn't on PATH. A pinned tool needs that version,
+// so a new pin reinstalls it.
+fun mise_installed(name: Text): Bool {
+    const active = trust $ mise ls --global --current --installed {mise_tool(name)} 2>/dev/null $
+    const version = mise_version(name)
+    if version == "" {
+        return active != ""
+    }
+    return text_contains(" {active} ", " {version} ")
 }
 
 // The names pacman has nothing installed for (by name or by what it provides).
@@ -551,10 +560,15 @@ main {
     release_deps(packages)?
     script_deps(packages)?
 
-    // Erlang and Elixir: the latest stable releases, pinned in ~/.config/mise/config.toml.
+    // Erlang and Elixir at their latest stable releases, packages.toml's mise
+    // tools at their pins, all in ~/.config/mise/config.toml.
     let tools = [Text]
     for tool in names_for(packages, "mise") {
-        tools += ["{tool}@latest"]
+        if mise_version(tool) == "" {
+            tools += ["{tool}@latest"]
+        } else {
+            tools += [tool]
+        }
     }
     if len(tools) > 0 {
         prebuilt_erlang(os)?

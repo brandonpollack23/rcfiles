@@ -1,0 +1,173 @@
+#!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE description="Sync the Obsidian vault to ~/Obsidian in the background with Obsidian Headless (ob), or leave it to the desktop app's Sync"
+//MISE wait_for=["deps", "sops-bootstrap"]
+//USAGE flag "-n --dry-run" help="Print the commands instead of running them"
+//USAGE flag "--sync <who>" help="Who syncs ~/Obsidian here: headless (the ob service) or app (the desktop app's own Sync). Default: the answer from last time, asking the first time where the desktop app is installed"
+// ob logs in and sets the vault up from secrets.sops.env (`mise run secrets`):
+// OBSIDIAN_EMAIL, OBSIDIAN_PASSWORD, OBSIDIAN_VAULT (the remote vault's name)
+// and, for an end-to-end encrypted vault, OBSIDIAN_ENCRYPTION_PASSWORD. Then a
+// launchd agent (the Mac) or systemd user service (Linux) runs
+// `ob sync --continuous`. Obsidian says not to run that and the desktop app's
+// Sync on one machine, so where the app is installed this asks which syncs.
+
+import { env_var_get, is_command, echo_error, input_prompt } from "std/env"
+import { file_exists, dir_exists, file_read, file_write } from "std/fs"
+import { join, trim, split_lines } from "std/text"
+import { array_contains } from "std/array"
+
+import { detect_os } from "./lib/os.ab"
+import { repo_root, run, set_dry_run, is_dry_run, is_interactive, quoted } from "./lib/run.ab"
+import { home, xdg_config_home, xdg_data_home } from "./lib/paths.ab"
+import { decrypt_secrets, secret_value } from "./lib/sops.ab"
+import { services_supported, service_path, install_service, remove_service } from "./lib/services.ab"
+import { OWNERS, vault_dir, missing_secrets, auth_token_file, sync_owner, sync_command } from "./lib/obsidian.ab"
+
+const SERVICE = "obsidian-sync"
+
+fun ensure_supported(os: Text): Null {
+    if not services_supported(os) {
+        echo("obsidian: skipped, there is no launchd or systemd here to run the sync")
+        exit(0)
+    }
+}
+
+// The desktop app: Obsidian.app on the Mac, the obsidian command elsewhere.
+fun has_app(os: Text): Bool {
+    if os == "mac" {
+        return dir_exists("/Applications/Obsidian.app")
+    }
+    return is_command("obsidian")
+}
+
+// Who syncs the vault (see sync_owner), saved for next time. Exits
+// (successfully, so `install` goes on) when that's the user's call and there's
+// no terminal to ask on.
+fun pick_owner(os: Text, saved_file: Text): Text? {
+    const flag = trust env_var_get("usage_sync")
+    if flag != "" and not array_contains(OWNERS, flag) {
+        echo_error("obsidian: --sync is headless or app, not {flag}", 1)
+    }
+    let saved = ""
+    if file_exists(saved_file) {
+        saved = trim(file_read(saved_file)?)
+    }
+    let owner = sync_owner(flag, saved, has_app(os))
+    if owner == "" {
+        if not is_interactive() {
+            echo("obsidian: skipped; pick who syncs ~/Obsidian with: mise run obsidian --sync headless|app")
+            exit(0)
+        }
+        owner = ask_owner()
+    }
+    if owner != saved and not is_dry_run() {
+        $ mkdir -p "\$(dirname "{saved_file}")" $?
+        file_write(saved_file, owner)?
+    }
+    return owner
+}
+
+fun ask_owner(): Text {
+    echo("obsidian: the desktop app is installed here, and Obsidian says not to run its Sync")
+    echo("and Obsidian Headless (ob) on one machine. Which should sync ~/Obsidian?")
+    echo("  headless: ob, in the background, whether the app is open or not")
+    echo("  app:      the desktop app's own Sync, while it's open")
+    loop {
+        const answer = trim(input_prompt("headless or app? "))
+        if array_contains(OWNERS, answer) {
+            return answer
+        }
+    }
+    return ""
+}
+
+// The app syncs: take the ob service away, if an earlier run installed it.
+fun leave_to_app(os: Text, vault: Text): Null? {
+    remove_service(os, SERVICE)?
+    echo("obsidian: the desktop app syncs the vault here; open {vault} in it as the vault")
+    exit(0)
+}
+
+fun ensure_ob(): Null {
+    if not is_command("ob") {
+        echo("obsidian: skipped, ob is not installed; run: mise run deps tools")
+        exit(0)
+    }
+}
+
+fun is_set_up(vault: Text): Bool {
+    const paths = trust $ ob sync-list-local --json 2>/dev/null | jq -r '.vaults[].path' $
+    return array_contains(split_lines(paths), vault)
+}
+
+// Logs ob in and connects the vault to the remote one, whichever isn't done
+// yet. The secrets are only decrypted when one of them is needed.
+fun set_up(os: Text, vault: Text): Null? {
+    const logged_in = file_exists(auth_token_file(os, home(), xdg_config_home())) or trust env_var_get("OBSIDIAN_AUTH_TOKEN") != ""
+    const set_up_already = is_set_up(vault)
+    if logged_in and set_up_already {
+        return null
+    }
+    const env_text = decrypt_secrets(repo_root(), "obsidian")
+    const gone = missing_secrets(env_text)
+    const gone_count = len(gone)
+    if gone_count > 0 {
+        echo("obsidian: skipped, secrets.sops.env is missing {join(gone, " ")}")
+        echo("  add them with: mise run secrets (and OBSIDIAN_ENCRYPTION_PASSWORD for an end-to-end encrypted vault)")
+        exit(0)
+    }
+    if not logged_in {
+        log_in(env_text)?
+    }
+    if not set_up_already {
+        connect_vault(env_text, vault)?
+    }
+}
+
+// ob asks for a 2FA code itself, if the account has 2FA.
+fun log_in(env_text: Text): Null? {
+    const email = secret_value(env_text, "OBSIDIAN_EMAIL")
+    const password = secret_value(env_text, "OBSIDIAN_PASSWORD")
+    if is_dry_run() {
+        echo("ob login --email {quoted(email)} --password <OBSIDIAN_PASSWORD>")
+        return null
+    }
+    $ ob login --email "{email}" --password "{password}" $?
+}
+
+fun connect_vault(env_text: Text, vault: Text): Null? {
+    const remote = secret_value(env_text, "OBSIDIAN_VAULT")
+    const key = secret_value(env_text, "OBSIDIAN_ENCRYPTION_PASSWORD")
+    const device = trust $ hostname -s $
+    if is_dry_run() {
+        echo("ob sync-setup --vault {quoted(remote)} --path {quoted(vault)} --device-name {quoted(device)} --password <OBSIDIAN_ENCRYPTION_PASSWORD>")
+        return null
+    }
+    $ mkdir -p "{vault}" $?
+    if key == "" {
+        $ ob sync-setup --vault "{remote}" --path "{vault}" --device-name "{device}" $?
+    } else {
+        $ ob sync-setup --vault "{remote}" --path "{vault}" --device-name "{device}" --password "{key}" $?
+    }
+}
+
+main {
+    set_dry_run(trust env_var_get("usage_dry_run") == "true")
+    const os = detect_os()
+    ensure_supported(os)
+    const vault = vault_dir(home())
+    const owner = pick_owner(os, "{xdg_config_home()}/rcfiles/obsidian-sync")?
+    if owner == "app" {
+        leave_to_app(os, vault)?
+    }
+    ensure_ob()
+    set_up(os, vault)?
+    install_service(os, SERVICE, "Obsidian Sync for {vault} (ob)", sync_command(vault), service_path(home(), xdg_data_home()))?
+    if is_dry_run() {
+        exit(0)
+    }
+    echo("obsidian: ob syncs {vault} in the background")
+    if has_app(os) {
+        echo("  in the desktop app, open {vault} as the vault and turn its own Sync off for it")
+        echo("  (Settings > Sync > Disconnect, which only affects this machine)")
+    }
+}

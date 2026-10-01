@@ -13,6 +13,7 @@ import { join } from "std/text"
 
 import { detect_os } from "./lib/os.ab"
 import { repo_root, run, set_dry_run, is_dry_run, quoted } from "./lib/run.ab"
+import { decrypt_secrets } from "./lib/sops.ab"
 import { DRIVES, CONFIG, MOUNT_ROOT, drive_remote, drive_dir, missing_secrets, rclone_config, mount_unit_name, mount_unit } from "./lib/gdrive.ab"
 
 // Exits (successfully) where there is nothing to mount with: the Mac has the
@@ -30,12 +31,6 @@ fun ensure_supported(): Null {
         if not is_command(tool) {
             echo_error("gdrive: {tool} is not installed; run: mise run deps tools", 1)
         }
-    }
-}
-
-fun decrypt_secrets(root: Text): Text {
-    return $ sops -d "{root}/secrets.sops.env" $ failed(code) {
-        echo_error("gdrive: could not decrypt secrets.sops.env; run: mise run sops-bootstrap", code)
     }
 }
 
@@ -132,7 +127,7 @@ main {
     set_dry_run(trust env_var_get("usage_dry_run") == "true")
     const force = trust env_var_get("usage_force") == "true"
     ensure_supported()
-    const env_text = decrypt_secrets(repo_root())
+    const env_text = decrypt_secrets(repo_root(), "gdrive")
     ensure_secrets(env_text)
     write_config(env_text, force)?
     ensure_mount_helper()?

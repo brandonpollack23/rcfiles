@@ -1,0 +1,58 @@
+// The Obsidian vault in ~/Obsidian, synced by Obsidian Headless (ob) for
+// `mise run obsidian`. Not executable, so mise doesn't list it as a task.
+
+import { quoted } from "./run.ab"
+import { secret_value } from "./sops.ab"
+
+// What `mise run obsidian` needs from secrets.sops.env to log in and set the
+// vault up: the account, and the remote vault's name. OBSIDIAN_ENCRYPTION_PASSWORD
+// (its end-to-end encryption password) is needed too if it has one.
+pub const SECRETS = ["OBSIDIAN_EMAIL", "OBSIDIAN_PASSWORD", "OBSIDIAN_VAULT"]
+
+// Who syncs the vault: the ob service, or the desktop app's own Sync.
+pub const OWNERS = ["headless", "app"]
+
+pub fun vault_dir(home: Text): Text {
+    return "{home}/Obsidian"
+}
+
+// The secrets that aren't in decrypted secrets.sops.env yet.
+pub fun missing_secrets(env_text: Text): [Text] {
+    let gone = [Text]
+    for key in SECRETS {
+        if secret_value(env_text, key) == "" {
+            gone += [key]
+        }
+    }
+    return gone
+}
+
+// Where ob keeps its login: its config directory is under $XDG_CONFIG_HOME on
+// Linux and ~/.obsidian-headless anywhere else.
+pub fun auth_token_file(os: Text, home: Text, config_home: Text): Text {
+    if os == "mac" {
+        return "{home}/.obsidian-headless/auth_token"
+    }
+    return "{config_home}/obsidian-headless/auth_token"
+}
+
+// Who syncs the vault on this machine: the --sync flag, else the answer saved
+// last time, else ob when the desktop app isn't here to sync it instead. ""
+// means it's the user's call, so ask.
+pub fun sync_owner(flag: Text, saved: Text, has_app: Bool): Text {
+    if flag != "" {
+        return flag
+    }
+    if saved != "" {
+        return saved
+    }
+    if not has_app {
+        return "headless"
+    }
+    return ""
+}
+
+// The service's command: ob syncing the vault until it's stopped.
+pub fun sync_command(vault: Text): Text {
+    return "exec ob sync --continuous --path {quoted(vault)}"
+}

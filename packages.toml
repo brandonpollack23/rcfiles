@@ -12,6 +12,9 @@
 #   cask = true | "cask"        a Homebrew cask instead (Mac only)
 #   mas = <id>                  a Mac App Store app instead (Mac only; sign in first)
 #   cargo = true | "crate"      a Rust crate, installed with cargo binstall everywhere
+#   mise = "backend:tool@ver"   a mise tool instead, on every OS, in the global mise
+#                               config (npm:<package> for an npm CLI); a new pin
+#                               reinstalls it
 #   bin = "command"             a command it puts on PATH; deps skips the package when
 #                               that's already there, installed some other way (its own
 #                               installer, mise, npm...)
@@ -190,6 +193,9 @@ wdiff = { desc = "Word-by-word diff" }
 iperf3 = { desc = "Measures network bandwidth" }
 mosh = { desc = "Mobile shell: SSH that survives roaming, sleep and lag" }
 rclone = { desc = "Syncs and mounts cloud storage; mounts the Google Drives (mise run gdrive)" }
+obsidian-headless = { mise = "npm:obsidian-headless@0.0.14", desc = "Obsidian Sync without the app (ob); syncs ~/Obsidian in the background (mise run obsidian)" }
+qmd = { mise = "npm:@tobilu/qmd@2.8.3", desc = "Local hybrid search over ~/Obsidian, the qmd-brain alias (mise run qmd)" }
+watchexec = { desc = "Runs a command when files change; re-indexes qmd-brain as ~/Obsidian changes (mise run qmd)" }
 fuse3 = { brew = false, desc = "FUSE, for rclone's mounts (mise run gdrive)" }
 qrencode = { desc = "Makes QR codes" }
 task = { desc = "Taskwarrior, a command-line todo list" }

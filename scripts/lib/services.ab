@@ -1,0 +1,192 @@
+// Background services that run as this user: started at login, and again
+// whenever they exit. launchd agents on the Mac, systemd user units on Linux.
+// Not executable, so mise doesn't list it as a task.
+
+import { file_exists, file_read, file_write } from "std/fs"
+import { is_command } from "std/env"
+import { replace, join } from "std/text"
+import { run, is_dry_run, quoted } from "./run.ab"
+import { home, xdg_config_home } from "./paths.ab"
+
+// Whether this machine has a service manager to run them: launchd on the Mac,
+// else systemd.
+pub fun services_supported(os: Text): Bool {
+    return os == "mac" or is_command("systemctl")
+}
+
+// The PATH a service runs with: mise's shims (the tools deps installs with
+// mise), then Homebrew's and the system's directories. launchd and systemd
+// start services with a bare PATH, not the shell's.
+pub fun service_path(home: Text, data_home: Text): Text {
+    return join(["{data_home}/mise/shims", "{home}/.local/bin", "/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin"], ":")
+}
+
+pub fun xml_escaped(text: Text): Text {
+    return replace(replace(replace(text, "&", "&amp;"), "<", "&lt;"), ">", "&gt;")
+}
+
+// `text` inside double quotes on a unit's ExecStart= line: systemd expands
+// $VARIABLES and %specifiers there before the shell sees them.
+pub fun unit_escaped(text: Text): Text {
+    const slashes = replace(text, "\\", "\\\\")
+    const quotes = replace(slashes, "\"", "\\\"")
+    return replace(replace(quotes, "%", "%%"), "$", "$$")
+}
+
+pub fun agent_label(name: Text): Text {
+    return "rcfiles.{name}"
+}
+
+pub fun agent_file(home: Text, name: Text): Text {
+    return "{home}/Library/LaunchAgents/{agent_label(name)}.plist"
+}
+
+pub fun agent_log(home: Text, name: Text): Text {
+    return "{home}/Library/Logs/rcfiles/{name}.log"
+}
+
+pub fun unit_file(config_home: Text, name: Text): Text {
+    return "{config_home}/systemd/user/{name}.service"
+}
+
+// A launchd agent that runs `command` with sh, logging to `log`.
+pub fun launch_agent(name: Text, command: Text, path: Text, log: Text): Text {
+    return join([
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">",
+        "<plist version=\"1.0\">",
+        "<dict>",
+        "  <key>Label</key>",
+        "  <string>{agent_label(name)}</string>",
+        "  <key>ProgramArguments</key>",
+        "  <array>",
+        "    <string>/bin/sh</string>",
+        "    <string>-c</string>",
+        "    <string>{xml_escaped(command)}</string>",
+        "  </array>",
+        "  <key>EnvironmentVariables</key>",
+        "  <dict>",
+        "    <key>PATH</key>",
+        "    <string>{xml_escaped(path)}</string>",
+        "  </dict>",
+        "  <key>RunAtLoad</key>",
+        "  <true/>",
+        "  <key>KeepAlive</key>",
+        "  <true/>",
+        "  <key>StandardOutPath</key>",
+        "  <string>{xml_escaped(log)}</string>",
+        "  <key>StandardErrorPath</key>",
+        "  <string>{xml_escaped(log)}</string>",
+        "</dict>",
+        "</plist>",
+    ], "\n")
+}
+
+// A systemd user unit that runs `command` with sh, restarting it when it exits.
+pub fun user_unit(description: Text, command: Text, path: Text): Text {
+    return join([
+        "[Unit]",
+        "Description={description}",
+        "",
+        "[Service]",
+        "Environment=\"PATH={unit_escaped(path)}\"",
+        "ExecStart=/bin/sh -c \"{unit_escaped(command)}\"",
+        "Restart=always",
+        "RestartSec=10",
+        "",
+        "[Install]",
+        "WantedBy=default.target",
+    ], "\n")
+}
+
+fun differs(path: Text, text: Text): Bool {
+    if not file_exists(path) {
+        return true
+    }
+    const current = trust file_read(path)
+    return current != text
+}
+
+// Writes `text` to `path`, making its directory, or prints that it would.
+fun write_service_file(path: Text, text: Text): Null? {
+    if is_dry_run() {
+        echo("write {path}")
+        return null
+    }
+    $ mkdir -p "\$(dirname "{path}")" $?
+    file_write(path, text)?
+}
+
+// Unloads the agent (if it's loaded) and waits for launchd to let it go: a
+// bootstrap straight after a bootout fails while the old one is going.
+fun unload_agent(target: Text): Null? {
+    run("launchctl bootout {target} 2>/dev/null || true")?
+    if not is_dry_run() {
+        trust $ for _ in 1 2 3 4 5 6 7 8 9 10; do launchctl print {target} >/dev/null 2>&1 || break; sleep 0.5; done $
+    }
+}
+
+fun install_agent(name: Text, command: Text, path: Text): Null? {
+    const base = home()
+    const file = agent_file(base, name)
+    const log = agent_log(base, name)
+    const agent = launch_agent(name, command, path, log)
+    const uid = $ id -u $?
+    const target = "gui/{uid}/{agent_label(name)}"
+    trust $ launchctl print {target} >/dev/null 2>&1 $
+    const loaded = status() == 0
+    if {
+        differs(file, agent) {
+            write_service_file(file, agent)?
+            run("mkdir -p {quoted("{base}/Library/Logs/rcfiles")}")?
+            unload_agent(target)?
+            run("launchctl bootstrap gui/{uid} {quoted(file)}")?
+        }
+        not loaded {
+            run("launchctl bootstrap gui/{uid} {quoted(file)}")?
+        }
+    }
+}
+
+fun install_unit(name: Text, description: Text, command: Text, path: Text): Null? {
+    const file = unit_file(xdg_config_home(), name)
+    const unit = user_unit(description, command, path)
+    if differs(file, unit) {
+        write_service_file(file, unit)?
+        run("systemctl --user daemon-reload")?
+        run("systemctl --user enable {name}.service")?
+        run("systemctl --user restart {name}.service")?
+    } else {
+        run("systemctl --user enable --now {name}.service")?
+    }
+}
+
+// Installs the service `name`, which runs `command` with sh and `path` as its
+// PATH, and starts it: restarted if it changed, else started if it isn't
+// running.
+pub fun install_service(os: Text, name: Text, description: Text, command: Text, path: Text): Null? {
+    if os == "mac" {
+        install_agent(name, command, path)?
+    } else {
+        install_unit(name, description, command, path)?
+    }
+}
+
+// Stops the service `name` and removes it, if it's installed.
+pub fun remove_service(os: Text, name: Text): Null? {
+    if os == "mac" {
+        const file = agent_file(home(), name)
+        if file_exists(file) {
+            const uid = $ id -u $?
+            unload_agent("gui/{uid}/{agent_label(name)}")?
+            run("rm -f {quoted(file)}")?
+        }
+        return null
+    }
+    const file = unit_file(xdg_config_home(), name)
+    if file_exists(file) {
+        run("systemctl --user disable --now {name}.service")?
+        run("rm -f {quoted(file)}")?
+        run("systemctl --user daemon-reload")?
+    }
+}
