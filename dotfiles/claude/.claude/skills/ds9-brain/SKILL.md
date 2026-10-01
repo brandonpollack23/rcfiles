@@ -1,9 +1,11 @@
 ---
-name: obsidian
-description: Query, read, create, edit, move, or rename notes in the user's Obsidian vault through the deepspace9 MCP gateway (qmd_* search tools and notes_* filesystem tools). Use whenever the user asks about anything that might be in their notes (people, projects, travel, books, games, ideas, plans), wants to add or update a note, or asks where something lives in their vault.
+name: ds9-brain
+description: Query, read, create, edit, move, or rename notes in the user's Obsidian vault on their deepspace9 server, through the deepspace9 MCP gateway (qmd_* search tools and notes_* filesystem tools). Use whenever the user asks about anything that might be in their notes (people, projects, travel, books, games, ideas, plans), wants to add or update a note, or asks where something lives in their vault, on a machine without the vault in ~/Obsidian (otherwise use the brain skill), or when the user asks for the server copy.
 ---
 
 # Obsidian vault via deepspace9
+
+On a machine with the vault synced to `~/Obsidian` and indexed locally (`qmd --index brain status` works), use the brain skill instead: it's the same vault, without the round trip to the server.
 
 The user's Obsidian vault (and other personal sources) is reachable through the **deepspace9** MCP gateway. Two tool families cover the same vault:
 
@@ -12,7 +14,7 @@ The user's Obsidian vault (and other personal sources) is reachable through the 
 
 In Claude Code these appear as `mcp__deepspace9__<tool>` (or `mcp__claude_ai_DeepSpace9__<tool>` via the claude.ai connector). They are usually deferred: load the ones you need in one `ToolSearch` call, e.g. `select:mcp__deepspace9__qmd_query,mcp__deepspace9__qmd_get,mcp__deepspace9__qmd_multi_get`.
 
-If the `notes_*` tools are missing, run `gateway_status` to see which backends are connected. Without the notes backend the vault is read-only: answer from QMD, and tell the user the notes backend isn't connected rather than attempting edits another way. Never edit the vault through the local filesystem as a substitute.
+If the `notes_*` tools are missing, run `gateway_status` to see which backends are connected. Without the notes backend the vault is read-only: answer from QMD, and tell the user the notes backend isn't connected rather than attempting edits another way. Never edit the vault through the local filesystem as a substitute (that's the brain skill's job, on machines set up for it).
 
 Paths map 1:1: `qmd://notes/Travel/Japan.md` is `/vault/Travel/Japan.md`.
 
