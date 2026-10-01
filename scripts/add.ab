@@ -12,7 +12,8 @@ import { dotfiles, stow } from "./lib/stow.ab"
 // Moves `path` (under $HOME) to the same place under dotfiles/<package>,
 // keeping a symlink where it is (stow already owns it).
 fun move_into_package(package: Text, path: Text): Null? {
-    const abs = trust $ realpath -s "{path}" $
+    // Absolute without resolving symlinks; macOS realpath has no -s.
+    const abs = trust $ printf '%s/%s' "\$(cd "\$(dirname "{path}")" && pwd -L)" "\$(basename "{path}")" $
     const rel = home_relative(abs, home())
     if rel == "" {
         echo_error("{path} is not under {home()}", 1)

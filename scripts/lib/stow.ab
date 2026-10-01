@@ -25,7 +25,7 @@ pub fun all_packages(): [Text] {
 // this repo's old layout, say) holds nothing, so it goes; mkdir fails on it.
 pub fun ensure_shared_dirs(): Null? {
     const base = home()
-    for dir in [".config", ".config/git", ".config/fcitx5", ".config/hypr", ".config/sunshine", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".local/share/keystroke/extensions", ".claude"] {
+    for dir in [".config", ".config/git", ".config/fcitx5", ".config/hypr", ".config/sunshine", ".config/systemd/user", ".config/tmux", ".local/bin", ".local/share", ".local/share/keystroke/extensions", ".claude", ".claude/skills"] {
         const path = "{base}/{dir}"
         trust $ [ -L "{path}" ] && [ ! -e "{path}" ] $
         if status() == 0 {
