@@ -141,13 +141,14 @@ local function foot(app, command)
   return "uwsm-app -- foot --app-id=org.omarchy." .. app .. " " .. command
 end
 
--- Yazi for the file manager instead of Nautilus, on SUPER + E, and on
--- SUPER + ALT + E in the focused terminal's directory, as nautilus-cwd does.
--- Omarchy's SUPER + SHIFT + F and SUPER + ALT + SHIFT + F are gone.
+-- Omafile (the xyzlab.omafile shell plugin, plugins.lock) for the file
+-- manager instead of Nautilus, on SUPER + E, and on SUPER + ALT + E in the
+-- focused terminal's directory, as nautilus-cwd does. Omarchy's
+-- SUPER + SHIFT + F and SUPER + ALT + SHIFT + F are gone.
 hl.unbind("SUPER + SHIFT + F")
 hl.unbind("SUPER + ALT + SHIFT + F")
-o.bind("SUPER + E", "File manager", "setsid " .. foot("yazi", "yazi"))
-o.bind("SUPER + ALT + E", "File manager (cwd)", "setsid " .. foot("yazi", 'yazi "$(omarchy-cmd-terminal-cwd)"'))
+o.bind("SUPER + E", "File manager", "omarchy-shell omafile toggle")
+o.bind("SUPER + ALT + E", "File manager (cwd)", 'omarchy-shell omafile open "$(omarchy-cmd-terminal-cwd)"')
 
 -- Omarchy's btop and music TUI in foot too. omarchy-launch-or-focus runs its
 -- command under setsid itself.
