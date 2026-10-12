@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="unstow"
 //MISE description="Remove a package's links from $HOME"
 //USAGE arg "<package>..." var=#true
 

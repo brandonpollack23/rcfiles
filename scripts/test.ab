@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="test"
 //MISE description="Run the Amber tests in scripts/lib/tests"
 
 import { repo_root } from "./lib/run.ab"

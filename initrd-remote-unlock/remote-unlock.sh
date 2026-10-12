@@ -447,6 +447,7 @@ has_ip_param__199_v0() {
 }
 
 # #!/usr/bin/env -S amber run --target bash-3.2 --
+# MISE alias="remote-unlock"
 # MISE description="Unlock Omarchy's LUKS root over Tailscale SSH at boot: installs the initramfs hooks in initrd-remote-unlock/ and rebuilds the boot image"
 # USAGE flag "-n --dry-run" help="Print the commands instead of running them"
 # USAGE flag "-f --force" help="Rebuild the boot image even when nothing changed"
@@ -461,17 +462,17 @@ has_ip_param__199_v0() {
 # ensure_supported()
 ensure_supported__203_v0() {
     is_omarchy__188_v0 
-    local ret_is_omarchy188_v0__23_12="${ret_is_omarchy188_v0}"
-    if [ "$(( ! ret_is_omarchy188_v0__23_12 ))" != 0 ]; then
+    local ret_is_omarchy188_v0__24_12="${ret_is_omarchy188_v0}"
+    if [ "$(( ! ret_is_omarchy188_v0__24_12 ))" != 0 ]; then
         echo_error__138_v0 "remote-unlock: this is for Omarchy (4 or later)" 1
     fi
     file_exists__39_v0 "${__OMARCHY_HOOKS_4}"
-    local ret_file_exists39_v0__26_12="${ret_file_exists39_v0}"
+    local ret_file_exists39_v0__27_12="${ret_file_exists39_v0}"
     file_exists__39_v0 "${__LIMINE_DEFAULTS_5}"
-    local ret_file_exists39_v0__26_46="${ret_file_exists39_v0}"
+    local ret_file_exists39_v0__27_46="${ret_file_exists39_v0}"
     is_command__122_v0 "limine-update"
-    local ret_is_command122_v0__26_82="${ret_is_command122_v0}"
-    if [ "$(( $(( $(( ! ret_file_exists39_v0__26_12 )) || $(( ! ret_file_exists39_v0__26_46 )) )) || $(( ! ret_is_command122_v0__26_82 )) ))" != 0 ]; then
+    local ret_is_command122_v0__27_82="${ret_is_command122_v0}"
+    if [ "$(( $(( $(( ! ret_file_exists39_v0__27_12 )) || $(( ! ret_file_exists39_v0__27_46 )) )) || $(( ! ret_is_command122_v0__27_82 )) ))" != 0 ]; then
         echo_error__138_v0 "remote-unlock: expected ${__OMARCHY_HOOKS_4}, ${__LIMINE_DEFAULTS_5} and limine-update, Omarchy's Limine UKI setup" 1
     fi
     grep -Eq '^HOOKS=.*[( ]encrypt[ )]' ${__OMARCHY_HOOKS_4}
@@ -480,8 +481,8 @@ ensure_supported__203_v0() {
         echo_error__138_v0 "remote-unlock: ${__OMARCHY_HOOKS_4} has no busybox 'encrypt' hook, so there is no LUKS prompt to answer" 1
     fi
     is_command__122_v0 "yay"
-    local ret_is_command122_v0__33_12="${ret_is_command122_v0}"
-    if [ "$(( ! ret_is_command122_v0__33_12 ))" != 0 ]; then
+    local ret_is_command122_v0__34_12="${ret_is_command122_v0}"
+    if [ "$(( ! ret_is_command122_v0__34_12 ))" != 0 ]; then
         echo_error__138_v0 "remote-unlock: needs yay for the AUR package mkinitcpio-tailscale" 1
     fi
 }
@@ -490,9 +491,9 @@ ensure_supported__203_v0() {
 # install_packages()
 install_packages__204_v0() {
     join__7_v0 __PACKAGES_3[@] " "
-    local ret_join7_v0__40_45="${ret_join7_v0}"
+    local ret_join7_v0__41_45="${ret_join7_v0}"
     local command_18
-    command_18="$(eval "pacman -T ${ret_join7_v0__40_45}")"
+    command_18="$(eval "pacman -T ${ret_join7_v0__41_45}")"
     __status=$?
     local listed_115="${command_18}"
     split_lines__5_v0 "${listed_115}"
@@ -503,8 +504,8 @@ install_packages__204_v0() {
         return 0
     fi
     join__7_v0 missing_117[@] " "
-    local ret_join7_v0__45_27="${ret_join7_v0}"
-    run__172_v0 "yay -S --needed ${ret_join7_v0__45_27}"
+    local ret_join7_v0__46_27="${ret_join7_v0}"
+    run__172_v0 "yay -S --needed ${ret_join7_v0__46_27}"
     __status=$?
     if [ "${__status}" != 0 ]; then
         ret_install_packages204_v0=''
@@ -526,8 +527,8 @@ register_node__205_v0() {
     fi
     # A dry run doesn't ask for the sudo password, so it can't tell.
     is_dry_run__168_v0 
-    local ret_is_dry_run168_v0__57_8="${ret_is_dry_run168_v0}"
-    if [ "${ret_is_dry_run168_v0__57_8}" != 0 ]; then
+    local ret_is_dry_run168_v0__58_8="${ret_is_dry_run168_v0}"
+    if [ "${ret_is_dry_run168_v0__58_8}" != 0 ]; then
         echo "sudo setup-initcpio-tailscale  # unless registered already"
         ret_register_node205_v0=1
         return 0
@@ -603,10 +604,10 @@ install_file__208_v0() {
         return 0
     fi
     quoted__171_v0 "${src_150}"
-    local ret_quoted171_v0__90_34="${ret_quoted171_v0}"
+    local ret_quoted171_v0__91_34="${ret_quoted171_v0}"
     quoted__171_v0 "${dst_151}"
-    local ret_quoted171_v0__90_48="${ret_quoted171_v0}"
-    run__172_v0 "sudo install -Dm${mode_152} ${ret_quoted171_v0__90_34} ${ret_quoted171_v0__90_48}"
+    local ret_quoted171_v0__91_48="${ret_quoted171_v0}"
+    run__172_v0 "sudo install -Dm${mode_152} ${ret_quoted171_v0__91_34} ${ret_quoted171_v0__91_48}"
     __status=$?
     if [ "${__status}" != 0 ]; then
         ret_install_file208_v0=''
@@ -626,18 +627,18 @@ add_ip_param__209_v0() {
     __status=$?
     local limine_188="${ret_file_read40_v0}"
     has_ip_param__199_v0 "${limine_188}"
-    local ret_has_ip_param199_v0__99_8="${ret_has_ip_param199_v0}"
-    if [ "${ret_has_ip_param199_v0__99_8}" != 0 ]; then
+    local ret_has_ip_param199_v0__100_8="${ret_has_ip_param199_v0}"
+    if [ "${ret_has_ip_param199_v0__100_8}" != 0 ]; then
         echo "remote-unlock: ${__LIMINE_DEFAULTS_5} already sets ip=, keeping it"
         ret_add_ip_param209_v0=0
         return 0
     fi
     cmdline_line__197_v0 "${ip_186}"
-    local ret_cmdline_line197_v0__103_69="${ret_cmdline_line197_v0}"
+    local ret_cmdline_line197_v0__104_69="${ret_cmdline_line197_v0}"
     quoted__171_v0 "
-""${ret_cmdline_line197_v0__103_69}"
-    local ret_quoted171_v0__103_55="${ret_quoted171_v0}"
-    run__172_v0 "sudo tee -a ${__LIMINE_DEFAULTS_5} >/dev/null <<<${ret_quoted171_v0__103_55}"
+""${ret_cmdline_line197_v0__104_69}"
+    local ret_quoted171_v0__104_55="${ret_quoted171_v0}"
+    run__172_v0 "sudo tee -a ${__LIMINE_DEFAULTS_5} >/dev/null <<<${ret_quoted171_v0__104_55}"
     __status=$?
     if [ "${__status}" != 0 ]; then
         ret_add_ip_param209_v0=''
@@ -685,16 +686,16 @@ remind__211_v0() {
 typeset -r args_12=("$0" "$@")
 parse_flags__198_v0 args_12[@]
 flags_45=("${ret_parse_flags198_v0[@]}")
-if [ "$([ "_${flags_45[0]?"Index out of bounds (at scripts/remote-unlock.ab:131:14)"}" != "_error" ]; echo $?)" != 0 ]; then
-    echo_error__138_v0 "remote-unlock: ${flags_45[1]?"Index out of bounds (at scripts/remote-unlock.ab:132:43)"}" 1
+if [ "$([ "_${flags_45[0]?"Index out of bounds (at scripts/remote-unlock.ab:132:14)"}" != "_error" ]; echo $?)" != 0 ]; then
+    echo_error__138_v0 "remote-unlock: ${flags_45[1]?"Index out of bounds (at scripts/remote-unlock.ab:133:43)"}" 1
 fi
-set_dry_run__167_v0 "$([ "_${flags_45[0]?"Index out of bounds (at scripts/remote-unlock.ab:134:23)"}" != "_true" ]; echo $?)"
-force_58="$([ "_${flags_45[1]?"Index out of bounds (at scripts/remote-unlock.ab:135:25)"}" != "_true" ]; echo $?)"
-ip_59="${flags_45[2]?"Index out of bounds (at scripts/remote-unlock.ab:136:22)"}"
+set_dry_run__167_v0 "$([ "_${flags_45[0]?"Index out of bounds (at scripts/remote-unlock.ab:135:23)"}" != "_true" ]; echo $?)"
+force_58="$([ "_${flags_45[1]?"Index out of bounds (at scripts/remote-unlock.ab:136:25)"}" != "_true" ]; echo $?)"
+ip_59="${flags_45[2]?"Index out of bounds (at scripts/remote-unlock.ab:137:22)"}"
 ensure_supported__203_v0 
 is_dry_run__168_v0 
-ret_is_dry_run168_v0__138_12="${ret_is_dry_run168_v0}"
-if [ "$(( ! ret_is_dry_run168_v0__138_12 ))" != 0 ]; then
+ret_is_dry_run168_v0__139_12="${ret_is_dry_run168_v0}"
+if [ "$(( ! ret_is_dry_run168_v0__139_12 ))" != 0 ]; then
     keep_sudo__170_v0 
     __status=$?
     if [ "${__status}" != 0 ]; then
@@ -731,7 +732,7 @@ if [ "${__status}" != 0 ]; then
     exit "${__status}"
 fi
 is_dry_run__168_v0 
-ret_is_dry_run168_v0__146_12="${ret_is_dry_run168_v0}"
-if [ "$(( ! ret_is_dry_run168_v0__146_12 ))" != 0 ]; then
+ret_is_dry_run168_v0__147_12="${ret_is_dry_run168_v0}"
+if [ "$(( ! ret_is_dry_run168_v0__147_12 ))" != 0 ]; then
     remind__211_v0 
 fi

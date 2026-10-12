@@ -29,7 +29,10 @@ No quotes: the macOS kernel splits a shebang line on spaces itself, so
 amber from parsing the task's own flags (`deps -n`), and the target keeps
 the tasks working on a fresh Mac, whose bash is 3.2. Task metadata is
 `//MISE ...` and `//USAGE ...` comments right after the shebang (amber rejects
-`#` lines); read arguments with `env_var_get("usage_<name>")` or `usage_words`
+`#` lines). The first is `//MISE alias="<name>"`: mise strips only the
+extensions it knows (`.sh`) from file task names, so without it the task is
+`deps.ab` and `mise run deps`, `depends` and `wait_for` don't find it. Read
+arguments with `env_var_get("usage_<name>")` or `usage_words`
 from `scripts/lib/run.ab` for `var=#true` ones.
 
 ## Always lint and test after a change

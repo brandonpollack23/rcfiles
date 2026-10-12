@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="plugins"
 //MISE description="Install zsh (antidote), tmux (tpm), neovim (lazy.nvim + Mason) and Omarchy shell plugins, asking first about neovim and Mason"
 //MISE wait_for=["stow"]
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="lint"
 //MISE description="Type-check every Amber script in scripts/ (shows the compiler's warnings)"
 
 import { echo_error, echo_success } from "std/env"

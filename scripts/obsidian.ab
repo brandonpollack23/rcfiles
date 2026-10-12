@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="obsidian"
 //MISE description="Sync the Obsidian vault to ~/Obsidian in the background with Obsidian Headless (ob), or leave it to the desktop app's Sync"
 //MISE wait_for=["deps", "sops-bootstrap"]
 //USAGE flag "-n --dry-run" help="Print the commands instead of running them"

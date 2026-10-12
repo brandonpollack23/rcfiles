@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="fonts"
 //MISE description="Install the fonts in fonts/"
 //MISE wait_for=["deps"]
 

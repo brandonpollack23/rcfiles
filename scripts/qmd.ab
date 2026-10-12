@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="qmd"
 //MISE description="Index ~/Obsidian for qmd search (the qmd-brain alias), re-indexed in the background whenever a note changes"
 //MISE wait_for=["deps", "stow", "obsidian"]
 //USAGE flag "-n --dry-run" help="Print the commands instead of running them"

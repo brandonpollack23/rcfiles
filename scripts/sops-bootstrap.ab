@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="sops-bootstrap"
 //MISE description="Let this machine decrypt the secrets (asks for the master password)"
 //MISE wait_for=["deps"]
 // Lets this machine decrypt the repo's secrets (*.sops.*, rules in .sops.yaml).

@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="check"
 //MISE description="Dry run: show what stow would link, and any conflicts with files in $HOME"
 //USAGE arg "[package]..." var=#true help="Packages to check (default: all)"
 

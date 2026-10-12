@@ -1,4 +1,5 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="plugins-lock"
 //MISE description="Write the Omarchy shell plugins cloned from git into plugins.lock, and keep their checkouts out of the repo"
 
 import { dir_exists, dir_create, file_write } from "std/fs"
