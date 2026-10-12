@@ -1,9 +1,14 @@
 -- The layouts SUPER + ALT + L cycles a workspace through: focus (the centered master
--- from looknfeel.lua), work/reference, dwindle and scrolling.
+-- from looknfeel.lua), work/reference, dwindle, work stack/reference and
+-- scrolling.
 --
--- Work/reference is master too, with the work in a wide master and the
--- reference in a narrow column beside it. layouts/master.lua keeps a master
--- preset's orientation and mfact on the workspace.
+-- Both work/reference ones have a narrow reference column on one side and the
+-- work on the rest. Work/reference is master, with the work in a wide master
+-- and the reference windows stacked in the column. Work stack/reference is
+-- dwindle with its first split moved over to make the column, so the work
+-- side splits either way (SUPER + ALT + J), which a master stack can't.
+-- layouts/master.lua keeps a preset's orientation, mfact or ratio on the
+-- workspace.
 --
 -- An open special workspace (the scratchpad) is cycled rather than the one
 -- under it.
@@ -30,10 +35,19 @@ M.presets = {
     mfact = 1 - REFERENCE_WIDTH,
   },
   dwindle = { label = "Dwindle", layout = "dwindle" },
+  reference_stack = {
+    label = "Work stack/reference",
+    layout = "dwindle",
+    -- The first split's ratio, the left side's share times two. Which side
+    -- the reference ends up on is the window order's, left for the first.
+    ratio = 2 * (REFERENCE_SIDE == "left" and REFERENCE_WIDTH or 1 - REFERENCE_WIDTH),
+  },
   scrolling = { label = "Scrolling", layout = "scrolling" },
 }
 
-M.CYCLE = { "focus", "reference", "dwindle", "scrolling" }
+-- Work stack/reference comes after dwindle, not before: going on to plain
+-- dwindle keeps the tree and so its narrow first split.
+M.CYCLE = { "focus", "reference", "dwindle", "reference_stack", "scrolling" }
 
 local DIR = paths.state_home .. "/omarchy/workspace-layouts"
 
@@ -96,24 +110,26 @@ function M.move(from, to)
 end
 
 -- The preset a workspace is in. The saved choice unless something else changed
--- its layout since, then the first preset with the layout it has.
+-- its layout since, then the first plain preset with the layout it has.
 local function current(workspace)
   local key = chosen[master.key(workspace)]
   if key and M.presets[key].layout == workspace.tiled_layout then
     return key
   end
   for _, name in ipairs(M.CYCLE) do
-    if M.presets[name].layout == workspace.tiled_layout then
+    local preset = M.presets[name]
+    if preset.layout == workspace.tiled_layout and not preset.mfact and not preset.ratio then
       return name
     end
   end
   return M.CYCLE[1]
 end
 
--- What layouts/master.lua keeps on a workspace in a master preset.
+-- What layouts/master.lua keeps on a workspace: a master preset, or one with
+-- a split ratio.
 master.presetOf = function(workspace)
   local preset = M.presets[current(workspace)]
-  if preset.layout == "master" then
+  if preset.layout == "master" or preset.ratio then
     return preset
   end
 end

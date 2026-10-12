@@ -33,7 +33,14 @@ for key, direction in pairs(vim_directions) do
   o.bind("SUPER + SHIFT + " .. key, "Swap window " .. vim_names[key], hl.dsp.window.swap({ direction = direction }))
 end
 
-o.bind("SUPER + ALT + J", "Toggle window split", hl.dsp.layout("togglesplit"))
+-- Only dwindle has splits to toggle (work stack/reference is dwindle too); the
+-- other layouts reject togglesplit as an unknown layout message.
+o.bind("SUPER + ALT + J", "Toggle window split", function()
+  local workspace = require("hypr.layouts.master").shown()
+  if workspace and workspace.tiled_layout == "dwindle" then
+    hl.dispatch(hl.dsp.layout("togglesplit"))
+  end
+end)
 
 -- SUPER + TAB and SUPER + SHIFT + TAB step through a group's windows, like
 -- SUPER + ALT + TAB, instead of the workspaces; SUPER + CTRL + arrows do those.
@@ -128,8 +135,8 @@ o.bind("SUPER + CTRL + RIGHT", "Next workspace", function()
   require("hypr.workspaces").step(1)
 end)
 
--- Cycle the workspace through focus, work/reference, dwindle and scrolling
--- (layouts.lua) instead of Omarchy's dwindle/scrolling toggle.
+-- Cycle the workspace through focus, work/reference, dwindle, work
+-- stack/reference and scrolling (layouts.lua) instead of Omarchy's dwindle/scrolling toggle.
 o.bind("SUPER + ALT + L", "Cycle workspace layout", function()
   require("hypr.layouts").cycle()
 end)
