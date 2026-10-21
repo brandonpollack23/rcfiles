@@ -39,7 +39,7 @@
         },
         {
           "id": "meviusisback.hw-monitor",
-          "mode": "icons",
+          "mode": "labels",
           "ramFormat": "used/total",
           "tempFormat": "degree"
         }
