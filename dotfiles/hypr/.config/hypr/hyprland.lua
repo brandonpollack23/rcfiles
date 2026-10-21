@@ -71,7 +71,3 @@ o.window(".*", { tag = "-default-opacity", opacity = "1 1" })
 -- Tile Steam's main window and Friends List. Omarchy floats every Steam
 -- window (default/hypr/apps/steam.lua); its dialogs still float.
 o.window({ class = "steam", title = "^(Steam|Friends List)$" }, { tile = true })
-
--- Float Omafile's windows (bindings.lua), as its README suggests; they're
--- quickshell windows titled Omafile, Omafile 2 and so on.
-o.window({ class = "^org.quickshell$", title = "^Omafile( [0-9]+)?$" }, { float = true, size = { 1100, 720 }, center = true })

@@ -65,9 +65,6 @@
           ]
         },
         {
-          "id": "xyzlab.omafile"
-        },
-        {
           "id": "omamail",
           "refreshIntervalSec": 120,
           "maxMessages": 50,

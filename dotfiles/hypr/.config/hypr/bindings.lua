@@ -148,14 +148,14 @@ local function foot(app, command)
   return "uwsm-app -- foot --app-id=org.omarchy." .. app .. " " .. command
 end
 
--- Omafile (the xyzlab.omafile shell plugin, plugins.lock) for the file
--- manager instead of Nautilus, on SUPER + E, and on SUPER + ALT + E in the
--- focused terminal's directory, as nautilus-cwd does. Omarchy's
--- SUPER + SHIFT + F and SUPER + ALT + SHIFT + F are gone.
+-- Strata (packages.toml) for the file manager instead of Nautilus, on
+-- SUPER + E, and on SUPER + ALT + E in the focused terminal's directory, as
+-- nautilus-cwd does. Omarchy's SUPER + SHIFT + F and SUPER + ALT + SHIFT + F
+-- are gone.
 hl.unbind("SUPER + SHIFT + F")
 hl.unbind("SUPER + ALT + SHIFT + F")
-o.bind("SUPER + E", "File manager", "omarchy-shell omafile toggle")
-o.bind("SUPER + ALT + E", "File manager (cwd)", 'omarchy-shell omafile open "$(omarchy-cmd-terminal-cwd)"')
+o.bind("SUPER + E", "File manager", { launch = "strata" })
+o.bind("SUPER + ALT + E", "File manager (cwd)", 'uwsm-app -- strata "$(omarchy-cmd-terminal-cwd)"')
 
 -- Omarchy's btop and music TUI in foot too. omarchy-launch-or-focus runs its
 -- command under setsid itself.
@@ -258,3 +258,10 @@ o.bind(
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
 -- o.bind("SUPER + H", nil, "voxtype record toggle")
 -- o.bind("SUPER + PERIOD", nil, "omarchy-shell shell toggle omarchy.emojis")
+-- strata-installer: file-manager start
+hl.unbind("SUPER + SHIFT + F")
+hl.unbind("SUPER + ALT + SHIFT + F")
+o.bind("SUPER + SHIFT + F", "File manager", { launch = "/usr/bin/strata" })
+o.bind("SUPER + ALT + SHIFT + F", "File manager (cwd)",
+  "uwsm-app -- /usr/bin/strata \"$(omarchy-cmd-terminal-cwd)\"")
+-- strata-installer: file-manager end
