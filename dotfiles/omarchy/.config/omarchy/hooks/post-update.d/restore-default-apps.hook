@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Omarchy sets default apps of its own when it installs or upgrades (Chromium
+# and HEY) and its migrations may set more, all in ~/.config/mimeapps.list.
+# Put back the ones in ~/.config/omarchy/default-apps.list after every update;
+# `mise run default-apps --save` records the current ones there.
+
+list=~/.config/omarchy/default-apps.list
+[[ -f $list ]] || exit 0
+command -v xdg-mime >/dev/null || exit 0
+
+while IFS='=' read -r mime app; do
+  [[ -z $mime || $mime == \#* || $mime == \[* ]] && continue
+  xdg-mime default "$app" "$mime"
+done <"$list"

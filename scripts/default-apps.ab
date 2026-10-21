@@ -1,0 +1,37 @@
+#!/usr/bin/env -S amber run --target bash-3.2 --
+//MISE alias="default-apps"
+//MISE description="Restore the default apps in the omarchy package's default-apps.list to ~/.config/mimeapps.list, as its post-update hook does, or with --save record the current ones in it"
+//MISE wait_for=["deps", "stow"]
+//USAGE flag "-s --save" help="Record the defaults in ~/.config/mimeapps.list in the list instead"
+
+import { env_var_get, echo_error, is_command } from "std/env"
+import { file_exists, file_write } from "std/fs"
+import { trim } from "std/text"
+import { xdg_config_home } from "./lib/paths.ab"
+import { dotfiles } from "./lib/stow.ab"
+
+// Writes the [Default Applications] of ~/.config/mimeapps.list into `list`,
+// below its leading comments.
+fun save(list: Text): Null? {
+    const mimeapps = "{xdg_config_home()}/mimeapps.list"
+    if not file_exists(mimeapps) {
+        echo_error("default-apps: there's no {mimeapps} to record", 1)
+    }
+    const header = trust $ sed -n '/^#/!q; p' "{list}" $
+    const defaults = $ awk '/^\[/ \{ section = \$0; next } section == "[Default Applications]" && /=/' "{mimeapps}" $?
+    file_write(list, "{header}\n\n[Default Applications]\n{trim(defaults)}")?
+    echo("default-apps: recorded the defaults in {list}; review them with 'jj diff'")
+}
+
+main {
+    const omarchy = "{dotfiles()}/omarchy/.config/omarchy"
+    if trust env_var_get("usage_save") == "true" {
+        save("{omarchy}/default-apps.list")?
+        exit(0)
+    }
+    if not is_command("xdg-mime") {
+        exit(0)
+    }
+    $ bash "{omarchy}/hooks/post-update.d/restore-default-apps.hook" $?
+    echo("default-apps: restored the defaults in ~/.config/omarchy/default-apps.list")
+}

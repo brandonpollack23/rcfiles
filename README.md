@@ -29,6 +29,7 @@ repo's `mise.toml`, has mise install amber and yq (`mise install`), then runs
 | ---------------- | ------------------------------------------------------------- |
 | `deps`           | installs the programs in `packages.toml` (Homebrew, casks and the App Store on the Mac, pacman + yay/paru on Arch, Homebrew on Debian and Fedora, cargo binstall everywhere, pinned GitHub release assets (AppImages and binaries) in `~/.local/bin` off the Mac, and install scripts, each asked about on its own), npm CLIs and other mise tools at their pins, Rust (rustup), and the latest Erlang and Elixir (`mise use -g`). It asks which groups this machine gets (see below) |
 | `stow`           | links every package in `dotfiles/` into `$HOME`               |
+| `default-apps`   | sets the default apps in `dotfiles/omarchy/.config/omarchy/default-apps.list` (xdg-mime), which an Omarchy post-update hook also puts back after every update; `--save` records the current ones from `~/.config/mimeapps.list` |
 | `plugins`        | installs zsh (antidote), tmux (tpm) and neovim (lazy.nvim) plugins, asking first whether to set up neovim and its Mason language servers |
 | `fonts`          | copies `fonts/*.ttf` to the user font directory               |
 | `sops-bootstrap` | lets this machine decrypt the secrets (asks for the master password) |
@@ -79,6 +80,7 @@ mise run unstow <pkg…>        # remove a package's links
 mise run add <pkg> <path…>    # move files from $HOME into a package and link them back
 mise run adopt <pkg…>         # stow over existing files, pulling them into the repo
 mise run update               # update zsh, tmux and neovim plugins
+mise run default-apps --save  # keep the default apps as they are now (after picking one)
 mise run secrets              # edit secrets.sops.env
 mise run lint                 # amber check on every script (after editing one)
 mise run test                 # the Amber tests in scripts/lib/tests

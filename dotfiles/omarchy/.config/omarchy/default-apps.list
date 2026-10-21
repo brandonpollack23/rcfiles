@@ -1,0 +1,16 @@
+# The default apps to keep over Omarchy's own: hooks/post-update.d/
+# restore-default-apps.hook puts them back in ~/.config/mimeapps.list after
+# every Omarchy update, and `mise run default-apps` does it now.
+# `mise run default-apps --save` rewrites them from the current ones.
+
+[Default Applications]
+text/html=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
+x-scheme-handler/mailto=omamail.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/webcal=google-chrome.desktop
+inode/directory=io.github.lgse.Strata.desktop
+application/pdf=org.kde.okular.desktop
