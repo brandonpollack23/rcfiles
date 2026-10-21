@@ -41,4 +41,8 @@
   // extension, whose screen this opens under Keystroke (fuzzy search,
   // previews, a Save folder setting; also `meme <name>`).
   "meme": {"icon":"󰋩","label":"Meme Maker","description":"Caption a meme template and copy it to the clipboard","action":"~/.local/share/keystroke/extensions/meme/bin/meme-menu"},
+
+  // Netflix: own Chrome profile with GPU compositing off, since DRM video is
+  // black under Chrome's Wayland GPU compositor on NVIDIA.
+  "netflix": {"icon":"󰝆","label":"Netflix","description":"Watch Netflix (DRM-safe Chrome profile)","action":"~/.local/bin/netflix-chrome"},
 }
