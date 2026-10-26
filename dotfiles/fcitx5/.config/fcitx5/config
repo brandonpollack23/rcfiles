@@ -1,0 +1,6 @@
+# Only fcitx5's options that differ from its defaults; the rest stay default.
+
+# No trigger keys: the default is Control+space, Zenkaku_Hankaku and Hangul,
+# and Control+space is a common editor binding. Alt+Shift toggles mozc instead,
+# bound in Hyprland (dotfiles/hypr/.config/hypr/input.lua) to fcitx5-remote -t.
+[Hotkey/TriggerKeys]
