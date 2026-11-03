@@ -130,4 +130,27 @@ return {
       vim.filetype.add({ extension = { ab = "amber" } })
     end,
   },
+  {
+    "Julian/lean.nvim",
+    opts = {
+      goal_markers = {
+        unsolved = " ⚒ ",
+        accomplished = "🎉",
+      },
+    },
+    init = function()
+      -- lean.nvim links leanUnsolvedGoals to DiagnosticInfo and leaves
+      -- leanGoalsAccomplished undefined. Colorschemes clear highlights, so set
+      -- these on every switch, from whatever the new colorscheme defines.
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = function()
+          vim.api.nvim_set_hl(0, "leanUnsolvedGoals", { link = "DiagnosticWarn" })
+          -- DiffAdd's background alone, to keep the proof's syntax colors. Not a
+          -- blend with Normal's: transparency.lua leaves Normal without a background.
+          local diff_add = vim.api.nvim_get_hl(0, { name = "DiffAdd", link = false })
+          vim.api.nvim_set_hl(0, "leanGoalsAccomplished", { bg = diff_add.bg })
+        end,
+      })
+    end,
+  },
 }
