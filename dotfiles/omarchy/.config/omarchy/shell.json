@@ -1,47 +1,12 @@
 {
   "bar": {
-    "centerAnchor": "omarchy.clock",
     "layout": {
       "center": [
-        {
-          "alwaysShow": true,
-          "id": "omarchy.indicators"
-        },
-        {
-          "id": "omarchy.keyboard-layout"
-        },
         {
           "format": "dddd HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
           "id": "omarchy.clock",
           "verticalFormat": "HH\n—\nmm"
-        },
-        {
-          "id": "io.github.guiestrela.weather",
-          "unit": "metric"
-        },
-        {
-          "id": "com.omastorm.radar"
-        },
-        {
-          "id": "omarchy.system-update"
-        },
-        {
-          "id": "costafot.markets",
-          "stripShowPrice": true
-        },
-        {
-          "id": "omarchy.spacer",
-          "size": 24
-        },
-        {
-          "id": "brandonpollack23.submap"
-        },
-        {
-          "id": "meviusisback.hw-monitor",
-          "mode": "labels",
-          "ramFormat": "used/total",
-          "tempFormat": "degree"
         }
       ],
       "left": [
@@ -63,6 +28,9 @@
           "hidden": [
             "chrome_status_icon_1"
           ]
+        },
+        {
+          "id": "omarchy.keyboard-layout"
         },
         {
           "id": "omamail",
@@ -117,9 +85,66 @@
         },
         {
           "id": "omarchy.power"
+        }
+      ],
+      "centerBegin": [
+        {
+          "alwaysShow": true,
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "id": "omarchy.elsewhen",
+          "cities": [
+            {
+              "name": "Tokyo",
+              "zone": "Asia/Tokyo"
+            },
+            {
+              "name": "Los Angeles",
+              "zone": "America/Los_Angeles"
+            },
+            {
+              "name": "New York",
+              "zone": "America/New_York"
+            },
+            {
+              "name": "London",
+              "zone": "Europe/London"
+            },
+            {
+              "name": "Dubai",
+              "zone": "Asia/Dubai"
+            }
+          ]
         },
         {
-          "id": "jankeesvw.notification-center"
+          "id": "io.github.guiestrela.weather",
+          "unit": "metric"
+        },
+        {
+          "id": "com.omastorm.radar"
+        },
+        {
+          "id": "omarchy.system-update"
+        },
+        {
+          "id": "costafot.markets",
+          "stripShowPrice": true
+        },
+        {
+          "id": "omarchy.spacer",
+          "size": 24
+        },
+        {
+          "id": "brandonpollack23.submap"
+        },
+        {
+          "id": "meviusisback.hw-monitor",
+          "mode": "labels",
+          "ramFormat": "used/total",
+          "tempFormat": "degree"
         }
       ]
     },
@@ -143,9 +168,6 @@
   "plugins": [
     {
       "id": "io.github.asmyshlyaev177.last-session"
-    },
-    {
-      "id": "brpol.nous-agent"
     },
     {
       "id": "bobbynicholas.omaland"

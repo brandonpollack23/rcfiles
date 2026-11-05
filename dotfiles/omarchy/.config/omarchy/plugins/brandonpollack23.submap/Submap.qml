@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 
 // The active Hyprland submap's name in a pill, the theme's red with its
@@ -14,7 +15,7 @@ BarWidget {
 
   property string submap: ""
 
-  readonly property color fill: Color.urgent
+  readonly property color fill: Commons.Color.urgent
   readonly property int pillInset: Math.max(2, Math.round(root.barSize * 0.16))
 
   visible: root.submap !== "" && !root.vertical
@@ -53,7 +54,7 @@ BarWidget {
       anchors.centerIn: parent
       textFormat: Text.PlainText
       text: root.submap
-      color: Color.background
+      color: Commons.Color.background
       font.family: root.bar && root.bar.fontFamily !== "" ? root.bar.fontFamily : Style.font.family
       font.pixelSize: Style.font.body
       font.bold: true

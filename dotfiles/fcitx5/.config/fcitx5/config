@@ -4,3 +4,6 @@
 # and Control+space is a common editor binding. Alt+Shift toggles mozc instead,
 # bound in Hyprland (dotfiles/hypr/.config/hypr/input.lua) to fcitx5-remote -t.
 [Hotkey/TriggerKeys]
+
+[Behavior]
+ActiveByDefault=False

@@ -1,22 +1,20 @@
 # Omarchy shell plugins cloned from git: id, git URL, commit. Written by
 # `mise run plugins-lock`; run it after `omarchy plugin add`, `update` or
 # `remove`. `mise run plugins` clones any that are missing at these commits.
-bobbynicholas.omaland https://github.com/bobby-nicholas/omaland.git 442814911289079ee841cae0bce9f394e9708e9a
-brandonpollack23.beautiful-workspace-bar https://github.com/brandonpollack23/omarchy-beautiful-workspace-bar.git 401a7af12b03279d20796188a385698255eb1f0e
-brpol.notifications https://github.com/brandonpollack23/omarchy-notifications.git ac2d2e5a9d2787b8db38a8b3c09d659c2dca0326
-brpol.nous-agent https://github.com/brandonpollack23/omarchy-nous-agent.git 3e5baefb7d6e265e298d611c989b67b1b2ffde20
-com.omastorm.radar git@github.com:brandonpollack23/omastorm.git bc8b6245077532ab740de46b7c0f7f3e10c5400d
+bobbynicholas.omaland https://github.com/bobby-nicholas/omaland.git 22e736a9c3bb76ac79b52cdf7a576ae91459ead9
+brandonpollack23.beautiful-workspace-bar https://github.com/brandonpollack23/omarchy-beautiful-workspace-bar.git a083b0414a265e59319065c10d78ce09d950da70
+brpol.notifications https://github.com/brandonpollack23/omarchy-notifications.git f02116fcafba77a7e7a3388c599ff773cfa1ed5e
+com.omastorm.radar git@github.com:brandonpollack23/omastorm.git e3c07ef8594076355fd7b792b5a913c33282a8e4
 costafot.markets https://github.com/costafot/omarchy-markets b0b9dfc8aeaca027ded2bd678c38ffe75a6d7211
-evindor.keystroke https://github.com/evindor/keystroke.git 4ea4eede3bcee10c4f2c984843284cb2dcc8d4b7
-huacnlee.which-key https://github.com/huacnlee/omarchy-which-key.git fba0cdb472c90eb5a4e8bb5113030d087024a805
-io.github.asmyshlyaev177.last-session https://github.com/brandonpollack23/omarchy-last-session.git 99b8ecdf64d2f431f0a08213646f17ca9dfc213d
-io.github.elevate08.qs-bitwarden-cli https://github.com/Elevate08/qs-bitwarden-cli.git a04febe0a9f00d31cc4dc89096602288ed309da6
+evindor.keystroke https://github.com/evindor/keystroke.git 0c74f2dd7466f25faf2cda4a39697f237afbe774
+huacnlee.which-key https://github.com/huacnlee/omarchy-which-key.git a80451064fb1f354cb86ecad0a3d610218e75bd5
+io.github.asmyshlyaev177.last-session https://github.com/asmyshlyaev177/omarchy-last-session.git 51b723c1ced497ee74c2074958234e7ecabbbde4
+io.github.elevate08.qs-bitwarden-cli https://github.com/Elevate08/qs-bitwarden-cli.git d0a95ebad981ccf5d1c0b214e79089ffd11ff291
 io.github.guiestrela.weather https://github.com/guiestrela/weather.git 554cb546af42ab40c3072a7e71a9af2f7505c2cb
-io.github.orienw.fresh-wallpaper https://github.com/orienw/omarchy-fresh-wallpaper.git 973950865e21a6a7835582e078fb237c84c2972d
-io.github.sirjul1337.lock-explorer https://github.com/SirJul1337/omarchy-lock-explorer.git 93717dae9d040ea9589a707e50507f51cf52fed7
-jankeesvw.notification-center https://github.com/jankeesvw/omarchy-notification-center.git e4c4568daaf93751097f86a79f98b35c4c00da44
-meviusisback.hw-monitor https://github.com/meviusisback/omarchy-hw-monitor.git f1373fba766fc1702e96eef0c9fe844ffeaafddb
-omaconnect https://github.com/jitendradara12/omaconnect.git 3e4d99716560f0110012e28e148f8c4fe1b0cd21
-omamail https://github.com/huacnlee/omamail.git 2a5a26cf5559dee78291fc5e34876fc5dfd39959
+io.github.orienw.fresh-wallpaper https://github.com/orienw/omarchy-fresh-wallpaper.git b12f2198bc1e8824ca54f0ee8b6619e0fa0c548b
+io.github.sirjul1337.lock-explorer https://github.com/SirJul1337/omarchy-lock-explorer.git 2eea8816bae146ec4bed1894b71bb9b2350b063d
+meviusisback.hw-monitor https://github.com/meviusisback/omarchy-hw-monitor.git a74aaec13545b3d4f088b0c4cbbb37e9f6be77dc
+omaconnect https://github.com/jitendradara12/omaconnect.git cd72bfd286b80dbebdaa160f7793097bb590fbfb
+omamail https://github.com/huacnlee/omamail.git 9dd2b42e5d11eebeeb501dd3dbcc66085b7c0fc6
 ronald.input-sources https://github.com/ronaldlangeveld/omarchy-input-sources e2c61742a91070c5a613751d8dbbbdac29d74f28
 

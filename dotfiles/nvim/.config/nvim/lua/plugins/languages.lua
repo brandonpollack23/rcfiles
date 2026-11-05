@@ -142,14 +142,23 @@ return {
       -- lean.nvim links leanUnsolvedGoals to DiagnosticInfo and leaves
       -- leanGoalsAccomplished undefined. Colorschemes clear highlights, so set
       -- these on every switch, from whatever the new colorscheme defines.
+      -- Scheduled because LazyVim sets its colorscheme before Snacks has loaded.
       vim.api.nvim_create_autocmd("ColorScheme", {
-        callback = function()
+        callback = vim.schedule_wrap(function()
           vim.api.nvim_set_hl(0, "leanUnsolvedGoals", { link = "DiagnosticWarn" })
           -- DiffAdd's background alone, to keep the proof's syntax colors. Not a
           -- blend with Normal's: transparency.lua leaves Normal without a background.
           local diff_add = vim.api.nvim_get_hl(0, { name = "DiffAdd", link = false })
           vim.api.nvim_set_hl(0, "leanGoalsAccomplished", { bg = diff_add.bg })
-        end,
+          -- The infoview's blue and bright backgrounds (cursor element, changed text,
+          -- search matches) become the theme's own purple, darkened on a dark theme.
+          local base = vim.o.background == "dark" and "#000000" or "#ffffff"
+          local bg = Snacks.util.blend(Snacks.util.color("DiagnosticHint"), base, 0.4)
+          local fg = Snacks.util.color("Normal")
+          vim.api.nvim_set_hl(0, "widgetElementHighlight", { bg = bg })
+          vim.api.nvim_set_hl(0, "leanInfoDiffwasChanged", { fg = fg, bg = bg })
+          vim.api.nvim_set_hl(0, "leanInfoHighlighted", { fg = fg, bg = bg })
+        end),
       })
     end,
   },
