@@ -45,4 +45,12 @@
   // Netflix: own Chrome profile with GPU compositing off, since DRM video is
   // black under Chrome's Wayland GPU compositor on NVIDIA.
   "netflix": {"icon":"󰝆","label":"Netflix","description":"Watch Netflix (DRM-safe Chrome profile)","action":"~/.local/bin/netflix-chrome"},
+
+  // Appearance > Workspace Layout picks Omarchy's default layout (tiling,
+  // scrolling or floating), which would override the master default in
+  // hypr/looknfeel.lua and rewrite the presets hypr/layouts.lua saved.
+  // SUPER + ALT + L cycles the presets instead, and floating is off, so the
+  // Dock (only shown on floating workspaces) has nothing to show either.
+  "appearance.workspace-layout": {"when":"false"},
+  "appearance.dock": {"when":"false"},
 }

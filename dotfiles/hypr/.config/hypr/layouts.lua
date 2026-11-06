@@ -18,6 +18,9 @@
 
 local paths = require("default.hypr.paths")
 local master = require("hypr.layouts.master")
+-- Loaded here so o.workspace_mode exists to be replaced below; Omarchy's
+-- default/hypr/workspace-layouts.lua would only load it after this file.
+require("default.hypr.workspace-modes")
 
 local M = {}
 
@@ -155,6 +158,24 @@ function M.cycle()
     save(id, next)
   end)
   hl.notification.create({ text = "Workspace layout: " .. M.presets[next].label, duration = 1500 })
+end
+
+-- Omarchy 4.5's own workspace modes (default/hypr/workspace-modes.lua) are
+-- folded into the presets. Its toggle, menu and saved files call
+-- o.workspace_mode; left alone, each call adds a workspace rule nothing here
+-- can disable, which holds the workspace in that layout however the cycle
+-- sets it. A dwindle or scrolling mode becomes the preset of that name.
+-- Floating isn't wanted at all, so it fails: the toggle then saves nothing.
+-- A default is dropped: looknfeel.lua's master is the default here, and
+-- Omarchy's would override it with general.layout.
+function o.workspace_mode(spec)
+  if spec.default then
+    return
+  end
+  if spec.mode == "floating" then
+    error("floating workspaces are disabled in hypr/layouts.lua")
+  end
+  M.use(tostring(spec.workspace), spec.mode)
 end
 
 return M

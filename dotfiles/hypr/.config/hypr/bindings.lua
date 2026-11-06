@@ -136,7 +136,13 @@ o.bind("SUPER + CTRL + RIGHT", "Next workspace", function()
 end)
 
 -- Cycle the workspace through focus, work/reference, dwindle, work
--- stack/reference and scrolling (layouts.lua) instead of Omarchy's dwindle/scrolling toggle.
+-- stack/reference and scrolling (layouts.lua) instead of Omarchy's
+-- dwindle/scrolling/floating toggle. Omarchy 4.5 binds that toggle to
+-- SUPER + L (replaced above by focus right) and, backwards, to SUPER + ALT + L,
+-- which has to go first: a second bind on the same key stacks on it, and
+-- the toggle's own rule then holds the workspace in a layout the cycle can't
+-- change. Floating itself is turned off in layouts.lua.
+hl.unbind("SUPER + ALT + L")
 o.bind("SUPER + ALT + L", "Cycle workspace layout", function()
   require("hypr.layouts").cycle()
 end)

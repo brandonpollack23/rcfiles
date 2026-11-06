@@ -98,24 +98,24 @@
           "id": "omarchy.elsewhen",
           "cities": [
             {
+              "name": "UTC",
+              "zone": "Etc/UTC"
+            },
+            {
               "name": "Tokyo",
               "zone": "Asia/Tokyo"
             },
             {
-              "name": "Los Angeles",
+              "name": "Seattle",
               "zone": "America/Los_Angeles"
             },
             {
-              "name": "New York",
+              "name": "Miami",
               "zone": "America/New_York"
             },
             {
-              "name": "London",
-              "zone": "Europe/London"
-            },
-            {
-              "name": "Dubai",
-              "zone": "Asia/Dubai"
+              "name": "Paris",
+              "zone": "Europe/Paris"
             }
           ]
         },
@@ -146,7 +146,8 @@
           "ramFormat": "used/total",
           "tempFormat": "degree"
         }
-      ]
+      ],
+      "tray": []
     },
     "position": "bottom",
     "transparent": false
