@@ -1,5 +1,27 @@
 return {
   {
+    -- Omarchy's plugin/after/transparency.lua clears CursorLine's background,
+    -- and the picker marks its selected item with SnacksPickerListCursorLine,
+    -- a link to CursorLine, so the selection vanished. Give the picker its own
+    -- copy of the colour. A colorscheme sets CursorLine before transparency.lua
+    -- runs, at startup and on a theme hot-reload alike; the hot-reload fires
+    -- ColorScheme again afterwards, when there is no colour left to copy.
+    -- This is init, not config, so the autocmd exists before LazyVim applies
+    -- the startup colorscheme.
+    "folke/snacks.nvim",
+    init = function()
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("snacks_picker_cursorline", { clear = true }),
+        callback = function()
+          local cursorline = vim.api.nvim_get_hl(0, { name = "CursorLine", link = false })
+          if cursorline.bg then
+            vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { bg = cursorline.bg })
+          end
+        end,
+      })
+    end,
+  },
+  {
     "folke/trouble.nvim",
     opts = {
       modes = {
