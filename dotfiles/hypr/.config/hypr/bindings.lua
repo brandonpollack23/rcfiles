@@ -211,15 +211,26 @@ o.bind("SUPER + N", "New workspace", "hypr-workspace-menu new")
 o.bind("SUPER + SHIFT + N", "Move window to a new workspace", "hypr-workspace-menu new move")
 o.bind("SUPER + ALT + N", "New hidden workspace", "hypr-workspace-menu new hidden")
 
--- Move to the scratchpad on SUPER + SHIFT + S, next to SUPER + S that shows
--- it, instead of Omarchy's SUPER + ALT + S. It replaces the Google Maps web app.
+-- SUPER + SHIFT + S toggles a window in and out of the scratchpad, next to
+-- SUPER + S that shows it, instead of Omarchy's SUPER + ALT + S. A window
+-- already there goes to the workspace under it, and focus follows it there.
+-- It replaces the Google Maps web app.
 hl.unbind("SUPER + ALT + S")
 hl.unbind("SUPER + SHIFT + S") -- was google maps.
-o.bind(
-  "SUPER + SHIFT + S",
-  "Move window to scratchpad",
-  hl.dsp.window.move({ workspace = "special:scratchpad", follow = false })
-)
+o.bind("SUPER + SHIFT + S", "Toggle window in scratchpad", function()
+  local window = hl.get_active_window()
+  if not window then
+    return
+  end
+  if window.workspace and window.workspace.name == "special:scratchpad" then
+    local workspace = hl.get_active_workspace()
+    if workspace then
+      hl.dispatch(hl.dsp.window.move({ workspace = tostring(workspace.id), follow = true }))
+    end
+  else
+    hl.dispatch(hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }))
+  end
+end)
 
 -- GloView (loaded in hyprland.lua): SUPER + SHIFT + D toggles the overview,
 -- taken from Omarchy's Docker. The function looks the plugin up when the key

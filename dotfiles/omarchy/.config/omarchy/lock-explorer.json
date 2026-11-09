@@ -1,5 +1,6 @@
 {
-  "design": "cipher",
-  "unlock": "fade",
-  "blankMs": 60000
+  "blankMs": 60000,
+  "design": "screensaver",
+  "openAs": "full",
+  "unlock": "fade"
 }

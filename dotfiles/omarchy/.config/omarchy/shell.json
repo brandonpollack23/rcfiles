@@ -1,12 +1,74 @@
 {
   "bar": {
+    "background": "glassy",
     "layout": {
       "center": [
         {
-          "format": "dddd HH:mm",
+          "format": "ddd d MMM HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
           "id": "omarchy.clock",
           "verticalFormat": "HH\n—\nmm"
+        }
+      ],
+      "centerBegin": [
+        {
+          "alwaysShow": true,
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "cities": [
+            {
+              "name": "UTC",
+              "zone": "Etc/UTC"
+            },
+            {
+              "name": "Tokyo",
+              "zone": "Asia/Tokyo"
+            },
+            {
+              "name": "Seattle",
+              "zone": "America/Los_Angeles"
+            },
+            {
+              "name": "Miami",
+              "zone": "America/New_York"
+            },
+            {
+              "name": "Paris",
+              "zone": "Europe/Paris"
+            }
+          ],
+          "id": "omarchy.elsewhen"
+        },
+        {
+          "id": "io.github.guiestrela.weather",
+          "unit": "metric"
+        },
+        {
+          "id": "com.omastorm.radar"
+        },
+        {
+          "id": "omarchy.system-update"
+        },
+        {
+          "id": "costafot.markets",
+          "stripShowPrice": true
+        },
+        {
+          "id": "omarchy.spacer",
+          "size": 24
+        },
+        {
+          "id": "brandonpollack23.submap"
+        },
+        {
+          "id": "meviusisback.hw-monitor",
+          "mode": "labels",
+          "ramFormat": "used/total",
+          "tempFormat": "degree",
+          "topProcSort": "ram"
         }
       ],
       "left": [
@@ -20,39 +82,39 @@
       ],
       "right": [
         {
+          "hidden": [
+            "chrome_status_icon_1"
+          ],
           "id": "omarchy.tray",
           "pinned": [
             "discord_status_icon_1",
             "privateinternetaccess"
-          ],
-          "hidden": [
-            "chrome_status_icon_1"
           ]
         },
         {
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omamail",
-          "refreshIntervalSec": 120,
-          "maxMessages": 50,
-          "heavyMessageRendering": "Show plain text first",
-          "contentDirection": "Auto",
           "appearance": "System",
+          "contentDirection": "Auto",
           "defaultQuery": "in:inbox",
+          "heavyMessageRendering": "Show plain text first",
+          "id": "omamail",
+          "maxMessages": 50,
           "notifyNewMail": "Off",
           "oauthPort": 9481,
+          "refreshIntervalSec": 120,
+          "showBarIcon": true,
+          "suggestEvents": true,
           "undoSendSeconds": 30,
           "unifiedCalendarView": false,
-          "showBarIcon": true,
-          "unifiedMailboxes": false,
-          "suggestEvents": true
+          "unifiedMailboxes": false
         },
         {
-          "id": "io.github.elevate08.qs-bitwarden-cli",
+          "autoLockMinutes": 0,
           "closeOnCopy": true,
           "colorizeIcon": true,
-          "autoLockMinutes": 0,
+          "id": "io.github.elevate08.qs-bitwarden-cli",
           "lockOnScreenLock": false,
           "pinUnlock": true
         },
@@ -87,70 +149,9 @@
           "id": "omarchy.power"
         }
       ],
-      "centerBegin": [
-        {
-          "alwaysShow": true,
-          "id": "omarchy.indicators"
-        }
-      ],
-      "centerEnd": [
-        {
-          "id": "omarchy.elsewhen",
-          "cities": [
-            {
-              "name": "UTC",
-              "zone": "Etc/UTC"
-            },
-            {
-              "name": "Tokyo",
-              "zone": "Asia/Tokyo"
-            },
-            {
-              "name": "Seattle",
-              "zone": "America/Los_Angeles"
-            },
-            {
-              "name": "Miami",
-              "zone": "America/New_York"
-            },
-            {
-              "name": "Paris",
-              "zone": "Europe/Paris"
-            }
-          ]
-        },
-        {
-          "id": "io.github.guiestrela.weather",
-          "unit": "metric"
-        },
-        {
-          "id": "com.omastorm.radar"
-        },
-        {
-          "id": "omarchy.system-update"
-        },
-        {
-          "id": "costafot.markets",
-          "stripShowPrice": true
-        },
-        {
-          "id": "omarchy.spacer",
-          "size": 24
-        },
-        {
-          "id": "brandonpollack23.submap"
-        },
-        {
-          "id": "meviusisback.hw-monitor",
-          "mode": "labels",
-          "ramFormat": "used/total",
-          "tempFormat": "degree"
-        }
-      ],
       "tray": []
     },
-    "position": "bottom",
-    "transparent": false
+    "position": "bottom"
   },
   "cloneSourceRestores": [
     "evindor.keystroke",
@@ -177,10 +178,11 @@
       "id": "brpol.notifications"
     },
     {
+      "blankMs": 60000,
+      "design": "screensaver",
       "id": "io.github.sirjul1337.lock-explorer",
-      "design": "cipher",
-      "unlock": "fade",
-      "blankMs": 60000
+      "openAs": "full",
+      "unlock": "fade"
     }
   ],
   "version": 1

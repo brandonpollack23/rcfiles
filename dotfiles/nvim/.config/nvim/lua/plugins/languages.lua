@@ -162,4 +162,6 @@ return {
       })
     end,
   },
+  -- fennel lisp
+  "Olical/nfnl",
 }
