@@ -68,6 +68,15 @@ require("default.hypr.toggles")
 -- window opacity (0.985 focused, 0.96 not) and the browsers' 0.985 unfocused.
 o.window(".*", { tag = "-default-opacity", opacity = "1 1" })
 
--- Tile Steam's main window and Friends List. Omarchy floats every Steam
--- window (default/hypr/apps/steam.lua); its dialogs still float.
-o.window({ class = "steam", title = "^(Steam|Friends List)$" }, { tile = true })
+-- Per-app overrides, one file per app in hypr/apps/, the way Omarchy keeps its
+-- own in default/hypr/apps/: every *.lua there is loaded, in name order, after
+-- the rest of this config. find -L, since stow links the directory (or, once
+-- another package shares it, each file in it) into ~/.config/hypr.
+local apps = (os.getenv("HOME") or "") .. "/.config/hypr/apps"
+local app_files = io.popen("find -L '" .. apps .. "' -maxdepth 1 -type f -name '*.lua' -printf '%f\\n' 2>/dev/null | sort")
+if app_files then
+  for file in app_files:lines() do
+    require("hypr.apps." .. file:gsub("%.lua$", ""))
+  end
+  app_files:close()
+end
