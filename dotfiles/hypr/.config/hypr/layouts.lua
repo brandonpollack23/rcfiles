@@ -24,8 +24,9 @@ require("default.hypr.workspace-modes")
 
 local M = {}
 
--- Share of the screen the reference column gets, and which side it is on.
-local REFERENCE_WIDTH = 0.25
+-- Share of the screen the reference column gets, and which side it is on:
+-- 1138 of 3840 px, as resized by hand on the Clojure workspace.
+local REFERENCE_WIDTH = 0.296
 local REFERENCE_SIDE = "left"
 
 M.presets = {
