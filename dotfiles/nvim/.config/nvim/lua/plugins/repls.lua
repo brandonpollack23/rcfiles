@@ -43,6 +43,23 @@ return {
           })
         end,
       })
+
+      -- <localleader>et: show the type of the symbol under the cursor.
+      -- Clojure's ftplugin adds - / . ? ! etc. to iskeyword, so <cword> grabs
+      -- whole symbols like my-var, str/join or java.util.Random.
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("conjure_eval_type", { clear = true }),
+        pattern = "clojure",
+        callback = function(args)
+          vim.keymap.set("n", "<localleader>et", function()
+            local word = vim.fn.expand("<cword>")
+            if word == "" then
+              return
+            end
+            vim.cmd("ConjureEval (type " .. word .. ")")
+          end, { buffer = args.buf, desc = "Type of word" })
+        end,
+      })
     end,
   },
   {
