@@ -164,4 +164,24 @@ return {
   },
   -- fennel lisp
   "Olical/nfnl",
+  -- Parinfer (smart mode) balances parens from indentation as you type, in
+  -- parinfer's own Lisp filetypes. It's started here rather than by its
+  -- g:parinfer_filetypes so it can skip Conjure's REPL log: that buffer is
+  -- filetype clojure, and parinfer would rewrite the output Conjure appends.
+  {
+    "gpanders/nvim-parinfer",
+    init = function()
+      local filetypes = { "clojure", "scheme", "lisp", "racket", "hy", "fennel", "janet", "carp", "wast", "yuck", "dune" }
+      vim.g.parinfer_filetypes = {}
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("parinfer_start", { clear = true }),
+        pattern = filetypes,
+        callback = function(args)
+          if not vim.api.nvim_buf_get_name(args.buf):match("conjure%-log%-") then
+            vim.fn["parinfer#init"]()
+          end
+        end,
+      })
+    end,
+  },
 }
