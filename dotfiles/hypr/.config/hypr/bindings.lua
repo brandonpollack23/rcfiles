@@ -268,3 +268,7 @@ if o.dictation_installed and o.dictation_installed() then
   o.bind("SUPER + CTRL + X", "Toggle dictation", "omarchy-dictation toggle")
   o.bind_hold("F9", "Start dictation (push-to-talk)", "omarchy-dictation start", "Stop dictation (push-to-talk)", "omarchy-dictation stop")
 end
+
+-- Disabled: "single-window square aspect" breaks the master layout (a lone
+-- window gets a negative width and vanishes) and is too easy to hit by accident.
+hl.unbind("SUPER + CTRL + BACKSPACE")
