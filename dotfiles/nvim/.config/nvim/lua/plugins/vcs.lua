@@ -16,6 +16,22 @@ return {
     "bnrobinson93/jj-signs.nvim",
     event = "LazyFile",
     opts = {},
+    config = function(_, opts)
+      local jj = require("jj-signs")
+      jj.setup(opts)
+      -- jj-signs runs `jj root` with cwd = dirname(bufname) and doesn't skip
+      -- URI buffers (zipfile://...jar::clojure/core.clj from clojure-lsp/REPL
+      -- go-to-definition, fugitive://, oil://, ...), which throws ENOENT.
+      local attach = jj.attach
+      jj.attach = function(bufnr)
+        bufnr = bufnr or vim.api.nvim_get_current_buf()
+        local name = vim.api.nvim_buf_get_name(bufnr)
+        if name:match("^%a[%w+.-]*://") or vim.fn.isdirectory(vim.fn.fnamemodify(name, ":h")) == 0 then
+          return
+        end
+        return attach(bufnr)
+      end
+    end,
   },
   -- diff view for merge conflicts
   {
