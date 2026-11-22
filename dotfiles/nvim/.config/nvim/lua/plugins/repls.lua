@@ -112,6 +112,97 @@ function clojure_type.hover()
   end)
 end
 
+-- Conjure's auto-REPL, started when a Clojure buffer opens with no
+-- .nrepl-port to connect to: JVM Clojure in nvim's working directory, with
+-- its deps.edn and the nREPL and cider-nrepl versions vim-jack-in injects.
+-- It always asks for the project's :dev alias (dev-only deps like
+-- scope-capture); where deps.edn has none, the CLI prints a warning and
+-- starts the REPL without it.
+--
+-- The server writes .nrepl-port itself once it's listening, not Conjure
+-- before it starts (port_file false): the JVM takes seconds, and the file
+-- appearing is what port_file_sync connects on. On exit it deletes the file
+-- only while it still holds its port, so a REPL started since keeps its own.
+-- Conjure fills in $port; the code has no ' since it's quoted for the shell.
+local clj_auto_repl_code = [[
+(require (quote nrepl.server) (quote cider.nrepl))
+(let [port $port
+      file (java.io.File. ".nrepl-port")]
+  (nrepl.server/start-server :bind "127.0.0.1" :port port :handler cider.nrepl/cider-nrepl-handler)
+  (spit file port)
+  (.addShutdownHook (Runtime/getRuntime)
+    (Thread. #(when (= (str port) (try (slurp file) (catch Exception _ nil))) (.delete file))))
+  (println "nREPL server started on port" port)
+  @(promise))]]
+local clj_auto_repl = {
+  cmd = ("clojure -Sdeps '%s' -M:dev -e '%s'"):format(
+    '{:deps {nrepl/nrepl {:mvn/version "1.8.0"} cider/cider-nrepl {:mvn/version "0.63.1"}}}',
+    (clj_auto_repl_code:gsub("%s+", " "))
+  ),
+  port_file = false,
+}
+
+-- Conjure reads .nrepl-port once, when the first Clojure buffer opens, and
+-- never again: a REPL started after that (jack-in, a terminal) was ignored
+-- while Conjure stayed on its auto-REPL. Follow the file instead, connecting
+-- whenever it names a port other than the connected one. Conjure stops its
+-- auto-REPL when that happens. A port connected to or tried once isn't
+-- tried again, so a manual disconnect or a stale file is left alone.
+local last_port_file
+local function port_file_sync()
+  if vim.bo.filetype ~= "clojure" then
+    return
+  end
+  local fs, config = require("conjure.fs"), require("conjure.config")
+  local path = fs["resolve-above"](config["get-in"]({ "client", "clojure", "nrepl", "connection", "port_files" }))
+  local file = path and io.open(path)
+  if not file then
+    return
+  end
+  local port = tonumber(file:read("*a"))
+  file:close()
+  local key = path .. ":" .. tostring(port)
+  if not port or key == last_port_file then
+    return
+  end
+  last_port_file = key
+  local conn = require("conjure.client.clojure.nrepl.state").get("conn")
+  if not (conn and conn.port == port) then
+    require("conjure.client.clojure.nrepl.action")["connect-port-file"]({ ["silent?"] = true })
+  end
+end
+
+-- Runs port_file_sync on entering a Clojure buffer, and when .nrepl-port
+-- changes in the working directory, where the auto-REPL and jack-in write it.
+local function follow_port_file()
+  local group = vim.api.nvim_create_augroup("conjure_port_file", { clear = true })
+  local timer = assert(vim.uv.new_timer())
+  -- Debounced: a write fires several events, and bb writes the file a moment
+  -- before it's listening.
+  local function sync_soon()
+    timer:start(500, 0, vim.schedule_wrap(port_file_sync))
+  end
+  local watcher
+  local function watch()
+    if watcher then
+      watcher:close()
+    end
+    watcher = assert(vim.uv.new_fs_event())
+    watcher:start(vim.fn.getcwd(), {}, function(err, name)
+      if not err and name == ".nrepl-port" then
+        sync_soon()
+      end
+    end)
+  end
+  watch()
+  vim.api.nvim_create_autocmd("DirChanged", { group = group, callback = watch })
+  vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained" }, {
+    group = group,
+    -- Scheduled, so the first buffer's runs after Conjure's own connect.
+    callback = vim.schedule_wrap(port_file_sync),
+  })
+end
+
 -- The filetypes nvim-paredit supports.
 local lisp_filetypes = { "clojure", "fennel", "scheme", "lisp", "janet" }
 
@@ -123,11 +214,26 @@ return {
     -- clojure nREPL client.
     ft = { "clojure", "fennel", "python" },
     lazy = true,
+    config = function()
+      follow_port_file()
+      -- Conjure starts its auto-REPL with on_exit "ConjureProcessOnExit", a
+      -- function name, but defines only a command by that name, so every
+      -- exit of the REPL errors with E117.
+      vim.cmd([[
+        function! ConjureProcessOnExit(job_id, ...) abort
+          call luaeval('require("conjure.process")["on-exit"](_A)', a:job_id)
+        endfunction
+      ]])
+    end,
     init = function()
       -- Set configuration options here
       -- Uncomment this to get verbose logging to help diagnose internal Conjure issues
       -- This is VERY helpful when reporting an issue with the project
       -- vim.g["conjure#debug"] = true
+
+      for key, value in pairs(clj_auto_repl) do
+        vim.g["conjure#client#clojure#nrepl#connection#auto_repl#" .. key] = value
+      end
 
       -- Conjure maps its keys per buffer without which-key groups; label its
       -- <localleader> prefixes in those buffers only, so they don't name other
