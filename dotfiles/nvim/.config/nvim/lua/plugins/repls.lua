@@ -1,3 +1,6 @@
+-- The filetypes nvim-paredit supports.
+local lisp_filetypes = { "clojure", "fennel", "scheme", "lisp", "janet" }
+
 return {
   {
     "Olical/conjure",
@@ -97,6 +100,50 @@ return {
         keys[ll .. "{" .. key] = { wrap(fn, "{", "}", "inner_start"), "Wrap " .. what .. " in { }" }
       end
       opts.keys = vim.tbl_extend("force", opts.keys or {}, keys)
+    end,
+  },
+  -- In Lisps, typing an opener always inserts its closer: LazyVim skips the
+  -- pair when the next character is a word, [ or ", but here that's what
+  -- slurping is for. Strings still get a bare opener, and ' and ` (quote and
+  -- syntax quote) don't pair at all.
+  {
+    "nvim-mini/mini.pairs",
+    config = function(_, opts)
+      local pairs = require("mini.pairs")
+      local raw_open = pairs.open
+      LazyVim.mini.pairs(opts)
+      local lazy_open = pairs.open
+
+      local function in_string()
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        local ok, captures = pcall(vim.treesitter.get_captures_at_pos, 0, cursor[1] - 1, math.max(cursor[2] - 1, 0))
+        for _, capture in ipairs(ok and captures or {}) do
+          if vim.tbl_contains(opts.skip_ts or {}, capture.capture) then
+            return true
+          end
+        end
+        return false
+      end
+
+      pairs.open = function(pair, neigh_pattern)
+        if vim.tbl_contains(lisp_filetypes, vim.bo.filetype) and vim.fn.getcmdline() == "" and not in_string() then
+          return raw_open(pair, neigh_pattern)
+        end
+        return lazy_open(pair, neigh_pattern)
+      end
+    end,
+    -- In init, not config: mini.pairs loads on VeryLazy, after FileType has
+    -- fired for a file opened from the command line.
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("lisp_quote_no_pair", { clear = true }),
+        pattern = lisp_filetypes,
+        callback = function(args)
+          for _, quote in ipairs({ "'", "`" }) do
+            vim.keymap.set("i", quote, quote, { buffer = args.buf })
+          end
+        end,
+      })
     end,
   },
   {
