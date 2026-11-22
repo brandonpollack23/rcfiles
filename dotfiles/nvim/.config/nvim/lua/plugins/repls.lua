@@ -203,6 +203,83 @@ local function follow_port_file()
   })
 end
 
+-- Conjure starts its auto-REPL with on_exit "ConjureProcessOnExit", a
+-- function name, but defines only a command by that name, so every exit of
+-- the REPL errors with E117. Defines the function.
+local function fix_conjure_on_exit()
+  vim.cmd([[
+    function! ConjureProcessOnExit(job_id, ...) abort
+      call luaeval('require("conjure.process")["on-exit"](_A)', a:job_id)
+    endfunction
+  ]])
+end
+
+-- Conjure's default filetypes without lisp (Common Lisp), which is
+-- swank.nvim's. Once loaded, Conjure attaches to everything listed.
+local conjure_filetypes = {
+  "clojure",
+  "elixir",
+  "fennel",
+  "janet",
+  "javascript",
+  "hy",
+  "julia",
+  "racket",
+  "scheme",
+  "lua",
+  "python",
+  "ruby",
+  "rust",
+  "sql",
+  "typescript",
+  "php",
+  "r",
+  "picolisp",
+}
+
+-- Common Lisp through swank.nvim: a fix for nvim 0.12 and Conjure's eval
+-- keys on top of its own.
+local swank_extras = {}
+
+-- Its connect callback calls vim.notify inside libuv's callback, which nvim
+-- 0.12 refuses (E5560) before the socket is read, so it connected but never
+-- got a reply. Runs the callback on the main loop.
+function swank_extras.fix_connect()
+  local Transport = require("swank.transport").Transport
+  local connect = Transport.connect
+  function Transport:connect(host, port, on_connect)
+    return connect(self, host, port, vim.schedule_wrap(on_connect))
+  end
+end
+
+-- The text of the innermost list around the cursor, or nil outside one.
+local function current_form(buf)
+  local node = vim.treesitter.get_node({ lang = "commonlisp" })
+  while node and node:type() ~= "list_lit" do
+    node = node:parent()
+  end
+  return node and vim.treesitter.get_node_text(node, buf)
+end
+
+-- ee evaluates the form around the cursor, er the top-level one and ew the
+-- word under it, as in Conjure. swank.nvim's own ee is the top-level form.
+function swank_extras.eval_keys(buf)
+  local client = require("swank.client")
+  local function map(lhs, fn, desc)
+    vim.keymap.set("n", "<localleader>" .. lhs, fn, { buffer = buf, desc = desc })
+  end
+  map("ee", function()
+    local form = current_form(buf)
+    if form then
+      client.eval_replay(form)
+    end
+  end, "Eval current form")
+  map("er", client.eval_toplevel, "Eval root form")
+  map("ew", function()
+    client.eval_replay(vim.fn.expand("<cword>"))
+  end, "Eval word")
+end
+
 -- The filetypes nvim-paredit supports.
 local lisp_filetypes = { "clojure", "fennel", "scheme", "lisp", "janet" }
 
@@ -216,20 +293,15 @@ return {
     lazy = true,
     config = function()
       follow_port_file()
-      -- Conjure starts its auto-REPL with on_exit "ConjureProcessOnExit", a
-      -- function name, but defines only a command by that name, so every
-      -- exit of the REPL errors with E117.
-      vim.cmd([[
-        function! ConjureProcessOnExit(job_id, ...) abort
-          call luaeval('require("conjure.process")["on-exit"](_A)', a:job_id)
-        endfunction
-      ]])
+      fix_conjure_on_exit()
     end,
     init = function()
       -- Set configuration options here
       -- Uncomment this to get verbose logging to help diagnose internal Conjure issues
       -- This is VERY helpful when reporting an issue with the project
       -- vim.g["conjure#debug"] = true
+
+      vim.g["conjure#filetypes"] = conjure_filetypes
 
       for key, value in pairs(clj_auto_repl) do
         vim.g["conjure#client#clojure#nrepl#connection#auto_repl#" .. key] = value
@@ -289,6 +361,47 @@ return {
         end,
       })
     end,
+  },
+  -- Common Lisp through swank.nvim, with its keys under <localleader>.
+  {
+    "corigne/swank.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    ft = "lisp",
+    opts = { leader = "<localleader>", ui = { repl = { position = "bottom", size = 20 } } },
+    config = function(_, opts)
+      local swank = require("swank")
+      swank.setup(opts)
+      swank_extras.fix_connect()
+      local attach = swank.attach
+      swank.attach = function(buf)
+        attach(buf)
+        swank_extras.eval_keys(buf)
+      end
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "commonlisp" } },
+  },
+  -- Swank completion. The enabled check replaces swank.nvim's own, which
+  -- turns it off when any LSP client attaches, Copilot included.
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    opts = {
+      sources = {
+        per_filetype = { lisp = { inherit_defaults = true, "swank" } },
+        providers = {
+          swank = {
+            name = "Swank",
+            module = "swank.sources.blink",
+            enabled = function()
+              return require("swank.client").is_connected()
+            end,
+          },
+        },
+      },
+    },
   },
   -- Wrap keys mirror Conjure's eval scopes: <localleader>we the current form,
   -- wr the root form, ww the element under the cursor. Uppercase inserts at
