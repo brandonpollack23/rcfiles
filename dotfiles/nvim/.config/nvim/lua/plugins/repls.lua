@@ -1,3 +1,117 @@
+-- The runtime type of the var under the cursor, from the REPL Conjure is
+-- connected to: shown in K's hover float and by <localleader>et.
+local clojure_type = {}
+
+-- JVM Clojure and babashka: the lookup uses resolve and Throwable, which
+-- ClojureScript and jank (also filetype clojure) don't have.
+function clojure_type.supported()
+  local ext = vim.fn.expand("%:e")
+  return vim.bo.filetype == "clojure" and ext ~= "cljs" and ext ~= "jank"
+end
+
+local function connected()
+  local ok, server = pcall(require, "conjure.client.clojure.nrepl.server")
+  return ok and server["connected?"]()
+end
+
+-- Looks the symbol up rather than evaluating it, so locals, unknown symbols,
+-- macros and keywords give nil or a label instead of a compile error.
+function clojure_type.code(word)
+  local name = word:gsub("\\", "\\\\"):gsub('"', '\\"')
+  return ([[(try (let [v (resolve (symbol "%s"))]
+  (cond (var? v) (cond (:macro (meta v)) "macro" (fn? @v) "fn" :else (pr-str (type @v)))
+        (class? v) "class"))
+  (catch Throwable _ nil))]]):format(name)
+end
+
+-- Calls cb with the type of word, or nil when there's none, no REPL, or the
+-- REPL takes longer than a second.
+function clojure_type.type_of(word, cb)
+  if word == "" or not clojure_type.supported() or not connected() then
+    return cb(nil)
+  end
+  local done, value = false, nil
+  local function finish(result)
+    if not done then
+      done = true
+      vim.schedule(function()
+        cb(result)
+      end)
+    end
+  end
+  -- The client's eval-str, not conjure.eval's: that one also records the
+  -- request as the previous evaluation, which <localleader>ep would rerun.
+  require("conjure.client.clojure.nrepl.action")["eval-str"]({
+    origin = "type",
+    code = clojure_type.code(word),
+    context = require("conjure.extract").context(),
+    ["passive?"] = true,
+    cb = function(resp)
+      value = resp.value or value
+      if resp.status and resp.status.done then
+        -- The value is printed, with a trailing newline: "\"macro\"\n".
+        finish(value and vim.trim(value):match('^"(.*)"$'))
+      end
+    end,
+  })
+  vim.defer_fn(function()
+    finish(nil)
+  end, 1000)
+end
+
+-- LSP hover with the REPL type appended. Without a hover-capable server it
+-- falls back to Conjure's doc lookup, Conjure's own K.
+function clojure_type.hover()
+  local preview = vim.b.lsp_floating_preview
+  if preview and vim.api.nvim_win_is_valid(preview) then
+    return vim.api.nvim_set_current_win(preview)
+  end
+  local buf = vim.api.nvim_get_current_buf()
+  if #vim.lsp.get_clients({ bufnr = buf, method = "textDocument/hover" }) == 0 then
+    return require("conjure.eval")["doc-word"]()
+  end
+
+  local hover, typ, pending = {}, nil, 2
+  local function show()
+    pending = pending - 1
+    if pending > 0 or vim.api.nvim_get_current_buf() ~= buf then
+      return
+    end
+    local lines = hover
+    -- A fn's class name says nothing the hover's arglists don't.
+    if typ and typ ~= "fn" then
+      if #lines > 0 then
+        table.insert(lines, "---")
+      end
+      table.insert(lines, "**type** `" .. typ .. "`")
+    end
+    if #lines == 0 then
+      return vim.notify("No information available", vim.log.levels.INFO)
+    end
+    vim.lsp.util.open_floating_preview(lines, "markdown", { focus_id = "textDocument/hover" })
+  end
+
+  vim.lsp.buf_request_all(buf, "textDocument/hover", function(client)
+    return vim.lsp.util.make_position_params(0, client.offset_encoding)
+  end, function(results)
+    for _, resp in pairs(results) do
+      local contents = resp.result and resp.result.contents
+      local md = contents and vim.lsp.util.convert_input_to_markdown_lines(contents) or {}
+      if #md > 0 then
+        if #hover > 0 then
+          table.insert(hover, "---")
+        end
+        vim.list_extend(hover, md)
+      end
+    end
+    show()
+  end)
+  clojure_type.type_of(vim.fn.expand("<cword>"), function(result)
+    typ = result
+    show()
+  end)
+end
+
 -- The filetypes nvim-paredit supports.
 local lisp_filetypes = { "clojure", "fennel", "scheme", "lisp", "janet" }
 
@@ -62,7 +176,9 @@ return {
             if word == "" then
               return
             end
-            vim.cmd("ConjureEval (type " .. word .. ")")
+            -- ClojureScript and jank get the plain (type word).
+            local code = clojure_type.supported() and clojure_type.code(word) or ("(type " .. word .. ")")
+            require("conjure.eval")["eval-str"]({ origin = "type", code = code })
           end, { buffer = args.buf, desc = "Type of word" })
         end,
       })
@@ -100,6 +216,28 @@ return {
         keys[ll .. "{" .. key] = { wrap(fn, "{", "}", "inner_start"), "Wrap " .. what .. " in { }" }
       end
       opts.keys = vim.tbl_extend("force", opts.keys or {}, keys)
+    end,
+  },
+  -- K in Clojure buffers adds the REPL's type of the word to the LSP hover
+  -- (clojure_type.hover above). It replaces the K every server gets,
+  -- since any client attaching (copilot too) maps that over Conjure's K.
+  {
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      opts.servers = opts.servers or {}
+      local all = opts.servers["*"] or {}
+      opts.servers["*"] = all
+      all.keys = all.keys or {}
+      table.insert(all.keys, {
+        "K",
+        function()
+          if vim.bo.filetype == "clojure" then
+            return clojure_type.hover()
+          end
+          return vim.lsp.buf.hover()
+        end,
+        desc = "Hover",
+      })
     end,
   },
   -- In Lisps, typing an opener always inserts its closer: LazyVim skips the
