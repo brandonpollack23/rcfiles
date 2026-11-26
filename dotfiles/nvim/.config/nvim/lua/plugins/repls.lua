@@ -383,8 +383,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = { ensure_installed = { "commonlisp" } },
   },
-  -- Swank completion. The enabled check replaces swank.nvim's own, which
-  -- turns it off when any LSP client attaches, Copilot included.
+  -- Swank completion.
   {
     "saghen/blink.cmp",
     optional = true,
@@ -395,9 +394,6 @@ return {
           swank = {
             name = "Swank",
             module = "swank.sources.blink",
-            enabled = function()
-              return require("swank.client").is_connected()
-            end,
           },
         },
       },
@@ -439,7 +435,7 @@ return {
   },
   -- K in Clojure buffers adds the REPL's type of the word to the LSP hover
   -- (clojure_type.hover above). It replaces the K every server gets,
-  -- since any client attaching (copilot too) maps that over Conjure's K.
+  -- since any client attaching (clojure-lsp) maps that over Conjure's K.
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
