@@ -1,6 +1,6 @@
 #!/usr/bin/env -S amber run --target bash-3.2 --
 //MISE alias="deps"
-//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere, mise tools), Rust (rustup), Erlang and Elixir (mise)"
+//MISE description="Install the programs in packages.toml (Homebrew, casks and the App Store on the Mac, pacman/AUR on Arch, Homebrew on Debian and Fedora, pinned GitHub releases off the Mac, cargo binstall everywhere, mise tools), Rust (rustup), Erlang and Elixir (mise), Quicklisp for SBCL"
 //USAGE flag "-n --dry-run" help="Print the install commands instead of running them"
 //USAGE flag "-y --yes" help="Install without asking first"
 //USAGE arg "[group]..." var=#true help="Groups from packages.toml to install besides core (and mac on the Mac), or all. Default: the ones picked last time, asking the first time"
@@ -497,6 +497,43 @@ fun script_deps(packages: [Text]): Null? {
     }
 }
 
+// The sha256 of Quicklisp's installer (its 2015-01-28 quickstart), as
+// published on quicklisp.org; a new one means checking it there.
+const quicklisp_sha256 = "4a7a5c2aebe0716417047854267397e24a44d0cce096127411e9ce9ccfeb2c17"
+
+// Quicklisp, Common Lisp's library manager, in ~/quicklisp, where
+// dotfiles/sbcl's .sbclrc loads it from. It has no package: its installer is a
+// Lisp file that SBCL runs. Only with SBCL there (the dev group), or about to
+// be in a dry run.
+fun ensure_quicklisp(packages: [Text]): Null? {
+    const dir = "{home()}/quicklisp"
+    if file_exists("{dir}/setup.lisp") {
+        return null
+    }
+    if is_dry_run() {
+        if text_contains("\n{join(packages, "\n")}\n", "|sbcl\n") {
+            echo("install_quicklisp {dir}")
+        }
+        return null
+    }
+    if not is_command("sbcl") {
+        return null
+    }
+    const tmp = $ mktemp -d $?
+    const installer = "{tmp}/quicklisp.lisp"
+    echo("deps: installing Quicklisp in {dir}")
+    $ curl -fsSL -o "{installer}" https://beta.quicklisp.org/quicklisp.lisp $?
+    // shasum on the Mac, which may not have sha256sum.
+    const sha256 = trust $ (command -v sha256sum >/dev/null && sha256sum "{installer}" || shasum -a 256 "{installer}") | cut -d' ' -f1 $
+    if sha256 != quicklisp_sha256 {
+        $ rm -rf "{tmp}" $?
+        echo_error("deps: Quicklisp's installer doesn't match its pinned sha256", 1)
+    }
+    // --no-userinit: .sbclrc loads Quicklisp, which isn't there yet.
+    $ sbcl --non-interactive --no-userinit --load "{installer}" --eval "(quicklisp-quickstart:install)" $?
+    $ rm -rf "{tmp}" $?
+}
+
 // mise only has prebuilt Erlang for the Mac and Ubuntu; anywhere else it falls
 // back to building with kerl, which fails ("autoconf: no input file"). Bob's
 // Ubuntu 24.04 builds run on Arch, Debian and Fedora too (they need glibc,
@@ -560,6 +597,7 @@ main {
     }
     release_deps(packages)?
     script_deps(packages)?
+    ensure_quicklisp(packages)?
 
     // Erlang and Elixir at their latest stable releases, packages.toml's mise
     // tools at their pins, all in ~/.config/mise/config.toml.
