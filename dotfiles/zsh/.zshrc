@@ -28,7 +28,10 @@ export MANPATH="$HOME/man/":$MANPATH
 export EDITOR="nvim" # opens in terminal
 export ALTERNATE_EDITOR="vi"
 
-export CLOUDSDK_HOME=$HOME/bin/google-cloud-sdk
+# Only where the SDK was unpacked there by hand: set, it stops the omz gcloud
+# plugin from finding a packaged one (/opt/google-cloud-cli on Arch), and
+# gcloud loses its completion.
+[[ -d $HOME/bin/google-cloud-sdk ]] && export CLOUDSDK_HOME=$HOME/bin/google-cloud-sdk
 
 # Settings read by the oh-my-zsh lib (loaded by antidote below).
 COMPLETION_WAITING_DOTS="true"
@@ -188,8 +191,18 @@ lazy_completion flyctl "flyctl completion zsh"
 lazy_completion fly "flyctl completion zsh"
 lazy_completion esc "esc completion zsh"
 lazy_completion pnpm "pnpm completion zsh"
-# fzf ships no completion for its own options; zsh reads them from --help.
-compdef _gnu_generic fzf
+lazy_completion codex "codex completion zsh"
+# These ship no zsh completion, so zsh reads their options from --help. Only
+# list a command whose --help just prints and exits: some GUI programs (godot)
+# start up instead, which is why this isn't the fallback for every command.
+compdef _gnu_generic fzf sbcl clj clojure jank tokei ncdu viu presenterm \
+  rsvg-convert pw-play notify-send lspci bino protontricks git-quick-stats
+# Arch's azure-cli ships only a bash completion, where the omz azure plugin
+# doesn't look.
+if [[ -r /usr/share/bash-completion/completions/az ]] && (( $+commands[az] )); then
+  autoload -U +X bashcompinit && bashcompinit
+  source /usr/share/bash-completion/completions/az
+fi
 # tdl, tds, tdlm and tsl: Omarchy's tmux dev layouts, with completion.
 [[ -f ~/.config/zsh/tmux-layouts.zsh ]] && source ~/.config/zsh/tmux-layouts.zsh
 # JJ Workspace switcher
