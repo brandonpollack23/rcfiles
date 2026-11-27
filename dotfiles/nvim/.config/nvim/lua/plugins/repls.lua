@@ -237,49 +237,6 @@ local conjure_filetypes = {
   "picolisp",
 }
 
--- Common Lisp through swank.nvim: a fix for nvim 0.12 and Conjure's eval
--- keys on top of its own.
-local swank_extras = {}
-
--- Its connect callback calls vim.notify inside libuv's callback, which nvim
--- 0.12 refuses (E5560) before the socket is read, so it connected but never
--- got a reply. Runs the callback on the main loop.
-function swank_extras.fix_connect()
-  local Transport = require("swank.transport").Transport
-  local connect = Transport.connect
-  function Transport:connect(host, port, on_connect)
-    return connect(self, host, port, vim.schedule_wrap(on_connect))
-  end
-end
-
--- The text of the innermost list around the cursor, or nil outside one.
-local function current_form(buf)
-  local node = vim.treesitter.get_node({ lang = "commonlisp" })
-  while node and node:type() ~= "list_lit" do
-    node = node:parent()
-  end
-  return node and vim.treesitter.get_node_text(node, buf)
-end
-
--- ee evaluates the form around the cursor, er the top-level one and ew the
--- word under it, as in Conjure. swank.nvim's own ee is the top-level form.
-function swank_extras.eval_keys(buf)
-  local client = require("swank.client")
-  local function map(lhs, fn, desc)
-    vim.keymap.set("n", "<localleader>" .. lhs, fn, { buffer = buf, desc = desc })
-  end
-  map("ee", function()
-    local form = current_form(buf)
-    if form then
-      client.eval_replay(form)
-    end
-  end, "Eval current form")
-  map("er", client.eval_toplevel, "Eval root form")
-  map("ew", function()
-    client.eval_replay(vim.fn.expand("<cword>"))
-  end, "Eval word")
-end
-
 -- The filetypes nvim-paredit supports.
 local lisp_filetypes = { "clojure", "fennel", "scheme", "lisp", "janet" }
 
@@ -362,43 +319,8 @@ return {
       })
     end,
   },
-  -- Common Lisp through swank.nvim, with its keys under <localleader>.
-  {
-    "corigne/swank.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    ft = "lisp",
-    opts = { leader = "<localleader>", ui = { repl = { position = "bottom", size = 20 } } },
-    config = function(_, opts)
-      local swank = require("swank")
-      swank.setup(opts)
-      swank_extras.fix_connect()
-      local attach = swank.attach
-      swank.attach = function(buf)
-        attach(buf)
-        swank_extras.eval_keys(buf)
-      end
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "commonlisp" } },
-  },
-  -- Swank completion.
-  {
-    "saghen/blink.cmp",
-    optional = true,
-    opts = {
-      sources = {
-        per_filetype = { lisp = { inherit_defaults = true, "swank" } },
-        providers = {
-          swank = {
-            name = "Swank",
-            module = "swank.sources.blink",
-          },
-        },
-      },
-    },
-  },
+  -- Common Lisp: swank.nvim and its fixes, in lua/common_lisp.lua.
+  require("common_lisp").spec,
   -- Wrap keys mirror Conjure's eval scopes: <localleader>we the current form,
   -- wr the root form, ww the element under the cursor. Uppercase inserts at
   -- the tail instead of the head; w[ and w{ wrap in a vector or map.
