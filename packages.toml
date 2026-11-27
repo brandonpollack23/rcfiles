@@ -149,6 +149,7 @@ luajit = { desc = "Just-In-Time compiler for Lua" }
 luarocks = { desc = "Package manager for Lua modules" }
 "python@3.13" = { arch = "python", desc = "Python (uv and mise handle other versions)" }
 uv = { desc = "Fast Python package and project manager" }
+ocicl = { desc = "ASDF project management tool for common lisp" }
 pipx = { arch = "python-pipx", desc = "Installs Python apps in isolated environments" }
 poetry = { arch = "python-poetry", desc = "Python packaging and dependency management" }
 ruff = { desc = "Fast Python linter and formatter" }
