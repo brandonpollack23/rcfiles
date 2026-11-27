@@ -160,6 +160,28 @@ function dates() {
     echo "EST: $(TZ=America/New_York date)"
 }
 
+# qlinit <dir>: a Common Lisp project skeleton (quickproject, through Quicklisp)
+# in <dir>, created if it isn't there, named after its last component; then cd
+# into it. In an existing directory quickproject replaces its own files (README,
+# the .asd, package.lisp, the .lisp) and leaves the rest alone.
+function qlinit() {
+  if (( $# != 1 )); then
+    echo "usage: qlinit <dir>" >&2
+    return 1
+  fi
+  local dir=${1:A}
+  mkdir -p -- "$dir" || return
+  # The path goes in through the environment, so no quoting into the Lisp.
+  QLINIT_DIR=$dir QLINIT_NAME=${dir:t} sbcl --noinform --non-interactive \
+    --eval '(ql:quickload "quickproject" :silent t)' \
+    --eval '(quickproject:make-project
+              (sb-ext:parse-native-namestring (sb-ext:posix-getenv "QLINIT_DIR")
+                                              nil *default-pathname-defaults*
+                                              :as-directory t)
+              :name (sb-ext:posix-getenv "QLINIT_NAME"))' || return
+  cd -- "$dir"
+}
+
 # vcs (jj and git) aliases
 # Print a pretty git log up to each local branches tracking branch
 # $1 is the upstream branch youd like to build from

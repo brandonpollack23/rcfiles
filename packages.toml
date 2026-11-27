@@ -159,6 +159,7 @@ typescript = { desc = "TypeScript compiler (tsc)" }
 prettier = { desc = "Code formatter for JavaScript, CSS, markdown..." }
 rebar3 = { desc = "Erlang build tool" }
 sbcl = { desc = "Steel Bank Common Lisp, swank.nvim's REPL (deps installs Quicklisp for it)" }
+icl = { arch = "icl-bin", brew = false, desc = "Interactive Common Lisp, a REPL for sbcl with completion and a browser UI (prebuilt on Arch; no Homebrew formula)" }
 shellcheck = { desc = "Static analysis tool for shell scripts" }
 tokei = { desc = "Counts lines of code" }
 hex = { desc = "Colorized hexdump (hx)" }
