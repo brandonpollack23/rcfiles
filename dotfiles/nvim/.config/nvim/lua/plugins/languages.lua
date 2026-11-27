@@ -168,17 +168,44 @@ return {
   -- parinfer's own Lisp filetypes. It's started here rather than by its
   -- g:parinfer_filetypes so it can skip Conjure's REPL log: that buffer is
   -- filetype clojure, and parinfer would rewrite the output Conjure appends.
+  --
+  -- Visual > and < only shift: smart mode would move parens to follow the new
+  -- indentation, so that one change goes through paren mode, which keeps the
+  -- parens and only stops a line from leaving the form it's in.
   {
     "gpanders/nvim-parinfer",
     init = function()
       local filetypes = { "clojure", "scheme", "lisp", "racket", "hy", "fennel", "janet", "carp", "wast", "yuck", "dune" }
       vim.g.parinfer_filetypes = {}
+
+      local function shift(op)
+        return function()
+          local buf = vim.api.nvim_get_current_buf()
+          local tick = vim.b[buf].changedtick
+          local mode = vim.b[buf].parinfer_mode
+          vim.b[buf].parinfer_mode = "paren"
+          vim.cmd("normal! " .. vim.v.count1 .. op)
+          local function restore()
+            vim.b[buf].parinfer_mode = mode
+          end
+          if vim.b[buf].changedtick == tick then
+            restore()
+          else
+            -- Parinfer processes the change on TextChanged; this autocmd is
+            -- defined after its own, so it runs once parinfer is done.
+            vim.api.nvim_create_autocmd("TextChanged", { buffer = buf, once = true, callback = restore })
+          end
+        end
+      end
+
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("parinfer_start", { clear = true }),
         pattern = filetypes,
         callback = function(args)
           if not vim.api.nvim_buf_get_name(args.buf):match("conjure%-log%-") then
             vim.fn["parinfer#init"]()
+            vim.keymap.set("x", ">", shift(">"), { buffer = args.buf, desc = "Indent" })
+            vim.keymap.set("x", "<", shift("<"), { buffer = args.buf, desc = "Unindent" })
           end
         end,
       })

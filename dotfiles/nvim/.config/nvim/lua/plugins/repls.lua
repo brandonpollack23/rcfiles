@@ -430,7 +430,15 @@ return {
         keys[ll .. "[" .. key] = { wrap(fn, "[", "]", "inner_start"), "Wrap " .. what .. " in [ ]" }
         keys[ll .. "{" .. key] = { wrap(fn, "{", "}", "inner_start"), "Wrap " .. what .. " in { }" }
       end
-      opts.keys = vim.tbl_extend("force", opts.keys or {}, keys)
+      -- Paredit's > and < keys (slurp, barf, drag) default to normal and
+      -- visual mode, which makes visual > and < wait for a second key. Keep
+      -- them in normal mode so those are plain shifts (see nvim-parinfer).
+      for key in pairs(require("nvim-paredit.defaults").default_keys) do
+        if key:match("^[<>]") then
+          keys[key] = { mode = "n" }
+        end
+      end
+      opts.keys = vim.tbl_deep_extend("force", opts.keys or {}, keys)
     end,
   },
   -- K in Clojure buffers adds the REPL's type of the word to the LSP hover
