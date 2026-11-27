@@ -1,0 +1,90 @@
+# The tasks: mise run build | run | test | repl | clean (mise tasks lists them).
+
+# SBCL from conda-forge and icl, which qlinit pinned to the latest when it made
+# the project (mise use --pin).
+[tools]
+
+[env]
+# ASDF finds this project's systems here, as well as everywhere it usually
+# looks, so (ql:quickload "(#| TMPL_VAR name |#)") works anywhere under this directory.
+CL_SOURCE_REGISTRY = "{{config_root}}/:"
+
+[vars]
+# SBCL with Quicklisp, but nothing else from ~/.sbclrc. Compiling shows the
+# warnings, not every file it compiles.
+sbcl = "sbcl --noinform --no-userinit --load ~/quicklisp/setup.lisp --eval '(setf *compile-verbose* nil)'"
+# Quicklisp downloads and loads the dependencies; ASDF then compiles the
+# project itself, every time, showing its warnings.
+load_deps = """--eval '(ql:quickload (asdf:system-depends-on (asdf:find-system "(#| TMPL_VAR name |#)")) :silent t)'"""
+
+[tasks.build]
+description = "Build the release executable, bin/(#| TMPL_VAR name |#) (compressed, as this SBCL can)"
+sources = ["*.asd", "**/*.lisp"]
+outputs = ["bin/(#| TMPL_VAR name |#)"]
+run = '''
+{{vars.sbcl}} --non-interactive {{vars.load_deps}} \
+  --eval '(defmethod asdf:perform ((o asdf:program-op) (c (eql (asdf:find-system "(#| TMPL_VAR name |#)"))))
+            (uiop:dump-image (asdf:output-file o c) :executable t
+                             :compression (and (find :sb-core-compression *features*) t)))' \
+  --eval '(asdf:make "(#| TMPL_VAR name |#)" :force t)'
+'''
+
+[tasks.run]
+description = "Run main from source, compiled for debugging, into the debugger on an error (arguments after --)"
+run = '''
+{{vars.sbcl}} {{vars.load_deps}} \
+  --eval '(sb-ext:restrict-compiler-policy (quote debug) 3)' \
+  --eval '(sb-ext:restrict-compiler-policy (quote safety) 3)' \
+  --eval '(asdf:load-system "(#| TMPL_VAR name |#)" :force t)' \
+  --eval '(uiop:quit (if (uiop:symbol-call :(#| TMPL_VAR name |#) :main) 0 1))' \
+  --end-toplevel-options
+'''
+
+[tasks.test]
+description = "Run the FiveAM tests in tests/"
+run = '''
+{{vars.sbcl}} --non-interactive \
+  --eval '(ql:quickload "(#| TMPL_VAR name |#)/tests" :silent t)' \
+  --eval '(uiop:quit (if (uiop:symbol-call :(#| TMPL_VAR name |#)/tests :run-tests) 0 1))'
+'''
+
+[tasks.repl]
+description = "ICL with the project loaded"
+run = '''
+#!/usr/bin/env bash
+set -eu
+# icl can't load anything into the SBCL it starts, so start one here, with the
+# project loaded and a Slynk server (icl's own copy) on a free port, and have
+# icl connect to it.
+tmp=$(mktemp -d)
+pid=
+trap '[ -n "$pid" ] && kill "$pid" 2>/dev/null; rm -rf "$tmp"' EXIT
+SLYNK_DIR="$(mise where github:atgreen/icl)/slynk/" PORT_FILE=$tmp/port \
+  {{vars.sbcl}} {{vars.load_deps}} \
+  --eval '(asdf:load-system "(#| TMPL_VAR name |#)")' \
+  --eval '(push (uiop:getenv-absolute-directory "SLYNK_DIR") asdf:*central-registry*)' \
+  --eval '(asdf:load-system "slynk")' \
+  --eval '(let ((port (slynk:create-server :port 0 :dont-close t)))
+            (with-open-file (s (uiop:getenv "PORT_FILE") :direction :output)
+              (format s "~D~%" port)))' \
+  --eval '(loop (sleep 60))' >"$tmp/log" 2>&1 &
+pid=$!
+until [ -s "$tmp/port" ]; do
+  if ! kill -0 "$pid" 2>/dev/null; then
+    cat "$tmp/log" >&2
+    exit 1
+  fi
+  sleep 0.2
+done
+icl --connect "127.0.0.1:$(cat "$tmp/port")"
+'''
+
+[tasks.clean]
+description = "Delete bin/ and the project's compiled files (in ASDF's cache)"
+run = '''
+rm -rf bin
+{{vars.sbcl}} --non-interactive \
+  --eval '(uiop:delete-directory-tree (asdf:apply-output-translations (uiop:getcwd))
+            :validate (lambda (dir) (uiop:subpathp dir (uiop:xdg-cache-home)))
+            :if-does-not-exist :ignore)'
+'''

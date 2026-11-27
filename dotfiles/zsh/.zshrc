@@ -162,24 +162,51 @@ function dates() {
 
 # qlinit <dir>: a Common Lisp project skeleton (quickproject, through Quicklisp)
 # in <dir>, created if it isn't there, named after its last component; then cd
-# into it. In an existing directory quickproject replaces its own files (README,
-# the .asd, package.lisp, the .lisp) and leaves the rest alone.
+# into it. It asks for a description, version, license (fzf) and dependencies
+# (fset and arrows unless you say otherwise); a blank answer takes the
+# default. ~/.config/quickproject/qlinit.lisp makes the project from the
+# template next to it, and has Quicklisp download the dependencies. In an
+# existing directory it replaces the template's files and leaves the rest
+# alone. The author is git's user.name <user.email>. Then it pins SBCL and icl
+# in the project's mise.toml, whose tasks build, run, test and start a REPL.
 function qlinit() {
   if (( $# != 1 )); then
     echo "usage: qlinit <dir>" >&2
     return 1
   fi
   local dir=${1:A}
+  local name=$(git config user.name) email=$(git config user.email) author=
+  [[ -n $name ]] && author="$name${email:+ <$email>}"
+
+  local description version license depends
+  read -r "description?Description (blank for none): " || return
+  read -r "version?Version [0.0.1]: " || return
+  # Enter takes the highlighted license, or what was typed when nothing
+  # matches it; Esc takes MIT.
+  license=$(print -l MIT Apache-2.0 BSD-3-Clause BSD-2-Clause ISC 0BSD \
+      LLGPL LGPL-3.0-or-later LGPL-2.1-or-later GPL-3.0-or-later \
+      GPL-2.0-or-later AGPL-3.0-or-later MPL-2.0 EPL-2.0 BSL-1.0 Zlib \
+      Unlicense CC0-1.0 Proprietary \
+    | fzf --height=~20 --reverse --prompt='License> ' \
+          --header='Enter picks (or keeps what you typed), Esc for MIT' \
+          --bind='enter:accept-or-print-query')
+  echo "License: ${license:-MIT}"
+  read -r "depends?Depends on [fset arrows] (space-separated systems, - for none): " \
+    || return
+  case $depends in
+    '') depends="fset arrows" ;;
+    -) depends= ;;
+  esac
+
   mkdir -p -- "$dir" || return
-  # The path goes in through the environment, so no quoting into the Lisp.
-  QLINIT_DIR=$dir QLINIT_NAME=${dir:t} sbcl --noinform --non-interactive \
-    --eval '(ql:quickload "quickproject" :silent t)' \
-    --eval '(quickproject:make-project
-              (sb-ext:parse-native-namestring (sb-ext:posix-getenv "QLINIT_DIR")
-                                              nil *default-pathname-defaults*
-                                              :as-directory t)
-              :name (sb-ext:posix-getenv "QLINIT_NAME"))' || return
-  cd -- "$dir"
+  QLINIT_DIR=$dir QLINIT_NAME=${dir:t} QLINIT_AUTHOR=$author \
+  QLINIT_DESCRIPTION=$description QLINIT_VERSION=$version \
+  QLINIT_LICENSE=$license QLINIT_DEPENDS=$depends \
+    sbcl --noinform --non-interactive --load ~/.config/quickproject/qlinit.lisp \
+    || return
+  cd -- "$dir" || return
+  # The project's SBCL and icl, pinned to the latest, for its tasks.
+  mise trust --quiet && mise use --pin conda:sbcl github:atgreen/icl
 }
 
 # vcs (jj and git) aliases

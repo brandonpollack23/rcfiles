@@ -8,3 +8,5 @@ dotfiles/zsh/.zsh_plugins.zsh
 dotfiles/omarchy/.config/omarchy/**/*.bak.*
 # omarchy-last-session writes its config here on first run; it's per machine.
 dotfiles/omarchy/.config/omarchy/last-session.ini
+# SBCL compiles Lisp next to its source, through the stow links too.
+*.fasl
